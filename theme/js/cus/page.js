@@ -51,26 +51,31 @@ $(document).ready(function() {
         });
     })(300, 500);
     //侧边栏跟随
-    (function (aside, bias) {
+    (function (aside) {
         if(!aside.length) {
             return(false);
         }
 
         //初次运行时目录的位置
         const doc = $(document),
-            tocTop = aside.offset().top;
+            div = $(" > div", aside),
+            tocTop = aside.offset().top,
+            bias = 40;
 
         doc.on("scroll", function() {
             //边栏目录的位置
             const doc2Top = doc.scrollTop() + bias;
             if (doc2Top > tocTop) {
-                aside.css("top", doc2Top - tocTop + "px");
+                if(!div.hasClass("fixed")) {
+                    div.addClass("fixed");
+                }
             } else {
-                aside.attr("style", "");
+                if(div.hasClass("fixed")) {
+                    div.removeClass("fixed");
+                }
             }
         }).trigger("scroll");
-
-    })($("article#container > aside"), 40);
+    })($("article#container > aside"));
     //post页面的目录
     (function (aside, bias) {
         if(!aside.length) {
@@ -101,7 +106,7 @@ $(document).ready(function() {
                 ans.push(node);
             }
             return(ans);
-        })(document.querySelector("#post-toc > ol"));
+        })(document.querySelector("#post-toc > div > ol"));
         //绑定页面滚动事件
         doc.on("scroll", function() {
             //边栏目录的位置
@@ -119,8 +124,10 @@ $(document).ready(function() {
             //head不存在，说明屏幕顶端在文章上方，删除上次保存的所有current类
             if (!head) {
                 for (let i = 0; i < meunSave.length; i++) {
-                    meunSave[i].classList.remove("toc-current");
-                    meunSave[i].classList.remove("toc-child-vision");
+                    if(meunSave[i] && meunSave[i].classList) {
+                        meunSave[i].classList.remove("toc-current");
+                        meunSave[i].classList.remove("toc-child-vision");
+                    }
                 }
                 meunSave = [];
                 return (true);

@@ -32,12 +32,13 @@ block container
         //-
             a#asidebutton(href="#" title="侧边栏按钮")
                 span
-        div.categories-list
-            p 分类
-            +categoryList(categories)
-        div.tags-list
-            p 标签
-            +tagList(tags)
-        div.links-list
-            p 链接
-            +linkList(config.friend_link)
+        div
+            div.categories-list
+                p 分类
+                +categoryList(categories)
+            div.tags-list
+                p 标签
+                +tagList(tags)
+            div.links-list
+                p 链接
+                +linkList(config.friend_link)
