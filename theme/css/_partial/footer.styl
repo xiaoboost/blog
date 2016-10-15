@@ -1,0 +1,37 @@
+//页脚设定，包含了页脚和右下角的向上跳转
+body > footer
+  font-family font-custom-family
+  font-size 100%
+  font-weight bold
+  margin 3em 0 1em 0
+  text-align center
+  width 100%
+  color color-font
+  text-align center
+  flex 0 0 auto
+  a
+    color color-black
+    transition color 200ms ease-out
+    &:hover
+      color color-orange
+
+body > footer > div#goto-up
+  position fixed
+  bottom 2em
+  right 2em
+  display flex
+  flex-direction column-reverse
+  align-items center
+  height 3.5em
+  width 3.5em
+  border-radius 50%
+  color #FFFFFF
+  box-shadow 0px 2px 3px rgba(0, 0, 0, 0.5)
+  background #E53935
+  &:hover
+    box-shadow 0px 3px 5px rgba(0, 0, 0, 0.5)
+    cursor pointer
+  &:before
+    font-family font-icon-family
+    content "\f102"
+    font-size 230%

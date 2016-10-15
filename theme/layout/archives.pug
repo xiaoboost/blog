@@ -1,0 +1,15 @@
+extends _partial/layout
+
+block container
+    div(class="archives-title " + attr)
+        p #{title}
+        ul
+            for value, key in collection
+                li
+                    if(value.toPath)
+                        a(data-src=("/" + attr + "/" + value.toPath + "/") href=("#" + key) title=key) #{key}
+                            sup #{value.posts.length}
+                    else
+                        a(data-src=("/" + attr + "/" + key + "/") href=("#" + key) title=key) #{key}
+                            sup #{value.length}
+    ul#main.archives-list
