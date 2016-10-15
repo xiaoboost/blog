@@ -7,31 +7,40 @@ trans = cubic-bezier(0.7, 0, 0.36, 0.63)
 
 //主界面的侧边栏
 #container > aside
-  background color-post
-  box-shadow 0 0 3px #888
+  //background color-post
+  //box-shadow 0 0 3px #888
   font-size 100%
   margin 2em 5px 0 0
-  padding 1em
+  box-shadow 0 0 3px #888
+  //padding 1em
   float right
-  width 250px
+  width 300px
   position relative
   overflow hidden
   @media medium
     display none
   @media min
     display none
-
   > div
-    overflow auto
-    margin 1em 0 0 0
-    float none
-    width 100%
-    opacity 1
-    > p
-      font-size 1.1em
-      color #2ca6cb
-      padding 0 0 0.3125em 0
-      border-bottom 0.1875em solid #ccc
+    background color-post
+    padding 1em
+    box-shadow 0 0 3px #888
+    &.fixed
+      width calc(300px - 2em)
+      position fixed
+      top 40px
+
+    > div
+      overflow auto
+      margin 1em 0 0 0
+      float none
+      width 100%
+      opacity 1
+      > p
+        font-size 1.1em
+        color #2ca6cb
+        padding 0 0 0.3125em 0
+        border-bottom 0.1875em solid #ccc
   ul
     list-style none
   //分类列表
@@ -70,7 +79,7 @@ trans = cubic-bezier(0.7, 0, 0.36, 0.63)
         transition color .25s
 
 //侧边栏 目录
-aside#post-toc
+aside#post-toc > div
   ol
     list-style none
   > p.toc-title

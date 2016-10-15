@@ -23,5 +23,6 @@ block container
                             p #{page.next.title}
     if(page.toc !== "false")
         aside#post-toc
-            p.toc-title 文章目录
-            !=page.toc
+            div
+                p.toc-title 文章目录
+                !=page.toc
