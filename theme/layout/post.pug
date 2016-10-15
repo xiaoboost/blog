@@ -1,0 +1,27 @@
+extends _partial/layout
+include _partial/tool
+
+block container
+    - var mainClass = (page.toc !== "false") ? "post" : "post post-center"
+    div#main(class=mainClass)
+        header
+            p #{page.title}
+            p 发表于：#{page.date.join("-")}
+        article.post-content!= page.content
+        +postFooter(page)
+        if(page.prev || page.next)
+            nav
+                if(page.prev)
+                    div.prev
+                        a(href=page.prev.path title=page.prev.title)
+                            p 上一篇：
+                            p #{page.prev.title}
+                if(page.next)
+                    div.next
+                        a(href=page.next.path title=page.next.title)
+                            p 下一篇：
+                            p #{page.next.title}
+    if(page.toc !== "false")
+        aside#post-toc
+            p.toc-title 文章目录
+            !=page.toc

@@ -1,0 +1,43 @@
+extends _partial/layout
+include _partial/tool
+
+block container
+    ul#main.post-list
+        for post in page.posts
+            li
+                header
+                    a(href=post.path target="_blank") #{post.title}
+                    time #{post.date.join("-")}
+                article
+                    - var excerptSplit = post.excerpts.split("\n")
+                    for statement in excerptSplit
+                        span #{statement}
+                +postFooter(post)
+        if(page.total > 0)
+            nav
+                if(page.prev_link)
+                    a.prev(rel="prev" href=page.prev_link) « Prev
+                - for(var ii = 0; ii <= page.total; ii++)
+                    if(page.current === ii)
+                        span.current #{ii + 1}
+                    else
+                        if(ii === 0)
+                            a(href="/") #{1}
+                        else
+                            a(href="/page/" + ii + "/") #{ii + 1}
+                if(page.next_link)
+                    a.next(rel="next" href=page.next_link) Next »
+
+    aside
+        //-
+            a#asidebutton(href="#" title="侧边栏按钮")
+                span
+        div.categories-list
+            p 分类
+            +categoryList(categories)
+        div.tags-list
+            p 标签
+            +tagList(tags)
+        div.links-list
+            p 链接
+            +linkList(config.friend_link)

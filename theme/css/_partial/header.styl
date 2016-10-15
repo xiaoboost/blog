@@ -1,0 +1,94 @@
+//页首设定
+body > header
+  box-shadow 2px 4px 5px hsla(0,1%,1%,.2)
+  background color-theme
+  color color-white
+  width 100%
+  margin 0
+  padding 0
+  position relative
+  overflow hidden
+  > div
+    width index-width
+    margin 0 auto
+    @media medium
+      width 90%
+      margin 0 auto
+    @media min
+      width 90%
+      margin 0 auto
+  a
+    display block
+    color color-white
+
+div#logo-img
+  float left
+  transform translateY(1em)
+  width 5.5em
+  img
+    width 5.5em
+div#logo-text
+  float left
+  width 60%
+  margin 0
+  margin-left 0.5em
+  transform translateY(0.7em)
+  > h1
+    width 86%
+    margin 0
+    font-family font-custom-family
+    line-height line-height
+    font-size 2.8em
+    font-weight normal
+    font-smoothing()
+  > h2
+    margin 0
+    font-size 1.1em
+    font-weight normal
+    font-weight normal
+ul#logo-list
+  float right
+  width auto
+  margin 0
+  max-height none
+  font-size 1em
+  transition max-height 1s ease-out
+  list-style none
+  transform translateY(-0.5em)
+  @media narrow
+    margin-right 2%
+  > li
+    float left
+    > a
+      padding 0.2em 1.5em
+      @media narrow
+        padding 0.2em 0.5em 0.2em 0.5em
+      &:hover
+        color color-font-nav
+    > form.search
+      padding 0.1em 0 0 1em
+      input
+        -webkit-appearance textfield
+        font-size 0.87em
+        line-height line-height+0.2
+        border 2px solid color-white
+        color color-white
+        background transparent
+        border-radius 30px
+        padding-left 0.5em
+        width 8em
+        transition .5s width
+        &:focus
+          width 15em
+        @media narrow
+          transition none
+          &:focus
+            width 8em
+      label
+        display none
+
+
+/*搜索框提示字体设置*/
+::-webkit-input-placeholder { font-family: font-default; color color-white; padding: 2px 0 0 4px; }
+::-moz-placeholder { font-family: font-default; color:color-white; padding: 2px 0 0 4px;}
+:-ms-input-placeholder { font-family: font-default; color:color-white; padding: 2px 0 0 4px; }

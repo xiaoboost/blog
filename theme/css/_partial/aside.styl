@@ -1,0 +1,103 @@
+//侧边栏设定
+//主页侧边栏包含了分类、标签和链接三个块
+//文章界面的侧边栏则是文章目录
+
+//运动曲线
+trans = cubic-bezier(0.7, 0, 0.36, 0.63)
+
+//主界面的侧边栏
+#container > aside
+  background color-post
+  box-shadow 0 0 3px #888
+  font-size 100%
+  margin 2em 5px 0 0
+  padding 1em
+  float right
+  width 250px
+  position relative
+  overflow hidden
+  @media medium
+    display none
+  @media min
+    display none
+
+  > div
+    overflow auto
+    margin 1em 0 0 0
+    float none
+    width 100%
+    opacity 1
+    > p
+      font-size 1.1em
+      color #2ca6cb
+      padding 0 0 0.3125em 0
+      border-bottom 0.1875em solid #ccc
+  ul
+    list-style none
+  //分类列表
+  .categories-list
+    margin 0
+    li
+      border-bottom 1px solid color-gray
+      a
+        display block
+        padding 0.5em 5%
+        &:hover
+          color color-theme
+  //标签列表
+  .tags-list ul
+    padding 0.5em 0
+    li
+      float left
+      a
+        display block
+        margin 0.3125em
+        padding 0.125em 0.3125em
+        background lighten(color-gray, 30%)
+        &:hover
+          color color-theme
+          background lighten(color-gray, 50%)
+  //链接列表
+  .links-list ul
+    padding 0.5em 0 0 0
+    a
+      font-size 1em
+      line-height line-height
+      display block
+      padding 0 3%
+      &:hover
+        color color-theme
+        transition color .25s
+
+//侧边栏 目录
+aside#post-toc
+  ol
+    list-style none
+  > p.toc-title
+    color black
+    margin-bottom 0.5em
+    padding-bottom 0.5em
+    border-bottom 2px solid #ccc
+  > ol.toc
+    a
+      transition color 200ms ease-out, border-bottom 200ms ease-out
+      border-bottom 1px solid color-gray
+      &:hover
+        color color-theme
+        border-bottom 1px solid color-orange
+    li,ol
+      margin 0.5em 0
+      transition all 300ms ease-out
+    .toc-level-2,
+    .toc-level-3,
+    .toc-level-4,
+    .toc-level-5,
+    .toc-level-6
+      padding-left 1em
+    .toc-child
+      display none
+    .toc-current > a
+      color color-theme
+      border-bottom 1px solid color-theme
+    .toc-child-vision > .toc-child
+        display block
