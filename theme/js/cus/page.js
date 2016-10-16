@@ -1,4 +1,4 @@
-$(document).ready(function() {
+window.onload = function() {
     //归档页面的前端路由
     (function (list) {
         //没有匹配到元素，说明当前页面不是分类/标签页面，直接跳出
@@ -55,7 +55,6 @@ $(document).ready(function() {
         if(!aside.length) {
             return(false);
         }
-
         //初次运行时目录的位置
         const doc = $(document),
             div = $(" > div", aside),
@@ -75,6 +74,7 @@ $(document).ready(function() {
                 }
             }
         }).trigger("scroll");
+
     })($("article#container > aside"));
     //post页面的目录
     (function (aside, bias) {
@@ -107,6 +107,7 @@ $(document).ready(function() {
             }
             return(ans);
         })(document.querySelector("#post-toc > div > ol"));
+
         //绑定页面滚动事件
         doc.on("scroll", function() {
             //边栏目录的位置
@@ -155,4 +156,4 @@ $(document).ready(function() {
             meunSave = current;
         }).trigger("scroll");
     })($("aside#post-toc"), 40);
-});
+};

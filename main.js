@@ -367,6 +367,14 @@ if(options[0] === "s" || options[0] === "service") {
     pugWatcher.on("change", function() {
         html2file(_base);
     });
+    //js文件监听
+    const jsWatcher = chokidar.watch("./theme/js/", {
+        ignored: /[\/\\]\./,
+        persistent: true
+    });
+    jsWatcher.on("change", function() {
+        copyFiles(_base);
+    });
 
     //允许网页访问theme文件夹
     app.use(express.static(_base));
