@@ -11,12 +11,9 @@ body > header
   @media phone
     padding-bottom 1em
   > div
-    width index-width
+    width width-main
     margin 0 auto
     @media medium
-      width 90%
-      margin 0 auto
-    @media mini
       width 90%
       margin 0 auto
   a
@@ -62,12 +59,10 @@ ul#logo-list
   transition max-height 1s ease-out
   list-style none
   transform translateY(-0.5em)
-  @media narrow
-    margin-right 2%
   @media phone
     font-size .7em
     transform translateY(1em)
-    //手机端，搜索框不显示
+    //在手机端，搜索框不显示
     > li:last-child
       display none
 
@@ -75,8 +70,6 @@ ul#logo-list
     float left
     > a
       padding 0.2em 1.5em
-      @media narrow
-        padding 0.2em 0.5em 0.2em 0.5em
       &:hover
         color color-font-nav
     > form.search
@@ -94,10 +87,6 @@ ul#logo-list
         transition .5s width
         &:focus
           width 15em
-        @media narrow
-          transition none
-          &:focus
-            width 8em
       label
         display none
 

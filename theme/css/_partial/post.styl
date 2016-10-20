@@ -1,10 +1,9 @@
 //正文样式设定，这里和主页面文章列表有部分共用，这一部分是文章末尾的分类和标签
 
 #main.post
-  width index-post-width
+  width width-post
   background color-post
   box-shadow 0 0 3px #888
-  font-size 100%
   margin 2em 0 3px 3px
   float left
   transition margin 0.5s ease-out
@@ -76,6 +75,8 @@
   //分段
   p
     line-height line-height + 0.2
+    @media phone
+      line-height line-height - 0.1
     > span
       display block
       &:before
