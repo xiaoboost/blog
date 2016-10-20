@@ -1,9 +1,9 @@
 #main.post article.post-content pre
-  margin 0
   text-shadow none
   padding 0em 0 0 0.5em
   background-color #2b303b
   position relative
+  font-size 0.9em
   ul
     padding 0
     display table-cell
@@ -25,27 +25,27 @@
     white-space inherit
     color color-pre
     background-color #2b303b
-    &:before
-      position absolute
-      right 0
-      padding 0.2em 0.5em
-      font-size 70%
-      color #8a8a8a
-      font-family font-mono
-      text-shadow none
-      content 'CODE'
-    &.javascript:before
-      content 'JavaScript'
-    &.c:before
-      content 'C'
-    &.cpp:before
-      content 'C++'
-    &.python:before
-      content 'python'
-    &.bash:before
-      content 'BASH'
-    &.html:before
-      content 'HTML'
+  &:before
+    position absolute
+    right 0
+    padding 0.2em 0.5em
+    font-size 70%
+    color #8a8a8a
+    font-family font-mono
+    text-shadow none
+    content 'CODE'
+  &.javascript:before
+    content 'JavaScript'
+  &.c:before
+    content 'C'
+  &.cpp:before
+    content 'C++'
+  &.python:before
+    content 'python'
+  &.bash:before
+    content 'BASH'
+  &.html:before
+    content 'HTML'
 
 pre code span
   color #c0c5ce
