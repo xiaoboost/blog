@@ -16,12 +16,14 @@ color-pre = #c0c5ce
 color-border = #ddd
 
 //主页及分页的相关参数
-index-width = 1300px
-index-post-width = 950px
+width-main = 1300px
+width-post = 950px
+width-phone = 568px
 
 //根据宽度设定的三个阶段Media
-min = "only screen and (max-width: " + index-post-width + ")"
-medium = "only screen and (max-width: " + index-width + ") and (min-width: " + index-post-width + ")"
+phone = "only screen and (max-width: " + width-phone + ")"
+mini = "only screen and (max-width: " + width-post + ")"
+medium = "only screen and (max-width: " + width-main + ") and (min-width: " + width-post + ")"
 
 //Font
 font-default = "Helvetica Neue", "Helvetica", "Microsoft YaHei", "WenQuanYi Micro Hei", Arial, sans-serif
