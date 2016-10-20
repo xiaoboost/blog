@@ -6,14 +6,14 @@ article#container
   @media medium
     width 100%
     margin 0
-  @media min
+  @media mini
     width 100%
     margin 0
 
 #main
   @media medium
     margin-left calc((100% - 950px) / 2) !important
-  @media min
+  @media mini
     margin-left 0 !important
     width 100% !important
 
@@ -30,8 +30,12 @@ ul#main.post-list
     box-shadow 0.5px 0 3px #888
     border-left 6px solid #bbb
     transition border-left 400ms
+    @media mini
+      border none
     &:hover
       border-left 6px solid color-theme
+      @media mini
+        border none
     header
       padding 0.5em 0
       a
@@ -45,6 +49,8 @@ ul#main.post-list
         cursor pointer
         &:hover
           color color-orange
+        @media mini
+          padding-left .5em
       time
         margin 0.5em 1em
         float right

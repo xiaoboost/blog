@@ -58,12 +58,13 @@ window.onload = function() {
         //初次运行时目录的位置
         const doc = $(document),
             div = $(" > div", aside),
-            tocTop = aside.offset().top,
             bias = 40;
 
         doc.on("scroll", function() {
             //边栏目录的位置
-            const doc2Top = doc.scrollTop() + bias;
+            const tocTop = $("#main").offset().top,
+                doc2Top = doc.scrollTop() + bias;
+
             if (doc2Top > tocTop) {
                 if(!div.hasClass("fixed")) {
                     div.addClass("fixed");
@@ -122,14 +123,10 @@ window.onload = function() {
                     head = _head;
                 }
             }
-            //head不存在，说明屏幕顶端在文章上方，删除上次保存的所有current类
+            //head不存在，说明屏幕顶端在文章上方，删除目录中所有current类
             if (!head) {
-                for (let i = 0; i < meunSave.length; i++) {
-                    if(meunSave[i] && meunSave[i].classList) {
-                        meunSave[i].classList.remove("toc-current");
-                        meunSave[i].classList.remove("toc-child-vision");
-                    }
-                }
+                $(".toc-current", aside).removeClass("toc-current");
+                $(".toc-child-vision", aside).removeClass("toc-child-vision");
                 meunSave = [];
                 return (true);
             }

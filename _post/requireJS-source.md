@@ -1,7 +1,7 @@
 title: requireJS源码浅析
 category: 软件设计
 date: 2016-03-17
-tag: [JavaScript,requireJS]
+tag: [JavaScript,requireJS,异步]
 layout: post
 toc: true
 
