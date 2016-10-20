@@ -1,24 +1,24 @@
 //主页面，包含了index及其分页的所有页面设定
 article#container
   margin auto
-  width index-width
+  width width-main
   overflow hidden
   @media medium
     width 100%
     margin 0
-  @media mini
-    width 100%
-    margin 0
 
 #main
+  font-size 1em
   @media medium
     margin-left calc((100% - 950px) / 2) !important
   @media mini
     margin-left 0 !important
     width 100% !important
+  @media phone
+    font-size 0.9em
 
 ul#main.post-list
-  width index-post-width
+  width width-post
   margin 2em 0 0 0
   padding 0
   list-style none
