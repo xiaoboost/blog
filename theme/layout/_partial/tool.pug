@@ -23,8 +23,8 @@ mixin postFooter(post)
         footer.post-footer
             if(post.category)
                 span
-                    a(href="/categories/#" + post.category + "/") #{post.category}
+                    a(href="/categories/#" + post.category) #{post.category}
             if(post.tag)
                 span
                     for tag in post.tag
-                        a(href="/tags/#" + tag + "/") #{tag}
+                        a(href="/tags/#" + tag) #{tag}
