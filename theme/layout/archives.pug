@@ -7,9 +7,9 @@ block container
             for value, key in collection
                 li
                     if(value.toPath)
-                        a(data-src=("/" + attr + "/" + value.toPath + "/") href=("#" + key) title=key) #{key}
+                        a(data-src=("/" + attr + "/" + value.toPath) href=("#" + key) title=key) #{key}
                             sup #{value.posts.length}
                     else
-                        a(data-src=("/" + attr + "/" + key + "/") href=("#" + key) title=key) #{key}
+                        a(data-src=("/" + attr + "/" + key) href=("#" + key) title=key) #{key}
                             sup #{value.length}
     ul#main.archives-list
