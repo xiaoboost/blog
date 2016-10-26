@@ -6,16 +6,21 @@
   font-size 0.9em
   ul
     padding 0
-    display table-cell
+    margin 0
     list-style-type none
-    &.gutter > li
-      text-align right
-      color #5a5a5a
-    &.code > li
-      margin-left 1em
-      &:after
+    &.gutter
+      float left
+      padding-right .5em
+      > li
+        text-align right
+        color #5a5a5a
+    &.code
+      overflow-x auto
+      > li:after
         content "　"
   li
+    padding 0
+    margin 0
     display block
     width 100%
   code
@@ -26,7 +31,6 @@
     color color-pre
     background-color #2b303b
     display block
-    overflow-x auto
   &:before
     position absolute
     right 0
