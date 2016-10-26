@@ -529,10 +529,10 @@ var index = 0;
 至于造成这个现象的原因，其实不是什么深刻难懂的技术问题，而是因为——**这是规范规定的**。
 > Timers can be nested; after five such nested timers, however, the interval is forced to be at least **four milliseconds**.
 
-`setTimeout`是属于`window`的内容，不属于js语言规范，所以在ECMA中是查不到的。上面的引用是它在HTML5规范中的规定。
+`setTimeout`是属于`window`的内容，不属于js语言规范，所以在ECMA中是查不到的，上面的引用是它在HTML5规范中的规定。可以看到，规范中直接指明了定时器的最短时间间隔就是`4ms`。
 
 而对于原生的`Promise`来说就没有这个问题了，原生的`Promise`使用的是`EnqueueJob`这个专门的函数来操作异步队列，它是没有这个延迟的。如果你对这还是有点疑虑的话，我们可以尝试测量一下原生`Promise`的队列间隔。
-`EnqueueJob`函数是js规范内部的抽象函数，我们在外部是无法操作它的，但是我们可以构造出一个极为简单但是却非常长的调用链来。比如像下面的代码这样：
+`EnqueueJob`函数是js规范内部的抽象函数，我们在外部是无法操作它的，但是我们可以构造出一个极为简单但是却非常长的调用链来，这样就能间接的对它进行测量。比如像下面的代码这样：
 ```JavaScript
 console.time("Testing with promise");
 let next = new Promise(function(res) {
