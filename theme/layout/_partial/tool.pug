@@ -16,7 +16,7 @@ mixin linkList(links)
     ul
         for link, txt in links
             li
-                a(href=link title=txt) #{txt}
+                a(href=link title=txt target="_blank") #{txt}
 
 mixin postFooter(post)
     if(post.category || post.tag)
