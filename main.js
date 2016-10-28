@@ -404,7 +404,7 @@ if(options[0] === "d" || options[0] === "deploy") {
     const _base = './.deploy_git/',
         message = options[1] || (new Date()).toDateString();
 
-    folder.deletefs(_base, { folder:[".git"] });
+    folder.deletefs(_base, [".git"]);
     copyFiles(_base, {compress: true});
     stylus2css(_base);
     html2file(_base);
