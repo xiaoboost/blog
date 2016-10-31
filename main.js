@@ -11,6 +11,7 @@ const //本地模块
     stylus = require("stylus"),
     babel = require("babel-core"),
     uglify = require("uglify-js"),
+    autoprefixer = require('autoprefixer-stylus');
 
     //输入参数
     options = process.argv.splice(2);
@@ -107,6 +108,7 @@ function stylus2css(base) {
     stylus(fs.readFileSync(inputPath + inputFile, "utf8"))
         .include(inputPath)
         .set('compress', true)
+        .use(autoprefixer())
         .render(function(err, css){
             if (err) throw err;
             fs.writeFileSync(outputPath + outputFile, css);
