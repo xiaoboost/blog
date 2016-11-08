@@ -3,3 +3,5 @@
 /EggConjee/
 /node_modules/
 /public/
+/.gitignore
+/lib/marked.old.js
