@@ -79,8 +79,7 @@
     > span
       display block
       //每段的前置空格
-      &:before
-        content "　　"
+      text-indent 2em
       //行内公式
       span.katex
         display inline
@@ -92,8 +91,8 @@
       span.katex-display
         margin 0.5em 0
       //整行元素不需要前置空格
-      &.space:before
-        content none
+      &.space
+        text-indent 0
       //图片，块级元素，居中
       img.img-block
         max-width 100%
@@ -157,8 +156,8 @@
   li p,
   ul p
     margin 0
-    span:before
-      content none
+    span
+      text-indent 0
   li ol
     margin 0
   blockquote
@@ -238,7 +237,7 @@
     top -0.6em
 
 //文章中鼠标选中文字的颜色
-#main.post
+#container
   ::selection
     background lighten(#0080ff, 70%)
     text-shadow none
