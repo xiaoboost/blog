@@ -6,10 +6,11 @@ window.onload = function() {
             return (false);
         }
 
-        var box = $("#main.archives-list"), select = "li",
-            url = window.location.href.split("#"),
-            //网址指定初始页面，默认是第一个元素
-            first = $(list[0]);
+        const box = $("#main.archives-list"), select = "li",
+            url = window.location.href.split("#");
+
+        //网址指定初始页面，默认是第一个元素
+        let first = $(list[0]);
 
         if(url.length > 1) {
             for(let i = 0 ; i < list.length; i++) {
@@ -35,18 +36,18 @@ window.onload = function() {
         const scrollElem = $('#goto-up'),
             doc = $(document);
         //元素隐藏
-        scrollElem.hide();
+        scrollElem.css("opacity", 0);
         //屏幕滚动
         doc.on("scroll", function() {
             if (doc.scrollTop() > upperLimit) {
-                scrollElem.stop().fadeTo(300, 1);
+                scrollElem.css("opacity", 1);
             } else {
-                scrollElem.stop().fadeTo(300, 0);
+                scrollElem.css("opacity", 0);
             }
         }).trigger("scroll");
         //点击回到顶端按钮
-        $(scrollElem).click(function () {
-            $('html, body').animate({scrollTop: 0}, scrollSpeed);
+        scrollElem.click(function () {
+            $('body').animate({scrollTop: 0}, scrollSpeed);
             return (false);
         });
     })(300, 500);
