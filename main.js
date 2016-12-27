@@ -11,7 +11,7 @@ const //本地模块
     stylus = require("stylus"),
     babel = require("babel-core"),
     uglify = require("uglify-js"),
-    autoprefixer = require('autoprefixer-stylus');
+    autoprefixer = require('autoprefixer-stylus'),
 
     //输入参数
     options = process.argv.splice(2);
@@ -385,10 +385,6 @@ if(options[0] === "s" || options[0] === "service") {
         console.info(chalk.green(" INFO: ") + "虚拟网站已建立于 http://localhost:3000/");
         console.info(chalk.green(" INFO: ") + "CTRL + C 退出当前状态");
     });
-
-    const app2 = express();
-    app2.use(express.static("./EggConjee"));
-    app2.listen(4000, function () {});
 }
 //生成器模式
 if(options[0] === "g" || options[0] === "generate") {
