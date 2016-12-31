@@ -18,7 +18,7 @@ const //本地模块
 
 //没有运行参数，直接退出
 if(!options) {
-    console.log("ERROR：需要输入参数");
+    console.log(chalk.red("ERROR: ") + "需要输入参数");
     return(false);
 }
 
@@ -344,7 +344,11 @@ if(options[0] === "s" || options[0] === "service") {
     const chokidar = require('chokidar'),
         express = require("express"),
         app = express(),
-        _base = "Z:/blog/";
+        _base = "Z:/blog/",
+        watchOpt = {
+            ignored: /[\/\\]\./,
+            persistent: true
+        };
 
     //清空缓存
     folder.deletefs(_base);
@@ -353,30 +357,12 @@ if(options[0] === "s" || options[0] === "service") {
     stylus2css(_base);
     copyFiles(_base);
 
-    //css文件监听
-    const stylusWatcher = chokidar.watch("./theme/css/", {
-        ignored: /[\/\\]\./,
-        persistent: true
-    });
-    stylusWatcher.on("change", function(){
-        stylus2css(_base);
-    });
-    //pug和post文件监听
-    const pugWatcher = chokidar.watch(["./theme/layout/","./_post/"], {
-        ignored: /[\/\\]\./,
-        persistent: true
-    });
-    pugWatcher.on("change", function() {
-        html2file(_base);
-    });
-    //js文件监听
-    const jsWatcher = chokidar.watch("./theme/js/", {
-        ignored: /[\/\\]\./,
-        persistent: true
-    });
-    jsWatcher.on("change", function() {
-        copyFiles(_base);
-    });
+    chokidar.watch("./theme/css/", watchOpt)
+        .on("change", () => stylus2css(_base));
+    chokidar.watch(["./theme/layout/","./_post/"], watchOpt)
+        .on("change", () => html2file(_base));
+    chokidar.watch("./theme/js/", watchOpt)
+        .on("change", () => copyFiles(_base));
 
     //允许网页访问theme文件夹
     app.use(express.static(_base));
