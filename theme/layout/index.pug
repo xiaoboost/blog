@@ -9,8 +9,8 @@ block container
                     a(href=post.path target="_blank") #{post.title}
                     time #{post.date.join("-")}
                 article
-                    - var excerptSplit = post.excerpts.split("\n")
-                    for statement in excerptSplit
+                    - var excerpt = post.excerpt.split("\n")
+                    for statement in excerpt
                         span #{statement}
                 +postFooter(post)
         if(page.total > 0)
