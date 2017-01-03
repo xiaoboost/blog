@@ -22,7 +22,7 @@ module.exports = {
         //允许存在不保存值的new表达式
         'no-new': 0,
         //默认退格为4个空格
-        'indent': [2, 4],
+        'indent': [2, 4, { "SwitchCase": 1 }],
         //声明可以不合并
         'one-var': 0,
         //函数名或function关键字之后与括号之间不需要空格
@@ -66,6 +66,8 @@ module.exports = {
         //禁用行尾空格
         "no-trailing-spaces":2,
         //关键字前后需要空格
-        'keyword-spacing': 2
+        'keyword-spacing': 2,
+        //禁用var
+        'no-var': 2
     }
 }
