@@ -17,19 +17,21 @@ const //本地模块
     options = process.argv.splice(2);
 
 //没有运行参数，直接退出
-if(!options) {
+if (!options) {
     console.log(chalk.red("ERROR: ") + "需要输入参数");
-    return(false);
+    return (false);
 }
 
 //文章分页
 function splitPosts(posts, per) {
     //输入非法数值或者是0，直接返回自身
     per = Number(per);
-    if(Number.isNaN(per) || !per) { return([posts.slice()]); }
+    if (Number.isNaN(per) || !per) {
+        return ([posts.slice()]);
+    }
 
     const source = posts.slice(), ans = [];
-    for(let i = 0; i < parseInt(posts.length / per); i++) {
+    for (let i = 0; i < parseInt(posts.length / per); i++) {
         ans.push({
             posts: source.splice(0, per)
         });
@@ -37,13 +39,13 @@ function splitPosts(posts, per) {
     ans.push({
         posts: source.slice()
     });
-    return(ans);
+    return (ans);
 }
 //根据总页数和当前页码，生成网址
 function createUrl(current) {
     if (current === 0) {
         return ("/");
-    } else if(current === -1) {
+    } else if (current === -1) {
         return ("");
     } else {
         return ("/page/" + current + "/");
@@ -132,9 +134,11 @@ function html2file(base) {
         files = fs.readdirSync(basePath);   //所有文章列表
 
     //读取所有文章信息
-    for(let i = 0; i < files.length; i++) {
+    for (let i = 0; i < files.length; i++) {
         //后缀不是.md那么就忽略
-        if(files[i].slice(-3) !== ".md") { continue; }
+        if (files[i].slice(-3) !== ".md") {
+            continue;
+        }
         //读取文章
         const page = new post(basePath + files[i]);
         page.createPath(yearsPath, files[i]);
@@ -145,19 +149,19 @@ function html2file(base) {
         const valueX = Number(x.date.join("")),
             valueY =  Number(y.date.join(""));
 
-        if(valueX < valueY) {
-            return(1);
+        if (valueX < valueY) {
+            return (1);
         } else {
-            return(-1);
+            return (-1);
         }
     });
 
     //按照标签、分类以及年份再把所有文章分类
-    for(let i = 0; i < posts.length; i++) {
+    for (let i = 0; i < posts.length; i++) {
         const post = posts[i];
         //按标签归档
-        for(let j = 0; j < post.tag.length; j++) {
-            if(!tags[post.tag[j]]) {
+        for (let j = 0; j < post.tag.length; j++) {
+            if (!tags[post.tag[j]]) {
                 tags[post.tag[j]] = {
                     toPath: post.tag[j].toUrl(),
                     posts: []
@@ -166,7 +170,7 @@ function html2file(base) {
             tags[post.tag[j]].posts.push(post);
         }
         //按分类归档
-        if(!categories[post.category]) {
+        if (!categories[post.category]) {
             categories[post.category] = {
                 toPath: post.category.toUrl(),
                 posts: []
@@ -174,7 +178,7 @@ function html2file(base) {
         }
         categories[post.category].posts.push(post);
         //按年份归档
-        if(!years[post.date[0]]) {
+        if (!years[post.date[0]]) {
             years[post.date[0]] = [];
         }
         years[post.date[0]].push(post);
@@ -195,7 +199,7 @@ function html2file(base) {
         //上一页的网址,如果此页是第一页的话则为 ''
         page.prev_link = createUrl(i - 1);
         //下一页的页数,如果此页是最后一页的话则为 -1
-        page.next = (i === page.total) ? -1 : i + 1
+        page.next = (i === page.total) ? -1 : i + 1;
         //下一页的网址,如果此页是最后一页的话则为 ''
         page.next_link = createUrl(page.next);
 
@@ -215,7 +219,7 @@ function html2file(base) {
         });
     }
     //生成分类页面
-    for(let category in categories) {
+    for (let category in categories) {
         const posts = categories[category].posts,
             path = catePath + categories[category].toPath + "/";
 
@@ -229,7 +233,7 @@ function html2file(base) {
         });
     }
     //生成标签页面
-    for(let tag in tags) {
+    for (let tag in tags) {
         const posts = tags[tag].posts,
             path = tagsPath +tags[tag].toPath + "/";
 
@@ -243,7 +247,7 @@ function html2file(base) {
         });
     }
     //生成时间归档页面
-    for(let year in years) {
+    for (let year in years) {
         const posts = years[year],
             path = yearsPath + year + "/";
 
@@ -299,7 +303,7 @@ function html2file(base) {
         })
     });
     //按照顺序生成所有页面
-    for(let i = 0; i < posts.length; i++) {
+    for (let i = 0; i < posts.length; i++) {
         const post = posts[i];
 
         post.prev = posts[i - 1];
@@ -314,7 +318,7 @@ function html2file(base) {
         });
     }
     //如果选项中有“关于”页面，那么就要生成它
-    if(config.second_dir["关于"]) {
+    if (config.second_dir["关于"]) {
         const about = new post('./_post/about/about.md');
         about.path = yearsPath + 'about/';
 
@@ -328,7 +332,7 @@ function html2file(base) {
     }
 
     //生成所有网页页面
-    for(let i = 0; i < site.length; i++) {
+    for (let i = 0; i < site.length; i++) {
         const path = (base + site[i].path).normalize(),
             file = (path + "/index.html").normalize(),
             content = site[i].content;
@@ -340,7 +344,7 @@ function html2file(base) {
 }
 
 //服务器模式
-if(options[0] === "s" || options[0] === "service") {
+if (options[0] === "s" || options[0] === "service") {
     const chokidar = require('chokidar'),
         express = require("express"),
         app = express(),
@@ -359,7 +363,7 @@ if(options[0] === "s" || options[0] === "service") {
 
     chokidar.watch("./theme/css/", watchOpt)
         .on("change", () => stylus2css(_base));
-    chokidar.watch(["./theme/layout/","./_post/"], watchOpt)
+    chokidar.watch(["./theme/layout/", "./_post/"], watchOpt)
         .on("change", () => html2file(_base));
     chokidar.watch("./theme/js/", watchOpt)
         .on("change", () => copyFiles(_base));
@@ -367,13 +371,13 @@ if(options[0] === "s" || options[0] === "service") {
     //允许网页访问theme文件夹
     app.use(express.static(_base));
     //建立虚拟网站，端口3000
-    app.listen(3000, function () {
+    app.listen(3000, function() {
         console.info(chalk.green(" INFO: ") + "虚拟网站已建立于 http://localhost:3000/");
         console.info(chalk.green(" INFO: ") + "CTRL + C 退出当前状态");
     });
 }
 //生成器模式
-if(options[0] === "g" || options[0] === "generate") {
+if (options[0] === "g" || options[0] === "generate") {
     const _base = "./public/";
 
     folder.deletefs(_base);
@@ -384,7 +388,7 @@ if(options[0] === "g" || options[0] === "generate") {
     console.log(chalk.green(" INFO: ") + "已经生成全部文件！");
 }
 //文件上传
-if(options[0] === "d" || options[0] === "deploy") {
+if (options[0] === "d" || options[0] === "deploy") {
     const _base = './.deploy_git/',
         message = options[1] || (new Date()).toDateString();
 
