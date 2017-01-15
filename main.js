@@ -1,16 +1,16 @@
 const //本地模块
-    config = require("./lib/config"),
+    config = require('./lib/config'),
     post = require('./lib/article'),
     folder = require('./lib/folder'),
-    deploy = require("./lib/deployer"),
+    deploy = require('./lib/deployer'),
 
     //公共模块
-    fs = require("fs"),
-    pug = require("pug"),
+    fs = require('fs'),
+    pug = require('pug'),
     chalk = require('chalk'),
-    stylus = require("stylus"),
-    babel = require("babel-core"),
-    uglify = require("uglify-js"),
+    stylus = require('stylus'),
+    babel = require('babel-core'),
+    uglify = require('uglify-js'),
     autoprefixer = require('autoprefixer-stylus'),
 
     //输入参数
@@ -18,8 +18,8 @@ const //本地模块
 
 //没有运行参数，直接退出
 if (!options) {
-    console.log(chalk.red("ERROR: ") + "需要输入参数");
-    return (false);
+    console.log(chalk.red('ERROR: ') + '需要输入参数');
+    process.exit(1);
 }
 
 //文章分页
@@ -44,11 +44,11 @@ function splitPosts(posts, per) {
 //根据总页数和当前页码，生成网址
 function createUrl(current) {
     if (current === 0) {
-        return ("/");
+        return ('/');
     } else if (current === -1) {
-        return ("");
+        return ('');
     } else {
-        return ("/page/" + current + "/");
+        return ('/page/' + current + '/');
     }
 }
 //压缩某文件夹的文件
@@ -56,8 +56,8 @@ function compressFolder(to, from) {
     const files = fs.readdirSync(from);
 
     for (let i = 0; i < files.length; i++) {
-        const file = (from + "/" + files[i]).normalize(),
-            fileTo = (to + "/" + files[i]).normalize();
+        const file = (from + '/' + files[i]).normalize(),
+            fileTo = (to + '/' + files[i]).normalize();
 
         fs.writeFileSync(fileTo,
             uglify.minify(
@@ -69,23 +69,23 @@ function compressFolder(to, from) {
 }
 //复制文件
 function copyFiles(base, opt) {
-    const folders = ["font", "js", "img"];
+    const folders = ['font', 'js', 'img'];
 
     //主题的字体和图片路径
     for (let i = 0; i < folders.length; i++) {
         const path = config.theme[folders[i]];
         if (path) {
             const to = (base + path).normalize(),
-                from = ("./theme/" + path).normalize();
+                from = ('./theme/' + path).normalize();
 
-            if (folders[i] === "js") {
+            if (folders[i] === 'js') {
                 //复制库文件
-                folder.copyfs(to, (from + "/lib/").normalize());
+                folder.copyfs(to, (from + '/lib/').normalize());
                 //复制页面脚本
                 if (opt && opt.compress) {
-                    compressFolder(to, (from + "/cus/").normalize());
+                    compressFolder(to, (from + '/cus/').normalize());
                 } else {
-                    folder.copyfs(to, (from + "/cus/").normalize());
+                    folder.copyfs(to, (from + '/cus/').normalize());
                 }
             } else {
                 folder.copyfs(to, from);
@@ -93,21 +93,21 @@ function copyFiles(base, opt) {
         }
     }
     //文章的图片们
-    folder.copyfs((base + "/img/").normalize(), "./_post/img/");
+    folder.copyfs((base + '/img/').normalize(), './_post/img/');
     //复制CNAME文件
-    fs.writeFileSync((base + "/CNAME").normalize(), fs.readFileSync("./CNAME"));
+    fs.writeFileSync((base + '/CNAME').normalize(), fs.readFileSync('./CNAME'));
 }
 //生成css文件
 function stylus2css(base) {
-    const inputPath = "./theme/css/",
-        inputFile = "style.styl",
-        outputPath = (base + "/css/").normalize(),
-        outputFile = "style.css";
+    const inputPath = './theme/css/',
+        inputFile = 'style.styl',
+        outputPath = (base + '/css/').normalize(),
+        outputFile = 'style.css';
 
     //生成输出文件夹
     folder.createfs(outputPath);
     //生成css文件
-    stylus(fs.readFileSync(inputPath + inputFile, "utf8"))
+    stylus(fs.readFileSync(inputPath + inputFile, 'utf8'))
         .include(inputPath)
         .set('compress', true)
         .use(autoprefixer())
@@ -126,17 +126,17 @@ function html2file(base) {
         categories = {},    //分类归档
         years = {},         //年份归档
 
-        catePath = "/categories/",  //分类页面基础链接
-        tagsPath = "/tags/",        //标签页面基础链接
-        yearsPath = "/archives/",   //时间页面基础链接
+        catePath = '/categories/',  //分类页面基础链接
+        tagsPath = '/tags/',        //标签页面基础链接
+        yearsPath = '/archives/',   //时间页面基础链接
 
-        basePath = "./_post/",              //文章路径
+        basePath = './_post/',              //文章路径
         files = fs.readdirSync(basePath);   //所有文章列表
 
     //读取所有文章信息
     for (let i = 0; i < files.length; i++) {
         //后缀不是.md那么就忽略
-        if (files[i].slice(-3) !== ".md") {
+        if (files[i].slice(-3) !== '.md') {
             continue;
         }
         //读取文章
@@ -146,8 +146,8 @@ function html2file(base) {
     }
     //把文章按照时间进行排序，下标为0的是离现在最近的文章
     posts.sort(function(x, y) {
-        const valueX = Number(x.date.join("")),
-            valueY =  Number(y.date.join(""));
+        const valueX = Number(x.date.join('')),
+            valueY =  Number(y.date.join(''));
 
         if (valueX < valueY) {
             return (1);
@@ -184,7 +184,7 @@ function html2file(base) {
         years[post.date[0]].push(post);
     }
     //生成主页
-    let pages = splitPosts(posts, config.per_post.index);
+    const pages = splitPosts(posts, config.per_post.index);
     for (let i = 0; i < pages.length; i++) {
         const page = pages[i];
         //页面属性
@@ -204,102 +204,102 @@ function html2file(base) {
         page.next_link = createUrl(page.next);
 
         //布局类型
-        page.layout = "index";
+        page.layout = 'index';
         //标题是设置中的网站标题
         page.title = config.title;
 
         site.push({
             path: page.path,
-            content: pug.renderFile("./theme/layout/index.pug", {
-                page: page,
-                tags: tags,
-                categories: categories,
-                config: config,
+            content: pug.renderFile('./theme/layout/index.pug', {
+                page,
+                tags,
+                categories,
+                config,
             })
         });
     }
     //生成分类页面
-    for (let category in categories) {
+    for (const category in categories) {
         const posts = categories[category].posts,
-            path = catePath + categories[category].toPath + "/";
+            path = catePath + categories[category].toPath + '/';
 
         site.push({
-            path: path,
-            content: pug.renderFile("./theme/layout/archive.pug", {
+            path,
+            content: pug.renderFile('./theme/layout/archive.pug', {
                 attr: category,
-                posts: posts,
-                config: config
+                posts,
+                config
             })
         });
     }
     //生成标签页面
-    for (let tag in tags) {
+    for (const tag in tags) {
         const posts = tags[tag].posts,
-            path = tagsPath +tags[tag].toPath + "/";
+            path = tagsPath +tags[tag].toPath + '/';
 
         site.push({
-            path: path,
-            content: pug.renderFile("./theme/layout/archive.pug", {
+            path,
+            content: pug.renderFile('./theme/layout/archive.pug', {
                 attr: tag,
-                posts: posts,
-                config: config
+                posts,
+                config
             })
         });
     }
     //生成时间归档页面
-    for (let year in years) {
+    for (const year in years) {
         const posts = years[year],
-            path = yearsPath + year + "/";
+            path = yearsPath + year + '/';
 
         site.push({
-            path: path,
-            content: pug.renderFile("./theme/layout/archive.pug", {
+            path,
+            content: pug.renderFile('./theme/layout/archive.pug', {
                 attr: year,
-                posts: posts,
-                config: config
+                posts,
+                config
             })
         });
     }
     //生成分类集合页面
     site.push({
         path: catePath,
-        content: pug.renderFile("./theme/layout/archives.pug", {
+        content: pug.renderFile('./theme/layout/archives.pug', {
             page: {
-                layout: "archives",
-                title: config.title + " | 分类"
+                layout: 'archives',
+                title: config.title + ' | 分类'
             },
-            title: "分类",
-            attr: "categories",
+            title: '分类',
+            attr: 'categories',
             collection: categories,
-            config: config
+            config
         })
     });
     //生成标签集合页面
     site.push({
         path: tagsPath,
-        content: pug.renderFile("./theme/layout/archives.pug", {
+        content: pug.renderFile('./theme/layout/archives.pug', {
             page: {
-                layout: "archives",
-                title: config.title + " | 标签"
+                layout: 'archives',
+                title: config.title + ' | 标签'
             },
-            title: "标签",
-            attr: "tags",
+            title: '标签',
+            attr: 'tags',
             collection: tags,
-            config: config
+            config
         })
     });
     //生成时间集合页面
     site.push({
         path: yearsPath,
-        content: pug.renderFile("./theme/layout/archives.pug", {
+        content: pug.renderFile('./theme/layout/archives.pug', {
             page: {
-                layout: "archives",
-                title: config.title + " | 归档"
+                layout: 'archives',
+                title: config.title + ' | 归档'
             },
-            title: "归档",
-            attr: "archives",
+            title: '归档',
+            attr: 'archives',
             collection: years,
-            config: config
+            config
         })
     });
     //按照顺序生成所有页面
@@ -311,22 +311,22 @@ function html2file(base) {
 
         site.push({
             path: post.path,
-            content: pug.renderFile("./theme/layout/" + post.layout + ".pug", {
+            content: pug.renderFile('./theme/layout/' + post.layout + '.pug', {
                 page: post,
-                config: config
+                config
             })
         });
     }
     //如果选项中有“关于”页面，那么就要生成它
-    if (config.second_dir["关于"]) {
+    if (config.second_dir['关于']) {
         const about = new post('./_post/about/about.md');
         about.path = yearsPath + 'about/';
 
         site.push({
             path: about.path,
-            content: pug.renderFile("./theme/layout/" + about.layout + ".pug", {
+            content: pug.renderFile('./theme/layout/' + about.layout + '.pug', {
                 page: about,
-                config: config
+                config
             })
         });
     }
@@ -334,7 +334,7 @@ function html2file(base) {
     //生成所有网页页面
     for (let i = 0; i < site.length; i++) {
         const path = (base + site[i].path).normalize(),
-            file = (path + "/index.html").normalize(),
+            file = (path + '/index.html').normalize(),
             content = site[i].content;
         //创建文件夹
         folder.createfs(path);
@@ -344,11 +344,11 @@ function html2file(base) {
 }
 
 //服务器模式
-if (options[0] === "s" || options[0] === "service") {
+if (options[0] === 's' || options[0] === 'service') {
     const chokidar = require('chokidar'),
-        express = require("express"),
+        express = require('express'),
         app = express(),
-        _base = "Z:/blog/",
+        _base = 'Z:/blog/',
         watchOpt = {
             ignored: /[\/\\]\./,
             persistent: true
@@ -361,42 +361,42 @@ if (options[0] === "s" || options[0] === "service") {
     stylus2css(_base);
     copyFiles(_base);
 
-    chokidar.watch("./theme/css/", watchOpt)
-        .on("change", () => stylus2css(_base));
-    chokidar.watch(["./theme/layout/", "./_post/"], watchOpt)
-        .on("change", () => html2file(_base));
-    chokidar.watch("./theme/js/", watchOpt)
-        .on("change", () => copyFiles(_base));
+    chokidar.watch('./theme/css/', watchOpt)
+        .on('change', () => stylus2css(_base));
+    chokidar.watch(['./theme/layout/', './_post/'], watchOpt)
+        .on('change', () => html2file(_base));
+    chokidar.watch('./theme/js/', watchOpt)
+        .on('change', () => copyFiles(_base));
 
     //允许网页访问theme文件夹
     app.use(express.static(_base));
     //建立虚拟网站，端口3000
     app.listen(3000, function() {
-        console.info(chalk.green(" INFO: ") + "虚拟网站已建立于 http://localhost:3000/");
-        console.info(chalk.green(" INFO: ") + "CTRL + C 退出当前状态");
+        console.info(chalk.green(' INFO: ') + '虚拟网站已建立于 http://localhost:3000/');
+        console.info(chalk.green(' INFO: ') + 'CTRL + C 退出当前状态');
     });
 }
 //生成器模式
-if (options[0] === "g" || options[0] === "generate") {
-    const _base = "./public/";
+if (options[0] === 'g' || options[0] === 'generate') {
+    const _base = './public/';
 
     folder.deletefs(_base);
     copyFiles(_base, {compress: true});
     stylus2css(_base);
     html2file(_base);
 
-    console.log(chalk.green(" INFO: ") + "已经生成全部文件！");
+    console.log(chalk.green(' INFO: ') + '已经生成全部文件！');
 }
 //文件上传
-if (options[0] === "d" || options[0] === "deploy") {
+if (options[0] === 'd' || options[0] === 'deploy') {
     const _base = './.deploy_git/',
         message = options[1] || (new Date()).toDateString();
 
-    folder.deletefs(_base, [".git"]);
+    folder.deletefs(_base, ['.git']);
     copyFiles(_base, {compress: true});
     stylus2css(_base);
     html2file(_base);
 
     //上传文件
-    deploy({ cwd: _base, encoding: "utf8" }, message);
+    deploy({ cwd: _base, encoding: 'utf8' }, message);
 }
