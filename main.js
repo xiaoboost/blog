@@ -376,17 +376,6 @@ if (options[0] === 's' || options[0] === 'service') {
         console.info(chalk.green(' INFO: ') + 'CTRL + C 退出当前状态');
     });
 }
-//生成器模式
-if (options[0] === 'g' || options[0] === 'generate') {
-    const _base = './public/';
-
-    folder.deletefs(_base);
-    copyFiles(_base, {compress: true});
-    stylus2css(_base);
-    html2file(_base);
-
-    console.log(chalk.green(' INFO: ') + '已经生成全部文件！');
-}
 //文件上传
 if (options[0] === 'd' || options[0] === 'deploy') {
     const _base = './.deploy_git/',
