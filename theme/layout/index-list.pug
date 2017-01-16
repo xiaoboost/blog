@@ -1,0 +1,29 @@
+include _partial/tool
+
+ul#main.post-list
+  for post in posts
+    li
+      header
+        a(router-to=post.path) #{post.title}
+        time #{post.date.join("-")}
+      article
+        - var excerpt = post.excerpt.split("\n")
+        for statement in excerpt
+          span #{statement}
+      +postFooter(post)
+  if(total > 1)
+    nav
+      if(prev)
+        a.prev(rel="prev" router-to=prev.path) « Prev
+      span.current #{cur}
+      //-
+        - for(var ii = 0; ii < total; ii++)
+          if(page.current === ii)
+            span.current #{ii + 1}
+          else
+            if(ii === 0)
+              a(router-to="/") #{1}
+            else
+              a(router-to="/page" + ii + "/") #{ii + 1}
+      if(next)
+        a.next(rel="next" router-to=next.path) Next »

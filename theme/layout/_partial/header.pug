@@ -1,16 +1,16 @@
 header
-    div
-        div#logo-img
-            a(href=config.root)
-                img(src=config.logo alt=config.title title=config.title)
-        div#logo-text
-            h1
-                a(href=config.root title=config.title) #{config.title}
-            h2 #{config.subtitle}
-        ul#logo-list
-            each value, txt in config.second_dir
-                li
-                    a(href=value) #{txt}
-            li
-                form.search(action="//google.com/search" method="get" accept-charset="utf-8")
-                    input(type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索")
+  div
+    div#logo-img
+      a(router-to=config.root)
+        img(src=config.logo alt=config.title title=config.title)
+    div#logo-text
+      h1
+        a(router-to=config.root title=config.title) #{config.title}
+      h2 #{config.subtitle}
+    ul#logo-list
+      each value, txt in config.second_dir
+        li
+          a(router-to=value) #{txt}
+      li
+        form.search(action="//google.com/search" method="get" accept-charset="utf-8")
+          input(type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索")
