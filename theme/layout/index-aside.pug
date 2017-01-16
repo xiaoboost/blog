@@ -1,0 +1,22 @@
+aside#index-aside
+  div
+    div.categories-list
+      p 分类
+      ul
+        each cate in categories.keys
+          li
+            a(router-to='/categories/' + cate  + '/') #{category}
+              sup #{categories.page[cate].total}
+    div.tags-list
+      p 标签
+      ul
+        each tag in tags.keys
+          li
+            a(router-to='/tags/' + tag  + '/') #{tag}
+              sup #{tags.page[tag].total}
+    div.links-list
+      p 链接
+      ul
+        for link, txt in links
+          li
+            a(href=link title=txt target='_blank') #{txt}

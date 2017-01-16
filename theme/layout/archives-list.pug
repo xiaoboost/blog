@@ -1,0 +1,6 @@
+ul#main.archives-list
+  for post in posts
+    li
+      a(router-to=post.path)
+        time #{post.date.join("-")}
+        span #{post.title}

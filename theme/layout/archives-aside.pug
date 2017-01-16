@@ -1,0 +1,7 @@
+div(class="archives-title " + name)
+  p
+  ul
+    for key in collection.keys
+      li
+        a(router-to='/' + name + '/' + key) #{key}
+          sup #{collection.page[key].total}
