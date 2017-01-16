@@ -1,3 +1,5 @@
+require('shelljs/global');
+
 const //本地模块
     config = require('./lib/config'),
     post = require('./lib/article'),
@@ -7,7 +9,7 @@ const //本地模块
 
     //公共模块
     fs = require('fs'),
-    pug = require('pug'),
+    path = require('path'),
     chalk = require('chalk'),
     stylus = require('stylus'),
     babel = require('babel-core'),
