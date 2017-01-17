@@ -42,22 +42,31 @@ function compressFolder(to, from) {
     }
 }
 //生成css文件
-function stylus2css(base) {
-    const inputPath = './theme/css/',
-        inputFile = 'style.styl',
-        outputPath = (base + '/css/').normalize(),
-        outputFile = 'style.css';
+function stylus2css(output) {
+    const base = path.join('./theme/', config.theme.css),
+        file = path.join(base, 'main.styl'),
+        out = path.normalize('/css/style.css');
 
-    //生成输出文件夹
-    folder.createfs(outputPath);
     //生成css文件
-    stylus(fs.readFileSync(inputPath + inputFile, 'utf8'))
-        .include(inputPath)
+    stylus(fs.readFileSync(file, 'utf8'))
+        .include(base)
         .set('compress', true)
         .use(autoprefixer())
         .render(function(err, css){
             if (err) throw err;
-            fs.writeFileSync(outputPath + outputFile, css);
+            if (typeof output === 'object') {
+                //输入为对象
+                output[out] = css;
+            } else {
+                //输入为路径
+                //创建文件夹
+                mkdir('-p', path.join(output, '/css/'));
+                //创建css文件
+                fs.writeFileSync(
+                    path.join(output, out),
+                    css
+                );
+            }
         });
 }
 
