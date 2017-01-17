@@ -3,9 +3,8 @@ require('shelljs/global');
 const //本地模块
     config = require('./lib/config'),
     post = require('./lib/article'),
-    folder = require('./lib/folder'),
     deploy = require('./lib/deployer'),
-    site = require('./create-site'),
+    createSite = require('./lib/create-site'),
 
     //公共模块
     fs = require('fs'),
@@ -41,7 +40,7 @@ function compressFolder(to, from) {
         );
     }
 }
-//生成css文件
+//编译css文件
 function stylus2css(output) {
     const base = path.join('./theme/', config.theme.css),
         file = path.join(base, 'main.styl'),
@@ -52,11 +51,15 @@ function stylus2css(output) {
         .include(base)
         .set('compress', true)
         .use(autoprefixer())
-        .render(function(err, css){
+        .render((err, css) => {
             if (err) throw err;
             if (typeof output === 'object') {
                 //输入为对象
-                output[out] = css;
+                output.push({
+                    path: out,
+                    body: css,
+                    lastModified: (new Date).toUTCString()
+                });
             } else {
                 //输入为路径
                 //创建文件夹
@@ -69,34 +72,78 @@ function stylus2css(output) {
             }
         });
 }
+//读取文件夹内文件
+function read(arr, name) {
+    //读取输入路径列表
+    const files = fs.readdirSync(name);
+    for (let i = 0; i < files.length; i++) {
+        const now = path.join(name, files[i]);
+        //检查当前路径是否是文件夹
+        if (fs.lstatSync(now).isDirectory()) {
+            read(arr, now);
+        } else {
+            arr.push({
+                path: now,
+                body: fs.readFileSync(now),
+                lastModified: (new Date).toUTCString()
+            });
+        }
+    }
+}
+//读取字体等文件
+function fontImage(output) {
+    const ans = [],
+        font = path.join('./theme/', config.theme.font),
+        image = path.join('./theme/', config.theme.img),
+        postsImage = path.join(config.posts, 'img'),
+        pathReg = /[/\\](font|img)[\d\D]+$/;
+
+    //读取文件
+    read(ans, font);
+    read(ans, image);
+    read(ans, postsImage);
+
+    //修正路径
+    ans.forEach((item) => item.path = item.path.match(pathReg)[0]);
+
+    if (typeof output === 'string') {
+        ans.forEach((item) => {
+            const name = path.join(output, item.path);
+            mkdir('-p', path.dirname(name));
+            fs.writeFileSync(name, item.body);
+        });
+    } else {
+        ans.forEach((n) => output.push(n));
+    }
+}
 
 //服务器模式
 if (options[0] === 's' || options[0] === 'service') {
     const chokidar = require('chokidar'),
         express = require('express'),
+        ramMiddleware = require('./lib/ram-middleware'),
         app = express(),
-        _base = 'Z:/blog/',
+        site = createSite(),
         watchOpt = {
             ignored: /[\/\\]\./,
             persistent: true
         };
 
-    //清空缓存
-    folder.deletefs(_base);
-    //生成文件
-    html2file(_base);
-    stylus2css(_base);
-    copyFiles(_base);
+    stylus2css(site);
+    fontImage(site);
 
+    debugger;
+
+/*
     chokidar.watch('./theme/css/', watchOpt)
         .on('change', () => stylus2css(_base));
     chokidar.watch(['./theme/layout/', './_post/'], watchOpt)
         .on('change', () => html2file(_base));
     chokidar.watch('./theme/js/', watchOpt)
         .on('change', () => copyFiles(_base));
-
-    //允许网页访问theme文件夹
-    app.use(express.static(_base));
+*/
+    //挂载资源
+    app.use(ramMiddleware(site));
     //建立虚拟网站，端口3000
     app.listen(3000, function() {
         console.info(chalk.green(' INFO: ') + '虚拟网站已建立于 http://localhost:3000/');
