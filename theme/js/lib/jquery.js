@@ -476,7 +476,7 @@ $.html = function(text) {
 };
 //get方法
 $.get = function(url) {
-    return (res, rej) => {
+    return new Promise((res, rej) => {
         const oAjax = (window.XMLHttpRequest)
             ? new XMLHttpRequest()
             : new ActiveXObject('Microsoft.XMLHTTP');
@@ -492,7 +492,7 @@ $.get = function(url) {
                 }
             }
         };
-    };
+    });
 };
 
 
