@@ -474,9 +474,25 @@ $.html = function(text) {
     temp[0].innerHTML = text;
     return (temp.childrens());
 };
-//ajax方法
-$.ajax = function() {
+//get方法
+$.get = function(url) {
+    return (res, rej) => {
+        const oAjax = (window.XMLHttpRequest)
+            ? new XMLHttpRequest()
+            : new ActiveXObject('Microsoft.XMLHTTP');
 
+        oAjax.open('GET', url, true);
+        oAjax.send();
+        oAjax.onreadystatechange = function() {
+            if (oAjax.readyState === 4) {
+                if (oAjax.status === 200) {
+                    res(oAjax.responseText);
+                } else {
+                    rej();
+                }
+            }
+        };
+    };
 };
 
 
