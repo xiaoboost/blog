@@ -9,8 +9,16 @@ const w = window,
     num = 'number',
     doc = w.document,
     rnotwhite = /\S+/g,
-    slice = Array.prototype.slice;
+    slice = Array.prototype.slice,
+    ran = 'event' + (1 + Math.random()).toFixed(10).toString().replace( /\D/g, '' );
 
+//空函数
+function returnTrue() {
+    return (true);
+}
+function returnFalse() {
+    return (false);
+}
 //是否是类似数组的元素
 function isArrayLike(obj) {
     const length = !!obj && 'length' in obj && obj.length,
@@ -33,6 +41,24 @@ function isEmptyObject(obj) {
         return false;
     }
     return true;
+}
+//是否是网页元素
+function isElement(elem) {
+    return elem.setAttribute && elem.classList && elem.hasAttribute;
+}
+//事件部分的输入聚合
+function types(type, fn) {
+    let ans = {};
+
+    if (typeof type === 'object') {
+        //多个事件
+        ans = type;
+    } else {
+        //单个事件
+        ans[type] = fn;
+    }
+
+    return (ans);
 }
 //$类定义
 function $(selector, context, namespace) {
@@ -388,81 +414,54 @@ $.fn = $.prototype = {
         );
     },
     //事件委托
-    on(type, selector, data, fn) {
-        let types = {};
+    on(type, fn) {
+        const handler = types(type, fn);
 
-        if (typeof type === 'object') {
-            //一次绑定多个事件
-            types = type;
-        } else {
-            //一次只绑定了一个事件
-            if (data == null && fn == null) {
-                //( types, fn )
-                //给当前元素本身绑定事件
-                types[type] = selector;
-                data = selector = u;
-            } else if (fn == null) {
-                if (typeof selector === str) {
-                    //( types, selector, fn )
-                    types[type] = data;
-                    data = u;
-                } else {
-                    //( types, data, fn )
-                    types[type] = data;
-                    data = selector;
-                    selector = u;
-                }
-            }
-        }
-        return this.each((n) => {
-            for (const i in types) {
-                if (types.hasOwnProperty(i)) {
-                    delegate.add(n, i, types[i], data, selector);
+        this.each((elem) => {
+            for (const type in handler) {
+                if (handler.hasOwnProperty(type)) {
+                    elem.addEventListener(type, fn);
                 }
             }
         });
+
+        return (this);
     },
     //事件解除委托
-    off(type, selector, fn) {
-        let types = {};
+    off(type, fn) {
+        const handler = types(type, fn);
 
-        if (typeof type === obj) {
-            //( types-object [, selector] )
-            types = type;
-        } else if (typeof selector === fun) {
-            //( types [, fn] )
-            types[type] = selector;
-            selector = undefined;
-        } else if (typeof selector === str && fn === u) {
-            //( types [, selector] )
-            types[type] = u;
-        } else if (typeof selector === str && typeof fn === fun) {
-            //( types [, selector ] [, handler ]
-            types[type] = fn;
-        } else if (typeof type === str && selector === u && fn === u) {
-            //( types )
-            types[type] = u;
-        } else if (type === u) {
-            //()
-            //输入空数据，类型赋值为空字符串
-            return this.each((n) => delegate.remove(n, '', u, selector));
-        }
-        return this.each((n) => {
-            for (const i in types) {
-                if (types.hasOwnProperty(i)) {
-                    delegate.remove(n, i, types[i], selector);
+        this.each((elem) => {
+            for (const type in handler) {
+                if (handler.hasOwnProperty(type)) {
+                    elem.removeEventListener(type, fn);
                 }
             }
         });
+
+        return (this);
     },
-    //触发事件，可以触发由on绑定的事件和原生事件
+    //触发事件
     trigger(event, data) {
-        event = (typeof event === str) ? {type: event} : event;
-        //逐个元素触发事件
-        this.each((n) => {
-            delegate.trigger(n, event, data);
-        });
+
         return this;
+    },
+    //绑定自定义事件
+    bind(type, fn) {
+        this.prop(ran, types(type, fn));
+        return (this);
+    },
+    //解除自定义事件绑定
+    unbind(type, fn) {
+
+    },
+    //触发自定义事件
+    emit(type) {
+        const handlers = this.prop(ran),
+            func = handlers[type] || returnTrue;
+
+        this.each((n) => func.call($(n)));
+        return (this);
     },
 };
 //改变init构造函数的原型链
@@ -474,9 +473,18 @@ $.html = function(text) {
     temp[0].innerHTML = text;
     return (temp.childrens());
 };
+
+//get方法的缓存
+const getData = {};
 //get方法
 $.get = function(url) {
     return new Promise((res, rej) => {
+        //链接数据已经存在
+        if (getData[url]) {
+            res(getData[url]);
+            return (true);
+        }
+
         const oAjax = (window.XMLHttpRequest)
             ? new XMLHttpRequest()
             : new ActiveXObject('Microsoft.XMLHTTP');
@@ -486,7 +494,9 @@ $.get = function(url) {
         oAjax.onreadystatechange = function() {
             if (oAjax.readyState === 4) {
                 if (oAjax.status === 200) {
-                    res(oAjax.responseText);
+                    //转换为DOM并缓存
+                    getData[url] = $.html(oAjax.responseText);
+                    res(getData[url]);
                 } else {
                     rej();
                 }
@@ -499,4 +509,4 @@ $.get = function(url) {
 //初始化的document
 const root$ = $(doc);
 
-export { $ };
+export default $;
