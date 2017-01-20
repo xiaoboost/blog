@@ -1,13 +1,12 @@
-require('shelljs/global');
-
-const //本地模块
+const u = undefined,
+    //本地模块
     config = require('./lib/config'),
     post = require('./lib/article'),
     deploy = require('./lib/deployer'),
     createSite = require('./lib/create-site'),
-
+    fs = require('./lib/file-system'),
     //公共模块
-    fs = require('fs'),
+    fsm =  new (require('memory-fs'))(),
     path = require('path'),
     chalk = require('chalk'),
     stylus = require('stylus'),
@@ -16,7 +15,9 @@ const //本地模块
     autoprefixer = require('autoprefixer-stylus'),
 
     //输入参数
-    options = process.argv.splice(2);
+    options = process.argv.splice(2),
+    //输出文件夹
+    _output = path.join(__dirname, '.deploy_git');
 
 //没有运行参数，直接退出
 if (!options) {
@@ -26,12 +27,14 @@ if (!options) {
 
 //压缩某文件夹的文件
 //webpack是异步的，所以该函数也只能是异步的
-function packJs(output) {
+function packJs(os) {
     const filename = 'script.min.js',
-        fsm =  new (require('memory-fs'))(),
         compiler = webpack({
             entry: path.join(__dirname, '/theme/', config.theme.js, 'main.js'),
-            output: { filename },
+            output: {
+                path: path.join(_output, 'js'),
+                filename
+            },
             module: {
                 rules: [
                     {
@@ -48,7 +51,7 @@ function packJs(output) {
         });
 
     //输出至内存
-    compiler.outputFileSystem = fsm;
+    compiler.outputFileSystem = os;
     //异步编译
     return (new Promise((res) => {
         compiler.run((err, stats) => {
@@ -56,27 +59,13 @@ function packJs(output) {
             if (stats.hasErrors()) {
                 console.log(stats.toString({ colors: true }));
             }
-            //传递编译好的文件
-            res(fsm.readFileSync(fsm.join(__dirname, filename)));
+            //异步过程结束
+            res();
         });
-    })).then((file) => {
-        if (typeof output === 'string') {
-            fs.writeFileSync(
-                path.join(output, filename),
-                uglify.minify(file).code
-            );
-        } else {
-            output.push({
-                path: path.join('/js', filename),
-                body: file,
-                lastModified: (new Date).toUTCString()
-            });
-        }
-        return new Promise((res) => res());
-    });
+    }));
 }
 //编译css文件
-function stylus2css(output) {
+function stylus2css(os) {
     const base = path.join('./theme/', config.theme.css),
         file = path.join(base, 'main.styl'),
         out = path.normalize('/css/style.css');
@@ -88,23 +77,12 @@ function stylus2css(output) {
         .use(autoprefixer())
         .render((err, css) => {
             if (err) throw err;
-            if (typeof output === 'object') {
-                //输入为对象
-                output.push({
-                    path: out,
-                    body: css,
-                    lastModified: (new Date).toUTCString()
-                });
-            } else {
-                //输入为路径
-                //创建文件夹
-                mkdir('-p', path.join(output, '/css/'));
-                //创建css文件
-                fs.writeFileSync(
-                    path.join(output, out),
-                    css
-                );
-            }
+            //写入文件
+            fs.writeFileSync(
+                path.join(_output, out),
+                css,
+                os
+            );
         });
 }
 //读取文件夹内文件
@@ -126,7 +104,7 @@ function read(arr, name) {
     }
 }
 //读取字体等文件
-function fontImage(output) {
+function fontImage(os) {
     const ans = [],
         font = path.join('./theme/', config.theme.font),
         image = path.join('./theme/', config.theme.img),
@@ -138,18 +116,12 @@ function fontImage(output) {
     read(ans, image);
     read(ans, postsImage);
 
-    //修正路径
-    ans.forEach((item) => item.path = item.path.match(pathReg)[0]);
-
-    if (typeof output === 'string') {
-        ans.forEach((item) => {
-            const name = path.join(output, item.path);
-            mkdir('-p', path.dirname(name));
-            fs.writeFileSync(name, item.body);
-        });
-    } else {
-        ans.forEach((n) => output.push(n));
-    }
+    //修正路径，并写入文件系统
+    ans.forEach((item) => fs.writeFileSync(
+        path.join(_output, item.path.match(pathReg)[0]),
+        item.body,
+        os
+    ));
 }
 
 //服务器模式
@@ -158,33 +130,30 @@ if (options[0] === 's' || options[0] === 'service') {
         express = require('express'),
         ramMiddleware = require('./lib/ram-middleware'),
         app = express(),
-        site = createSite(),
         watchOpt = {
             ignored: /[\/\\]\./,
             persistent: true
         };
 
-    stylus2css(site);
-    fontImage(site);
-    packJs(site);
+    createSite(_output, fsm);
+    stylus2css(fsm);
+    fontImage(fsm);
+    packJs(fsm)
+        //建立虚拟网站，端口3000
+        .then(() => app.listen(3000, () => {
+            console.info(chalk.green(' INFO: ') + '虚拟网站已建立于 http://localhost:3000/');
+            console.info(chalk.green(' INFO: ') + 'CTRL + C 退出当前状态');
+        }));
 
-    //debugger;
-
-/*
-    chokidar.watch('./theme/css/', watchOpt)
-        .on('change', () => stylus2css(_base));
-    chokidar.watch(['./theme/layout/', './_post/'], watchOpt)
-        .on('change', () => html2file(_base));
-    chokidar.watch('./theme/js/', watchOpt)
-        .on('change', () => copyFiles(_base));
     //挂载资源
-    app.use(ramMiddleware(site));
-    //建立虚拟网站，端口3000
-    app.listen(3000, function() {
-        console.info(chalk.green(' INFO: ') + '虚拟网站已建立于 http://localhost:3000/');
-        console.info(chalk.green(' INFO: ') + 'CTRL + C 退出当前状态');
-    });
-*/
+    app.use(ramMiddleware(_output, fsm));
+
+    chokidar.watch('./theme/css/', watchOpt)
+        .on('change', () => stylus2css(fsm));
+    chokidar.watch(['./theme/layout/', './_post/'], watchOpt)
+        .on('change', () => createSite(_output, fsm));
+    chokidar.watch('./theme/js/', watchOpt)
+        .on('change', () => packJs(fsm));
 }
 //文件上传
 if (options[0] === 'd' || options[0] === 'deploy') {
