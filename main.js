@@ -11,7 +11,6 @@ const u = undefined,
     chalk = require('chalk'),
     stylus = require('stylus'),
     webpack = require('webpack'),
-    uglify = require('uglify-js'),
     autoprefixer = require('autoprefixer-stylus'),
 
     //输入参数
