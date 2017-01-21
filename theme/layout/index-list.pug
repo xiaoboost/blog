@@ -4,7 +4,7 @@ ul#main.post-list
   for post in posts
     li
       header
-        a(router-to=post.path) #{post.title}
+        a(router-to='?post/' + post.name) #{post.title}
         time #{post.date.join("-")}
       article
         - var excerpt = post.excerpt.split("\n")
