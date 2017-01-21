@@ -175,8 +175,7 @@ if (options[0] === 'd' || options[0] === 'deploy') {
     createSite(_output, fs);
     stylus2css(_output, fs);
     fontImage(_output, fs);
-    packJs(_output, fs);
-
-    //上传文件
-    deploy({ cwd: _output, encoding: 'utf8' }, message);
+    packJs(_output, fs)
+        //上传文件
+        .then(() => deploy({ cwd: _output, encoding: 'utf8' }, message));
 }
