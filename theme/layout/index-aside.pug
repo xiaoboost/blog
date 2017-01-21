@@ -5,14 +5,14 @@ aside#index-aside
       ul
         each cate in categories.keys
           li
-            a(router-to='/categories/' + cate  + '/') #{category}
+            a(router-to='?categories/' + cate  + '/') #{category}
               sup #{categories.page[cate].total}
     div.tags-list
       p 标签
       ul
         each tag in tags.keys
           li
-            a(router-to='/tags/' + tag  + '/') #{tag}
+            a(router-to='?tags/' + tag  + '/') #{tag}
               sup #{tags.page[tag].total}
     div.links-list
       p 链接
