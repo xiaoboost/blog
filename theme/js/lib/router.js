@@ -4,6 +4,8 @@ import $ from './jquery';
 const routers = {};
 //默认页面标题
 const title = 'Dreaming Cat';
+//当前页面
+let page = [];
 
 //路径解析
 function pathParser(url) {
@@ -27,8 +29,8 @@ function pathParser(url) {
 
     if (paras[0] === 'index') {
         return ([
-            '/api/index/aside.html',
-            '/api/index/page' + paras[1] + '.html'
+            '/api/index/page' + paras[1] + '.html',
+            '/api/index/aside.html'
         ]);
     } else if (paras[0] === 'post'){
         return ([
@@ -43,11 +45,29 @@ function pathParser(url) {
 }
 
 //前端路由
-function urlRouter() {
-    const api = pathParser(location.href);
-    
+function urlRouter(handler) {
+    const api = pathParser(location.pathname);
+    return Promise.all(api.map((n) => $.get(n)))
+        .then((arr) => new Promise((res) => {
+            //获得页面元素并与当前页面对比
+            const doms = arr[0].push(arr[1]),
+                remove = $(), append = $();
+
+            doms.each((n, i) => {
+                if (page[i] && page[i] !== n) {
+                    remove.push(page[i]);
+                } else {
+                    append.push(n);
+                }
+            });
+            page = doms;
+            remove.remove();
+            res(append);
+        })).then((append) => new Promise((res) => {
+            $('article#container').append(append);
+        }));
 }
 
-$(window).on('popstate', urlRouter);
+//$(window).on('popstate', urlRouter);
 
 export default urlRouter;
