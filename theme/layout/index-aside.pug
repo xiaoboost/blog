@@ -5,7 +5,7 @@ aside#index-aside
       ul
         each cate in categories.keys
           li
-            a(router-to='?categories/' + cate  + '/') #{category}
+            a(router-to='?categories/' + cate  + '/') #{cate}
               sup #{categories.page[cate].total}
     div.tags-list
       p 标签
