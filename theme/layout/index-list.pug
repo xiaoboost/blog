@@ -13,8 +13,8 @@ ul#main.post-list
       +postFooter(post)
   if(total > 1)
     nav
-      if(prev)
-        a.prev(rel="prev" router-to=prev.path) « Prev
+      if(next)
+        a.next(rel="next" router-to=next.path) « Next
       span.current #{cur}
       //-
         - for(var ii = 0; ii < total; ii++)
@@ -25,5 +25,5 @@ ul#main.post-list
               a(router-to="/") #{1}
             else
               a(router-to="/page" + ii + "/") #{ii + 1}
-      if(next)
-        a.next(rel="next" router-to=next.path) Next »
+      if(prev)
+        a.prev(rel="prev" router-to=prev.path) Prev »
