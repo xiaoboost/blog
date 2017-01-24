@@ -69,9 +69,10 @@ $.fn = $.prototype = {
     length: 0,
     push(elem) {
         $(elem).each((n) => {
-            this[this.length] = elem;
+            this[this.length] = n;
             this.length++;
         });
+        return (this);
     },
     pop() {
         const ans = this[this.length - 1];
