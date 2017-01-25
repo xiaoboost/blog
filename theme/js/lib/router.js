@@ -14,11 +14,6 @@ function pathParser(url) {
         ? '/?index&0'
         : url;
 
-    //归档页面链接重置
-    url = (url[url.length - 1] === '/')
-        ? url + '&0'
-        : url;
-
     //分解参数
     const paras = url.split('?')[1].split('&');
 
