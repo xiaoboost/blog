@@ -4,7 +4,7 @@ ul#main.post-list
   for post in posts
     li
       header
-        a(router-to='?post&' + post.name) #{post.title}
+        a(href='/?post&' + post.name) #{post.title}
         time #{post.date.join("-")}
       article
         - var excerpt = post.excerpt.split("\n")
@@ -14,7 +14,7 @@ ul#main.post-list
   if(total > 1)
     nav
       if(next)
-        a.next(router-to='?index&' + (cur - 1)) « Next
+        a.next(href='/?index&' + (cur - 1)) « Next
       span.current #{cur}
       //-
         - for(var ii = 0; ii < total; ii++)
@@ -26,4 +26,4 @@ ul#main.post-list
             else
               a(router-to="/page" + ii + "/") #{ii + 1}
       if(prev)
-        a.prev(router-to='?index&' + (cur + 1)) Prev »
+        a.prev(href='/?index&' + (cur + 1)) Prev »

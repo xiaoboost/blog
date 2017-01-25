@@ -4,8 +4,16 @@ import router from './router';
 const doc = $(document);
 
 doc.on('click', function(event) {
-    const self = $(event.target);
+    const self = $(event.target),
+        href = self.attr('href');
 
+    //取消跳转动作
+    event.preventDefault();
+
+    const title = 'temp';
+
+    history.pushState({ title }, title, location.origin + href);
+    router();
 });
 
 window.onload = router;

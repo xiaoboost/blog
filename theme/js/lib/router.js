@@ -19,11 +19,6 @@ function pathParser(url) {
         ? url + '&0'
         : url;
 
-    //文章页面链接重置
-    url = (url.indexOf('?post&') !== -1)
-        ? url + '.html'
-        : url;
-
     //分解参数
     const paras = url.split('?')[1].split('&');
 
@@ -46,20 +41,17 @@ function pathParser(url) {
 
 //前端路由
 function urlRouter(handler) {
-    const api = pathParser(location.pathname);
+    const httpReg = /https?\:\/\/[^/]+?(\/[\d\D]*?)?$/,
+        pathname = httpReg.exec(location.href)[1],
+        api = pathParser(pathname);
+
     return Promise.all(api.map((n) => $.get(n)))
         .then((arr) => new Promise((res) => {
             //获得页面元素并与当前页面对比
             const doms = arr[0].push(arr[1]),
                 remove = $(), append = $();
 
-            doms.each((n, i) => {
-                if (page[i] && page[i] !== n) {
-                    remove.push(page[i]);
-                } else {
-                    append.push(n);
-                }
-            });
+            doms.each((n, i) => page[i] !== n && append.push(n) && remove.push(page[i]));
             page = doms;
             remove.remove();
             res(append);
@@ -68,6 +60,6 @@ function urlRouter(handler) {
         }));
 }
 
-//$(window).on('popstate', urlRouter);
+$(window).on('popstate', urlRouter);
 
 export default urlRouter;
