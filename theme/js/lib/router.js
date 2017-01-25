@@ -48,7 +48,12 @@ function urlRouter(handler) {
             const doms = arr[0].push(arr[1]),
                 remove = $(), append = $();
 
-            doms.each((n, i) => page[i] !== n && append.push(n) && remove.push(page[i]));
+            for (let i = 0; i < 2; i++) {
+                if (page[i] !== doms[i]) {
+                    append.push(doms[i]);
+                    remove.push(page[i]);
+                }
+            }
             page = doms;
             remove.remove();
             res(append);
