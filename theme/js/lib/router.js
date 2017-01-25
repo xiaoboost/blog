@@ -27,6 +27,8 @@ function pathParser(url) {
             '/api/post/' + paras[1] + '.html'
         ]);
     } else {
+        paras[1] = paras[1].replace(/%/g, '')
+            .toLowerCase();
         return ([
             '/api/' + paras[0] + '/aside.html',
             '/api/' + paras.join('/') + '.html'
