@@ -487,7 +487,7 @@ $.get = function(url) {
     return new Promise((res, rej) => {
         //链接数据已经存在
         if (getData[url]) {
-            res($(getData[url]));
+            setTimeout(() => res($(getData[url])), 0);
             return (true);
         }
 
