@@ -15,12 +15,12 @@ div#main(class=mainClass)
     nav
       if(post.next)
         div.next
-          a(router-to=post.next.path)
+          a(href='/?post&' + post.next.name)
             p 下一篇：
             p #{post.next.title}
       if(post.prev)
         div.prev
-          a(router-to=post.prev.path)
+          a(href='/?post&' + post.prev.name)
             p 上一篇：
             p #{post.prev.title}
 //-文章目录
