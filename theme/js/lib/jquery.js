@@ -67,8 +67,11 @@ function $(selector, context, namespace) {
 $.fn = $.prototype = {
     constructor: $,
     length: 0,
-    push(elem) {
-        $(elem).each((n) => {
+    push(input) {
+        const elem = (input instanceof $.fn.init)
+            ? input : $(input);
+
+        elem.each((n) => {
             this[this.length] = n;
             this.length++;
         });
@@ -96,7 +99,7 @@ $.fn = $.prototype = {
     init(selector, context, namespace) {
         //如果输入的已经是jq元素，那么直接返回这个jq元素
         if (selector instanceof $.fn.init) {
-            return (selector);
+            return ($().push(selector));
         }
 
         //创建html元素部分
@@ -484,7 +487,7 @@ $.get = function(url) {
     return new Promise((res, rej) => {
         //链接数据已经存在
         if (getData[url]) {
-            res(getData[url]);
+            res($(getData[url]));
             return (true);
         }
 
@@ -499,7 +502,7 @@ $.get = function(url) {
                 if (oAjax.status === 200) {
                     //转换为DOM并缓存
                     getData[url] = $.html(oAjax.responseText);
-                    res(getData[url]);
+                    res($(getData[url]));
                 } else {
                     rej();
                 }
