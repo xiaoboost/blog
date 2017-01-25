@@ -3,5 +3,5 @@ div(class="archives-title " + name)
   ul
     for key in collection.keys
       li
-        a(href='/?' + name + '&' + key + '&page0') #{key}
+        a(href='/?' + name + '&' + key + '&0') #{key}
           sup #{collection.page[key].total}

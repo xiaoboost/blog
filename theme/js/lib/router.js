@@ -31,7 +31,7 @@ function pathParser(url) {
             .toLowerCase();
         return ([
             '/api/' + paras[0] + '/aside.html',
-            '/api/' + paras.join('/') + '.html'
+            '/api/' + paras[0] + '/' + paras[1] + '/page' + paras[2] + '.html'
         ]);
     }
 }
