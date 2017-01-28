@@ -23,7 +23,7 @@ ul#main.post-list
   padding 0
   list-style none
   float left
-  transition margin-left 300ms linear
+  //transition margin-left 300ms linear
   > li
     background color-post
     margin-bottom 0.5em
@@ -82,6 +82,20 @@ ul#main.post-list
       float right
     .next
       float left
+
+//页面切换时的动画
+ul#main.post-list
+  &.disapear,
+  &.vision
+    position absolute
+    transition opacity 400ms linear, transform 400ms linear
+  &.disapear
+    transform translateX(-10px)
+    opacity 0
+  &.vision
+    transform translateX(0px)
+    opacity 1
+
 
 //文章的分类和标签栏，这一部分是主页和文章内部共用的
 footer.post-footer

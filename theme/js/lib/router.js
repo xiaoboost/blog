@@ -54,11 +54,42 @@ function urlRouter(handler) {
                     remove.push(page[i]);
                 }
             }
+            //备份当前页面
             page = doms;
-            remove.remove();
-            res(append);
+            //移除元素时以vision开始
+            remove.addClass('vision');
+            //给浏览器预留渲染时间
+            setTimeout(() => {
+                res([remove, append]);
+            }, 5);
+        })).then(([remove, append]) => new Promise((res) => {
+            remove.removeClass('vision');
+            //“移除动作”的动画
+            remove.addClass('disapear');
+            //600ms后彻底移除元素
+            setTimeout(() => {
+                remove.remove();
+            }, 400);
+            //300ms后开始“加载动作”动画
+            setTimeout(() => {
+                res(append);
+            }, 200);
         })).then((append) => new Promise((res) => {
+            //“加载动作”的动画以disapear为起点
+            append.addClass('disapear');
+            //元素添加至当前网页
             $('article#container').append(append);
+            //给浏览器预留渲染时间
+            setTimeout(() => {
+                res(append);
+            }, 5);
+        })).then((append) => new Promise((res) => {
+            append.removeClass('disapear');
+            //“添加动作”的动画
+            append.addClass('vision');
+            setTimeout(() => {
+                append.removeClass('vision');
+            }, 400);
         }));
 }
 
