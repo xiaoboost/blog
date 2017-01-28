@@ -9,18 +9,28 @@ const w = window,
     num = 'number',
     doc = w.document,
     rnotwhite = /\S+/g,
-    slice = Array.prototype.slice,
+    rkeyEvent = /^key/,
+    rselect = /[^.# ]+/g,
+    rmouseEvent = /^(?:mouse|pointer|contextmenu|drag|drop)|click/,
     ran = 'event' + (1 + Math.random()).toFixed(10).toString().replace( /\D/g, '' );
 
-//空函数
+//有效以及无效函数
 function returnTrue() {
-    return (true);
+    return true;
 }
 function returnFalse() {
-    return (false);
+    return false;
+}
+//检测element的种类是否能接受
+function acceptData(owner) {
+    // 能接受的节点类型:
+    //  - Node
+    //    - Node.ELEMENT_NODE
+    //    - Node.DOCUMENT_NODE
+    return owner.nodeType === 1 || owner.nodeType === 9;
 }
 //是否是类似数组的元素
-function isArrayLike(obj) {
+function isArrayLike( obj ) {
     const length = !!obj && 'length' in obj && obj.length,
         type = typeof obj;
 
@@ -35,6 +45,26 @@ function isArrayLike(obj) {
 function isFunction(obj) {
     return (typeof obj === 'function');
 }
+//元素迭代
+function each(obj, callback) {
+    let length;
+
+    if (isArrayLike(obj)) {
+        length = obj.length;
+        for (let i = 0; i < length; i++) {
+            if (callback.call(obj[i], i, obj[i]) === false) {
+                break;
+            }
+        }
+    } else {
+        for (const i in obj) if (obj.hasOwnProperty(i)) {
+            if (callback.call(obj[i], i, obj[i]) === false) {
+                break;
+            }
+        }
+    }
+    return obj;
+}
 //是否是空对象
 function isEmptyObject(obj) {
     for (const name in obj) if (obj.hasOwnProperty(name)) {
@@ -46,20 +76,499 @@ function isEmptyObject(obj) {
 function isElement(elem) {
     return elem.setAttribute && elem.classList && elem.hasAttribute;
 }
-//事件部分的输入聚合
-function types(type, fn) {
-    let ans = {};
 
-    if (typeof type === 'object') {
-        //多个事件
-        ans = type;
+
+//事件委托部分的Event类
+function $Event(src, props) {
+    if (src && src.type) {
+        // 输入是对象
+        this.originalEvent = src;
+        this.type = src.type;
+
+        // Events bubbling up the document may have been marked as prevented
+        // by a handler lower down the tree; reflect the correct value.
+        this.isDefaultPrevented = src.defaultPrevented ||
+        src.defaultPrevented === u &&
+
+        // Support: Android <=2.3 only
+        src.returnValue === false ?
+            returnTrue :
+            returnFalse;
+
+        // Create target properties
+        // Support: Safari <= 6 - 7 only
+        // Target should not be a text node (#504, #13143)
+        this.target = ( src.target && src.target.nodeType === 3 ) ?
+            src.target.parentNode :
+            src.target;
+
+        this.currentTarget = src.currentTarget;
+        this.relatedTarget = src.relatedTarget;
     } else {
-        //单个事件
-        ans[type] = fn;
+        // 输入是类型字符串
+        this.type = src;
     }
 
-    return (ans);
+    //特别属性赋值
+    if (props) {
+        this.extend(props);
+    }
+    // 创建timeStamp
+    this.timeStamp = src && src.timeStamp || Date.now();
 }
+$Event.prototype = {
+    constructor: $Event,
+    isDefaultPrevented: returnFalse,
+    isPropagationStopped: returnFalse,
+    isImmediatePropagationStopped: returnFalse,
+    isSimulated: false,
+
+    preventDefault() {
+        const e = this.originalEvent;
+        this.isDefaultPrevented = returnTrue;
+        if ( e && !this.isSimulated ) {
+            e.preventDefault();
+        }
+    },
+    stopPropagation() {
+        const e = this.originalEvent;
+        this.isPropagationStopped = returnTrue;
+        if ( e && !this.isSimulated ) {
+            e.stopPropagation();
+        }
+    },
+    stopImmediatePropagation() {
+        const e = this.originalEvent;
+        this.isImmediatePropagationStopped = returnTrue;
+        if ( e && !this.isSimulated ) {
+            e.stopImmediatePropagation();
+        }
+        this.stopPropagation();
+    }
+};
+//Event类扩展自mouseEvent类
+each(
+    {
+        altKey: true,
+        bubbles: true,
+        cancelable: true,
+        changedTouches: true,
+        ctrlKey: true,
+        detail: true,
+        eventPhase: true,
+        metaKey: true,
+        pageX: true,
+        pageY: true,
+        shiftKey: true,
+        view: true,
+        char: true,
+        charCode: true,
+        key: true,
+        keyCode: true,
+        button: true,
+        buttons: true,
+        clientX: true,
+        clientY: true,
+        offsetX: true,
+        offsetY: true,
+        pointerId: true,
+        pointerType: true,
+        screenX: true,
+        screenY: true,
+        targetTouches: true,
+        toElement: true,
+        touches: true,
+        deltaY: true,
+
+        which(event) {
+            const button = event.button;
+
+            // Add which for key events
+            if (event.which == null && rkeyEvent.test(event.type)) {
+                return event.charCode != null ? event.charCode : event.keyCode;
+            }
+
+            // Add which for click: 1 === left; 2 === middle; 3 === right
+            if (!event.which && button !== undefined && rmouseEvent.test(event.type)) {
+                return ( (button & 1) ? 1 : ( (button & 2) ? 3 : ( (button & 4) ? 2 : 0 ) ) );
+            }
+
+            return event.which;
+        }
+    },
+    function(name, hook) {
+        Object.defineProperty($Event.prototype, name, {
+            enumerable: true,
+            configurable: true,
+
+            get: isFunction(hook) ?
+                function() {
+                    if (this.originalEvent) {
+                        return hook(this.originalEvent);
+                    }
+                } :
+                function() {
+                    if (this.originalEvent) {
+                        return this.originalEvent[name];
+                    }
+                },
+
+            set(value) {
+                Object.defineProperty(this, name, {
+                    enumerable: true,
+                    configurable: true,
+                    writable: true,
+                    value
+                });
+            }
+        });
+    }
+);
+
+//记录委托数据的Data类
+function Data() {
+    this.expando = ran;
+}
+Data.prototype = {
+    //创建数据集合
+    cache(owner) {
+        //取出数据
+        let value = owner[this.expando];
+        //如果没有的话，那么新建
+        if (!value) {
+            value = {};
+            if (acceptData(owner)) {
+                owner[this.expando] = value;
+            }
+        }
+        return value;
+    },
+    get(owner, key) {
+        return key === u ? this.cache(owner) :
+            owner[this.expando] && owner[this.expando][key];
+    },
+    remove(owner, key) {
+        const cache = owner[this.expando];
+
+        //非法数据，直接返回
+        if (cache === u) {
+            return;
+        }
+
+        //按照key删除数据
+        key = (key || '' ).match(rnotwhite) || [''];
+        for (let i = 0; i < key.length; i++) {
+            delete cache[key[i]];
+        }
+
+        //数据已经空了，那么在网页元素中删除数据
+        if (key === u || isEmptyObject(cache)) {
+            if (owner.nodeType) {
+                owner[this.expando] = u;
+            } else {
+                delete owner[this.expando];
+            }
+        }
+    },
+    hasData(owner) {
+        const cache = owner[this.expando];
+        return (cache !== u && !isEmptyObject(cache));
+    }
+};
+
+//事件委托相关的函数
+const delegate = {
+    //储存事件的全局变量
+    global: new Data(),
+    //添加事件
+    add(elem, types, handler, data, selector) {
+        let eventHandle, events, handleObj, handlers, type, bindType;
+        const elemData = delegate.global.get(elem);
+
+        //非法操作，退出
+        if (!elemData) {
+            return;
+        }
+        // 当前Dom首次绑定事件
+        if (!(events = elemData.events)) {
+            events = elemData.events = {};
+        }
+        if (!(eventHandle = elemData.handle)) {
+            eventHandle = elemData.handle = function(e) {
+                //返回分发函数
+                return delegate.dispatch.apply(elem, arguments);
+            };
+        }
+        // 分割事件名称
+        types = (types || '').match(rnotwhite) || [''];
+        for (let i = 0; i < types.length; i++) {
+            type = types[i];
+            //非法名称，跳过
+            if (!type) {
+                continue;
+            }
+            //特殊事件绑定
+            bindType = (delegate.special[type] && delegate.special[type].bindType) || type;
+            //句柄对象
+            handleObj = {
+                type: bindType,
+                origType: type,
+                data,
+                handler,
+                selector,
+                matches: $(selector, $(elem))
+            };
+            //这个事件是初次定义
+            if (!(handlers = events[bindType])) {
+                handlers = events[bindType] = [];
+                //绑定监听事件
+                if (elem.addEventListener) {
+                    elem.addEventListener(bindType, eventHandle);
+                }
+            }
+            /*
+             在适用性上主要还是selector的问题
+             现在的策略是当selector和已有的相同的时候，后面的将会覆盖前面的
+             但是实际上还有一种情况，那就是selector的字符串不同，但是选出来的元素是一样的情况
+             原版的jq是有自己的选择器模块，防止了这类情况的发生，但是现在这个模块并没有，所以只能在使用的时候避免这个问题
+             */
+            //selector有重复的，那么就覆盖，没有重复的那就添加到末尾
+            if (!(events[bindType].some((n, i, arr) => (selector === n.selector) && (arr[i] = handleObj)))) {
+                handlers.push(handleObj);
+            }
+        }
+    },
+    //触发事件时分发回调函数
+    dispatch(nativeEvent) {
+        //创建新的event对象
+        const  event = delegate.fix(nativeEvent),
+            args = new Array(arguments.length),
+            handlers = (delegate.global.get(this, 'events') || {})[nativeEvent.type] || [];
+
+        //回调函数的参数赋值
+        args[0] = event;
+        for (let i = 1; i < arguments.length; i++) {
+            args[i] = arguments[i];
+        }
+        //委托元素赋值
+        event.delegateTarget = this;
+        //计算句柄队列
+        const handlerQueue = delegate.handlers.call(this, event, handlers);
+        //由队列的顺序运行回调函数
+        for (let i = 0; i < handlerQueue.length; i++) if (!event.isPropagationStopped()) {
+            let ret;
+            const handleObj = handlerQueue[i],
+                fn = handleObj.handlers.handler;
+            event.currentTarget = handleObj.elem;
+            event.handleObj = handleObj;
+            event.data = handleObj.handlers.data;
+            event.type = handleObj.handlers.origType;
+
+            if (delegate.special[event.type] && delegate.special[event.type].noBubble) {
+                //特殊事件
+                //如果真正触发事件的元素是当前元素的子元素，那么禁止运行回调
+                const related = event.relatedTarget;
+                if (!related || (related !== handleObj.elem && !handleObj.elem.contains(related))) {
+                    event.type = handleObj.origType;
+                    ret = fn.apply(handleObj.elem, args);
+                }
+            } else {
+                //普通事件，直接运行回调
+                ret = fn.apply(handleObj.elem, args);
+            }
+
+            event.type = handleObj.type;
+            //若回调完成返回false，则阻止事件继续冒泡
+            if (ret !== undefined) {
+                if (( event.result = ret ) === false) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+            }
+        }
+        return event.result;
+    },
+    //沿着触发对象向上直到委托对象，将所有触发的事件包装成队列
+    handlers(event, handlers) {
+        let i, cur = event.target;
+        const handlerQueue = [],
+            delegateCount = handlers.length;
+
+        //存在句柄，节点类型正确，且当前触发事件的元素并不是委托事件的元素
+        if (delegateCount && event.target.nodeType && cur !== this) {
+            //沿着触发节点向上
+            for (; cur !== this; cur = cur.parentNode || this) {
+                //节点为 Node.ELEMENT_NODE
+                if (cur.nodeType === 1) {
+                    for (i = 0; i < delegateCount; i++) {
+                        const handleObj = handlers[i],
+                            sel = handleObj.selector;
+                        let matches = handleObj.matches;
+
+                        //选择器存在，那么进行匹配
+                        //在冒泡的过程中，一个element只可能触发一次，所以找到合适的元素之后可以直接跳出循环
+                        if (sel && sel.length) {
+                            if (!matches.hasElem(cur)) {
+                                matches = $(sel, $(this));
+                                if (matches.hasElem(cur)) {
+                                    handlerQueue.push({elem: cur, handlers: handleObj});
+                                    break;
+                                }
+                            } else {
+                                handlerQueue.push({elem: cur, handlers: handleObj});
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        //最后cur等于了this本身
+        for (i = 0; i < delegateCount; i++) {
+            const handleObj = handlers[i];
+            //从集合中寻找没有选择器的委托事件，因为那个代表了本体的事件
+            if (!handleObj.selector) {
+                handlerQueue.push({elem: cur, handlers: handleObj});
+                break;
+            }
+        }
+
+        return handlerQueue;
+    },
+    //统一格式
+    fix(originalEvent) {
+        if (originalEvent instanceof $Event) {
+            return (originalEvent);
+        } else if (originalEvent instanceof Event) {
+            return (new $Event(originalEvent));
+        } else {
+            return (new $Event(originalEvent.type, originalEvent));
+        }
+    },
+    //去除事件委托
+    remove(elem, types, handler, selector) {
+        const elemData = delegate.global.hasData(elem) && delegate.global.get(elem),
+            events = elemData.events;
+
+        //没有找到委托事件数据，直接退出
+        if (!elemData || !events) {
+            return;
+        }
+
+        //拆分事件类型
+        types = ( types || '' ).match(rnotwhite) || [''];
+        //空类型，表示输入是空数据，当前元素的所有事件都要删除
+        //把所有事件类型都加入待删除列表
+        if (!types[0]) {
+            types.length = 0;
+            for (const i in events) if (events.hasOwnProperty(i)) {
+                types.push(i);
+            }
+        }
+        //按照列表删除事件
+        for (let i = 0; i < types.length; i++) {
+            const type = types[i],
+                handlers = events[type] || [],
+                deletehandler = [];
+
+            //选择器为“任意”，或者选择器和回调函数均没有输入，那么表示去除当前事件的全部委托
+            if (selector === '**' || (selector === u && handler === u)) {
+                deletehandler.push(type);
+            } else {
+                for (let j = 0; j < handlers.length; j++) {
+                    const handlerObj = handlers[j];
+                    if ((selector !== u && handler === u && selector === handlerObj.selector) ||
+                        (selector === u && handler !== u && handler === handlerObj.handler) ||
+                        (selector === handlerObj.selector && handler === handlerObj.handler)) {
+                        handlers.splice(j, 1);
+                        break;
+                    }
+                }
+                //委托数组为空
+                if (!handlers.length) {
+                    deletehandler.push(type);
+                }
+            }
+            //某种事件的委托为空，那么解除委托元素的触发事件，并删除数据
+            for (let j = 0; j < deletehandler.length; j++) {
+                elem.removeEventListener(type, elemData.handle);
+                delete events[type];
+            }
+        }
+        // 如果委托事件已经空了，那么删除整个记录
+        if (isEmptyObject(events)) {
+            delegate.global.remove(elem, 'handle events');
+        }
+    },
+    //触发事件
+    trigger(elem, event, data) {
+        // 文本和注释节点不触发事件
+        if ( elem.nodeType === 3 || elem.nodeType === 8 ) {
+            return;
+        }
+
+        const type = event.type,
+            ontype = type.indexOf( ':' ) < 0 && 'on' + type,
+            eventPath = [ elem || document ],
+            special = delegate.special[type] || {},
+            delegateType = special && special.delegateType || type;
+
+        // 修正event格式
+        event = delegate.fix(event);
+        event.result = u;
+        event.type = delegateType;
+        event.target = event.target || elem;
+
+        // 事件允许冒泡
+        if (!special.noBubble) {
+            let temp;
+            for (let i = elem.parentNode; i; i = i.parentNode ) {
+                eventPath.push( i );
+                temp = i;
+            }
+            if ( temp === ( elem.ownerDocument || document ) ) {
+                eventPath.push( temp.defaultView || temp.parentWindow || window );
+            }
+        }
+
+        //依次触发事件
+        for (let i = 0; i < eventPath.length && !event.isPropagationStopped(); i++) {
+            const cur = eventPath[i],
+                handle = ( delegate.global.get( cur, 'events' ) || {} )[delegateType] &&
+                    delegate.global.get( cur, 'handle' ),
+                onHandle = ontype && cur[ontype];
+
+            // on绑定的事件
+            if ( handle ) {
+                handle.apply( cur, [event], data );
+            }
+
+            // 原生事件
+            if ( onHandle && onHandle.apply && acceptData( cur ) ) {
+                event.result = onHandle.apply( cur, [event], data );
+                if ( event.result === false ) {
+                    event.preventDefault();
+                }
+            }
+        }
+        return event.result;
+    },
+    //特殊事件
+    special: {
+        mouseenter: {
+            delegateType: 'mouseover',
+            bindType: 'mouseover',
+            noBubble: true
+        },
+        mouseleave: {
+            delegateType: 'mouseout',
+            bindType: 'mouseout',
+            noBubble: true
+        },
+    }
+};
+
 //$类定义
 function $(selector, context, namespace) {
     return new $.fn.init(selector, context, namespace);
@@ -342,25 +851,6 @@ $.fn = $.prototype = {
             return (false);
         }
     },
-    //求当前元素在current内的相对位置
-    //current必须是this的祖先元素，且它本身必须是定位元素
-    //如果没有输入current，那么返回最近的相对位置
-    offset(current) {
-        if (!current[0].contains(this[0])) {
-            throw 'current必须是this的祖先元素';
-        }
-        let dom = this[0], offsetX = 0, offsetY = 0;
-
-        while (dom !== current[0]) {
-            offsetX += dom.offsetLeft;
-            offsetY += dom.offsetTop;
-            dom = dom.offsetParent;
-            if (dom !== current[0] && dom.contains(current[0])) {
-                throw 'current不是定位元素';
-            }
-        }
-        return ([offsetX, offsetY]);
-    },
     //elem是否是this[0]的子元素
     contains(elem) {
         const e = elem instanceof $
@@ -376,12 +866,12 @@ $.fn = $.prototype = {
                 ans.push(this[0].childNodes[i]);
             }
         } else if (end === u) {
-            const temp = slice.call(this[0].childNodes, start);
+            const temp = [].slice.call(this[0].childNodes, start);
             for (let i = 0; i < temp.length; i++) {
                 ans.push(temp[i]);
             }
         } else {
-            const temp = slice.call(this[0].childNodes, start, end);
+            const temp = [].slice.call(this[0].childNodes, start, end);
             for (let i = 0; i < temp.length; i++) {
                 ans.push(temp[i]);
             }
@@ -389,86 +879,74 @@ $.fn = $.prototype = {
         return (ans);
     },
 
-    //不一定要的
-    //得到第一个元素宽度
-    //所有有效宽度中返回最大的那个
-    width() {
-        let textWidth;
-        if (this[0].getClientRects) {
-            const temp = this[0].getClientRects()[0];
-            textWidth = temp ? temp.width : 0;
-        }
-        return Math.max(
-            textWidth || 0,
-            this[0].clientWidth || 0,
-            this[0].offsetWidth || 0,
-            this[0].innerWidth || 0
-        );
-    },
-    //得到第一个元素高度
-    height() {
-        let textHeight;
-        if (this[0].getClientRects) {
-            const temp = this[0].getClientRects()[0];
-            textHeight = temp ? temp.height : 0;
-        }
-        return Math.max(
-            textHeight || 0,
-            this[0].clientHeight || 0,
-            this[0].offsetHeight || 0,
-            this[0].innerHeight || 0
-        );
-    },
-    //事件委托
-    on(type, fn) {
-        const handler = types(type, fn);
+    // 事件委托
+    on(type, selector, data, fn) {
+        let types = {};
 
-        this.each((elem) => {
-            for (const type in handler) {
-                if (handler.hasOwnProperty(type)) {
-                    elem.addEventListener(type, fn);
+        if (typeof type === 'object') {
+            //一次绑定多个事件
+            types = type;
+        } else {
+            //一次只绑定了一个事件
+            if (data == null && fn == null) {
+                // ( types, fn )
+                //给当前元素本身绑定事件
+                types[type] = selector;
+                data = selector = u;
+            } else if (fn == null) {
+                if (typeof selector === str) {
+                    // ( types, selector, fn )
+                    types[type] = data;
+                    data = u;
+                } else {
+                    // ( types, data, fn )
+                    types[type] = data;
+                    data = selector;
+                    selector = u;
+                }
+            }
+        }
+        return this.each((n) => {
+            for (const i in types) {
+                if (types.hasOwnProperty(i)) {
+                    delegate.add(n, i, types[i], data, selector);
                 }
             }
         });
-
-        return (this);
     },
-    //事件解除委托
-    off(type, fn) {
-        const handler = types(type, fn);
+    // 事件解除委托
+    off(type, selector, fn) {
+        let types = {};
 
-        this.each((elem) => {
-            for (const type in handler) {
-                if (handler.hasOwnProperty(type)) {
-                    elem.removeEventListener(type, fn);
+        if (typeof type === obj) {
+            // ( types-object [, selector] )
+            types = type;
+        } else if (typeof selector === fun) {
+            // ( types [, fn] )
+            types[type] = selector;
+            selector = undefined;
+        } else if (typeof selector === str && fn === u) {
+            // ( types [, selector] )
+            types[type] = u;
+        } else if (typeof selector === str && typeof fn === fun) {
+            // ( types [, selector ] [, handler ]
+            types[type] = fn;
+        } else if (typeof type === str && selector === u && fn === u) {
+            // ( types )
+            types[type] = u;
+        } else if (type === u) {
+            // ()
+            // 输入空数据，类型赋值为空字符串
+            return this.each((n) => delegate.remove(n, '', u, selector));
+        }
+        return this.each((n) => {
+            for (const i in types) {
+                if (types.hasOwnProperty(i)) {
+                    delegate.remove(n, i, types[i], selector);
                 }
             }
         });
-
-        return (this);
-    },
-    //触发事件
-    trigger(event, data) {
-
-        return this;
-    },
-    //绑定自定义事件
-    bind(type, fn) {
-        this.prop(ran, types(type, fn));
-        return (this);
-    },
-    //解除自定义事件绑定
-    unbind(type, fn) {
-
-    },
-    //触发自定义事件
-    emit(type) {
-        const handlers = this.prop(ran),
-            func = handlers[type] || returnTrue;
-
-        this.each((n) => func.call($(n)));
-        return (this);
-    },
+    }
 };
 //改变init构造函数的原型链
 $.prototype.init.prototype = $.prototype;
