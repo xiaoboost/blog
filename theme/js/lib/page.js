@@ -2,7 +2,8 @@ import $ from './jquery';
 import router from './router';
 
 const doc = $(document),
-    toTop = $('#goto-up');
+    toTop = $('#goto-up'),
+    body = $('body');
 
 window.onload = router;
 
@@ -20,7 +21,8 @@ doc.on('click', 'a', function(event) {
     event.preventDefault();
 
     history.pushState({}, 'temp', location.origin + href);
-    router();
+    router()
+        .then(() => doc.trigger('scroll'));
 });
 
 //跳转到顶端的按钮
@@ -30,7 +32,18 @@ doc.on('scroll', function() {
         : toTop.css('opacity', 0);
 });
 doc.on('click', '#goto-up', function() {
-    $('body').scrollTop(0);
+    const start = body.scrollTop(),
+        peer = start / 50;
+    let scrollUp = new Promise((res) => res());
+
+    for (let i = body.scrollTop(); (i + peer) > 0; i -= peer) {
+        scrollUp = scrollUp.then(() => new Promise((res) => {
+            setTimeout(() => {
+                body.scrollTop(i);
+                res();
+            }, 5);
+        }));
+    }
     return (false);
 });
 
