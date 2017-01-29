@@ -73,6 +73,20 @@ function isEmptyObject(obj) {
 function isElement(elem) {
     return elem.setAttribute && elem.classList && elem.hasAttribute;
 }
+//获得doc元素所在的window
+function getWindow(elem) {
+    return     (elem != null && elem === elem.window)
+        ? elem
+        : elem.nodeType === 9 && elem.defaultView;
+}
+//扩展对象
+function extend(to, from) {
+    for (const i in from) {
+        if (from.hasOwnProperty(i)) {
+            to[i] = from[i];
+        }
+    }
+}
 
 
 //事件委托部分的Event类
@@ -108,7 +122,7 @@ function $Event(src, props) {
 
     //特别属性赋值
     if (props) {
-        this.extend(props);
+        extend(this, props);
     }
     // 创建timeStamp
     this.timeStamp = src && src.timeStamp || Date.now();
@@ -323,16 +337,9 @@ const delegate = {
                     elem.addEventListener(bindType, eventHandle);
                 }
             }
-            /*
-             在适用性上主要还是selector的问题
-             现在的策略是当selector和已有的相同的时候，后面的将会覆盖前面的
-             但是实际上还有一种情况，那就是selector的字符串不同，但是选出来的元素是一样的情况
-             原版的jq是有自己的选择器模块，防止了这类情况的发生，但是现在这个模块并没有，所以只能在使用的时候避免这个问题
-             */
-            //selector有重复的，那么就覆盖，没有重复的那就添加到末尾
-            if (!(events[bindType].some((n, i, arr) => (selector === n.selector) && (arr[i] = handleObj)))) {
-                handlers.push(handleObj);
-            }
+
+            //事件添加到队列末尾
+            handlers.push(handleObj);
         }
     },
     //触发事件时分发回调函数
@@ -403,17 +410,15 @@ const delegate = {
                         let matches = handleObj.matches;
 
                         //选择器存在，那么进行匹配
-                        //在冒泡的过程中，一个element只可能触发一次，所以找到合适的元素之后可以直接跳出循环
+                        //如果绑定了多个事件，那么事件将会按照绑定的先后顺序运行
                         if (sel && sel.length) {
                             if (!matches.hasElem(cur)) {
                                 matches = $(sel, $(this));
                                 if (matches.hasElem(cur)) {
                                     handlerQueue.push({elem: cur, handlers: handleObj});
-                                    break;
                                 }
                             } else {
                                 handlerQueue.push({elem: cur, handlers: handleObj});
-                                break;
                             }
                         }
                     }
@@ -427,7 +432,6 @@ const delegate = {
             //从集合中寻找没有选择器的委托事件，因为那个代表了本体的事件
             if (!handleObj.selector) {
                 handlerQueue.push({elem: cur, handlers: handleObj});
-                break;
             }
         }
 
@@ -867,8 +871,49 @@ $.fn = $.prototype = {
         }
         return (ans);
     },
+    //获取或者设置当前元素距离容器顶端的距离
+    scrollTop(val) {
+        const elem = this[0],
+            win = getWindow(elem),
+            method = 'scrollTop',
+            prop = 'pageYOffset';
 
-    // 事件委托
+        //没有输入，则获取当前距离
+        if (val === u) {
+            return win ? win[prop] : elem[method];
+        }
+        //设置当前距离
+        if (win) {
+            win.scrollTo(win.pageXOffset, val);
+        } else {
+            elem[method] = val;
+        }
+    },
+    //获取当前元素距离网页顶端的距离
+    offsetTop() {
+        const elem = this[0];
+        if (!elem) {
+            return (false);
+        }
+
+        const rect = elem.getBoundingClientRect();
+        //确定元素并不是 display: none 属性
+        if ( rect.width || rect.height ) {
+            const doc = elem.ownerDocument,
+                win = getWindow(doc),
+                docElem = doc.documentElement;
+
+            return rect.top + win.pageYOffset - docElem.clientTop;
+            //{
+            //    top: rect.top + win.pageYOffset - docElem.clientTop,
+            //    left: rect.left + win.pageXOffset - docElem.clientLeft
+            //};
+        }
+
+        return rect.top;
+    },
+
+    //事件委托
     on(type, selector, data, fn) {
         let types = {};
 
@@ -905,7 +950,7 @@ $.fn = $.prototype = {
 
         return (this);
     },
-    // 事件解除委托
+    //事件解除委托
     off(type, selector, fn) {
         let types = {};
 
@@ -939,6 +984,15 @@ $.fn = $.prototype = {
         });
 
         return (this);
+    },
+    //触发事件，可以触发由on绑定的事件和原生事件
+    trigger(event, data) {
+        event = (typeof event === str) ? {type: event} : event;
+        //逐个元素触发事件
+        this.each((n) => {
+            delegate.trigger(n, event, data);
+        });
+        return this;
     }
 };
 //改变init构造函数的原型链
