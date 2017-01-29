@@ -1,23 +1,62 @@
 import $ from './jquery';
 import router from './router';
 
-const doc = $(document);
-
-doc.on('click', function(event) {
-    const self = $(event.target),
-        href = self.attr('href');
-
-    //取消跳转动作
-    event.preventDefault();
-
-    const title = 'temp';
-
-    history.pushState({ title }, title, location.origin + href);
-    router();
-});
+const doc = $(document),
+    toTop = $('#goto-up');
 
 window.onload = router;
 
+//跳转链接
+doc.on('click', 'a', function(event) {
+    const elem = $(this),
+        href = elem.attr('href');
+
+    //含有#的为页面内跳转
+    if (href[0] === '#') {
+        return (true);
+    }
+
+    //取消链接的跳转动作
+    event.preventDefault();
+
+    history.pushState({}, 'temp', location.origin + href);
+    router();
+});
+
+//跳转到顶端的按钮
+doc.on('scroll', function() {
+    (doc.scrollTop() > 300)
+        ? toTop.css('opacity', 1)
+        : toTop.css('opacity', 0);
+});
+doc.on('click', '#goto-up', function() {
+    $('body').scrollTop(0);
+    return (false);
+});
+
+//侧边栏跟随
+doc.on('scroll', function(event) {
+    const aside = $('article#container > aside > div');
+    if (!aside) {
+        return (true);
+    }
+
+    //边栏目录的位置
+    const tocTop = $('#main').offsetTop(),
+        doc2Top = doc.scrollTop() + 40;
+
+    if (doc2Top > tocTop) {
+        if (!aside.hasClass('fixed')) {
+            aside.addClass('fixed');
+        }
+    } else {
+        if (aside.hasClass('fixed')) {
+            aside.removeClass('fixed');
+        }
+    }
+
+    return (true);
+});
 /*
 window.onload = function() {
     //归档页面的前端路由
