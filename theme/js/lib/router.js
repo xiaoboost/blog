@@ -89,6 +89,7 @@ function urlRouter(handler) {
             append.addClass('vision');
             setTimeout(() => {
                 append.removeClass('vision');
+                res();
             }, 400);
         }));
 }
