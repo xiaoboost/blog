@@ -1,6 +1,3 @@
-//类似jQuery的库，项目中所有关于DOM的操作都在这里
-//仅仅是API类似而已，其中的实现细节和原版差距很大
-
 const w = window,
     u = undefined,
     obj = 'object',
@@ -606,7 +603,7 @@ $.fn = $.prototype = {
     },
     //真正的构造函数
     init(selector, context, namespace) {
-        //如果输入的已经是jq元素，那么直接返回这个jq元素
+        //如果输入的已经是jq元素，返回新的jq对象，内部元素和输入相同
         if (selector instanceof $.fn.init) {
             return ($().push(selector));
         }
@@ -813,14 +810,6 @@ $.fn = $.prototype = {
             return (this);
         }
     },
-    //元素内边框宽度及长度
-    //非块级元素这个值是0
-    innerWidth() {
-        return (this[0].clientWidth);
-    },
-    innerHeight() {
-        return (this[0].clientHeight);
-    },
     //把当前DOM全部移除出HTML文档流
     remove(index) {
         if (index === u) {
@@ -906,13 +895,15 @@ $.fn = $.prototype = {
                 }
             }
         }
-        return this.each((n) => {
+        this.each((n) => {
             for (const i in types) {
                 if (types.hasOwnProperty(i)) {
                     delegate.add(n, i, types[i], data, selector);
                 }
             }
         });
+
+        return (this);
     },
     // 事件解除委托
     off(type, selector, fn) {
@@ -939,13 +930,15 @@ $.fn = $.prototype = {
             // 输入空数据，类型赋值为空字符串
             return this.each((n) => delegate.remove(n, '', u, selector));
         }
-        return this.each((n) => {
+        this.each((n) => {
             for (const i in types) {
                 if (types.hasOwnProperty(i)) {
                     delegate.remove(n, i, types[i], selector);
                 }
             }
         });
+
+        return (this);
     }
 };
 //改变init构造函数的原型链
@@ -988,7 +981,6 @@ $.get = function(url) {
         };
     });
 };
-
 
 //初始化的document
 const root$ = $(doc);
