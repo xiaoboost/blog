@@ -10,7 +10,7 @@
 
 ## 主题
 项目中使用`pug`模版引擎，css是使用`stylus`预处理器，它们的路径都可以在配置中的`theme`参数下修改。  
-js主要分为三个部分，前端路由、裁剪的Jquery、以及用户自定义部分，它们会被统一打包并转码为ES5。入口文件是main.js，用户自定义部分是custom.js。
+js主要分为三个部分，前端路由、裁剪的Jquery、页面事件，它们会被统一打包并转码为ES5，入口文件是main.js。
 
 ## markdown
 markdown解析器修改自[marked](https://github.com/chjj/marked)开源项目。  
