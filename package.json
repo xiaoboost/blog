@@ -18,7 +18,7 @@
     "eslint": "^3.12.2",
     "express": "^4.14.0",
     "highlight.js": "^9.7.0",
-    "katex": "^0.6.0",
+    "katex": "^0.7.1",
     "pug": "^2.0.0-beta6",
     "stylus": "^0.54.5",
     "uglify-js": "^2.7.3"
