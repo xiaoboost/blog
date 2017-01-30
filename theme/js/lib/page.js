@@ -7,6 +7,44 @@ const doc = $(document),
 
 window.onload = router;
 
+//主页面及文章页面侧边栏数据
+let aside, toc;
+//更新页面部分临时变量
+function updatePageDate() {
+    aside = $('article#container > aside > div');
+
+    const post = $('#main > article.post-content'),
+        heads = $('h1,h2,h3,h4,h5,h6', post);
+
+    //不是文章页面，或者不存在侧边栏
+    if (!aside.length || !post.length) {
+        return (false);
+    }
+
+    toc = {};
+    //生成章节目录树
+    (function createToc(toc, parent) {
+        const ans = [];
+        for (let i = 0; i < toc.childNodes.length; i++) {
+            const node = {},
+                elem = toc.childNodes[i],
+                bolt = elem.childNodes[0].getAttribute('href').substring(1),
+                child = (elem.childNodes.length === 2)
+                    ? createToc(elem.childNodes[1], node)
+                    : undefined;
+
+            node.elem = $(elem);
+            node.bolt = bolt;
+            node.child = child;
+            node.parent = parent;
+
+            toc[bolt] = node;
+            ans.push(node);
+        }
+        return (ans);
+    })($('#post-toc > div > ol')[0]);
+}
+
 //跳转链接
 doc.on('click', 'a', function(event) {
     const elem = $(this),
@@ -21,8 +59,10 @@ doc.on('click', 'a', function(event) {
     event.preventDefault();
 
     history.pushState({}, 'temp', location.origin + href);
-    router()
-        .then(() => doc.trigger('scroll'));
+    router().then(() => {
+        updatePageDate();
+        doc.trigger('scroll');
+    });
 });
 
 //跳转到顶端的按钮
@@ -49,7 +89,6 @@ doc.on('click', '#goto-up', function() {
 
 //侧边栏跟随
 doc.on('scroll', function(event) {
-    const aside = $('article#container > aside > div');
     if (!aside) {
         return (true);
     }
@@ -70,6 +109,9 @@ doc.on('scroll', function(event) {
 
     return (true);
 });
+
+//目录跟随
+
 /*
 window.onload = function() {
     //归档页面的前端路由
