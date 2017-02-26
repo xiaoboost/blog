@@ -1,2 +1,1 @@
-import $ from './lib/jquery';
-import './lib/page';
+import $ from 'jquery';
