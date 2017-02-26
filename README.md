@@ -40,7 +40,7 @@ markdown解析器修改自[marked](https://github.com/chjj/marked)开源项目�
 |上标|sup|被单独的上角标包围起来的文字，形如`^text^`|
 |斜体|em|被单独的星号包围的文字，形如`*text*`|
 |粗体|bold|被两个星号包围的文字，形如`**text**`|
-|行内代码|codespan|被 \` 符号包围的文字，形如 `\`text\``|
+|行内代码|codespan|被 \` 符号包围的文字，形如 \`text\`|
 |删除线|del|被`~~`包围的文字|
 |文本|txt|什么格式都没有的普通文本|
 
