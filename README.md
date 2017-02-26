@@ -1,13 +1,11 @@
 # 博客生成器
 
-自己用的博客生成器。
+自己用的博客生成器，使用vue架构。
 
-## 配置
-所有的可修改的配置都在`/js/config.js`中，里面直接以对象直接量表示出来了。
-
-## 主题
-项目中使用`pug`模版引擎，css是使用`stylus`预处理器，它们的路径都可以在配置中的`theme`参数下修改。  
-js现在只使用了`jquery`，想要引用另外的第三方库或者自己的库，直接在入口文件`main.js`中添加就行了，它们会被统一打包并转码为ES5。
+## 相关说明
+`html`部分使用的是[`pug`](https://github.com/pugjs/pug)模版引擎;  
+`css`是使用[`stylus`](https://github.com/stylus/stylus)预处理器；  
+数学公式部分则是使用[`katex`](https://github.com/Khan/KaTeX)进行解析的。  
 
 ## markdown
 markdown解析器修改自[marked](https://github.com/chjj/marked)开源项目。  
