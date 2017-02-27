@@ -46,6 +46,10 @@ module.exports = {
                 }
             },
             {
+                test: /\.pug$/,
+                loader: 'pug-loader'
+            },
+            {
                 test: /\.vue$/,
                 loader: 'vue-loader',
                 options: vueLoaderConfig

@@ -26,7 +26,7 @@ const versionRequirements = [
 
 module.exports = function() {
     const warnings = [];
-    for (const i = 0; i < versionRequirements.length; i++) {
+    for (let i = 0; i < versionRequirements.length; i++) {
         const mod = versionRequirements[i];
         if (!semver.satisfies(mod.currentVersion, mod.versionRequirement)) {
             warnings.push(mod.name + ': ' +
