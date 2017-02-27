@@ -1,7 +1,8 @@
-<template lang="pug">
-  div#app
-    img(src="./assets/logo.png")
-    router-view
+<template>
+  <div id="app">
+    <img src="./assets/logo.png">
+    <router-view></router-view>
+  </div>
 </template>
 
 <script>
@@ -11,11 +12,14 @@ export default {
 </script>
 
 <style lang="stylus">
+@import './css/variable'
+@import './css/font'
+@import './css/public'
+
 #app
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  font-family font-default
+  font-smoothing()
+  text-align center
+  color #2c3e50
+  margin-top 60px
 </style>
