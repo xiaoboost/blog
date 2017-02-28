@@ -1,8 +1,8 @@
 <template>
   <div id="app">
-    <site-header></site-header>
-    <router-view></router-view>
-    <site-footer></site-footer>
+  <site-header></site-header>
+  <router-view></router-view>
+  <site-footer></site-footer>
   </div>
 </template>
 
@@ -11,11 +11,11 @@ import SiteHeader from './components/SiteHeader.vue';
 import SiteFooter from './components/SiteFooter.vue';
 
 export default {
-    name: 'app',
-    components: {
-        SiteHeader,
-        SiteFooter
-    }
+  name: 'app',
+  components: {
+    SiteHeader,
+    SiteFooter
+  }
 };
 </script>
 
@@ -40,7 +40,7 @@ body
   flex-direction column
   > header,
   > footer
-    flex 0 0 auto
+  flex 0 0 auto
   > article
-    flex 1 0 auto
+  flex 1 0 auto
 </style>
