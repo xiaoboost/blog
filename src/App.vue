@@ -1,8 +1,10 @@
 <template>
   <div id="app">
-  <site-header></site-header>
-  <router-view></router-view>
-  <site-footer></site-footer>
+    <site-header></site-header>
+    <article>
+      <router-view></router-view>
+    </article>
+    <site-footer></site-footer>
   </div>
 </template>
 
@@ -24,7 +26,7 @@ export default {
 @import './css/font'
 @import './css/public'
 
-body
+body, html
   height 100%
 
 #app
@@ -40,7 +42,7 @@ body
   flex-direction column
   > header,
   > footer
-  flex 0 0 auto
+    flex 0 0 auto
   > article
-  flex 1 0 auto
+    flex 1 0 auto
 </style>
