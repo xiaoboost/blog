@@ -44,7 +44,7 @@ const webpackConfig = merge(baseWebpackConfig, {
       compress: {
         warnings: false
       },
-      sourceMap: true
+      sourceMap: false
     }),
     // 从文件中分离css部分
     new ExtractTextPlugin({
@@ -56,7 +56,7 @@ const webpackConfig = merge(baseWebpackConfig, {
     // https://github.com/ampedandwired/html-webpack-plugin
     new HtmlWebpackPlugin({
       filename: config.build.index,
-      template: 'index.html',
+      template: './src/index.html',
       inject: true,
       minify: {
         removeComments: true,
