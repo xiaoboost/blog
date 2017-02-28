@@ -2,11 +2,11 @@
 const path = require('path');
 
 module.exports = {
-  // production 生产环境
+  // 生产环境
   build: {
     // 默认编译环境
     env: require('./prod.env'),
-    // 编译文件入口
+    // 编译文件出口
     index: path.resolve(__dirname, '../dist/index.html'),
     // 静态资源路径
     assetsRoot: path.resolve(__dirname, '../dist'),
@@ -15,7 +15,7 @@ module.exports = {
     // 编译发布的根目录，可配置为资源服务器域名或 CDN 域名
     assetsPublicPath: '/',
     // 是否开启 cssSourceMap
-    productionSourceMap: true,
+    productionSourceMap: false,
     // 是否开启Gzip，默认不开启，因为现在流行的静态主机已经自动部署Gzip了
     // 如果你确定要开启，在设置为 true 之前请你运行下列代码：
     // npm install --save-dev compression-webpack-plugin
@@ -27,7 +27,7 @@ module.exports = {
     // 直接设置为 true 或 false 可以直接打开或者关闭它
     bundleAnalyzerReport: process.env.npm_config_report
   },
-  // production 开发环境
+  // 开发环境
   dev: {
     env: require('./dev.env'),
     // 开发版本监控端口
