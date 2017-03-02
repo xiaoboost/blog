@@ -1,8 +1,11 @@
-const fs = require('./file-system'),
+const fs = require('fs'),
   path = require('path'),
-  pug = require('pug'),
-  config = require('./config'),
-  Post = require('./article');
+  Post = require('./article'),
+  per_post = require('../config/site').per_post,
+  //文章路径
+  mdFiles = path.join(__dirname, '../src/assets/post/'),
+  //网站数据
+  site = {};
 
 //key排序
 function sortPost(obj, sort) {
@@ -52,17 +55,14 @@ function toPath(str) {
 }
 
 function create() {
-  const posts = fs.readdirSync(path.normalize(config.posts))
-      .map((file) => (file.slice(-3) === '.md') && (new Post(path.join(config.posts, file))))
+  const posts = fs.readdirSync(mdFiles)
+      .map((file) => (file.slice(-3) === '.md') && (new Post(path.join(mdFiles, file))))
       .filter((n) => n).sort((x, y) => (+x.date.join('') < +y.date.join('')) ? 1 : -1),
 
-    tags = {},      //标签归档
+    tags = {},        //标签归档
     categories = {},  //类别归档
-    time = {},      //年份归档
-    collect = {tags, categories, time},
-
-    //网站数据
-    site = [];
+    time = {},        //年份归档
+    collect = {tags, categories, time};
 
   tags.title = '标签';
   categories.title = '分类';
@@ -90,32 +90,29 @@ function create() {
     //tag
     for (let j = 0; j < postTags.length; j++) {
       const tag = postTags[j];
-      if (tagsPage[tag]) {
-        tagsPage[tag].push(posts[i]);
-      } else {
+      if (!tagsPage[tag]) {
         tagsKey.push(tag);
-        tagsPage[tag] = [posts[i]];
-        tagsPage[tag].path = path.join('/tags', toPath(tag) + '/');
+        tagsPage[tag] = [];
+        tagsPage[tag].path = path.join('/tags', tag);
       }
+      tagsPage[tag].push(posts[i].simple());
     }
 
     //category
-    if (catePage[postCate]) {
-      catePage[postCate].push(posts[i]);
-    } else {
+    if (!catePage[postCate]) {
       cateKeys.push(postCate);
-      catePage[postCate] = [posts[i]];
-      catePage[postCate].path = path.join('/categories', toPath(postCate) + '/');
+      catePage[postCate] = [];
+      catePage[postCate].path = path.join('/categories', postCate);
     }
+    catePage[postCate].push(posts[i].simple());
 
     //time
-    if (timePage[postDate]) {
-      timePage[postDate].push(posts[i]);
-    } else {
+    if (!timePage[postDate]) {
       timeKeys.push(postDate);
-      timePage[postDate] = [posts[i]];
-      timePage[postDate].path = path.join('/time', postDate + '/');
+      timePage[postDate] = [];
+      timePage[postDate].path = path.join('/time', postDate);
     }
+    timePage[postDate].push(posts[i].simple());
   }
 
   //分别排序
@@ -129,7 +126,7 @@ function create() {
     arr.keys.forEach((n) => {
       arr.page[n] = tabPage(
         arr.page[n],
-        config.per_post.archive,
+        per_post.archive,
         arr.page[n].path
       );
     });
@@ -137,10 +134,13 @@ function create() {
   //首页分页
   const index = tabPage(
     posts,
-    config.per_post.index,
+    per_post.index,
     path.normalize('/index/')
   );
 
+  debugger;
+
+/*
   //生成主页
   site.push({
     path: path.normalize('/index.html'),
@@ -211,15 +211,11 @@ function create() {
     n.lastModified = (new Date).toUTCString();
     n.body = Buffer.from(n.body);
   });
-
+*/
   return (site);
 }
 
-module.exports = function(output, fsm) {
-  const site = create();
-  site.forEach((n) => fs.writeFileSync(
-    path.join(output, n.path),
-    n.body,
-    fsm
-  ));
-};
+// 首次运行
+create();
+
+module.exports = site;

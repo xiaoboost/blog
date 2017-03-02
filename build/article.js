@@ -1,7 +1,9 @@
 const fs = require('fs'),
   path = require('path'),
-  config = require('./config'),
-  marked = require('./render');
+  marked = require('./render'),
+
+  //划分正文摘要
+  excerptReg = /<!--\s*more\s*-->/;
 
 //字符串方法扩展
 Object.assign(String.prototype, {
@@ -53,22 +55,19 @@ Object.assign(Math, {
 //文章类
 class post {
   constructor(paths) {
-    const attr = /\n---\n/,                 //划分文章属性
-      excerptReg = /<!--\s*more\s*-->/,     //划分正文摘要
-      file = fs.readFileSync(paths, 'utf8')
-          .replace(/\r\n|\r/g, '\n').split(attr),
+    const file = fs.readFileSync(paths, 'utf8')
+        .replace(/\r\n|\r/g, '\n')
+        .split(/\n---+\n/),
       name = path.basename(paths, '.md'),
       article = file.splice(1).join('\n---\n'),
       postConfig = file[0].split('\n'),
       excerpt = article.search(excerptReg);
 
     //非法文章
-    if (!article) {
-      return (false);
-    }
+    if (!article) { return (false); }
 
     //当前文章路径文件名
-    this.path = path.join('/post/', name + '.html');
+    this.path = path.join('/post/', name);
     this.name = name;
 
     //读取文章属性
@@ -78,9 +77,7 @@ class post {
         value = con[1] ? con[1].trim() : '';
 
       //忽略非法属性
-      if (!value) {
-        continue;
-      }
+      if (!value) { continue; }
 
       this[key] = value;
 
@@ -101,24 +98,6 @@ class post {
       this.excerpt = '';
       this.content = article.trim();
     }
-    //对正文markdown解析
-    this.content = marked(this.content).replace(/[\n\r]/g, '');
-    //给图片增加标号
-    this.imageLabel();
-    //如果没有设置toc或者toc为true，那么生成目录
-    if (this.toc !== 'false') {
-      this.createToc();
-    }
-  }
-  //文章渲染
-  render() {
-    // 摘要是否加入正文
-    if () {
-        
-    }
-    // 对正文markdown解析
-    this.content = marked(this.content).replace(/[\n\r]/g, '');
-
   }
   //给文章的图片添加标号
   imageLabel() {
@@ -242,6 +221,25 @@ class post {
     }(headTree, '', 'toc');
     //更新文章正文
     this.content = out;
+  }
+  //文章渲染
+  render() {
+    //对正文markdown解析
+    this.content = marked(this.content).replace(/[\n\r]/g, '');
+    //给图片增加标号
+    this.imageLabel();
+    //如果没有设置toc或者toc为true，那么生成目录
+    if (this.toc !== 'false') {
+      this.createToc();
+    }
+  }
+  //简化
+  simple() {
+    return {
+      title: this.title || this.name,
+      path: this.path,
+      date: this.date
+    };
   }
 }
 
