@@ -12,6 +12,10 @@ const // opn插件可以强制打开浏览器并跳转到指定url
   path = require('path'),
   express = require('express'),
   webpack = require('webpack'),
+  // 生成博客网站
+  site = require('./create-site'),
+  // 博客文章内存中间件
+  postMiddleware = require('./ram-middleware'),
   // http代理中间件
   proxyMiddleware = require('http-proxy-middleware'),
   // 读取dev版本配置
@@ -54,6 +58,8 @@ Object.keys(proxyTable).forEach((context) => {
   app.use(proxyMiddleware(options.filter || context, options));
 });
 
+// 博客文章的路由中间件优先级最高
+app.use(postMiddleware(site));
 // 当使用history-api进行跳转的时候，使用下面的中间件来匹配资源，如果不匹配就重定向到指定地址
 app.use(require('connect-history-api-fallback')());
 // 将内存中编译好的文件挂载到express服务器上
