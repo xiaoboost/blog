@@ -1,15 +1,12 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import Hello from '@/components/Hello';
+import IndexBody from '@/components/IndexBody';
 
 Vue.use(Router);
 
 export default new Router({
+  mode: 'history',
   routes: [
-    {
-      path: '/',
-      name: 'Hello',
-      component: Hello
-    }
+    { path: '/', name: 'index', component: IndexBody }
   ]
 });

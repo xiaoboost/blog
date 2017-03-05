@@ -36,7 +36,7 @@ function tabPage(arrs, peer, base) {
 
   for (let i = 0; i < maxPage; i++) {
     ans.push({
-      path: path.join(base, 'page' + i + '.html'),
+      path: path.join(base, 'page' + i),
       posts: arrs.slice(i * num, (i + 1) * num)
     });
 
@@ -133,7 +133,7 @@ function create() {
 
       const aside = path.join(
         arr.page[name][0].path,
-        '../../aside.html'
+        '../../aside'
       );
       site[aside] = site[aside] || [];
       site[aside].push({ key: name, total: arr.page[name].total });

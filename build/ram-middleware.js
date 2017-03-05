@@ -10,11 +10,11 @@ const path = require('path'),
 class readRam extends Readable {
   constructor(buf) {
     super();
-    //保存读取的buffer
+    //保存读取的 buffer
     this._cache = buf;
     //读取的起点
     this._index = 0;
-    //每次读取60kb
+    //每次读取 60kb
     this._peer = 61440;
   }
   _read() {
@@ -30,7 +30,7 @@ class readRam extends Readable {
   }
 }
 //内存中间件
-function ramMiddleware(base, fs) {
+function ramMiddleware(site) {
   return (req, res, next) => {
     //不允许GET或HEAD以外的方法
     if (req.method !== 'GET' && req.method !== 'HEAD') {
@@ -41,16 +41,22 @@ function ramMiddleware(base, fs) {
       return (false);
     }
 
-    const url = parseUrl(req).pathname,
-      oriPath = (url[url.length - 1] === '/')
-        ? path.join(base, url, 'index.html')
-        : path.join(base, url),
-      file = fs.readFileSync(oriPath);
+    const url = parseUrl(req)
+        .pathname
+        .replace(/\//g, '\\'),
+      content = site[url];
+
+    debugger;
 
     //无效api，跳过
-    if (!file) { next(); }
+    if (!content) { next(); return (false); }
 
-    const resStream = new readRam(file);
+    if (/\\post\\/.test(url)) {
+
+    }
+
+    const file = Buffer.from(JSON.stringify(content)),
+      resStream = new readRam(file);
 
     //设置响应的Header
     res.setHeader('Accept-Ranges', 'bytes');
@@ -58,20 +64,14 @@ function ramMiddleware(base, fs) {
     res.setHeader('Last-Modified', (new Date()).toUTCString());
     res.setHeader('ETag', etag(file));
     res.setHeader('Content-Length', file.length);
-
-    if (oriPath.indexOf(/[/\\]api[/\\]/) !== -1) {
-      //api统一以文本形式返回
-      res.setHeader('Content-Type', 'text/plain;charset:utf-8');
-    } else {
-      //非api返回对应类型
-      res.setHeader('Content-Type', mime.lookup(oriPath) + ';charset:utf-8');
-    }
+    res.setHeader('Content-Type', 'application/json;charset:utf-8');
 
     //数据流连接至http响应
     resStream.pipe(res)
       .on('finish', () => destroy(resStream));
 
-    next();
+    //响应终止
+    return (true);
   };
 }
 

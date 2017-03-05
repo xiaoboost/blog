@@ -15,7 +15,7 @@ const // opn插件可以强制打开浏览器并跳转到指定url
   // 生成博客网站
   site = require('./create-site'),
   // 博客文章内存中间件
-  postMiddleware = require('./ram-middleware'),
+  siteMiddleware = require('./ram-middleware'),
   // http代理中间件
   proxyMiddleware = require('http-proxy-middleware'),
   // 读取dev版本配置
@@ -51,24 +51,25 @@ compiler.plugin('compilation', (compilation) => {
 
 // 将proxyTable中的请求配置挂在到启动的express服务上
 Object.keys(proxyTable).forEach((context) => {
-  const options = proxyTable[context];
+  let options = proxyTable[context];
   if (typeof options === 'string') {
     options = { target: options };
   }
   app.use(proxyMiddleware(options.filter || context, options));
 });
 
-// 博客文章的路由中间件优先级最高
-app.use(postMiddleware(site));
+// 静态资源路径前缀
+const staticPath = path.posix.join(config.dev.assetsPublicPath, config.dev.assetsSubDirectory);
+// 博客文章的路由中间件
+app.use(staticPath, siteMiddleware(site));
+// 静态资源也挂载到express服务器上
+app.use(staticPath, express.static('./static'));
 // 当使用history-api进行跳转的时候，使用下面的中间件来匹配资源，如果不匹配就重定向到指定地址
 app.use(require('connect-history-api-fallback')());
 // 将内存中编译好的文件挂载到express服务器上
 app.use(devMiddleware);
 // 将热更新的资源也挂载到express的服务器上
 app.use(hotMiddleware);
-// 将静态资源也挂载到express服务器上
-const staticPath = path.posix.join(config.dev.assetsPublicPath, config.dev.assetsSubDirectory);
-app.use(staticPath, express.static('./static'));
 // 设定虚拟网站地址，并设定完成后的打印出的提示信息
 const uri = 'http://localhost:' + port;
 devMiddleware.waitUntilValid(() => console.log('> Listening at ' + uri + '\n'));

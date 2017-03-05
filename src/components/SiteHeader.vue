@@ -2,10 +2,10 @@
   <header>
     <div>
       <div id="logo-img">
-        <a :href="root"><img :src="logo"></a>
+        <a href="/"><img src="/api/img/logo.png"></a>
       </div>
       <div id="logo-text">
-        <h1><a :href="root">{{title}}</a></h1>
+        <h1><a href="/">{{title}}</a></h1>
         <h2>{{subtitle}}</h2>
       </div>
       <ul>
@@ -18,19 +18,22 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import config from '../../config/site';
 
 export default {
-  name: 'site-header',
-  computed: mapState({
-    root: (state) => state.root,
-    title: (state) => state.site.title,
-    subtitle: (state) => state.site.subtitle,
-    headerLinks: (state) => state.site.headerLinks
-  }),
+  name: 'SiteHeader',
   data() {
     return {
-      logo: '/api/img/logo.png'
+      title: config.title,
+      subtitle: config.subtitle,
+
+      headerLinks: {
+        '主页': '/',
+        '归档': '/archives/',
+        '分类': '/categories/',
+        '标签': '/tags/',
+        '关于': '/archives/about/'
+      }
     };
   }
 };
