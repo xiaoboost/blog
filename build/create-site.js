@@ -55,18 +55,15 @@ function toPath(str) {
 }
 
 function create() {
-  //清空site对象所有内容
-  for (const i in site) {
-    delete site[i];
-  }
   //生成所有文章，并排序
   const posts = fs.readdirSync(mdFiles)
       .map((file) => (file.slice(-3) === '.md') && (new Post(path.join(mdFiles, file))))
       .filter((n) => n).sort((x, y) => (+x.date.join('') < +y.date.join('')) ? 1 : -1),
     //分类聚合对象
-    tags = site.tags = {},              //标签归档
-    categories = site.categories = {},  //类别归档
-    time = site.time = {};              //年份归档
+    collection = {},
+    tags = collection.tags = {},              //标签归档
+    categories = collection.categories = {},  //类别归档
+    time = collection.time = {};              //年份归档
 
   //文章前后链接
   posts.forEach((n, i) => {
@@ -120,23 +117,34 @@ function create() {
   sortPost(categories, 'dict');   //类别按照字典顺序排序
   sortPost(time, 'large');     //时间按照距离现在的长短
 
+  //清空site对象所有内容
+  Object.keys(site).forEach((n) => delete site[n]);
+
   //归档页面分页
-  for (const key in site) {
-    const arr = site[key] || [];
-    arr.keys.forEach((n) => {
-      arr.page[n] = tabPage(
-        arr.page[n],
+  for (const key in collection) {
+    const arr = collection[key] || [];
+    arr.keys.forEach((name) => {
+      arr.page[name] = tabPage(
+        arr.page[name],
         per_post.archive,
-        arr.page[n].path
+        arr.page[name].path
       );
+      arr.page[name].forEach((n) => site[n.path] = n);
+
+      const aside = path.join(
+        arr.page[name][0].path,
+        '../../aside.html'
+      );
+      site[aside] = site[aside] || [];
+      site[aside].push({ key: name, total: arr.page[name].total });
     });
   }
   //首页分页
-  site.index = tabPage(
+  tabPage(
     posts.map((n) => n.simple()),
     per_post.index,
     path.normalize('/index/')
-  );
+  ).forEach((n) => site[n.path] = n);
 
   //所有文章
   site.posts = posts;
