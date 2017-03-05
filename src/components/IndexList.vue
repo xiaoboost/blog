@@ -1,21 +1,151 @@
 <template>
   <ul class="post-list" id="main">
+    <li v-for="post in posts">
+      <header>
+        <a :href="post.path" target="_blank">{{post.title}}</a>
+        <time>{{post.date.join('-')}}</time>
+      </header>
+      <article>
+        <span v-for="text in post.excerpt">{{text}}</span>
+      </article>
+      <footer class="post-footer">
+        <span><a :href="'/categories/' + post.category">{{post.category}}</a></span>
+        <span>
+          <a v-for="tag in post.tag" :href="'/tags/' + tag">{{tag}}</a>
+        </span>
+      </footer>
+    </li>
   </ul>
 </template>
 
 <script>
+import { ajax } from '../util';
+
 export default {
   data() {
     return {
-      post: []
+      posts: [],
+      prev: '',
+      next: ''
     };
   },
-  beforeRouteEnter(to, from, next) {
-    next();
-  },
+  mounted() {
+    const page = this.$route.params.page;
+    ajax('/api/index/page' + page)
+      .then((page) => {
+        this.posts = page.posts;
+        this.prev = page.prev;
+        this.next = page.next;
+        this.posts.forEach((n) => {
+          n.excerpt = n.excerpt.split('\n');
+        });
+      });
+  }
 };
 </script>
 
 <style lang="stylus">
+@import '../css/variable'
+#main
+  font-size 1em
+  @media medium
+    margin-left calc((100% - 950px) / 2) !important
+  @media mini
+    margin-left 0 !important
+    width 100% !important
+  @media phone
+    font-size 0.9em
 
+ul#main.post-list
+  width width-post
+  margin 2em 0 0 0
+  padding 0
+  list-style none
+  float left
+  //transition margin-left 300ms linear
+  > li
+    background color-post
+    margin-bottom 0.5em
+    box-shadow 0.5px 0 3px #888
+    border-left 6px solid #bbb
+    transition border-left 400ms
+    @media mini
+      border none
+    &:hover
+      border-left 6px solid color-theme
+      @media mini
+        border none
+    header
+      padding 0.5em 0
+      a
+        font-smoothing()
+        font-size 180%
+        padding 0.3em 1em
+        word-wrap break-word
+        word-break normal
+        color color-theme
+        transition color 300ms ease-out
+        cursor pointer
+        &:hover
+          color color-orange
+        @media mini
+          padding-left .5em
+      time
+        margin 0.5em 1em
+        float right
+    article
+      padding 1em 4%
+      color color-black
+      font-size 100%
+      border-top 1px solid color-border
+      span
+        display block
+        text-indent 2em
+  > nav
+    background #fafafa
+    text-align center
+    overflow hidden
+    a, span
+      display inline-block
+      padding 0.5em 1em
+    span
+      cursor default
+    a
+      transition color 300ms ease-out, background-color 300ms ease-out
+      &:hover
+        background-color color-gray
+        color color-orange
+    .current,.prev,.next
+      color color-theme
+    .prev
+      float right
+    .next
+      float left
+
+//文章的分类和标签栏，这一部分是主页和文章内部共用的
+footer.post-footer
+  margin 0
+  padding 0 4%
+  line-height 2.5em
+  border-top 1px solid color-border
+  span
+    color #d6d6d6
+    margin-right 2em
+    &:before
+      font-family "FontAwesome"
+      color #999
+      margin-right 0.2em
+      font-smoothing()
+  span:nth-child(1)
+    &:before
+      content "\f07b"
+    a
+      margin 0 0.3em
+  span:nth-child(2)
+    &:before
+      content "\f02c"
+    a
+      padding 0 0.3em
+      margin 0.3em
+      background #e6e6e6
 </style>

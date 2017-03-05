@@ -234,12 +234,19 @@ class post {
     }
   }
   //简化
-  simple() {
-    return {
-      title: this.title || this.name,
-      path: this.path,
-      date: this.date
-    };
+  simple(opt) {
+    const ans = {},
+      index = (opt || {}).index,
+      ess = ['title', 'path', 'date'];
+
+    debugger;
+    if (index) {
+      ess.push('excerpt', 'tag', 'category');
+    }
+
+    ess.forEach((n) => ans[n] = this[n]);
+
+    return (ans);
   }
 }
 

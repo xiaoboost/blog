@@ -1,9 +1,10 @@
 <template>
   <div id="app">
     <site-header></site-header>
-    <transition name="fade" mode="out-in">
-      <router-view class="view"></router-view>
-    </transition>
+    <article id="container">
+      <router-view name="left"></router-view>
+      <router-view name="right"></router-view>
+    </article>
     <site-footer></site-footer>
   </div>
 </template>
@@ -45,4 +46,12 @@ body, html
     flex 0 0 auto
   > article
     flex 1 0 auto
+
+article#container
+  margin auto
+  width width-main
+  overflow hidden
+  @media medium
+    width 100%
+    margin 0
 </style>

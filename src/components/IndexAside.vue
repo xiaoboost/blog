@@ -1,40 +1,36 @@
 <template>
-  <article id="container">
-    <transition name="fade" mode="out-in">
-      <router-view class="view"></router-view>
-    </transition>
-    <aside>
-      <div>
-        <div class="categories-list">
-          <p>分类</p>
-          <ul>
-            <li v-for="cate in categories">
-              <a :href="'/categories/' + cate.key">{{cate.key}}<sup>{{cate.total}}</sup></a>
-            </li>
-          </ul>
-        </div>
-        <div class="tags-list">
-          <p>标签</p>
-          <ul>
-            <li v-for="tag in tags">
-              <a :href="'/tags/' + tag.key">{{tag.key}}<sup>{{tag.total}}</sup></a>
-            </li>
-          </ul>
-        </div>
-        <div class="links-list">
-          <p>链接</p>
-          <ul>
-            <li v-for="(url, text) in links">
-              <a :href="url" target="_blank">{{text}}</a>
-            </li>
-          </ul>
-        </div>
+  <aside>
+    <div>
+      <div class="categories-list">
+        <p>分类</p>
+        <ul>
+          <li v-for="cate in categories">
+            <a :href="'/categories/' + cate.key">{{cate.key}}<sup>{{cate.total}}</sup></a>
+          </li>
+        </ul>
       </div>
-    </aside>
-  </article>
+      <div class="tags-list">
+        <p>标签</p>
+        <ul>
+          <li v-for="tag in tags">
+            <a :href="'/tags/' + tag.key">{{tag.key}}<sup>{{tag.total}}</sup></a>
+          </li>
+        </ul>
+      </div>
+      <div class="links-list">
+        <p>链接</p>
+        <ul>
+          <li v-for="(url, text) in links">
+            <a :href="url" target="_blank">{{text}}</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
 </template>
 
 <script>
+import { ajax } from '../util';
 import config from '../../config/site';
 
 export default {
@@ -46,22 +42,22 @@ export default {
     };
   },
   mounted() {
-    this.$ajax(
+    ajax([
       '/api/tags/aside',
       '/api/categories/aside'
-    ).then(([tags, cates]) => {
-      this.tags = tags;
+    ]).then(([tags, cates]) => {
+      this.tags.tags;
       this.categories = cates;
     });
   }
 };
 </script>
 
-<style lang="stylus">
+<style lang="stylus" scoped>
 @import '../css/variable'
 
 //主界面的侧边栏
-#container > aside
+aside
   font-size 100%
   margin 2em 5px 0 0
   box-shadow 0 0 3px #888

@@ -141,7 +141,7 @@ function create() {
   }
   //首页分页
   tabPage(
-    posts.map((n) => n.simple()),
+    posts.map((n) => n.simple({ index: true })),
     per_post.index,
     path.normalize('/index/')
   ).forEach((n) => site[n.path] = n);

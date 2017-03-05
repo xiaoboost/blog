@@ -46,8 +46,6 @@ function ramMiddleware(site) {
         .replace(/\//g, '\\'),
       content = site[url];
 
-    debugger;
-
     //无效api，跳过
     if (!content) { next(); return (false); }
 
