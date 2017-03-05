@@ -55,18 +55,18 @@ function toPath(str) {
 }
 
 function create() {
+  //清空site对象所有内容
+  for (const i in site) {
+    delete site[i];
+  }
+  //生成所有文章，并排序
   const posts = fs.readdirSync(mdFiles)
       .map((file) => (file.slice(-3) === '.md') && (new Post(path.join(mdFiles, file))))
       .filter((n) => n).sort((x, y) => (+x.date.join('') < +y.date.join('')) ? 1 : -1),
-
-    tags = {},        //标签归档
-    categories = {},  //类别归档
-    time = {},        //年份归档
-    collect = {tags, categories, time};
-
-  tags.title = '标签';
-  categories.title = '分类';
-  time.title = '时间';
+    //分类聚合对象
+    tags = site.tags = {},              //标签归档
+    categories = site.categories = {},  //类别归档
+    time = site.time = {};              //年份归档
 
   //文章前后链接
   posts.forEach((n, i) => {
@@ -121,8 +121,8 @@ function create() {
   sortPost(time, 'large');     //时间按照距离现在的长短
 
   //归档页面分页
-  for (const key in collect) {
-    const arr = collect[key];
+  for (const key in site) {
+    const arr = site[key] || [];
     arr.keys.forEach((n) => {
       arr.page[n] = tabPage(
         arr.page[n],
@@ -132,87 +132,14 @@ function create() {
     });
   }
   //首页分页
-  const index = tabPage(
-    posts,
+  site.index = tabPage(
+    posts.map((n) => n.simple()),
     per_post.index,
     path.normalize('/index/')
   );
 
-  debugger;
-
-/*
-  //生成主页
-  site.push({
-    path: path.normalize('/index.html'),
-    body: pug.renderFile('./theme/layout/index.pug', {
-      config,
-      archives: {
-        '主页': '/',
-        '时间': '/?time&' + time.keys[0] + '&0',
-        '分类': '/?categories&' + toPath(categories.keys[0]) + '&0',
-        '标签': '/?tags&' + toPath(tags.keys[0]) + '&0',
-        '关于': '/?about'
-      }
-    })
-  });
-  //生成主页侧边栏
-  site.push({
-    path: path.join(prefix, '/index/aside.html'),
-    body: pug.renderFile('./theme/layout/index-aside.pug', {
-      categories,
-      tags,
-      links: config.friend_link
-    })
-  });
-  //生成主页文章列表
-  index.forEach((n, i) => {
-    site.push({
-      path: path.join(prefix, n.path),
-      body: pug.renderFile('./theme/layout/index-list.pug', {
-        posts: n.posts,
-        next: n.next,
-        prev: n.prev,
-        total: index.length,
-        cur: i
-      })
-    });
-  });
-  //生成所有文章页面
-  posts.forEach((post) => {
-    site.push({
-      path: path.join(prefix, post.path),
-      body: pug.renderFile('./theme/layout/post.pug', {
-        post
-      })
-    });
-  });
-  //生成所有归档页面
-  Object.keys(collect).forEach((name) => {
-    const collection = collect[name];
-    //侧边栏
-    site.push({
-      path: path.join(prefix, name, '/aside.html'),
-      body: pug.renderFile('./theme/layout/archives-aside.pug', {
-        name,
-        collection
-      })
-    });
-    //文章列表
-    collection.keys.forEach((key) => {
-      const pages = collection.page[key];
-      pages.forEach((page) => site.push({
-        path: path.join(prefix, page.path),
-        body: pug.renderFile('./theme/layout/archives-list.pug', page)
-      }));
-    });
-  });
-
-  site.forEach((n) => {
-    n.lastModified = (new Date).toUTCString();
-    n.body = Buffer.from(n.body);
-  });
-*/
-  return (site);
+  //所有文章
+  site.posts = posts;
 }
 
 // 首次运行
