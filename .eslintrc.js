@@ -7,7 +7,8 @@ module.exports = {
   },
   env: {
     browser: true,
-    node: true
+    node: true,
+    es6: true
   },
   // 为了连接到 *.vue 文件
   plugins: [
