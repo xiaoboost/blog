@@ -239,7 +239,6 @@ class post {
       index = (opt || {}).index,
       ess = ['title', 'path', 'date'];
 
-    debugger;
     if (index) {
       ess.push('excerpt', 'tag', 'category');
     }

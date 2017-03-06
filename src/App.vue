@@ -29,6 +29,7 @@ export default {
 
 body, html
   height 100%
+  background #ddd
 
 #app
   font-smoothing()

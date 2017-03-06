@@ -5,12 +5,12 @@
         <a href="/"><img src="/api/img/logo.png"></a>
       </div>
       <div id="logo-text">
-        <h1><a href="/">{{title}}</a></h1>
+        <h1><router-link to="/">{{title}}</router-link></h1>
         <h2>{{subtitle}}</h2>
       </div>
       <ul>
         <li v-for="(href, text) in headerLinks">
-          <a :href="href">{{text}}</a>
+          <router-link :to="href">{{text}}</router-link>
         </li>
       </ul>
     </div>
@@ -29,12 +29,15 @@ export default {
 
       headerLinks: {
         '主页': '/',
-        '归档': '/archives/',
+        '时间': '/time/',
         '分类': '/categories/',
         '标签': '/tags/',
-        '关于': '/archives/about/'
+        // '关于': '/archives/about/'
       }
     };
+  },
+  mounted() {
+    document.title = this.title;
   }
 };
 </script>

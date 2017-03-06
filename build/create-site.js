@@ -90,7 +90,7 @@ function create() {
       if (!tagsPage[tag]) {
         tagsKey.push(tag);
         tagsPage[tag] = [];
-        tagsPage[tag].path = path.join('/tags', tag);
+        tagsPage[tag].path = path.join('/tags', toPath(tag));
       }
       tagsPage[tag].push(posts[i].simple());
     }
@@ -99,7 +99,7 @@ function create() {
     if (!catePage[postCate]) {
       cateKeys.push(postCate);
       catePage[postCate] = [];
-      catePage[postCate].path = path.join('/categories', postCate);
+      catePage[postCate].path = path.join('/categories', toPath(postCate));
     }
     catePage[postCate].push(posts[i].simple());
 
@@ -107,7 +107,7 @@ function create() {
     if (!timePage[postDate]) {
       timeKeys.push(postDate);
       timePage[postDate] = [];
-      timePage[postDate].path = path.join('/time', postDate);
+      timePage[postDate].path = path.join('/time', toPath(postDate));
     }
     timePage[postDate].push(posts[i].simple());
   }
@@ -129,8 +129,8 @@ function create() {
         per_post.archive,
         arr.page[name].path
       );
-      arr.page[name].forEach((n) => site[n.path] = n);
-
+      arr.page[name].forEach((n) => site[n.path] = n.posts);
+      debugger;
       const aside = path.join(
         arr.page[name][0].path,
         '../../aside'
