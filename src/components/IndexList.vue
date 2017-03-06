@@ -30,14 +30,16 @@ export default {
     };
   },
   mounted() {
-    const page = this.$route.params.page;
+    const page = this.$route.params.page || '0';
     ajax('/api/index/page' + page)
       .then((page) => {
         this.posts = page.posts;
         this.prev = page.prev;
         this.next = page.next;
         this.posts.forEach((n) => {
-          n.excerpt = n.excerpt.split('\n');
+          if (n.excerpt.split) {
+            n.excerpt = n.excerpt.split('\n');
+          }
         });
       });
   }

@@ -52,7 +52,6 @@ function ramMiddleware(site) {
     if (/\\post\\/.test(url)) {
 
     }
-
     const file = Buffer.from(JSON.stringify(content)),
       resStream = new readRam(file);
 

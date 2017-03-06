@@ -5,7 +5,9 @@
         <p>分类</p>
         <ul>
           <li v-for="cate in categories">
-            <a :href="'/categories/' + cate.key">{{cate.key}}<sup>{{cate.total}}</sup></a>
+            <router-link :to="'/categories/' + cate.key">
+              {{cate.key}}<sup>{{cate.total}}</sup>
+            </router-link>
           </li>
         </ul>
       </div>
@@ -13,7 +15,9 @@
         <p>标签</p>
         <ul>
           <li v-for="tag in tags">
-            <a :href="'/tags/' + tag.key">{{tag.key}}<sup>{{tag.total}}</sup></a>
+            <router-link :to="'/tags/' + tag.key">
+              {{tag.key}}<sup>{{tag.total}}</sup>
+            </router-link>
           </li>
         </ul>
       </div>
@@ -46,7 +50,7 @@ export default {
       '/api/tags/aside',
       '/api/categories/aside'
     ]).then(([tags, cates]) => {
-      this.tags.tags;
+      this.tags = tags;
       this.categories = cates;
     });
   }
