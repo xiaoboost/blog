@@ -1,36 +1,39 @@
 <template>
-  <aside>
-    <div>
-      <div class="categories-list">
-        <p>分类</p>
-        <ul>
-          <li v-for="cate in categories">
-            <router-link :to="'/categories/' + cate.key">
-              {{cate.key}}<sup>{{cate.total}}</sup>
-            </router-link>
-          </li>
-        </ul>
+  <article id="container">
+    <!--<router-view></router-view>-->
+    <aside>
+      <div>
+        <div class="categories-list">
+          <p>分类</p>
+          <ul>
+            <li v-for="cate in categories">
+              <router-link :to="'/categories/' + cate.key">
+                {{cate.key}}<sup>{{cate.total}}</sup>
+              </router-link>
+            </li>
+          </ul>
+        </div>
+        <div class="tags-list">
+          <p>标签</p>
+          <ul>
+            <li v-for="tag in tags">
+              <router-link :to="'/tags/' + tag.key">
+                {{tag.key}}<sup>{{tag.total}}</sup>
+              </router-link>
+            </li>
+          </ul>
+        </div>
+        <div class="links-list">
+          <p>链接</p>
+          <ul>
+            <li v-for="(url, text) in links">
+              <a :href="url" target="_blank">{{text}}</a>
+            </li>
+          </ul>
+        </div>
       </div>
-      <div class="tags-list">
-        <p>标签</p>
-        <ul>
-          <li v-for="tag in tags">
-            <router-link :to="'/tags/' + tag.key">
-              {{tag.key}}<sup>{{tag.total}}</sup>
-            </router-link>
-          </li>
-        </ul>
-      </div>
-      <div class="links-list">
-        <p>链接</p>
-        <ul>
-          <li v-for="(url, text) in links">
-            <a :href="url" target="_blank">{{text}}</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </aside>
+    </aside>
+  </article>
 </template>
 
 <script>
@@ -40,19 +43,19 @@ import config from '../../config/site';
 export default {
   data() {
     return {
-      categories: [],
       tags: [],
+      categories: [],
       links: config.friend_link,
     };
   },
-  mounted() {
+  beforeRouteEnter(to, from, next) {
     ajax([
       '/api/tags/aside',
       '/api/categories/aside'
-    ]).then(([tags, cates]) => {
-      this.tags = tags;
-      this.categories = cates;
-    });
+    ]).then(([tags, cates]) => next((vm) => {
+      vm.tags = tags;
+      vm.categories = cates;
+    }));
   }
 };
 </script>
@@ -61,7 +64,7 @@ export default {
 @import '../css/variable'
 
 //主界面的侧边栏
-aside
+#container aside
   font-size 100%
   margin 2em 5px 0 0
   box-shadow 0 0 3px #888

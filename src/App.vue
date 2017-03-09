@@ -1,10 +1,7 @@
 <template>
   <div id="app">
     <site-header></site-header>
-    <article id="container">
-      <router-view name="left"></router-view>
-      <router-view name="right"></router-view>
-    </article>
+    <router-view></router-view>
     <site-footer></site-footer>
   </div>
 </template>
