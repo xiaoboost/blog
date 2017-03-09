@@ -1,31 +1,28 @@
+extends _partial/layout
 include _partial/tool
 
-- var mainClass = (post.toc !== 'false') ? 'post' : 'post post-center'
-div#main(class=mainClass)
-  //-文章头
-  header
-    p #{post.title}
-    p 发表于：#{post.date.join('-')}
-  //-文章本体
-  article.post-content!= post.content
-  //-文章分类和标签
-  +postFooter(post)
-  //-文章前后链接
-  if(post.prev || post.next)
-    nav
-      if(post.next)
-        div.next
-          a(href='/?post&' + post.next.name)
-            p 下一篇：
-            p #{post.next.title}
-      if(post.prev)
-        div.prev
-          a(href='/?post&' + post.prev.name)
-            p 上一篇：
-            p #{post.prev.title}
-//-文章目录
-if(post.toc !== 'false')
-  aside#post-toc
-    div
-      p.toc-title 文章目录
-      !=post.toc
+block container
+    - var mainClass = (page.toc !== "false") ? "post" : "post post-center"
+    div#main(class=mainClass)
+        header
+            p #{page.title}
+            p 发表于：#{page.date.join("-")}
+        article.post-content!= page.content
+        +postFooter(page)
+        if(page.prev || page.next)
+            nav
+                if(page.prev)
+                    div.prev
+                        a(href=page.prev.path title=page.prev.title)
+                            p 上一篇：
+                            p #{page.prev.title}
+                if(page.next)
+                    div.next
+                        a(href=page.next.path title=page.next.title)
+                            p 下一篇：
+                            p #{page.next.title}
+    if(page.toc !== "false")
+        aside#post-toc
+            div
+                p.toc-title 文章目录
+                !=page.toc

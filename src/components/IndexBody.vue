@@ -1,6 +1,6 @@
 <template>
   <article id="container">
-    <!--<router-view></router-view>-->
+    <router-view></router-view>
     <aside>
       <div>
         <div class="categories-list">

@@ -1,6 +1,0 @@
-ul#main.archives-list
-  for post in posts
-    li
-      a(href='/?post&' + post.name)
-        time #{post.date.join("-")}
-        span #{post.title}
