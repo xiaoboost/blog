@@ -11,16 +11,18 @@ Vue.use(Router);
 export default new Router({
   mode: 'history',
   routes: [
-    {   path: '/index/', name: 'index', components: IndexBody,
+    { path: '/index', alias: '/', name: 'index', component: IndexBody,
       children: [
-        { path: ':page(\\d+)', name: 'indexList', components: IndexList },
+        { path: ':page(\\d+)', name: 'indexList', component: IndexList },
         { path: '0', alias: '' }
       ]
     },
-    //{   path: '/index/:page(\\d+)', name: 'index', components: IndexBody },
-    //{ path: '/:archive/', name: 'archive', components: archive },
-    //{ path: '/:archive/:key', components: archive },
-    //{ path: '/:archive/:key/:page', components: archive },
-    //{ path: '/index/0', alias: '/' }
+    { path: '/:archive', name: 'archive', component: ArchiveBody,
+      children: [
+        { path: ':key/:page(\\d+)', name: 'archiveList', component: ArchiveList },
+        { path: ':key/0', alias: ':key' },
+        { path: '$first', alias: '' }
+      ]
+    }
   ]
 });

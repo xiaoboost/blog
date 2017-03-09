@@ -28,7 +28,7 @@ export default {
       subtitle: config.subtitle,
 
       headerLinks: {
-        '主页': '/',
+        // '主页': '/',
         '时间': '/time/',
         '分类': '/categories/',
         '标签': '/tags/',
