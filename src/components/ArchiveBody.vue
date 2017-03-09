@@ -1,11 +1,11 @@
 <template>
   <article id="container">
     <router-view></router-view>
-    <aside>
+    <aside :class="archive">
       <p>{{$t(archive)}}</P>
       <ul>
         <li v-for="item in collection">
-          <router-link :to="'/' + archive + '/' + item.key">
+          <router-link :to="`/${archive}/${item.key}`">
             {{item.key}}<sup>{{item.total}}</sup>
           </router-link>
         </li>
@@ -45,7 +45,7 @@ export default {
 <style lang="stylus">
 @import '../css/variable'
 
-#container > div.archives-title
+#container > aside
   margin 2em 0 0 50px
   width 250px
   float left
@@ -68,7 +68,7 @@ export default {
     a.current
       color color-orange
 
-#container > div.archives-title.tags > ul
+#container > aside.tags > ul
   padding-left 1.5em
   li
     display inline-block
@@ -82,7 +82,7 @@ export default {
     background lighten(color-gray, 50%)
 
 // 文章列表的分辨率匹配也在这里
-#container div.archives-title,
+#container aside,
 #container ul.archives-list
   @media medium
     display block
@@ -93,7 +93,7 @@ export default {
     width 100% !important
 
 @media medium
-  #container div.archives-title
+  #container aside
     width 760px
     > ul > li
       display inline-block
@@ -102,7 +102,7 @@ export default {
     width 800px
 
 @media mini
-  #container div.archives-title
+  #container aside
     border none
   #container ul.archives-list > li > a
     border none

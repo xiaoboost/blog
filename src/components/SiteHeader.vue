@@ -2,7 +2,7 @@
   <header>
     <div>
       <div id="logo-img">
-        <a href="/"><img src="/api/img/logo.png"></a>
+        <router-link to="/"><img src="/api/img/logo.png"></router-link>
       </div>
       <div id="logo-text">
         <h1><router-link to="/">{{title}}</router-link></h1>

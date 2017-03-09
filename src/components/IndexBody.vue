@@ -7,7 +7,7 @@
           <p>分类</p>
           <ul>
             <li v-for="cate in categories">
-              <router-link :to="'/categories/' + cate.key">
+              <router-link :to="`/categories/${cate.key}`">
                 {{cate.key}}<sup>{{cate.total}}</sup>
               </router-link>
             </li>
@@ -17,7 +17,7 @@
           <p>标签</p>
           <ul>
             <li v-for="tag in tags">
-              <router-link :to="'/tags/' + tag.key">
+              <router-link :to="`/tags/${tag.key}`">
                 {{tag.key}}<sup>{{tag.total}}</sup>
               </router-link>
             </li>
