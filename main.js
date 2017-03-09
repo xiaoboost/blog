@@ -1,4 +1,4 @@
-const u = undefined,
+﻿const u = undefined,
     //本地模块
     config = require('./lib/config'),
     post = require('./lib/article'),
