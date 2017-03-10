@@ -7,6 +7,10 @@ const fs = require('fs'),
   //网站数据
   site = {};
 
+//路径规范转换
+String.prototype.toPosix = function() {
+  return this.replace(/\\/g, '/');
+};
 //key排序
 function sortPost(obj, sort) {
   if (!sort || sort === 'dict') {
@@ -48,7 +52,7 @@ function tabPage(arrs, peer, base) {
 
   return (ans);
 }
-
+//中英文路径转换
 function toPath(str) {
   return encodeURIComponent(str)
     .replace(/%/g, '').toLowerCase();
@@ -114,8 +118,8 @@ function create() {
 
   //分别排序
   sortPost(tags, 'number');     //标签按照文章数量多少排序
-  sortPost(categories, 'dict');   //类别按照字典顺序排序
-  sortPost(time, 'large');     //时间按照距离现在的长短
+  sortPost(categories, 'dict'); //类别按照字典顺序排序
+  sortPost(time, 'large');      //时间按照距离现在的长短
 
   //清空site对象所有内容
   Object.keys(site).forEach((n) => delete site[n]);
@@ -144,6 +148,17 @@ function create() {
     per_post.index,
     path.normalize('/index/')
   ).forEach((n) => site[n.path] = n);
+
+  for (const i in site) {
+    const content = site[i],
+      keys = ['path', 'prev', 'next'];
+
+    for (let j = 0; j < keys.length; j++) {
+      if (typeof content[keys[j]] === 'string') {
+        content[keys[j]] = content[keys[j]].toPosix();
+      }
+    }
+  }
 
   //所有文章
   site.posts = posts;
