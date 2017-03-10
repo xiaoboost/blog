@@ -15,11 +15,15 @@
         </span>
       </footer>
     </li>
+    <list-nav v-if="prev || next"
+              :prev="prev" :next="next">
+    </list-nav>
   </ul>
 </template>
 
 <script>
 import { ajax } from '../util';
+import listNav from './ListNav';
 
 export default {
   data() {
@@ -36,12 +40,10 @@ export default {
         this.posts = page.posts;
         this.prev = page.prev;
         this.next = page.next;
-        this.posts.forEach((n) => {
-          if (n.excerpt.split) {
-            n.excerpt = n.excerpt.split('\n');
-          }
-        });
       });
+  },
+  components: {
+    'list-nav': listNav
   }
 };
 </script>
@@ -103,26 +105,6 @@ ul#main.post-list
       span
         display block
         text-indent 2em
-  > nav
-    background #fafafa
-    text-align center
-    overflow hidden
-    a, span
-      display inline-block
-      padding 0.5em 1em
-    span
-      cursor default
-    a
-      transition color 300ms ease-out, background-color 300ms ease-out
-      &:hover
-        background-color color-gray
-        color color-orange
-    .current,.prev,.next
-      color color-theme
-    .prev
-      float right
-    .next
-      float left
 
 //文章的分类和标签栏，这一部分是主页和文章内部共用的
 footer.post-footer

@@ -129,8 +129,7 @@ function create() {
         per_post.archive,
         arr.page[name].path
       );
-      arr.page[name].forEach((n) => site[n.path] = n.posts);
-      debugger;
+      arr.page[name].forEach((n) => site[n.path] = n);
       const aside = path.join(
         arr.page[name][0].path,
         '../../aside'
