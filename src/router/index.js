@@ -13,14 +13,14 @@ export default new Router({
   routes: [
     { path: '/index', alias: '/', name: 'index', component: IndexBody,
       children: [
-        { path: ':page(\\d+)', name: 'indexList', component: IndexList },
-        { path: '0', alias: '' }
+        { path: ':page(page\\d+)', name: 'indexList', component: IndexList },
+        { path: 'page0', alias: '' }
       ]
     },
     { path: '/:archive', name: 'archive', component: ArchiveBody,
       children: [
-        { path: ':key/:page(\\d+)', name: 'archiveList', component: ArchiveList },
-        { path: ':key/0', alias: ':key' },
+        { path: ':key/:page(page\\d+)', name: 'archiveList', component: ArchiveList },
+        { path: ':key/page0', alias: ':key' },
         { path: '$first', alias: '' }
       ]
     }

@@ -1,7 +1,7 @@
 <template>
   <ul id="main" class="archives-list">
     <li v-for="post in posts">
-      <router-link :to="`/api/${post.path}`">
+      <router-link :to="`/api${post.path}`">
         <time>{{post.date.join("-")}}</time>
         <span>{{post.title}}</span>
       </router-link>
@@ -25,7 +25,7 @@ function getPage(params) {
           .then((list) => Promise.resolve(list[0].key));
 
   return ans
-    .then(($key) => ajax(`/api/${archive}/${$key}/page${page}`));
+    .then(($key) => ajax(`/api/${archive}/${$key}/${page}`));
 }
 
 export default {
