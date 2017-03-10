@@ -2,16 +2,20 @@
   <ul class="post-list" id="main">
     <li v-for="post in posts">
       <header>
-        <a :href="post.path" target="_blank">{{post.title}}</a>
+        <router-link :to="post.path">{{post.title}}</router-link>
         <time>{{post.date.join('-')}}</time>
       </header>
       <article>
         <span v-for="text in post.excerpt">{{text}}</span>
       </article>
       <footer class="post-footer">
-        <span><a :href="'/categories/' + post.category">{{post.category}}</a></span>
         <span>
-          <a v-for="tag in post.tag" :href="'/tags/' + tag">{{tag}}</a>
+          <router-link :to="`/categories/${post.category}`">{{post.category}}</router-link>
+        </span>
+        <span>
+          <router-link v-for="tag in post.tag" :key="tag" :to="`/tags/${tag}`">
+            {{tag}}
+          </router-link>
         </span>
       </footer>
     </li>
@@ -35,7 +39,7 @@ export default {
   },
   beforeRouteEnter(to, from, next) {
     const page = to.params.page || 'page0';
-    ajax('/api/index/' + page)
+    ajax(`/api/index/${page}`)
       .then((page) => next((vm) => {
         vm.posts = page.posts;
         vm.prev = page.prev;
@@ -45,7 +49,7 @@ export default {
   watch: {
     $route() {
       const page = this.$route.params.page || 'page0';
-      ajax('/api/index/' + page)
+      ajax(`/api/index/${page}`)
         .then((page) => {
           this.posts = page.posts;
           this.prev = page.prev;

@@ -1,7 +1,7 @@
 <template>
   <article id="container">
     <router-view></router-view>
-    <aside class="index-aside">
+    <aside>
       <div>
         <div class="categories-list">
           <p>分类</p>
@@ -64,7 +64,7 @@ export default {
 @import '../css/variable'
 
 //主界面的侧边栏
-#container aside.index-aside
+#container aside
   font-size 100%
   margin 2em 5px 0 0
   box-shadow 0 0 3px #888
