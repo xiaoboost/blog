@@ -33,14 +33,25 @@ export default {
       next: ''
     };
   },
-  mounted() {
-    const page = this.$route.params.page || '0';
-    ajax('/api/index/page' + page)
-      .then((page) => {
-        this.posts = page.posts;
-        this.prev = page.prev;
-        this.next = page.next;
-      });
+  beforeRouteEnter(to, from, next) {
+    const page = to.params.page || 'page0';
+    ajax('/api/index/' + page)
+      .then((page) => next((vm) => {
+        vm.posts = page.posts;
+        vm.prev = page.prev;
+        vm.next = page.next;
+      }));
+  },
+  watch: {
+    $route() {
+      const page = this.$route.params.page || 'page0';
+      ajax('/api/index/' + page)
+        .then((page) => {
+          this.posts = page.posts;
+          this.prev = page.prev;
+          this.next = page.next;
+        });
+    }
   },
   components: {
     'list-nav': listNav
