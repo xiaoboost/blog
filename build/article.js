@@ -67,7 +67,7 @@ class post {
     if (!article) { return (false); }
 
     //当前文章路径文件名
-    this.path = path.join('/post/', name);
+    this.path = path.join('/post/', name).toPosix();
     this.name = name;
 
     //读取文章属性
