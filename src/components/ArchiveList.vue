@@ -1,44 +1,61 @@
 <template>
   <ul id="main" class="archives-list">
     <li v-for="post in posts">
-      <router-link :to="`/post/${post.path}`">
+      <router-link :to="`/api/${post.path}`">
         <time>{{post.date.join("-")}}</time>
         <span>{{post.title}}</span>
       </router-link>
     </li>
+    <list-nav v-if="prev || next"
+              :prev="prev" :next="next">
+    </list-nav>
   </ul>
 </template>
 
 <script>
 import { ajax } from '../util';
+import listNav from './ListNav';
 
-// 异步获取列表
-function getKey(archive, key) {
-  return key !== '$first'
-    ? Promise.resolve(key)
-    : ajax(`/api/${archive}/aside`)
-        .then((list) => Promise.resolve(list[0].key));
+// 获取页面数据
+function getPage(params) {
+  const { archive, key, page } = params,
+    ans = key !== '$first'
+      ? Promise.resolve(key)
+      : ajax(`/api/${archive}/aside`)
+          .then((list) => Promise.resolve(list[0].key));
+
+  return ans
+    .then(($key) => ajax(`/api/${archive}/${$key}/page${page}`));
 }
 
 export default {
   data() {
     return {
-      posts: []
+      posts: [],
+      prev: '',
+      next: ''
     };
   },
   beforeRouteEnter(to, from, next) {
-    const { archive, key, page } = to.params;
-    getKey(archive, key)
-      .then(($key) => ajax(`/api/${archive}/${$key}/page${page}`))
-      .then((posts) => next((vm) => vm.posts = posts));
+    getPage(to.params)
+      .then((page) => next((vm) => {
+        vm.posts = page.posts;
+        vm.prev = page.prev;
+        vm.next = page.next;
+      }));
   },
   watch: {
     $route() {
-      const { archive, key, page } = this.$route.params;
-      getKey(archive, key)
-        .then(($key) => ajax(`/api/${archive}/${$key}/page${page}`))
-        .then((posts) => this.posts = posts);
+      getPage(this.$route.params)
+        .then((page) => {
+          this.posts = page.posts;
+          this.prev = page.prev;
+          this.next = page.next;
+        });
     }
+  },
+  components: {
+    'list-nav': listNav
   }
 };
 </script>

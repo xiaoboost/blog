@@ -1,7 +1,7 @@
 <template>
   <article id="container">
     <router-view></router-view>
-    <aside>
+    <aside class="index-aside">
       <div>
         <div class="categories-list">
           <p>分类</p>
@@ -64,7 +64,7 @@ export default {
 @import '../css/variable'
 
 //主界面的侧边栏
-#container aside
+#container aside.index-aside
   font-size 100%
   margin 2em 5px 0 0
   box-shadow 0 0 3px #888
@@ -85,7 +85,7 @@ export default {
       position fixed
       top 40px
     > div
-      overflow auto
+      overflow hidden
       margin 1em 0 0 0
       float none
       width 100%
@@ -103,7 +103,7 @@ export default {
       border-bottom 1px solid color-gray
       a
         display block
-        padding 0.5em 5%
+        padding 0.3em 0.5em
         &:hover
           color color-theme
   //标签列表
@@ -111,7 +111,7 @@ export default {
     padding-top 0.5em
     li
       display inline-block
-      margin 0.4em 0
+      margin 0.2em 0
       a
         margin 0.3125em
         padding 0.125em 0.3125em

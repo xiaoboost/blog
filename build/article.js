@@ -92,10 +92,10 @@ class post {
 
     //读取文章摘要
     if (excerpt !== -1) {
-      this.excerpt = article.substring(0, excerpt).trim();
+      this.excerpt = article.substring(0, excerpt).trim().split('\n');
       this.content = article.split(excerptReg)[1].trim();
     } else {
-      this.excerpt = '';
+      this.excerpt = [];
       this.content = article.trim();
     }
   }
