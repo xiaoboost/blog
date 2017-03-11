@@ -3,12 +3,29 @@
     <span>Powered by </span>
     <a href="/">Xiao</a>
     <span> © 2014 - 2016</span>
-    <div id="goto-up" style="opacity: 1;"></div>
+    <div id="goto-up" v-show="show"
+         v-followscroll="{bias: 500, callback: showGoto}">
+    </div>
   </footer>
 </template>
 
 <script>
+import followscroll from '../directives/followscroll';
 
+export default {
+  name: 'SiteFooter',
+  directives: { followscroll },
+  data() {
+    return {
+      show: false
+    };
+  },
+  methods: {
+    showGoto(show) {
+      this.show = show;
+    }
+  }
+};
 </script>
 
 <style lang="stylus" scoped>
@@ -34,9 +51,6 @@ footer > div#goto-up
   position fixed
   bottom 2em
   right 2em
-  display flex
-  flex-direction column-reverse
-  align-items center
   height 3.5em
   width 3.5em
   border-radius 50%
@@ -44,7 +58,6 @@ footer > div#goto-up
   box-shadow 0px 2px 3px rgba(0, 0, 0, 0.5)
   background #E53935
   transition opacity 300ms linear
-  opacity 0
   &:hover
     box-shadow 0px 3px 5px rgba(0, 0, 0, 0.5)
     cursor pointer
