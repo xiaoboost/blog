@@ -3,9 +3,11 @@
     <span>Powered by </span>
     <a href="/">Xiao</a>
     <span> © 2014 - 2016</span>
-    <div id="goto-up" v-show="show"
-         v-followscroll="{bias: 500, callback: showGoto}">
-    </div>
+    <transition name="fade">
+      <div id="goto-up" v-show="show"
+           v-followscroll="{bias: 500, callback: showGoto}">
+      </div>
+    </transition>
   </footer>
 </template>
 
@@ -55,12 +57,13 @@ footer > div#goto-up
   width 3.5em
   border-radius 50%
   color #FFFFFF
-  box-shadow 0px 2px 3px rgba(0, 0, 0, 0.5)
+  box-shadow 0px 2px 3px rgba(0, 0, 0, 0.3)
   background #E53935
-  transition opacity 300ms linear
+  transition box-shadow .3s ease
+  cursor pointer
+  opacity 1
   &:hover
-    box-shadow 0px 3px 5px rgba(0, 0, 0, 0.5)
-    cursor pointer
+    box-shadow 0px 1px 6px rgba(0, 0, 0, 0.5)
   &:before
     font-family font-icon-family
     content "\f102"
@@ -72,4 +75,11 @@ footer > div#goto-up
     width 2.8em
     &:before
       font-size 180%
+
+#goto-up.fade-enter-active,
+#goto-up.fade-leave-active
+  transition opacity .3s ease
+#goto-up.fade-enter,
+#goto-up.fade-leave-active
+  opacity 0
 </style>
