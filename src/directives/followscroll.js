@@ -1,4 +1,3 @@
-import Vue from 'vue';
 const body = document.body;
 
 export default {
