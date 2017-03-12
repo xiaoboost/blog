@@ -2,6 +2,8 @@
 
 自己用的博客生成器，使用vue架构。
 
+**！未完成！**
+
 ## 相关说明
 `css`是使用[`stylus`](https://github.com/stylus/stylus)预处理器；  
 数学公式部分则是使用[`katex`](https://github.com/Khan/KaTeX)进行解析的。  
