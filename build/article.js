@@ -67,7 +67,7 @@ class post {
     if (!article) { return (false); }
 
     //当前文章路径文件名
-    this.path = path.join('/post/', name).toPosix();
+    this.path = path.join('/post/', name);
     this.name = name;
 
     //读取文章属性
@@ -93,10 +93,10 @@ class post {
     //读取文章摘要
     if (excerpt !== -1) {
       this.excerpt = article.substring(0, excerpt).trim().split('\n');
-      this.content = article.split(excerptReg)[1].trim();
+      this.markdown = article.split(excerptReg)[1].trim();
     } else {
       this.excerpt = [];
-      this.content = article.trim();
+      this.markdown = article.trim();
     }
   }
   //给文章的图片添加标号
@@ -225,7 +225,7 @@ class post {
   //文章渲染
   render() {
     //对正文markdown解析
-    this.content = marked(this.content).replace(/[\n\r]/g, '');
+    this.content = marked(this.markdown).replace(/[\n\r]/g, '');
     //给图片增加标号
     this.imageLabel();
     //如果没有设置toc或者toc为true，那么生成目录

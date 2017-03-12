@@ -76,8 +76,8 @@ function create() {
 
   //文章前后链接
   posts.forEach((n, i) => {
-    n.next = posts[i - 1];
-    n.prev = posts[i + 1];
+    n.next = posts[i - 1] && posts[i - 1].path;
+    n.prev = posts[i + 1] && posts[i + 1].path;
   });
 
   //文章分类
@@ -158,6 +158,9 @@ function create() {
     site['\\index\\page1'].next = '/';
   }
 
+  //所有文章
+  posts.forEach((post) => site[post.path] = post);
+
   for (const i in site) {
     const content = site[i],
       keys = ['path', 'prev', 'next'];
@@ -168,9 +171,6 @@ function create() {
       }
     }
   }
-
-  //所有文章
-  site.posts = posts;
 }
 
 // 首次运行
