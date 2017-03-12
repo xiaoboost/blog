@@ -40,21 +40,13 @@ export default {
   beforeRouteEnter(to, from, next) {
     const page = to.params.page || 'page0';
     ajax(`/api/index/${page}`)
-      .then((page) => next((vm) => {
-        vm.posts = page.posts;
-        vm.prev = page.prev;
-        vm.next = page.next;
-      }));
+      .then((page) => next((vm) => Object.assign(vm, page)));
   },
   watch: {
     $route() {
       const page = this.$route.params.page || 'page0';
       ajax(`/api/index/${page}`)
-        .then((page) => {
-          this.posts = page.posts;
-          this.prev = page.prev;
-          this.next = page.next;
-        });
+        .then((page) => Object.assign(this, page));
     }
   },
   components: {
