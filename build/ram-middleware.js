@@ -44,14 +44,21 @@ function ramMiddleware(site) {
     const url = parseUrl(req)
         .pathname
         .replace(/\//g, '\\'),
-      content = site[url];
+      isPost = /\\post\\/.test(url);
 
+    let content = site[url];
     //无效api，跳过
-    if (!content) { next(); return (false); }
-
-    if (/\\post\\/.test(url)) {
-
+    if (!isPost && !content) { next(); return (false); }
+    //渲染文章
+    if (isPost) {
+      // 文章渲染
+      content.render();
+      // 文章浅复制
+      content = Object.assign({}, content);
+      // markdown原文不需要保存
+      delete content.markdown;
     }
+
     const file = Buffer.from(JSON.stringify(content)),
       resStream = new readRam(file);
 

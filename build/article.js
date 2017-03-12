@@ -52,6 +52,123 @@ Object.assign(Math, {
     return (Math.floor(Math.log10(number)) + 1);
   }
 });
+
+//生成标准目录树，并返回与之对应的修改过的正文
+function createTocTree(content) {
+  const headTree = [], name = {},
+    treeHash = [], headList = {};
+
+  let cap = '', out = content;
+  //构建正文章节树，从h1依次往下
+  for (let i = 0; i < 6; i++) {
+    const hash = treeHash[i] = [],  //层级hash表初始化
+      //按照标题等级的匹配正则
+      headReg = new RegExp('<h' + (i + 1) + '>([\\d\\D]+?)<\/h' + (i + 1) + '>');
+
+    let main = out; //临时正文
+    out = '';     //输出清空
+
+    //依次匹配标题
+    //之所以不用用match匹配之后统一for迭代的方式
+    //是为了避免出现相同标题的情况，并且需要标题的位置信息作为hash查询的信息
+    while (cap = headReg.exec(main)) {
+      //目录的标签需要清除内部的所有格式
+      const tocTitle = cap[1].replace(/<\/?[\d\D]+?>/g, ''),
+        last = headList[hash[hash.length - 1]];
+      //跳转用的锚
+      let bolt = tocTitle;
+
+      //寻找可用的锚
+      while (name[bolt]) {
+        const _bolt = bolt.split('-');
+        if (_bolt.length === 1) {
+          bolt = bolt + '-1';
+        } else {
+          bolt = _bolt[0] + '-' + (Number(_bolt[1]) + 1);
+        }
+      }
+      //记录锚点
+      name[bolt] = true;
+      //生成节点
+      const node = {
+        elem: '<h' + (i + 1) + ' id="' + bolt + '">' + cap[1] + '</h' + (i + 1) + '>',
+        title: cap[1],
+        level: i + 1,
+        tocTitle,
+        bolt,
+        child: [],
+        hash: last
+          ? last.hash + last.elem.length + cap.index
+          : cap.index
+      };
+      if (i) {
+        //搜索上层章节列表
+        const hash = treeHash[i - 1];
+        for (let k = 0; k < hash.length; k++) {
+          if (hash[k + 1] && hash[k] < node.hash && node.hash < hash[k + 1]) {
+            node.parent = headList[hash[k]];
+            node.parent.child.push(node);
+            break;
+          } else if (!hash[k + 1] && node.hash > hash[k]) {
+            node.parent = headList[hash[k]];
+            node.parent.child.push(node);
+            break;
+          }
+        }
+      } else {
+        headTree.push(node);
+      }
+      headList[node.hash] = node;   //章节列表
+      hash.push(node.hash);       //层级hash
+
+      out += main.substring(0, cap.index) + node.elem;  //替换掉标签内容
+      main = main.substring(cap.index + cap[0].length);   //去除已经替换过的标签
+    }
+
+    out += main;
+  }
+  return {
+    content: out,
+    tocTree: headTree
+  };
+}
+//根据标准目录树，生成对应的HTML文档
+function renderTocTree(tocTree) {
+  return function tocHTML(heads, pre, clas) {
+    const level = heads[0].level;
+    let ans = '<ol class="' + clas + '">';
+
+    for (let i = 0; i < heads.length; i++) {
+      ans += '<li class="toc-item toc-level-' + level + '">' +
+        '<a class="toc-link" href="#' + heads[i].bolt + '">' +
+        '<span class="toc-number">' + pre + (i + 1) + '.</span>' +
+        '<span class="toc-text">' + heads[i].tocTitle + '</span></a>';
+      if (heads[i].child && heads[i].child.length) {
+        ans += tocHTML(heads[i].child, pre + (i + 1) + '.', 'toc-child');
+      }
+      ans += '</li>';
+    }
+
+    return (ans + '</ol>');
+  }(tocTree, '', 'toc');
+}
+//生成简略目录树，将删除标准目录树多余以及循环引用部分
+function simpleTocTree(tocTree) {
+  return tocTree.map((node) => {
+    const ans = Object.assign({}, node);
+    delete ans.elem;
+    delete ans.hash;
+    delete ans.title;
+    delete ans.parent;
+    if (ans.child.length) {
+      ans.child = simpleTocTree(ans.child);
+    } else {
+      delete ans.child;
+    }
+    return ans;
+  });
+}
+
 //文章类
 class post {
   constructor(paths) {
@@ -67,7 +184,7 @@ class post {
     if (!article) { return (false); }
 
     //当前文章路径文件名
-    this.path = path.join('/post/', name);
+    this.path = path.join('/post/', name).toPosix();
     this.name = name;
 
     //读取文章属性
@@ -126,101 +243,12 @@ class post {
   }
   //根据文章生成目录
   createToc() {
-    // 生成目录包括两个目的
-    // 其一是在正文中给每个标题加上id和锚点
-    // 其二是生成侧边栏目录的 html 文件
-    const content = this.content,
-      headTree = [], name = {},
-      treeHash = [], headList = {};
-    let cap = '', out = content;
-    //构建正文章节树，从h1依次往下
-    for (let i = 0; i < 6; i++) {
-      const hash = treeHash[i] = [],  //层级hash表初始化
-        //按照标题等级的匹配正则
-        headReg = new RegExp('<h' + (i + 1) + '>([\\d\\D]+?)<\/h' + (i + 1) + '>');
-
-      let main = out; //临时正文
-      out = '';     //输出清空
-
-      //依次匹配标题
-      //之所以不用用match匹配之后统一for迭代的方式
-      //是为了避免出现相同标题的情况，并且需要标题的位置信息作为hash查询的信息
-      while (cap = headReg.exec(main)) {
-        //目录的标签需要清除内部的所有格式
-        const tocTitle = cap[1].replace(/<\/?[\d\D]+?>/g, ''),
-          last = headList[hash[hash.length - 1]];
-        //跳转用的锚
-        let bolt = tocTitle;
-
-        //寻找可用的锚
-        while (name[bolt]) {
-          const _bolt = bolt.split('-');
-          if (_bolt.length === 1) {
-            bolt = bolt + '-1';
-          } else {
-            bolt = _bolt[0] + '-' + (Number(_bolt[1]) + 1);
-          }
-        }
-        //记录锚点
-        name[bolt] = true;
-        //生成节点
-        const node = {
-          elem: '<h' + (i + 1) + ' id="' + bolt + '">' + cap[1] + '</h' + (i + 1) + '>',
-          title: cap[1],
-          level: i + 1,
-          tocTitle,
-          bolt,
-          child: [],
-          hash: last
-            ? last.hash + last.elem.length + cap.index
-            : cap.index
-        };
-        if (i) {
-          //搜索上层章节列表
-          const hash = treeHash[i - 1];
-          for (let k = 0; k < hash.length; k++) {
-            if (hash[k + 1] && hash[k] < node.hash && node.hash < hash[k + 1]) {
-              node.parent = headList[hash[k]];
-              node.parent.child.push(node);
-              break;
-            } else if (!hash[k + 1] && node.hash > hash[k]) {
-              node.parent = headList[hash[k]];
-              node.parent.child.push(node);
-              break;
-            }
-          }
-        } else {
-          headTree.push(node);
-        }
-        headList[node.hash] = node;   //章节列表
-        hash.push(node.hash);       //层级hash
-
-        out += main.substring(0, cap.index) + node.elem;  //替换掉标签内容
-        main = main.substring(cap.index + cap[0].length);   //去除已经替换过的标签
-      }
-
-      out += main;
-    }
     //生成目录
-    this.toc = function createToc(heads, pre, clas) {
-      const level = heads[0].level;
-      let ans = '<ol class="' + clas + '">';
-
-      for (let i = 0; i < heads.length; i++) {
-        ans += '<li class="toc-item toc-level-' + level + '">' +
-          '<a class="toc-link" href="#' + heads[i].bolt + '">' +
-          '<span class="toc-number">' + pre + (i + 1) + '.</span>' +
-          '<span class="toc-text">' + heads[i].tocTitle + '</span></a>';
-        if (heads[i].child && heads[i].child.length) {
-          ans += createToc(heads[i].child, pre + (i + 1) + '.', 'toc-child');
-        }
-        ans += '</li>';
-      }
-
-      return (ans + '</ol>');
-    }(headTree, '', 'toc');
+    const {content, tocTree} = createTocTree(this.content);
+    //简略版目录树
+    this.toc = simpleTocTree(tocTree);
     //更新文章正文
-    this.content = out;
+    this.content = content;
   }
   //文章渲染
   render() {
