@@ -41,15 +41,20 @@ function tabPage(arrs, peer, base) {
   for (let i = 0; i < maxPage; i++) {
     ans.push({
       path: path.join(base, 'page' + i),
-      posts: arrs.slice(i * num, (i + 1) * num)
-    });
+      posts: arrs.slice(i * num, (i + 1) * num) });
 
     if (i) {
-      ans[ans.length - 1].next = ans[ans.length - 2].path;
-      ans[ans.length - 2].prev = ans[ans.length - 1].path;
+      ans[i].next = ans[i - 1].path;
+      ans[i - 1].prev = ans[i].path;
+    } else {
+      ans[0].next = '';
     }
   }
 
+  if (ans.length > 1) {
+    ans[ans.length - 1].prev = '';
+    ans[1].next = base;
+  }
   return (ans);
 }
 //中英文路径转换
@@ -148,6 +153,10 @@ function create() {
     per_post.index,
     path.normalize('/index/')
   ).forEach((n) => site[n.path] = n);
+
+  if (site['\\index\\page1']) {
+    site['\\index\\page1'].next = '/';
+  }
 
   for (const i in site) {
     const content = site[i],
