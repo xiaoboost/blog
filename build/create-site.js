@@ -159,7 +159,7 @@ function create() {
   }
 
   //所有文章
-  posts.forEach((post) => site[post.path] = post);
+  posts.forEach((post) => site[path.join(post.path)] = post);
 
   for (const i in site) {
     const content = site[i],
