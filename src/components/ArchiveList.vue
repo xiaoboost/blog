@@ -38,20 +38,12 @@ export default {
   },
   beforeRouteEnter(to, from, next) {
     getPage(to.params)
-      .then((page) => next((vm) => {
-        vm.posts = page.posts;
-        vm.prev = page.prev;
-        vm.next = page.next;
-      }));
+      .then((page) => next((vm) => Object.assign(vm, page)));
   },
   watch: {
     $route() {
       getPage(this.$route.params)
-        .then((page) => {
-          this.posts = page.posts;
-          this.prev = page.prev;
-          this.next = page.next;
-        });
+        .then((page) => Object.assign(this, page));
     }
   },
   components: {
