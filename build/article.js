@@ -175,7 +175,8 @@ class post {
     const file = fs.readFileSync(paths, 'utf8')
         .replace(/\r\n|\r/g, '\n')
         .split(/\n---+\n/),
-      name = path.basename(paths, '.md'),
+      //文件名字将会统一转换为小写
+      name = path.basename(paths, '.md').toLowerCase(),
       article = file.splice(1).join('\n---\n'),
       postConfig = file[0].split('\n'),
       excerpt = article.search(excerptReg);
@@ -219,7 +220,7 @@ class post {
   //给文章的图片添加标号
   imageLabel() {
     const content = this.content,
-      imageReg = /(<span class='img-title'>)([\d\D]+?)(<\/span>)/,
+      imageReg = /(<span class="img-title">)([\d\D]+?)(<\/span>)/,
       total = content.match(new RegExp(imageReg.source, 'g'));
 
     //没有图片就直接返回
@@ -231,12 +232,14 @@ class post {
     let main = content, index = 1, ans = '', cap = void 0;
 
     while (cap = imageReg.exec(main)) {
-      const elem = cap[1] + '图' +
-        String.prototype.zfill.call(index, rank) + '　' +
-        cap[2] + cap[3];
+      const num = String(index).zfill(rank),
+        elem = `${cap[1]}图${num}　${cap[2]}${cap[3]}`;
+
       index ++;
-      ans += main.substring(0, cap.index) + elem;     //替换掉标签内容
-      main = main.substring(cap.index + cap[0].length);   //去除已经替换过的标签
+      //替换掉标签内容
+      ans += main.substring(0, cap.index) + elem;
+      //去除已经替换过的标签
+      main = main.substring(cap.index + cap[0].length);
     }
     ans += main;
     this.content = ans;
