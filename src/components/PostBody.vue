@@ -6,6 +6,17 @@
         <p>发表于：{{date.join('-')}}</p>
       </header>
       <article class="post-content" v-html="content"></article>
+      <post-footer :category="category" :tags="tag"></post-footer>
+      <nav v-if="next || prev">
+        <router-link class="next" v-if="next" :to="next">
+          <p>下一篇：</p>
+          <p>占位</p>
+        </router-link>
+        <router-link class="prev" v-if="prev" :to="prev">
+          <p>上一篇：</p>
+          <p>占位</p>
+        </router-link>
+      </nav>
     </div>
     <page-aside>
       <p class="toc-title">文章目录</p>
@@ -18,6 +29,7 @@
 import { ajax } from '../util';
 import postToc from './partial/PostToc';
 import pageAside from './partial/PageAside';
+import postFooter from './partial/PostFooter';
 
 export default {
   data() {
@@ -25,7 +37,11 @@ export default {
       title: '',
       date: [],
       content: '',
-      toc: []
+      toc: [],
+      category: '',
+      tag: [],
+      next: '',
+      prev: ''
     };
   },
   beforeRouteEnter(to, from, next) {
@@ -34,7 +50,8 @@ export default {
   },
   components: {
     'page-aside': pageAside,
-    'post-toc': postToc
+    'post-toc': postToc,
+    'post-footer': postFooter
   }
 };
 </script>
@@ -82,38 +99,36 @@ export default {
           content "\f017"
           font-family font-icon-family
           margin 0 0.5em
-    > nav
-      padding 1em
-      font-size 120%
-      overflow hidden
-      > div
-        width auto
-        a
-          transition color 200ms ease-out
-          &:hover
-            color color-theme
-      .next
-        float left
-        margin-left 2em
-        > a > p:nth-child(1)
-          text-align left
-          &:before
-            font-smoothing()
-            content "\f053"
-            font-family font-icon-family
-            position absolute
-            transform translate(-1.5em, 1em)
-      .prev
-        float right
-        margin-right 2em
-        > a > p:nth-child(1)
-          text-align right
-          &:after
-            font-smoothing()
-            content "\f054"
-            font-family font-icon-family
-            position absolute
-            transform translate(0.5em, 1em)
+
+  //文章底部导航栏
+  #main.post > nav
+    padding 1em
+    font-size 120%
+    overflow hidden
+    a:hover
+      color color-theme
+    a.next
+      float left
+      padding-left 2em
+      > p:nth-child(1)
+        text-align left
+        &:before
+          font-smoothing()
+          content "\f053"
+          font-family font-icon-family
+          position absolute
+          transform translate(-1.5em, 1em)
+    a.prev
+      float right
+      padding-right 2em
+      > p:nth-child(1)
+        text-align right
+        &:after
+          font-smoothing()
+          content "\f054"
+          font-family font-icon-family
+          position absolute
+          transform translate(0.5em, 1em)
 
   //文章正文样式
   #main.post .post-content
