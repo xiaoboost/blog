@@ -4,10 +4,12 @@ import Vue from 'vue';
 const getData = {};
 //中文路径转英文
 function $path(str) {
-  return encodeURIComponent(str)
-    .replace(/%2F/g, '/')
-    .replace(/%/g, '')
-    .toLowerCase();
+  return /[^\x00-\xff]/.test(str)
+    ? encodeURIComponent(str)
+        .replace(/%2F/g, '/')
+        .replace(/%/g, '')
+        .toLowerCase()
+    : str.toLowerCase();
 }
 //单 get方法
 function get(input) {
