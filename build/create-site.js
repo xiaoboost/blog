@@ -76,8 +76,10 @@ function create() {
 
   //文章前后链接
   posts.forEach((n, i) => {
-    n.next = posts[i - 1] && posts[i - 1].path;
-    n.prev = posts[i + 1] && posts[i + 1].path;
+    n.next = (posts[i - 1] || false) &&
+      { path: posts[i - 1].path, title: posts[i - 1].title };
+    n.prev = (posts[i + 1] || false) &&
+      { path: posts[i + 1].path, title: posts[i + 1].title };
   });
 
   //文章分类
