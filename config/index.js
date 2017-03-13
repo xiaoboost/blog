@@ -11,7 +11,7 @@ module.exports = {
     // 静态资源路径
     assetsRoot: path.resolve(__dirname, '../dist'),
     // 编译输出的二级目录
-    assetsSubDirectory: 'api',
+    assetsSubDirectory: '',
     // 编译发布的根目录，可配置为资源服务器域名或 CDN 域名
     assetsPublicPath: '/',
     // 是否开启 cssSourceMap
@@ -33,7 +33,7 @@ module.exports = {
     // 开发版本监控端口
     port: 8080,
     autoOpenBrowser: true,
-    assetsSubDirectory: 'api',
+    assetsSubDirectory: '',
     assetsPublicPath: '/',
     proxyTable: {},
     // CSS SourceMaps默认关闭，因为它使用相对路径似乎有bug，参考 CSS-Loader的 README：
