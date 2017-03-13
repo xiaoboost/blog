@@ -8,16 +8,7 @@
       <article>
         <span v-for="text in post.excerpt">{{text}}</span>
       </article>
-      <footer class="post-footer">
-        <span>
-          <router-link :to="`/categories/${post.category}`">{{post.category}}</router-link>
-        </span>
-        <span>
-          <router-link v-for="tag in post.tag" :key="tag" :to="`/tags/${tag}`">
-            {{tag}}
-          </router-link>
-        </span>
-      </footer>
+      <post-footer :category="post.category" :tags="post.tag"></post-footer>
     </li>
     <list-nav v-if="prev || next"
               :prev="prev" :next="next">
@@ -28,6 +19,7 @@
 <script>
 import { ajax } from '../util';
 import listNav from './ListNav';
+import postFooter from './partial/PostFooter';
 
 export default {
   data() {
@@ -50,7 +42,8 @@ export default {
     }
   },
   components: {
-    'list-nav': listNav
+    'list-nav': listNav,
+    'post-footer': postFooter
   }
 };
 </script>
@@ -112,31 +105,4 @@ ul#main.post-list
       span
         display block
         text-indent 2em
-
-//文章的分类和标签栏，这一部分是主页和文章内部共用的
-footer.post-footer
-  margin 0
-  padding 0 4%
-  line-height 2.5em
-  border-top 1px solid color-border
-  span
-    color #d6d6d6
-    margin-right 2em
-    &:before
-      font-family "FontAwesome"
-      color #999
-      margin-right 0.2em
-      font-smoothing()
-  span:nth-child(1)
-    &:before
-      content "\f07b"
-    a
-      margin 0 0.3em
-  span:nth-child(2)
-    &:before
-      content "\f02c"
-    a
-      padding 0 0.3em
-      margin 0.3em
-      background #e6e6e6
 </style>
