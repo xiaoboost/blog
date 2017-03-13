@@ -8,13 +8,13 @@
       <article class="post-content" v-html="content"></article>
       <post-footer :category="category" :tags="tag"></post-footer>
       <nav v-if="next || prev">
-        <router-link class="next" v-if="next" :to="next">
+        <router-link class="next" v-if="next" :to="next.path">
           <p>下一篇：</p>
-          <p>占位</p>
+          <p>{{next.title}}</p>
         </router-link>
-        <router-link class="prev" v-if="prev" :to="prev">
+        <router-link class="prev" v-if="prev" :to="prev.path">
           <p>上一篇：</p>
-          <p>占位</p>
+          <p>{{prev.title}}</p>
         </router-link>
       </nav>
     </div>
@@ -40,13 +40,19 @@ export default {
       toc: [],
       category: '',
       tag: [],
-      next: '',
-      prev: ''
+      next: false,
+      prev: false
     };
   },
   beforeRouteEnter(to, from, next) {
     ajax(`/api/post/${to.params.name}`)
       .then((page) => next((vm) => Object.assign(vm, page)));
+  },
+  watch: {
+    $route() {
+      ajax(`/api/post/${this.$route.params.name}`)
+        .then((page) => Object.assign(this, page));
+    }
   },
   components: {
     'page-aside': pageAside,
