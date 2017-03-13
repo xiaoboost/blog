@@ -58,11 +58,11 @@ Object.keys(proxyTable).forEach((context) => {
   app.use(proxyMiddleware(options.filter || context, options));
 });
 
+// 博客文章数据的路由中间件，以api为前缀
+app.use('/api/', siteMiddleware(site));
 // 静态资源路径前缀
 const staticPath = path.posix.join(config.dev.assetsPublicPath, config.dev.assetsSubDirectory);
-// 博客文章的路由中间件
-app.use(staticPath, siteMiddleware(site));
-// 静态资源也挂载到express服务器上
+// 静态资源挂载到express服务器上
 app.use(staticPath, express.static('./static'));
 // 当使用history-api进行跳转的时候，使用下面的中间件来匹配资源，如果不匹配就重定向到指定地址
 app.use(require('connect-history-api-fallback')());
