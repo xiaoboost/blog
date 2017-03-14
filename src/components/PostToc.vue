@@ -1,7 +1,7 @@
 <template>
   <ol :class="tocClass">
     <li v-for="(node, i) in tocTree" :class="`toc-item toc-level-${node.level}`">
-      <a class="toc-link" :href="`#${node.bolt}`">
+      <a class="toc-link" v-scrollto="{speed: 60, target: `#${node.bolt}`}">
         <span class="toc-number">{{`${num}${i+1}.`}}</span>
         <span class="toc-text">{{node.tocTitle}}</span>
       </a>
@@ -13,8 +13,11 @@
 </template>
 
 <script>
+import scrollto from '@/directives/scrollto';
+
 export default {
     name: 'post-toc',
+    directives: { scrollto },
     props: {
         tocTree: {
             type: Array,
