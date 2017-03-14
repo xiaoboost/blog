@@ -29,7 +29,7 @@ export default {
             this.show = show;
         },
         gotoTop() {
-            console.log('点击');
+            document.body.scrollTop = 0;
         }
     }
 };
