@@ -55,6 +55,8 @@ export default {
             vm.tags = tags;
             vm.categories = cates;
         }));
+        // 网站主标题
+        document.title = config.title;
     },
     components: {
         'page-aside': pageAside

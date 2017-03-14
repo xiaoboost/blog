@@ -52,6 +52,9 @@ export default {
         $route() {
             ajax(`/api/post/${this.$route.params.name}`)
                 .then((page) => Object.assign(this, page));
+        },
+        title() {
+            document.title = this.$t(this.title);
         }
     },
     components: {

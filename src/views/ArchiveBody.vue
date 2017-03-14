@@ -25,7 +25,9 @@ export default {
     },
     computed: {
         archive() {
-            return this.$route.params.archive;
+            const ans = this.$route.params.archive;
+            document.title = `DC | ${this.$t(ans)}`;
+            return ans;
         }
     },
     beforeRouteEnter(to, from, next) {
