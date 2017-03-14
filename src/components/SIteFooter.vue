@@ -4,7 +4,7 @@
     <a href="/">Xiao</a>
     <span> © 2014 - 2016</span>
     <transition name="fade">
-      <div id="goto-up" v-show="show" @click.stop="gotoTop"
+      <div id="goto-up" v-show="show" v-scrollto="{speed: 80}"
            v-followscroll="{bias: 500, callback: showGoto}">
       </div>
     </transition>
@@ -13,11 +13,13 @@
 
 <script>
 import followscroll from '@/directives/followscroll';
+import scrollto from '@/directives/scrollto';
 
 export default {
     name: 'SiteFooter',
     directives: {
-        followscroll
+        followscroll,
+        scrollto
     },
     data() {
         return {
@@ -27,9 +29,6 @@ export default {
     methods: {
         showGoto(show) {
             this.show = show;
-        },
-        gotoTop() {
-            document.body.scrollTop = 0;
         }
     }
 };
