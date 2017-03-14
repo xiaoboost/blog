@@ -14,24 +14,24 @@
 
 <script>
 export default {
-  name: 'post-toc',
-  props: {
-    tocTree: {
-      type: Array,
-      default: []
-    },
-    num: {
-      type: String,
-      default: ''
-    },
-    tocClass: {
-      validator(value) {
-        return (['toc', 'toc-child'].indexOf(value) !== -1);
-      },
-      type: String,
-      default: 'toc'
+    name: 'post-toc',
+    props: {
+        tocTree: {
+            type: Array,
+            default: []
+        },
+        num: {
+            type: String,
+            default: ''
+        },
+        tocClass: {
+            validator(value) {
+                return (['toc', 'toc-child'].indexOf(value) !== -1);
+            },
+            type: String,
+            default: 'toc'
+        }
     }
-  }
 };
 </script>
 

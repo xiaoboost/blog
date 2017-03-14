@@ -7,16 +7,16 @@
 
 <script>
 export default {
-  props: {
-    prev: {
-      type: String,
-      default: ''
-    },
-    next: {
-      type: String,
-      default: ''
+    props: {
+        prev: {
+            type: String,
+            default: ''
+        },
+        next: {
+            type: String,
+            default: ''
+        }
     }
-  }
 };
 </script>
 

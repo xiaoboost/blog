@@ -11,19 +11,20 @@
 import followscroll from '../../directives/followscroll';
 
 export default {
-  name: 'PageAside',
-  directives: { followscroll },
-  data() {
-    return {
-      fixed: false
-    };
-  },
-  methods: {
-    fixAside(fix) {
-      this.fixed = fix;
+    name: 'PageAside',
+    directives: { followscroll },
+    data() {
+        return {
+            fixed: false
+        };
+    },
+    methods: {
+        fixAside(fix) {
+            this.fixed = fix;
+        }
     }
-  }
 };
+
 </script>
 
 <style lang="stylus" scoped>

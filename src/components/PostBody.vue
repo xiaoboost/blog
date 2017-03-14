@@ -32,33 +32,33 @@ import pageAside from './partial/PageAside';
 import postFooter from './partial/PostFooter';
 
 export default {
-  data() {
-    return {
-      title: '',
-      date: [],
-      content: '',
-      toc: [],
-      category: '',
-      tag: [],
-      next: false,
-      prev: false
-    };
-  },
-  beforeRouteEnter(to, from, next) {
-    ajax(`/api/post/${to.params.name}`)
-      .then((page) => next((vm) => Object.assign(vm, page)));
-  },
-  watch: {
-    $route() {
-      ajax(`/api/post/${this.$route.params.name}`)
-        .then((page) => Object.assign(this, page));
+    data() {
+        return {
+            title: '',
+            date: [],
+            content: '',
+            toc: [],
+            category: '',
+            tag: [],
+            next: false,
+            prev: false
+        };
+    },
+    beforeRouteEnter(to, from, next) {
+        ajax(`/api/post/${to.params.name}`)
+            .then((page) => next((vm) => Object.assign(vm, page)));
+    },
+    watch: {
+        $route() {
+            ajax(`/api/post/${this.$route.params.name}`)
+                .then((page) => Object.assign(this, page));
+        }
+    },
+    components: {
+        'page-aside': pageAside,
+        'post-toc': postToc,
+        'post-footer': postFooter
     }
-  },
-  components: {
-    'page-aside': pageAside,
-    'post-toc': postToc,
-    'post-footer': postFooter
-  }
 };
 </script>
 
