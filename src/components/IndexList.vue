@@ -22,29 +22,29 @@ import listNav from './ListNav';
 import postFooter from './partial/PostFooter';
 
 export default {
-  data() {
-    return {
-      posts: [],
-      prev: '',
-      next: ''
-    };
-  },
-  beforeRouteEnter(to, from, next) {
-    const page = to.params.page || 'page0';
-    ajax(`/api/index/${page}`)
-      .then((page) => next((vm) => Object.assign(vm, page)));
-  },
-  watch: {
-    $route() {
-      const page = this.$route.params.page || 'page0';
-      ajax(`/api/index/${page}`)
-        .then((page) => Object.assign(this, page));
+    data() {
+        return {
+            posts: [],
+            prev: '',
+            next: ''
+        };
+    },
+    beforeRouteEnter(to, from, next) {
+        const page = to.params.page || 'page0';
+        ajax(`/api/index/${page}`)
+            .then((page) => next((vm) => Object.assign(vm, page)));
+    },
+    watch: {
+        $route() {
+            const page = this.$route.params.page || 'page0';
+            ajax(`/api/index/${page}`)
+                .then((page) => Object.assign(this, page));
+        }
+    },
+    components: {
+        'list-nav': listNav,
+        'post-footer': postFooter
     }
-  },
-  components: {
-    'list-nav': listNav,
-    'post-footer': postFooter
-  }
 };
 </script>
 

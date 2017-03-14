@@ -40,25 +40,25 @@ import pageAside from './partial/PageAside';
 import config from '../../config/site';
 
 export default {
-  data() {
-    return {
-      tags: [],
-      categories: [],
-      links: config.friend_link,
-    };
-  },
-  beforeRouteEnter(to, from, next) {
-    ajax([
-      '/api/tags/aside',
-      '/api/categories/aside'
-    ]).then(([tags, cates]) => next((vm) => {
-      vm.tags = tags;
-      vm.categories = cates;
-    }));
-  },
-  components: {
-    'page-aside': pageAside
-  }
+    data() {
+        return {
+            tags: [],
+            categories: [],
+            links: config.friend_link,
+        };
+    },
+    beforeRouteEnter(to, from, next) {
+        ajax([
+            '/api/tags/aside',
+            '/api/categories/aside'
+        ]).then(([tags, cates]) => next((vm) => {
+            vm.tags = tags;
+            vm.categories = cates;
+        }));
+    },
+    components: {
+        'page-aside': pageAside
+    }
 };
 </script>
 

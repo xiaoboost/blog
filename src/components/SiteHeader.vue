@@ -21,23 +21,23 @@
 import config from '../../config/site';
 
 export default {
-  name: 'SiteHeader',
-  data() {
-    return {
-      title: config.title,
-      subtitle: config.subtitle,
+    name: 'SiteHeader',
+    data() {
+        return {
+            title: config.title,
+            subtitle: config.subtitle,
 
-      headerLinks: {
-        '时间': '/time/',
-        '分类': '/categories/',
-        '标签': '/tags/',
-        // '关于': '/archives/about/'
-      }
-    };
-  },
-  mounted() {
-    document.title = this.title;
-  }
+            headerLinks: {
+                '时间': '/time/',
+                '分类': '/categories/',
+                '标签': '/tags/',
+                // '关于': '/archives/about/'
+            }
+        };
+    },
+    mounted() {
+        document.title = this.title;
+    }
 };
 </script>
 

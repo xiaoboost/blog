@@ -18,27 +18,27 @@
 import { ajax } from '../util';
 
 export default {
-  data() {
-    return {
-      collection: []
-    };
-  },
-  computed: {
-    archive() {
-      return this.$route.params.archive;
+    data() {
+        return {
+            collection: []
+        };
+    },
+    computed: {
+        archive() {
+            return this.$route.params.archive;
+        }
+    },
+    beforeRouteEnter(to, from, next) {
+        const archive = to.params.archive;
+        ajax(`/api/${archive}/aside`)
+            .then((collection) => next((vm) => vm.collection = collection));
+    },
+    watch: {
+        $route() {
+            ajax(`/api/${this.archive}/aside`)
+                .then((collection) => this.collection = collection);
+        }
     }
-  },
-  beforeRouteEnter(to, from, next) {
-    const archive = to.params.archive;
-    ajax(`/api/${archive}/aside`)
-      .then((collection) => next((vm) => vm.collection = collection));
-  },
-  watch: {
-    $route() {
-      ajax(`/api/${this.archive}/aside`)
-        .then((collection) => this.collection = collection);
-    }
-  }
 };
 </script>
 

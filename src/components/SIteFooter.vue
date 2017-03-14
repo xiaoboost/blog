@@ -4,7 +4,7 @@
     <a href="/">Xiao</a>
     <span> © 2014 - 2016</span>
     <transition name="fade">
-      <div id="goto-up" v-show="show"
+      <div id="goto-up" v-show="show" @click.stop="gotoTop"
            v-followscroll="{bias: 500, callback: showGoto}">
       </div>
     </transition>
@@ -15,18 +15,23 @@
 import followscroll from '../directives/followscroll';
 
 export default {
-  name: 'SiteFooter',
-  directives: { followscroll },
-  data() {
-    return {
-      show: false
-    };
-  },
-  methods: {
-    showGoto(show) {
-      this.show = show;
+    name: 'SiteFooter',
+    directives: {
+        followscroll
+    },
+    data() {
+        return {
+            show: false
+        };
+    },
+    methods: {
+        showGoto(show) {
+            this.show = show;
+        },
+        gotoTop() {
+            console.log('点击');
+        }
     }
-  }
 };
 </script>
 
