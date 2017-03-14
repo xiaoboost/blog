@@ -1,8 +1,8 @@
-/**
- *指定DOM是否超过界线
- *@param
- *  bias 界线，即距离网页顶端的距离
- *  callback 回调函数，当“是否超过界线”的状态改变时触发
+/*
+ * 指定DOM是否超过界线
+ * @param
+ *   bias 界线，即距离网页顶端的距离
+ *   callback 回调函数，当“是否超过界线”的状态改变时触发
  */
 const body = document.body;
 
