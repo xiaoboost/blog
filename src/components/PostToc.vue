@@ -36,7 +36,7 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-  @import '../../css/variable'
+  @import '../css/variable'
 
   ol
     list-style none

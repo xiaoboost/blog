@@ -13,8 +13,8 @@
 </template>
 
 <script>
-import { ajax } from '../util';
-import listNav from './ListNav';
+import { ajax } from '@/util';
+import listNav from '@/components/ListNav';
 
 // 获取页面数据
 function getPage(params) {

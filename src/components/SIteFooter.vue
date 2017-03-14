@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import followscroll from '../directives/followscroll';
+import followscroll from '@/directives/followscroll';
 
 export default {
     name: 'SiteFooter',
