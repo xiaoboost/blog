@@ -27,7 +27,7 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-@import '../../css/variable'
+@import '../css/variable'
 
 footer.post-footer
   margin 0

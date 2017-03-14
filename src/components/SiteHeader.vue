@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import config from '../../config/site';
+import config from '@config/site';
 
 export default {
     name: 'SiteHeader',

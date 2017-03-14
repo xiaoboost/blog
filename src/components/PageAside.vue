@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import followscroll from '../../directives/followscroll';
+import followscroll from '@/directives/followscroll';
 
 export default {
     name: 'PageAside',
@@ -28,7 +28,7 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-@import '../../css/variable'
+@import '../css/variable'
 
 //侧边栏公共属性
 aside

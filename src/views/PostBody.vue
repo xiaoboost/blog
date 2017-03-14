@@ -26,10 +26,10 @@
 </template>
 
 <script>
-import { ajax } from '../util';
-import postToc from './partial/PostToc';
-import pageAside from './partial/PageAside';
-import postFooter from './partial/PostFooter';
+import { ajax } from '@/util';
+import postToc from '@/components/PostToc';
+import pageAside from '@/components/PageAside';
+import postFooter from '@/components/PostFooter';
 
 export default {
     data() {

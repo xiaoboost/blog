@@ -35,9 +35,9 @@
 </template>
 
 <script>
-import { ajax } from '../util';
-import pageAside from './partial/PageAside';
-import config from '../../config/site';
+import { ajax } from '@/util';
+import config from '@config/site';
+import pageAside from '@/components/PageAside';
 
 export default {
     data() {

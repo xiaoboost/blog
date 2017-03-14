@@ -17,9 +17,9 @@
 </template>
 
 <script>
-import { ajax } from '../util';
-import listNav from './ListNav';
-import postFooter from './partial/PostFooter';
+import { ajax } from '@/util';
+import listNav from '@/components/ListNav';
+import postFooter from '@/components/PostFooter';
 
 export default {
     data() {
