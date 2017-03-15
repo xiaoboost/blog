@@ -162,7 +162,10 @@ function simpleTocTree(tocTree) {
         delete ans.elem;
         delete ans.hash;
         delete ans.title;
-        delete ans.parent;
+        delete ans.level;
+        if (ans.parent) {
+            ans.parent = ans.parent.bolt;
+        }
         if (ans.child.length) {
             ans.child = simpleTocTree(ans.child);
         } else {
