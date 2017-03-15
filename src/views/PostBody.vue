@@ -20,16 +20,18 @@
     </div>
     <page-aside>
       <p class="toc-title">文章目录</p>
-      <post-toc :tocTree="toc"></post-toc>
+      <post-toc :tocTree="toc" :nav="tocNav"></post-toc>
     </page-aside>
   </article>
 </template>
 
 <script>
-import { ajax } from '@/util';
+import { ajax, cloneArr } from '@/util';
 import postToc from '@/components/PostToc';
 import pageAside from '@/components/PageAside';
 import postFooter from '@/components/PostFooter';
+
+const doc = document;
 
 export default {
     data() {
@@ -40,6 +42,7 @@ export default {
             toc: [],
             category: '',
             tag: [],
+            tocNav: '',
             next: false,
             prev: false
         };
@@ -54,8 +57,43 @@ export default {
                 .then((page) => Object.assign(this, page));
         },
         title() {
-            document.title = this.$t(this.title);
+            doc.title = this.$t(this.title);
         }
+    },
+    computed: {
+        cacheToc() {
+            return cloneArr(this.toc);
+        }
+    },
+    methods: {
+        pageNav() {
+            const viewTop = doc.body.scrollTop;
+            this.tocNav = function search(toc) {
+                for (let i = toc.length - 1; i >= 0; i--) {
+                    // 缓存绑定的DOM对象
+                    if (!toc[i].el) {
+                        toc[i].el = doc.getElementById(toc[i].bolt);
+                    }
+                    const offsetTop = toc[i].el.offsetTop;
+                    // 如果当前元素在视窗上方
+                    if (offsetTop < viewTop) {
+                        const childBolt = toc[i].child && search(toc[i].child);
+                        if (childBolt) {
+                            return (childBolt);
+                        } else {
+                            return (toc[i].bolt);
+                        }
+                    }
+                }
+                return ('');
+            }(this.cacheToc);
+        }
+    },
+    mounted() {
+        doc.addEventListener('scroll', this.pageNav);
+    },
+    beforeDestroy() {
+        doc.removeEventListener('scroll', this.pageNav);
     },
     components: {
         'page-aside': pageAside,
