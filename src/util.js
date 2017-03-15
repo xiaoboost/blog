@@ -58,4 +58,34 @@ Vue.prototype.$t = function(str) {
         : str;
 };
 
-export { ajax };
+//对象深复制，不考虑循环引用的情况
+function cloneObj(from) {
+    const ans = {};
+    for (const i in from) {
+        if (from.hasOwnProperty(i)) {
+            if (i instanceof Array) {
+                ans[i] = cloneArr(from[i]);
+            } else if (i instanceof Object) {
+                ans[i] = cloneObj(from[i]);
+            } else {
+                ans[i] = from[i];
+            }
+        }
+    }
+    return (ans);
+}
+
+//数组深复制，不考虑循环引用的情况
+function cloneArr(from) {
+    return from.map((n) => {
+        if (n instanceof Array) {
+            return (cloneArr(n));
+        } else if (n instanceof Object) {
+            return (cloneObj(n));
+        } else {
+            return (n);
+        }
+    });
+}
+
+export { ajax, cloneObj, cloneArr };
