@@ -38,7 +38,6 @@ rm(output, (err) => {
         for (const i in site) {
             const out = path.join(output, 'api', i);
             mkdirp(path.dirname(out), (err) => {
-                debugger;
                 if (err) console.error(err);
                 fs.writeFileSync(out, JSON.stringify(site[i]));
             });
