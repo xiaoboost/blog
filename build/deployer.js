@@ -60,7 +60,8 @@ function log(message) {
         .replace(/( deletions?\(-\))/, chalk.red('$1'))
         .replace(/\n create/g, chalk.green('\n create'))
         .replace(/\n rewrite/g, chalk.blue('\n rewrite'))
-        .replace(/\n delete/g, chalk.red('\n delete'));
+        .replace(/\n delete/g, chalk.red('\n delete'))
+        .replace(/\n rename/g, chalk.cyan('\n rename'));
 
     console.log(ans);
 }
