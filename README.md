@@ -5,8 +5,7 @@
 **！未完成！**
 
 ## 相关说明
-`css`是使用[`stylus`](https://github.com/stylus/stylus)预处理器；  
-数学公式部分则是使用[`katex`](https://github.com/Khan/KaTeX)进行解析的。  
+数学公式是使用[`katex`](https://github.com/Khan/KaTeX)进行解析的。  
 
 ## markdown
 markdown解析器修改自[marked](https://github.com/chjj/marked)开源项目。  
