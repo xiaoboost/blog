@@ -1,7 +1,7 @@
 <template>
   <ul id="main" class="archives-list">
     <li v-for="post in posts">
-      <router-link :to="`/api${post.path}`">
+      <router-link :to="post.path">
         <time>{{post.date.join("-")}}</time>
         <span>{{post.title}}</span>
       </router-link>
