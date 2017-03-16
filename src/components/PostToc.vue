@@ -1,12 +1,12 @@
 <template>
   <ol :class="tocClass">
-    <li v-for="(node, i) in tocTree" :class="`toc-item toc-level-${node.level}`">
+    <li v-for="(node, i) in tocTree" :class="`toc-item toc-level-${level}`" :toc="node.bolt">
       <a class="toc-link" v-scrollto="{speed: 60, target: `#${node.bolt}`}">
-        <span class="toc-number">{{`${num}${i+1}.`}}</span>
+        <span class="toc-number">{{`${number}${i+1}.`}}</span>
         <span class="toc-text">{{node.tocTitle}}</span>
       </a>
-      <post-toc v-if="!!node.child" :tocTree="node.child"
-                :num="`${num}${i+1}.`" tocClass="toc-child">
+      <post-toc v-if="!!node.child" :tocTree="node.child" :nav="nav"
+                :number="`${number}${i+1}.`" :level="level + 1" tocClass="toc-child">
       </post-toc>
     </li>
   </ol>
@@ -14,6 +14,7 @@
 
 <script>
 import scrollto from '@/directives/scrollto';
+import { ajax, cloneArr } from '@/util';
 
 export default {
     name: 'post-toc',
@@ -23,9 +24,13 @@ export default {
             type: Array,
             default: []
         },
-        num: {
+        number: {
             type: String,
             default: ''
+        },
+        level: {
+            type: Number,
+            default: 1
         },
         tocClass: {
             validator(value) {
@@ -33,6 +38,48 @@ export default {
             },
             type: String,
             default: 'toc'
+        },
+        nav: {
+            type: String,
+            default: ''
+        }
+    },
+    computed: {
+        cacheTree() {
+            return cloneArr(this.tocTree);
+        }
+    },
+    methods: {
+        positioning(e) {
+            for (let i = 0; i < this.cacheTree.length; i++) {
+                const node = this.cacheTree[i];
+                if (!node.el) {
+                    node.el = document.querySelector(`[toc="${node.bolt}"]`);
+                }
+                const el = node.el;
+                el.classList.remove('toc-current', 'toc-child-vision');
+                if (e.currentTarget === node.bolt) {
+                    if (node.parent) {
+                        // 事件冒泡
+                        this.$parent.positioning({
+                            target: e.target,
+                            currentTarget: node.parent
+                        });
+                    }
+                    el.classList.add('toc-current');
+                    if (e.target !== e.currentTarget) {
+                        el.classList.add('toc-child-vision');
+                    }
+                }
+            }
+        }
+    },
+    watch: {
+        nav() {
+            this.positioning({
+                target: this.nav,
+                currentTarget: this.nav
+            });
         }
     }
 };
