@@ -63,9 +63,9 @@ function cloneObj(from) {
     const ans = {};
     for (const i in from) {
         if (from.hasOwnProperty(i)) {
-            if (i instanceof Array) {
+            if (from[i] instanceof Array) {
                 ans[i] = cloneArr(from[i]);
-            } else if (i instanceof Object) {
+            } else if (from[i] instanceof Object) {
                 ans[i] = cloneObj(from[i]);
             } else {
                 ans[i] = from[i];
