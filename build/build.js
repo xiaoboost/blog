@@ -51,6 +51,12 @@ status = status.then(() => {
         files.push(new Promise((res) => {
             mkdirp(path.dirname(out), (err) => {
                 if (err) console.error(err);
+                const content = site[i];
+                // 渲染文章，并删除原文
+                if (content.render instanceof Function) {
+                    content.render();
+                    delete content.markdown;
+                }
                 fs.writeFile(out, JSON.stringify(site[i]), res);
             });
         }));
