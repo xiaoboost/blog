@@ -14,8 +14,8 @@ module.exports = {
     //文章分页
     //index是主页分页，archive是归档（分类标签年份）页面的分页，0表示不分页
     per_post: {
-        index: 5,
-        archive: 5
+        index: 15,
+        archive: 10
     },
     //上传设定
     deploy: {
