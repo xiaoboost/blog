@@ -1,12 +1,11 @@
 const Transform = require('stream').Transform,
     setPrototypeOf = require('util').inherits,
     spawn = require('child_process').spawn,
-    config = require('./config'),
+    path = require('path'),
     fs = require('fs'),
     chalk = require('chalk'),
-    opt = {
-        cwd: './.deploy_git/'
-    };
+    // 默认文件夹
+    opt = { cwd: path.join(__dirname, '../.deploy_git/') };
 
 //缓存类
 function CacheStream() {
@@ -36,27 +35,15 @@ CacheStream.prototype = {
 setPrototypeOf(CacheStream, Transform);
 
 //git操作入口
-function git() {
-    const len = arguments.length,
-        args = new Array(len);
-
-    for (const i = 0; i < len; i++) {
-        args[i] = arguments[i];
-    }
-
+function git(...args) {
     if (args[0] === 'init') {
         //初始化，配置参数
-        args[1] = args[1] || {};
-        for (const i in args[1]) {
-            if (args[1].hasOwnProperty(i)) {
-                opt[i] = args[1][i];
-            }
-        }
+        Object.assign(opt, args[1] || {});
         //.git文件夹不存在，那么就需要初始化git
-        if (!fs.existsSync((opt.cwd + '/.git').normalize())) {
+        if (!fs.existsSync(path.join(opt.cwd, '.git'))) {
             return promiseSpawn('git', ['init'], opt);
         } else {
-            return new Promise((n) => n());
+            return Promise.resolve();
         }
     } else {
         //子进程运行git命令
@@ -68,12 +55,12 @@ function log(message) {
     if (!message) {
         return;
     }
-    const ans = message.replace(/files changed/, 'files ' + chalk.green('changed'))
-        .replace(/ insertions\(\+\)/, ' ' + chalk.yellow('insertions(+)'))
-        .replace(/ deletions\(-\)/, ' ' + chalk.red('deletions(-)'))
-        .replace(/\n create/g, '\n ' + chalk.green('create'))
-        .replace(/\n rewrite/g, '\n ' + chalk.blue('rewrite'))
-        .replace(/\n delete/g, '\n ' + chalk.red('delete'));
+    const ans = message.replace(/ changed,?/, chalk.green(' changed') + ',')
+        .replace(/( insertions?\(\+\))/, chalk.yellow('$1'))
+        .replace(/( deletions?\(-\))/, chalk.red('$1'))
+        .replace(/\n create/g, chalk.green('\n create'))
+        .replace(/\n rewrite/g, chalk.blue('\n rewrite'))
+        .replace(/\n delete/g, chalk.red('\n delete'));
 
     console.log(ans);
 }
@@ -116,17 +103,5 @@ function promiseSpawn(command, args, options) {
         });
     });
 }
-//上传文件
-function deploy(opt, message) {
-    const url = config.deploy.repo,
-        branch = config.deploy.branch;
 
-    git('init', opt)
-        .then(git('add', '-A'))
-        .then(git('commit', '-m', message))
-        .then(git('push', '-u', url, 'master:' + branch, '--force'))
-        .then(() => console.log(chalk.green('\n INFO: ') + '文件上传完毕'))
-        .catch((e) => console.log(chalk.red('\n ERROR: ') + '发生错误，意外中止\n' + e.code));
-}
-
-module.exports = deploy;
+module.exports = git;
