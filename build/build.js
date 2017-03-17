@@ -13,23 +13,14 @@ const // 一个比较漂亮的loading界面
     chalk = require('chalk'),
     webpack = require('webpack'),
     config = require('../config'),
-    // git子进程
-    git = require('./deployer'),
     // 生成博客网站
     site = require('./create-site'),
     // 读取生产环境的配置
     webpackConfig = require('./webpack.prod.conf'),
     // 生成文件的进度条
     build = ora('building for production...'),
-    // 上传文件的进度条
-    deploy = ora('deploying to site...'),
     // 输出文件路径
-    output = path.join(config.build.assetsRoot, config.build.assetsSubDirectory),
-    // 输入参数，默认为上传时间
-    message = process.argv[2] || (new Date()).toLocaleString(),
-    // 上传设定
-    url = require('../config/site').deploy.url,
-    branch = require('../config/site').deploy.branch;
+    output = path.join(config.build.assetsRoot, config.build.assetsSubDirectory);
 
 // 构建进度条开始
 build.start();
@@ -85,20 +76,11 @@ status = status.then(() => {
     });
 });
 
-// 上传文件
-status
-    .then(() => Promise.resolve(deploy.start()))
-    .then(git('init', { cwd: output }))
-    .then(git('add', '-A'))
-    .then(git('commit', '-m', message))
-    .then(git('push', '-u', url, 'master:' + branch, '--force'))
-    .then(() => {
-        deploy.stop();
-        console.log(chalk.green('\n INFO: ') + '文件上传完毕');
-    });
-
 // 错误捕获
 status.catch((e) => {
-    console.log(chalk.red('\n ERROR: ') + '发生错误，意外中止\n');
+    console.log(chalk.red('\n ERROR: ') + '构建发生错误，意外中止\n');
     console.error(chalk.red('\n 错误信息: ') + e);
 });
+
+// 对外暴露异步对象
+module.exports = status;
