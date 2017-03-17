@@ -10,7 +10,7 @@ import PostBody from '../views/PostBody';
 Vue.use(Router);
 
 export default new Router({
-    mode: 'history',
+    mode: 'hash',  // history
     routes: [
         // 主页
         { path: '/index', alias: '/', name: 'index', component: IndexBody,
