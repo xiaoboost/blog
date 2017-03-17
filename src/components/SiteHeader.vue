@@ -109,8 +109,9 @@ header ul
     font-size .7em
     transform translateY(1em)
     //在手机端，搜索框不显示
-    > li:last-child
-      display none
+    //现在搜索框整个去掉了
+    //> li:last-child
+    //  display none
   > li
     float left
     > a
