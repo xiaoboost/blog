@@ -4,8 +4,16 @@ const Transform = require('stream').Transform,
     path = require('path'),
     fs = require('fs'),
     chalk = require('chalk'),
+    config = require('../config'),
+    // 生成静态文件之后的异步对象
+    build = require('./build'),
+    // 上传设定
+    url = require('../config/site').deploy.url,
+    branch = require('../config/site').deploy.branch,
+    // 输入参数，默认为上传时间
+    message = process.argv[2] || (new Date()).toLocaleString(),
     // 默认文件夹
-    opt = { cwd: path.join(__dirname, '../.deploy_git/') };
+    opt = { cwd: path.join(config.build.assetsRoot, config.build.assetsSubDirectory) };
 
 //缓存类
 function CacheStream() {
@@ -105,4 +113,17 @@ function promiseSpawn(command, args, options) {
     });
 }
 
-module.exports = git;
+// 上传文件
+build
+    .then(git('init', opt))
+    .then(git('add', '-A'))
+    .then(git('commit', '-m', message))
+    .then(git('push', '-u', url, 'master:' + branch, '--force'))
+    .then(() => console.log(chalk.green('\n INFO: ') + '文件上传完毕'));
+
+// 错误捕获
+build.catch((e) => {
+    console.log(chalk.red('\n ERROR: ') + '上传发生错误，意外中止\n');
+    console.error(chalk.red('\n 错误信息: ') + e);
+});
+
