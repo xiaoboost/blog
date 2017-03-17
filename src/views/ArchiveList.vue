@@ -110,6 +110,8 @@ ul#main
     border none
     > li > a
       border none
+      &:hover
+        border none
   @media phone
     > li > a time
       margin 0.5em 1em
