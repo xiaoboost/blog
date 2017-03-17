@@ -41,8 +41,6 @@ aside
   overflow hidden
   @media medium
     display none
-  @media mini
-    display none
   > div
     background color-post
     padding 1em

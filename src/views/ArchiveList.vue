@@ -1,6 +1,6 @@
 <template>
-  <transition-group name="archives-list" tag="ul" id="main">
-    <li v-for="post in posts" :key="post.path" class="archives-list-item">
+  <transition-group name="fade-list" tag="ul" id="main" class="archives-list">
+    <li v-for="post in posts" :key="post.path" class="fade-list-item">
       <router-link :to="post.path">
         <time>{{post.date.join("-")}}</time>
         <span>{{post.title}}</span>
@@ -56,14 +56,14 @@ export default {
 @import '../css/variable'
 
 // 动画设置
-.archives-list-item
+.fade-list-item
   transition all .5s ease
-.archives-list-enter
+.fade-list-enter
   opacity 0
   transform translateX(-30px)
-.archives-list-leave-active
+.fade-list-leave-active
   opacity 0
-  width 795px
+  width 800px
   position absolute
   transform translateX(30px)
 
@@ -76,9 +76,8 @@ ul#main
   li
     background #fafafa
     display block
-    margin-bottom 0.125em
-    margin-right 5px
-    box-shadow 0 0 3px color-gray
+    margin-bottom 3px
+    box-shadow 0 0 5px color-gray
     a
       display block
       border-left 0.5em solid #ccc
@@ -97,4 +96,21 @@ ul#main
         color color-theme
         line-height 2
         font-size 1.5em
+
+// 列表屏幕匹配
+ul#main
+  @media medium
+    display block
+    float none
+    width width-archives
+    margin auto !important
+    margin-top 2em !important
+  @media mini
+    width 100%
+    border none
+    > li > a
+      border none
+  @media phone
+    > li > a time
+      margin 0.5em 1em
 </style>

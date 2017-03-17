@@ -49,7 +49,8 @@ export default {
 
 #container > aside
   margin 2em 0 0 50px
-  width 250px
+  box-sizing border-box
+  width 280px
   float left
   padding 1em
   background #fafafa
@@ -83,34 +84,20 @@ export default {
   a.current
     background lighten(color-gray, 50%)
 
-// 文章列表的分辨率匹配也在这里
-#container aside,
-#container ul.archives-list
+// 左侧边栏屏幕匹配
+#container aside
   @media medium
     display block
     float none
-    margin-left calc((100% - 800px) / 2) !important
-  @media mini
-    margin-left 0 !important
-    width 100% !important
-
-@media medium
-  #container aside
-    width 760px
+    width width-archives
+    margin auto
+    margin-top 2em
     > ul > li
       display inline-block
       margin 0
-  #container ul.archives-list
-    width 800px
-
-@media mini
-  #container aside
+  @media mini
+    margin 0
+    width 100%
     border none
-  #container ul.archives-list > li > a
-    border none
-
-@media phone
-  ul#main.archives-list li a time
-    margin-left 1em
-    margin-right 1em
+    box-shadow 0 2px 4px color-gray
 </style>
