@@ -1,8 +1,8 @@
 # 博客生成器
 
-自己用的博客生成器，使用vue架构。
+自己用的博客生成器，使用vue架构。  
 
-**！未完成！**
+[Dreaming Cat](http://www.dreamingcat.me)
 
 ## 相关说明
 数学公式是使用[`katex`](https://github.com/Khan/KaTeX)进行解析的。  
