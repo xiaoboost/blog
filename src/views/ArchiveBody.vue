@@ -1,6 +1,5 @@
 <template>
   <article id="container">
-    <router-view></router-view>
     <aside :class="archive">
       <p>{{$t(archive)}}</P>
       <ul>
@@ -11,6 +10,7 @@
         </li>
       </ul>
     </aside>
+    <router-view></router-view>
   </article>
 </template>
 
