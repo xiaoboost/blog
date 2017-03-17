@@ -53,7 +53,7 @@ export default {
   float left
   padding 1em
   background #fafafa
-  border-left 0.5em solid #ccc
+  border-left 0.2em solid color-theme
   color color-theme
   font-size 1em
   box-shadow 0 0 3px color-gray
@@ -71,7 +71,7 @@ export default {
       color color-orange
 
 #container > aside.tags > ul
-  padding-left 1.5em
+  padding-left 1em
   li
     display inline-block
     margin 0

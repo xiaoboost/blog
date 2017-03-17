@@ -1,6 +1,6 @@
 <template>
-  <ul id="main" class="archives-list">
-    <li v-for="post in posts">
+  <transition-group name="archives-list" tag="ul" id="main">
+    <li v-for="post in posts" :key="post.path" class="archives-list-item">
       <router-link :to="post.path">
         <time>{{post.date.join("-")}}</time>
         <span>{{post.title}}</span>
@@ -9,7 +9,7 @@
     <list-nav v-if="prev || next"
               :prev="prev" :next="next">
     </list-nav>
-  </ul>
+  </transition-group>
 </template>
 
 <script>
@@ -52,10 +52,22 @@ export default {
 };
 </script>
 
-<style lang="stylus">
+<style lang="stylus" scoped>
 @import '../css/variable'
 
-ul#main.archives-list
+// 动画设置
+.archives-list-item
+  transition all .5s ease
+.archives-list-enter
+  opacity 0
+  transform translateX(-30px)
+.archives-list-leave-active
+  opacity 0
+  width 795px
+  position absolute
+  transform translateX(30px)
+
+ul#main
   float right
   list-style none
   padding 0
@@ -63,9 +75,9 @@ ul#main.archives-list
   width 800px
   li
     background #fafafa
+    display block
     margin-bottom 0.125em
     margin-right 5px
-    width 100%
     box-shadow 0 0 3px color-gray
     a
       display block
