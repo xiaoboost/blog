@@ -68,7 +68,7 @@ export default {
       display block
       transition color 0.2s
       margin 0.4em 0 0 1.5em
-    a.current
+    a.router-link-active
       color color-orange
 
 #container > aside.tags > ul
@@ -81,7 +81,7 @@ export default {
     margin .3125em
     padding .125em .3125em
     background lighten(color-gray, 30%)
-  a.current
+  a.router-link-active
     background lighten(color-gray, 50%)
 
 // 左侧边栏屏幕匹配
