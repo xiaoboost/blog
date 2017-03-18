@@ -116,7 +116,8 @@ header ul
     float left
     > a
       padding 0.2em 1.5em
-      &:hover
+      &:hover,
+      &.router-link-active
         color color-font-nav
     > form.search
       padding 0.1em 0 0 1em

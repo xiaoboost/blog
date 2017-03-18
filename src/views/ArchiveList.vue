@@ -16,18 +16,6 @@
 import { ajax } from '@/util';
 import listNav from '@/components/ListNav';
 
-// 获取页面数据
-function getPage(params) {
-    const { archive, key, page } = params,
-        ans = (key !== '$first')
-            ? Promise.resolve(key)
-            : ajax(`/api/${archive}/aside`)
-            .then((list) => Promise.resolve(list[0].key));
-
-    return ans
-        .then(($key) => ajax(`/api/${archive}/${$key}/${page}`));
-}
-
 export default {
     data() {
         return {
@@ -37,13 +25,25 @@ export default {
         };
     },
     beforeRouteEnter(to, from, next) {
-        getPage(to.params)
-            .then((page) => next((vm) => Object.assign(vm, page)));
+        const { archive, key, page } = to.params;
+        if (key === '$first') {
+            ajax(`/api/${archive}/aside`)
+                .then((list) => next(`/${archive}/${list[0].key}/page0`));
+        } else {
+            ajax(`/api/${archive}/${key}/${page}`)
+                .then((page) => next((vm) => Object.assign(vm, page)));
+        }
     },
     watch: {
         $route() {
-            getPage(this.$route.params)
-                .then((page) => Object.assign(this, page));
+            const { archive, key, page } = this.$route.params;
+            if (key === '$first') {
+                ajax(`/api/${archive}/aside`)
+                    .then((list) => this.$router.push(`/${archive}/${list[0].key}/page0`));
+            } else {
+                ajax(`/api/${archive}/${key}/${page}`)
+                    .then((page) => Object.assign(this, page));
+            }
         }
     },
     components: {
