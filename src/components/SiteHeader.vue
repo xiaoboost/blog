@@ -1,18 +1,19 @@
 <template>
   <header>
     <div>
-      <div id="logo-img">
-        <router-link to="/"><img src="/img/logo.png"></router-link>
+      <div class="header-logo">
+        <router-link to="/" class="header-logo"><img src="/img/logo.png"></router-link>
       </div>
-      <div id="logo-text">
+      <div class="header-desc">
         <h1><router-link to="/">{{title}}</router-link></h1>
-        <h2>{{subtitle}}</h2>
+        <h2>
+          <span>{{subtitle}}</span>
+          <span class="header-links">
+            <router-link v-for="(href, text) in headerLinks"
+                         :to="href" :key="text">{{text}}</router-link>
+          </span>
+        </h2>
       </div>
-      <ul>
-        <li v-for="(href, text) in headerLinks">
-          <router-link :to="href">{{text}}</router-link>
-        </li>
-      </ul>
     </div>
   </header>
 </template>
@@ -53,40 +54,32 @@ header
   padding 0
   position relative
   overflow hidden
-  @media phone
-    padding-bottom 1em
+  user-select none
   > div
     width width-main
     margin 0 auto
+    display flex
     @media medium
       width 90%
       margin 0 auto
-  a
-    display block
-    color color-white
 
-div#logo-img
-  float left
-  transform translateY(1em)
+header a
+  color color-white
+
+div.header-logo img
   width 5.5em
+  padding-top .5em
   @media phone
     width 3.85em
-    transform translateY(0.7em)
-  img
-    width 5.5em
-    @media phone
-      width 3.85em
-div#logo-text
-  float left
-  width calc(100% - 6em)
+    padding-top .3em
+
+div.header-desc
+  flex-grow 1
+  padding .1em 0 0 1em
   font-size 1em
-  margin-left 0.5em
-  transform translateY(0.7em)
   @media phone
     font-size 0.7em
   > h1
-    width 86%
-    margin 0
     font-family font-title-family
     line-height line-height
     font-size 2.8em
@@ -94,54 +87,41 @@ div#logo-text
     font-smoothing()
   > h2
     margin 0
-    font-size 1.1em
+    font-size 1em
     font-weight normal
-
-header ul
-  float right
-  width auto
-  max-height none
-  font-size 1em
-  transition max-height 1s ease-out
-  list-style none
-  transform translateY(-0.5em)
-  @media phone
-    font-size .7em
-    transform translateY(1em)
-    //在手机端，搜索框不显示
-    //现在搜索框整个去掉了
-    //> li:last-child
-    //  display none
-  > li
-    float left
+    font-smoothing()
+  .header-links
+    float right
     > a
       padding 0.2em 1.5em
       &:hover,
       &.router-link-active
         color color-font-nav
-    > form.search
-      padding 0.1em 0 0 1em
-      input
-        -webkit-appearance textfield
-        font-size 0.87em
-        line-height line-height+0.2
-        border 2px solid color-white
-        color color-white
-        background transparent
-        border-radius 30px
-        padding-left 0.5em
-        width 8em
-        transition .5s width
-        &:focus
-          width 15em
-      label
-        display none
-
-/*搜索框提示字体设置*/
+/*
+// 搜索框样式，暂存
+form.search
+  padding 0.1em 0 0 1em
+  input
+    -webkit-appearance textfield
+    font-size 0.87em
+    line-height line-height+0.2
+    border 2px solid color-white
+    color color-white
+    background transparent
+    border-radius 30px
+    padding-left 0.5em
+    width 8em
+    transition .5s width
+    &:focus
+      width 15em
+  label
+    display none
+// 搜索框提示字体设置
 ::-moz-placeholder,
 :-ms-input-placeholder,
 ::-webkit-input-placeholder
   font-family font-default
   color color-white
   padding 2px 0 0 4px
+*/
 </styles>
