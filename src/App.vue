@@ -23,6 +23,7 @@ export default {
 @import './css/variable'
 @import './css/font'
 @import './css/public'
+@import './css/post'
 
 body, html
   height 100%
