@@ -32,9 +32,11 @@
  * 注：1. 想要在文档中显示上述特殊符号，需要使用反斜杠转义 "\"
  *       比如，想在行内代码中使用含有下划线的变量，就需要这样 `\_a\_`
  *       但是，当你把本脚本当作是网页脚本去渲染字符串时，那么就需要两个反斜杠转义 `\\_a\\_`
- *    2. link、image、以及两个代码元素，如果它们包含有特殊字符（& < > " '），那么特殊字符将会被转义
- *    3. 除开第2点中指出的元素，其余元素的数据默认都不会转义
- *    4. 在区段元素中，mathblock、mathinline、sub、sup、text内部不会再继续进行行内渲染，而其余元素内部将会继续（递归）
+ *    2. 在区段元素中，mathblock、mathinline、sub、sup、codespan、text内部不会再继续进行行内渲染，而其余元素内部将会继续（递归）
+ *    3. 两个数学公式元素的默认渲染器不会对内容做任何处理，需要单独引用外部渲染器
+ *    4. 特殊字符（& < > " '）默认将会全部被转义，但是有两种例外情况：
+ *       1. 数学公式元素不会对内容做任何处理
+ *       2. em、bold、txt以及image和link的title部分，它们将会保留上下标（<sub>、<sup>）
  */
 
 (function() {
@@ -58,6 +60,12 @@
             .replace(/>/g, '&gt;')
             .replace(/"/g, '&quot;')
             .replace(/'/g, '&#39;');
+    }
+    //排除上下标的特殊字符转义
+    function escapeEx(html) {
+        return escape(html)
+            .replace(/&lt;(\/?sub)&gt;/g, '<$1>')
+            .replace(/&lt;(\/?sup)&gt;/g, '<$1>');
     }
 
     //渲染器定义
@@ -316,21 +324,21 @@
                 href = cap[2];
 
                 out += (cap[0].charAt(0) !== '!')
-                    ? render.link(href, title, escape(inlineLexer(cap[1], render)))
-                    : render.image(href, title, escape(inlineLexer(cap[1], render)));
+                    ? render.link(href, title, escapeEx(inlineLexer(cap[1], render)))
+                    : render.image(href, title, escapeEx(inlineLexer(cap[1], render)));
 
                 continue;
             }
             // strong       粗体
             if (cap = inline.strong.exec(src)) {
                 src = src.substring(cap[0].length);
-                out += render.strong(inlineLexer(cap[2] || cap[1], render));
+                out += render.strong(escapeEx(inlineLexer(cap[2] || cap[1], render)));
                 continue;
             }
             // em           斜体
             if (cap = inline.em.exec(src)) {
                 src = src.substring(cap[0].length);
-                out += render.em(inlineLexer(cap[2] || cap[1], render));
+                out += render.em(escapeEx(inlineLexer(cap[2] || cap[1], render)));
                 continue;
             }
             // code         行内代码
@@ -342,25 +350,25 @@
             // del          删除线
             if (cap = inline.del.exec(src)) {
                 src = src.substring(cap[0].length);
-                out += render.del(inlineLexer(cap[1], render));
+                out += render.del(escape(inlineLexer(cap[1], render)));
                 continue;
             }
             // sub          下标
             if (cap = inline.sub.exec(src)) {
                 src = src.substring(cap[0].length);
-                out += render.sub(cap[1]);
+                out += render.sub(escape(cap[1]));
                 continue;
             }
             // sup          上标
             if (cap = inline.sup.exec(src)) {
                 src = src.substring(cap[0].length);
-                out += render.sup(cap[1]);
+                out += render.sup(escape(cap[1]));
                 continue;
             }
             // text         纯文本
             if (cap = inline.text.exec(src)) {
                 src = src.substring(cap[0].length);
-                out += render.text(cap[0]);
+                out += render.text(escape(cap[0]));
                 continue;
             }
 
