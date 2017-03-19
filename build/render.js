@@ -64,7 +64,7 @@ renderer.code = function(code, lang) {
 };
 //图片渲染
 renderer.image = function(href, title, text) {
-    const spantitle = (title ? title : text).unescape(),
+    const spantitle = (title ? title : text),
         tagtitle = spantitle.clearTag();
 
     return (
