@@ -14,9 +14,9 @@ renderer.paragraph = function(text) {
         text.trim().split('\n').map(function(n){
             if (n.search(space) !== -1) {
                 //子元素是整行格式，那么当前span行就不能有前置空格，添加space类
-                return ('<span class="space">' + n + '<\/span>');
+                return (`<span class="space">${n}</span>`);
             } else {
-                return ('<span>' + n + '<\/span>');
+                return (`<span>${n}</span>`);
             }
         }).join('\n')
         + '</p>\n'
@@ -46,20 +46,20 @@ renderer.code = function(code, lang) {
         text = lan
             ? highlight.highlight(lan, code)
             : highlight.highlightAuto(code),
+        // 代码本体
         content = text.value.trim().split('\n')
-            .map((n) => ('<li>' + n + '<\/li>'));
-
-    //代码行号
-    const list = '<ul class="gutter">' +
-        new Array(content.length).fill(0)
-            .map((n, i) => ('<li>' + (i + 1) + '<\/li>'))
-            .join('') +
-        '<\/ul>';
+            .map((n) => (`<li>${n}<\/li>`)),
+        //代码行号
+        list = new Array(content.length).fill(0)
+            .map((n, i) => (`<li>${(i + 1)}</li>`));
 
     return (
-        '<pre class="' + lan + '"><code>' + list +
-        '<ul class="code">' + content.join('') + '<\/ul>' +
-        '<\/code><\/pre>'
+        `<pre class="${lan}">` +
+            '<code>' +
+                `<ul class="gutter">${list.join('')}</ul>` +
+                `<ul class="code">${content.join('')}</ul>` +
+            '</code>' +
+        '</pre>'
     );
 };
 //图片渲染
@@ -68,9 +68,8 @@ renderer.image = function(href, title, text) {
         tagtitle = spantitle.clearTag();
 
     return (
-        '<img class="img-block" src="' + href + '" ' +
-        'alt="' + tagtitle + '" title="' + tagtitle + '">' +
-        '<span class="img-title">' + spantitle + '</span>'
+        `<img class="img-block" src="${href}" alt="${tagtitle}" title="${tagtitle}">` +
+        `<span class="img-title">${spantitle}</span>`
     );
 };
 //行内公式
@@ -85,9 +84,9 @@ renderer.mathblock = function(math) {
 //上标
 renderer.sup = function(text) {
     if (text === '注') {
-        return '<sup class="label">' + text + '</sup>';
+        return `<sup class="label">${text}</sup>`;
     } else {
-        return '<sup>' + text + '</sup>';
+        return `<sup>${text}</sup>`;
     }
 };
 
