@@ -1,0 +1,274 @@
+//文章正文样式
+#main.post .post-content
+  padding 1.5em 4%
+  font-size 1.15em
+  color #555
+  p, blockquote, ul, ol, dl, table
+    margin 0.8em 0
+  //分段
+  p
+    line-height line-height + 0.2
+    @media phone
+      line-height line-height - 0.1
+    > span
+      display block
+      //每段的前置空格
+      text-indent 2em
+      //行内公式
+      span.katex
+        display inline
+        > span
+          display none
+        > span.katex-html
+          display inherit
+      //块级公式
+      span.katex-display
+        margin 0.5em 0
+      //整行元素不需要前置空格
+      &.space
+        text-indent 0
+      //图片，块级元素，居中
+      img.img-block
+        max-width 100%
+        display block
+        margin 0 auto
+      //图片标题，块级元素，居中
+      span.img-title
+        color color-black
+        font-size 0.8em
+        text-align center
+        display block
+        margin 0.4em 0 0.5em
+  //单行内的强调
+  code
+    color color-code
+    background-color lighten(color-code, 50)
+    border-radius 10%
+    font-family font-mono
+    padding 0 5px
+    margin 0 2px
+    font-size 0.9em
+    white-space nowrap
+  //分隔符
+  hr
+    height 4px
+    padding 0
+    margin 16px 0
+    background-color #ddd
+    border 0 none
+    overflow hidden
+    box-sizing content-box
+    border-bottom 1px solid #ddd
+  //链接
+  a
+    color color-theme
+  //标题
+  h1,h2,h3,h3,h4,h5,h6
+    color color-black
+    position relative
+    margin 1em 0 0.3em 0
+    font-weight bold
+    line-height 1.4
+  h1
+    padding 0 0 .3em 0
+    font-size 2.25em
+    border-bottom 4px solid color-gray
+  h2
+    border-bottom 2px solid color-gray
+    font-size 1.75em
+    padding 0 0 .3em 0
+  h3
+    font-size 1.5em
+  h4
+    font-size 1.25em
+  h5, h6
+    font-size 1em
+  //列表
+  ul,ol
+    padding-left 1.5em
+  ol p,
+  li p,
+  ul p
+    margin 0
+    span
+      text-indent 0
+  li ol
+    margin 0
+  blockquote
+    padding 10px 20px
+    border-left 0.3em solid color-theme
+    margin 1em 0
+    line-height 1.5
+    font-size 90%
+    background #f2f2f2
+    color #888
+  //表格
+  table, th, td
+    border 1px solid lighten(color-gray,30%)
+    border-collapse collapse
+  table
+    width 100%
+    overflow-x auto
+    th
+      font-weight bold
+      padding 0.2em 0.8em
+    td
+      padding 0.4em 0.8em
+    tr
+      border-radius 0
+    tbody tr:nth-child(2n),
+    thead tr
+      background lighten(color-gray,75%)
+
+//文章本体、列表、引用 首元素没有顶部空格，底部元素没有底部空格
+#main.post .post-content,
+#main.post .post-content blockquote
+  > :first-child
+    margin-top 0
+  > :last-child
+    margin-bottom 0
+
+//自定义类
+.post .post-content
+  .note,.warning,.translator
+    padding 10px 20px
+    margin 1em 0
+    line-height line-height
+    font-size 90%
+    background #f2f2f2
+    color #888
+    &:before
+      display block
+      position absolute
+      width 1.6em
+      height 1.6em
+      border-radius 50%
+      font-size 0.8em
+      color #fff
+      text-align center
+      transform translateX(-2.4em)
+  .note
+    border-left .3em solid #6c6
+    &:before
+      background-color #6c6
+      font-family font-icon-family
+      content "\f0e5"
+  .warning
+    border-left .3em solid #f66
+    &:before
+      background-color #f66
+      font-family font-icon-family
+      content "\f12a"
+  .translator
+    border-left .3em solid #d8d800
+    &:before
+      background-color #d8d800
+      content "译"
+  //译注的上标
+  sup.label
+    background-color #d8d800
+    padding 0
+    top -0.6em
+
+//文章中鼠标选中文字的颜色
+#container
+  ::selection
+    background lighten(#0080ff, 70%)
+    text-shadow none
+  .post-content pre code ul li
+    ::selection
+      color #c0c5ce
+      text-shadow none
+
+//代码高亮部分
+#main.post article.post-content pre
+  text-shadow none
+  padding 0em 0 0 0.5em
+  background-color #2b303b
+  position relative
+  font-size 0.9em
+  margin 0.8em 0
+  @media phone
+    font-size 0.8em
+  ul
+    padding 0
+    margin 0
+    list-style-type none
+    &.gutter
+      float left
+      padding-right .5em
+      > li
+        text-align right
+        color #5a5a5a
+    &.code
+      overflow-x auto
+      > li:after
+        content "　"
+  li
+    padding 0
+    margin 0
+    display block
+    width 100%
+  code
+    margin 0
+    padding 0
+    overflow-wrap normal
+    white-space inherit
+    color color-pre
+    background-color #2b303b
+    display block
+  &:before
+    position absolute
+    right 0
+    padding 0.2em 0.5em
+    font-size .8em
+    color #8a8a8a
+    font-family font-mono
+    text-shadow none
+    content 'CODE'
+  &.javascript:before
+    content 'JavaScript'
+  &.c:before
+    content 'C'
+  &.cpp:before
+    content 'C++'
+  &.python:before
+    content 'python'
+  &.bash:before
+    content 'BASH'
+  &.html:before
+    content 'HTML'
+
+pre code span
+  color #c0c5ce
+  &.hljs-tag
+    color #c0c5ce
+    .hljs-name
+      color #B55B5F
+    .hljs-attr
+      color #D08770
+  &.hljs-string
+    color #a3be8c
+  &.hljs-keyword
+    color #b48ead
+  &.hljs-built_in
+    color #EBCB8B
+  &.hljs-comment
+    color #65737e
+  &.hljs-type
+    color #4271ae
+  &.hljs-literal,
+  &.hljs-number
+    color #d08770
+  &.hljs-attribute
+    color #f5871f
+  &.hljs-attribute-value
+    color #3e999f
+  &.hljs-declaration
+    color #f5871f
+  &.hljs-variable-name
+    color #c82829
+  &.hljs-function-name
+    color #4271ae
+  &.hljs-punctuation
+    color #4d4d4c
