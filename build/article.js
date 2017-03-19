@@ -260,10 +260,7 @@ class post {
     //根据文章生成目录
     createToc() {
         //生成目录
-        const {
-            content,
-            tocTree
-        } = createTocTree(this.content);
+        const { content, tocTree } = createTocTree(this.content);
         //简略版目录树
         this.toc = simpleTocTree(tocTree);
         //更新文章正文
@@ -276,7 +273,9 @@ class post {
         //给图片增加标号
         this.imageLabel();
         //如果没有设置toc或者toc为true，那么生成目录
-        if (this.toc !== 'false') {
+        if (this.toc === 'false') {
+            this.toc = false;
+        } else {
             this.createToc();
         }
     }

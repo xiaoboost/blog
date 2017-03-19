@@ -74,7 +74,6 @@ function cloneObj(from) {
     }
     return (ans);
 }
-
 //数组深复制，不考虑循环引用的情况
 function cloneArr(from) {
     return from.map((n) => {
@@ -88,4 +87,15 @@ function cloneArr(from) {
     });
 }
 
-export { ajax, cloneObj, cloneArr };
+// 复制输入值
+function clone(from) {
+    if (from instanceof Array) {
+        return cloneArr(from);
+    } else if (from instanceof Object) {
+        return cloneObj(from);
+    } else {
+        return (from);
+    }
+}
+
+export { ajax, clone };

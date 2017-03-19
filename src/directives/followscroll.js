@@ -23,6 +23,8 @@ export default {
             }
         };
         document.addEventListener('scroll', el.__vueFollowScroll__);
+        // 绑定之后马上运行一次事件
+        el.__vueFollowScroll__();
     },
     unbind(el) {
         document.removeEventListener('scroll', el.__vueFollowScroll__);
