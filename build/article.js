@@ -15,24 +15,6 @@ Object.assign(String.prototype, {
     clearTag() {
         return this.replace(/<\/?[\d\D]+?>/g, '');
     },
-    //中文转码为英文
-    toUrl() {
-        return encodeURIComponent(this)
-            .replace(/%/g, '');
-    },
-    //路径斜杠的处理，反正统一转化为 '/'
-    normalize() {
-        return this.replace(/[\/\\]+/g, '\/');
-    },
-    //特殊字符转义
-    unescape() {
-        return this
-            .replace(/&amp;/g, '&')
-            .replace(/&lt;/g, '<')
-            .replace(/&gt;/g, '>')
-            .replace(/&quot;/, '"')
-            .replace(/&#39;/, '"');
-    },
     //为正整数左边补0
     zfill(size) {
         const s = '000000000000000' + this;

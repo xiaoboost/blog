@@ -320,7 +320,7 @@
             if (cap = inline.link.exec(src)) {
                 src = src.substring(cap[0].length);
 
-                title = cap[3] ? escape(cap[3]) : null;
+                title = cap[3] ? escapeEx(cap[3]) : null;
                 href = cap[2];
 
                 out += (cap[0].charAt(0) !== '!')
