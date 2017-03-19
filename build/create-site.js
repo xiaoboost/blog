@@ -1,5 +1,6 @@
 const fs = require('fs'),
     path = require('path'),
+    chokidar = require('chokidar'),
     Post = require('./article'),
     per_post = require('../config/site').per_post,
     //文章路径
@@ -186,5 +187,11 @@ function create() {
 
 // 首次运行
 create();
+
+if (process.env.NODE_ENV === 'development') {
+    chokidar.watch(mdFiles, {ignored: /[\/\\]\./})
+        .on('change', create)
+        .on('unlink', create);
+}
 
 module.exports = site;
