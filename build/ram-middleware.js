@@ -21,9 +21,9 @@ class readRam extends Readable {
         const peer = this._peer,
             index = this._index,
             max = this._cache.length,
-            frag = (index <= max) ?
-            Buffer.from(this._cache, index, peer) :
-            null;
+            frag = (index <= max)
+                ? Buffer.from(this._cache, index, peer)
+                : null;
 
         this._index = index + peer;
         this.push(frag);
@@ -42,8 +42,8 @@ function ramMiddleware(site) {
         }
 
         const url = parseUrl(req)
-            .pathname
-            .replace(/\//g, '\\'),
+                .pathname
+                .replace(/\//g, '\\'),
             isPost = /\\post\\/.test(url);
 
         let content = site[url];
