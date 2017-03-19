@@ -1,6 +1,6 @@
 <template>
   <article id="container">
-    <div class="post" id="main">
+    <div :class="['post', {'post-center': !toc}]" id="main">
       <header>
         <p>{{title}}</p>
         <p>发表于：{{date.join('-')}}</p>
@@ -18,7 +18,7 @@
         </router-link>
       </nav>
     </div>
-    <page-aside>
+    <page-aside v-if="!!toc">
       <p class="toc-title">文章目录</p>
       <post-toc :tocTree="toc" :nav="tocNav"></post-toc>
     </page-aside>
@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import { ajax, cloneArr } from '@/util';
+import { ajax, clone } from '@/util';
 import postToc from '@/components/PostToc';
 import pageAside from '@/components/PageAside';
 import postFooter from '@/components/PostFooter';
@@ -62,7 +62,7 @@ export default {
     },
     computed: {
         cacheToc() {
-            return cloneArr(this.toc);
+            return clone(this.toc);
         }
     },
     methods: {

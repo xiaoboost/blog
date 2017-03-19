@@ -14,7 +14,7 @@
 
 <script>
 import scrollto from '@/directives/scrollto';
-import { ajax, cloneArr } from '@/util';
+import { ajax, clone } from '@/util';
 
 export default {
     name: 'post-toc',
@@ -46,7 +46,7 @@ export default {
     },
     computed: {
         cacheTree() {
-            return cloneArr(this.tocTree);
+            return clone(this.tocTree);
         }
     },
     methods: {
