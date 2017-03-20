@@ -36,7 +36,7 @@
  *    3. 两个数学公式元素的默认渲染器不会对内容做任何处理，需要单独引用外部渲染器
  *    4. 尖括号（< >）默认将会全部被转义，但是有两种例外情况：
  *       1. 数学公式元素不会对内容做任何处理
- *       2. em、bold、txt以及image和link的title部分，它们将会保留上下标（<sub>、<sup>）
+ *       2. em、bold、txt以及image和link的title部分，它们将会保留上下标和行内代码（<sub>、<sup>、<code>）
  */
 
 (function() {
@@ -65,7 +65,8 @@
     function escapeEx(html) {
         return escape(html)
             .replace(/&lt;(\/?sub)&gt;/g, '<$1>')
-            .replace(/&lt;(\/?sup)&gt;/g, '<$1>');
+            .replace(/&lt;(\/?sup)&gt;/g, '<$1>')
+            .replace(/&lt;(\/?code)&gt;/g, '<$1>');
     }
 
     //渲染器定义
