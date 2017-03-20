@@ -48,7 +48,7 @@ markdown解析器修改自[marked](https://github.com/chjj/marked)开源项目�
 3. 两个数学公式元素的默认渲染器不会对内容做任何处理，需要单独引用外部渲染器。
 4. 尖括号（&lt; &gt;）默认将会全部被转义，但是有两种例外情况：
    1. 渲染器不会对数学公式元素的内容做任何处理
-   2. em、bold、txt以及image和link的title部分，渲染器将会保留它们的上下标（&lt;sub&gt;、&lt;sup&gt;）
+   2. em、bold、txt以及image和link的title部分，渲染器将会保留它们的上下标和行内代码（&lt;sub&gt;、&lt;sup&gt;、&lt;code&gt;）
 
 ## 许可
 MIT License
