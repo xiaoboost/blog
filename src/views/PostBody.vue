@@ -74,7 +74,7 @@ export default {
                     if (!toc[i].el) {
                         toc[i].el = doc.getElementById(toc[i].bolt);
                     }
-                    const offsetTop = toc[i].el.offsetTop;
+                    const offsetTop = toc[i].el.offsetTop - 30;
                     // 如果当前元素在视窗上方
                     if (offsetTop < viewTop) {
                         const childBolt = toc[i].child && search(toc[i].child);
