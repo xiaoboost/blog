@@ -34,7 +34,7 @@
  *       但是，当你把本脚本当作是网页脚本去渲染字符串时，那么就需要两个反斜杠转义 `\\_a\\_`
  *    2. 在区段元素中，mathblock、mathinline、sub、sup、codespan、text内部不会再继续进行行内渲染，而其余元素内部将会继续（递归）
  *    3. 两个数学公式元素的默认渲染器不会对内容做任何处理，需要单独引用外部渲染器
- *    4. 特殊字符（& < > " '）默认将会全部被转义，但是有两种例外情况：
+ *    4. 尖括号（< >）默认将会全部被转义，但是有两种例外情况：
  *       1. 数学公式元素不会对内容做任何处理
  *       2. em、bold、txt以及image和link的title部分，它们将会保留上下标（<sub>、<sup>）
  */
@@ -55,11 +55,11 @@
     //特殊字符转义
     function escape(html) {
         return html
-            .replace(/&/g, '&amp;')
+            //.replace(/&/g, '&amp;')
             .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#39;');
+            .replace(/>/g, '&gt;');
+            //.replace(/"/g, '&quot;')
+            //.replace(/'/g, '&#39;');
     }
     //排除上下标的特殊字符转义
     function escapeEx(html) {
