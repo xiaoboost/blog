@@ -1,6 +1,6 @@
 <template>
   <aside>
-    <div v-followscroll="{bias: 115, callback: fixAside}"
+    <div v-followscroll="{bias: 95, callback: fixAside}"
          :class="{ 'fixed': fixed }">
       <slot></slot>
     </div>
