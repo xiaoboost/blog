@@ -61,30 +61,13 @@ Vue.prototype.$t = function(str) {
 //对象深复制，不考虑循环引用的情况
 function cloneObj(from) {
     const ans = {};
-    for (const i in from) {
-        if (from.hasOwnProperty(i)) {
-            if (from[i] instanceof Array) {
-                ans[i] = cloneArr(from[i]);
-            } else if (from[i] instanceof Object) {
-                ans[i] = cloneObj(from[i]);
-            } else {
-                ans[i] = from[i];
-            }
-        }
-    }
+    Object.keys(from).forEach((key) => ans[key] = clone(from[key]));
+
     return (ans);
 }
 //数组深复制，不考虑循环引用的情况
 function cloneArr(from) {
-    return from.map((n) => {
-        if (n instanceof Array) {
-            return (cloneArr(n));
-        } else if (n instanceof Object) {
-            return (cloneObj(n));
-        } else {
-            return (n);
-        }
-    });
+    return from.map((n) => clone(n));
 }
 
 // 复制输入值
