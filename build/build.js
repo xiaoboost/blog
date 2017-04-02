@@ -13,6 +13,8 @@ const // 一个比较漂亮的loading界面
     chalk = require('chalk'),
     webpack = require('webpack'),
     config = require('../config'),
+    // 字体压缩任务
+    fontMin = require('./font-min'),
     // 生成博客网站
     site = require('./create-site'),
     // 读取生产环境的配置
@@ -73,6 +75,16 @@ status = status.then(() => {
             if (e) rej(e);
             fs.writeFile(path.join(output, 'CNAME'), data, res);
         });
+    });
+}).then(() => {
+    // 压缩字体
+    return new Promise((res, rej) => {
+        const text = Object.keys(site)
+            .filter((url) => site[url].hasOwnProperty('content'))
+            .map((url) => (site[url].excerpt.join('') + site[url].content));
+
+        fontMin(text).then(res)
+            .catch((e) => rej(e));
     });
 });
 
