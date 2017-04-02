@@ -3,11 +3,16 @@
 
 // 斜体样式重载
 customfont("EM-Lora", "/font/Lora/Lora-Italic", normal, normal)
+
 #main.post .post-content em
   font-style normal
   text-decoration none
   font-family "EM-Lora", font-default
   background-image linear-gradient(to top, transparent, transparent 0px, #b7b7b7 0px, #b7b7b7 1px, transparent 1px)
+  text-shadow -1px -1px 0 #fafafa,
+      1px -1px 0 #fafafa,
+      -1px 1px 0 #fafafa,
+      1px 1px #fafafa;
 
 //文章正文样式
 #main.post .post-content
