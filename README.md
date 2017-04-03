@@ -1,14 +1,13 @@
 # 博客生成器
-
 自己用的博客生成器，使用vue架构。  
 
 [Dreaming Cat](http://www.dreamingcat.me)
 
 ## 相关说明
-数学公式是使用[`katex`](https://github.com/Khan/KaTeX)进行解析的。  
+数学公式是使用`katex`进行解析的。  
 
 ## markdown
-markdown解析器修改自[marked](https://github.com/chjj/marked)开源项目。  
+markdown解析器修改自`marked`开源项目。  
 我删除了一些我觉得很繁琐的规则，添加了一些我自己常用的“方言”，并修改了部分格式的规则。  
 
 ### 区块元素
@@ -50,5 +49,10 @@ markdown解析器修改自[marked](https://github.com/chjj/marked)开源项目�
    1. 渲染器不会对数学公式元素的内容做任何处理
    2. em、bold、txt以及image和link的title部分，渲染器将会保留它们的上下标和行内代码（&lt;sub&gt;、&lt;sup&gt;、&lt;code&gt;）
 
+## 链接
+- [Vue](https://github.com/vuejs/vue)
+- [katex](https://github.com/Khan/KaTeX)
+- [marked](https://github.com/chjj/marked)
+
 ## 许可
-MIT License
+[MIT](http://opensource.org/licenses/MIT) License
