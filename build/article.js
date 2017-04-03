@@ -16,8 +16,8 @@ Object.assign(String.prototype, {
         return this.replace(/<\/?[\d\D]+?>/g, '');
     },
     //为正整数左边补0
-    zfill(size) {
-        const s = '000000000000000' + this;
+    padStart(size, str) {
+        const s = Array(50).fill(str).join('') + this;
         return s.substr(s.length - size);
     }
 });
@@ -34,6 +34,13 @@ Object.assign(Math, {
         return (Math.floor(Math.log10(number)) + 1);
     }
 });
+
+//生成标题的锚点
+function createBolt(str) {
+    return 'B' + encodeURIComponent(str)
+        .replace(/%/g, '')
+        .replace(/[^a-zA-Z0-9\-_]/g, '-');
+}
 
 //生成标准目录树，并返回与之对应的修改过的正文
 function createTocTree(content) {
@@ -61,16 +68,12 @@ function createTocTree(content) {
             const tocTitle = cap[1].replace(/<\/?[\d\D]+?>/g, ''),
                 last = headList[hash[hash.length - 1]];
             //跳转用的锚
-            let bolt = tocTitle;
+            let bolt = createBolt(tocTitle);
 
             //寻找可用的锚
             while (name[bolt]) {
                 const _bolt = bolt.split('-');
-                if (_bolt.length === 1) {
-                    bolt = bolt + '-1';
-                } else {
-                    bolt = _bolt[0] + '-' + (Number(_bolt[1]) + 1);
-                }
+                bolt = _bolt[0] + '-' + (Number(!!_bolt[1]) + 1);
             }
             //记录锚点
             name[bolt] = true;
@@ -137,7 +140,7 @@ function renderTocTree(tocTree) {
         return (ans + '</ol>');
     }(tocTree, '', 'toc');
 }
-//生成简略目录树，将删除标准目录树多余以及循环引用部分
+//生成简略目录树，删除标准目录树中多余及循环引用的部分
 function simpleTocTree(tocTree) {
     return tocTree.map((node) => {
         const ans = Object.assign({}, node);
@@ -227,7 +230,7 @@ class post {
             cap = void 0;
 
         while (cap = imageReg.exec(main)) {
-            const num = String(index).zfill(rank),
+            const num = String(index).padStart(rank, '0'),
                 elem = `${cap[1]}图${num}　${cap[2]}${cap[3]}`;
 
             index++;
