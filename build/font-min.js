@@ -2,9 +2,9 @@ const Fontmin = require('fontmin'),
     chalk = require('chalk');
 
 // 配置字体压缩任务
-function compressor(text) {
+function compressor(text, src, output) {
     return new Fontmin()
-        .src('./static/font/inziu-iosevka/inziu-iosevkaCC-SC-Regular.ttf')
+        .src(src)
         .use(Fontmin.glyph({
             text,
             hinting: false
@@ -14,14 +14,13 @@ function compressor(text) {
         .use(Fontmin.ttf2woff({
             deflate: true
         }))
-        .dest('./fonts/');
+        .dest(output);
 }
 
-module.exports = function(text) {
+module.exports = function(text, src, output) {
     const fontSet = text.reduce((set, text) => new Set([...set, ...text]), new Set()),
-        task = compressor(Array.from(fontSet).join('').replace(/[\x00-\xff]/g, ''));
-
-    debugger;
+        texts = Array.from(fontSet).join('').replace(/[\x00-\xff]/g, ''),
+        task = compressor(texts, src, output);
 
     return new Promise((resolve, reject) => {
         task.run((err, files) => {
