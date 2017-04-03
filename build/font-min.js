@@ -29,7 +29,7 @@ module.exports = function(text, src, output) {
             }
 
             console.log(chalk.green('INFO: ') + '字体压制结束');
-            resolve();
+            resolve(files);
         });
     });
 };
