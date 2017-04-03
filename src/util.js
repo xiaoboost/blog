@@ -31,7 +31,7 @@ function get(input) {
                     getData[url] = JSON.parse(oAjax.responseText);
                     res(getData[url]);
                 } else {
-                    rej();
+                    rej(oAjax);
                 }
             }
         };
@@ -40,10 +40,10 @@ function get(input) {
 //ajax方法
 function ajax(urls) {
     if (typeof urls === 'string') {
-        return get(urls).catch(() => {});
+        return get(urls).catch((e) => console.info(e));
     } else if (urls instanceof Array) {
         return Promise.all(urls.map((url) => get(url)))
-            .catch(() => {});
+            .catch((e) => console.info(e));
     }
 }
 //部分英汉转换
@@ -61,16 +61,13 @@ Vue.prototype.$t = function(str) {
 
 //对象深复制，不考虑循环引用的情况
 function cloneObj(from) {
-    const ans = {};
-    Object.keys(from).forEach((key) => ans[key] = clone(from[key]));
-
-    return (ans);
+    return Object.keys(from)
+        .reduce((obj, key) => (obj[key] = clone(from[key]), obj), {});
 }
 //数组深复制，不考虑循环引用的情况
 function cloneArr(from) {
     return from.map((n) => clone(n));
 }
-
 // 复制输入值
 function clone(from) {
     if (from instanceof Array) {
