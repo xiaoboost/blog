@@ -17,7 +17,7 @@ Object.assign(String.prototype, {
     },
     //为正整数左边补0
     padStart(size, str) {
-        const s = Array(50).fill(str).join('') + this;
+        const s = new Array(50).fill(str).join('') + this;
         return s.substr(s.length - size);
     }
 });
@@ -41,7 +41,6 @@ function createBolt(str) {
         .replace(/%/g, '')
         .replace(/[^a-zA-Z0-9\-_]/g, '-');
 }
-
 //生成标准目录树，并返回与之对应的修改过的正文
 function createTocTree(content) {
     const headTree = [],
@@ -73,8 +72,11 @@ function createTocTree(content) {
             //寻找可用的锚
             while (name[bolt]) {
                 const _bolt = bolt.split('-');
-                bolt = _bolt[0] + '-' + (Number(!!_bolt[1]) + 1);
+                bolt = _bolt.length > 1
+                    ? `${_bolt[0]}-${+_bolt[1] + 1}`
+                    : `${_bolt[0]}-1`;
             }
+
             //记录锚点
             name[bolt] = true;
             //生成节点
@@ -174,7 +176,7 @@ class post {
 
         //非法文章
         if (!article) {
-            return (false);
+            return (this);
         }
 
         //当前文章路径文件名
@@ -224,10 +226,8 @@ class post {
         }
         //图片数量的数量级
         const rank = Math.rank(total.length);
-        let main = content,
-            index = 1,
-            ans = '',
-            cap = void 0;
+        let main = content, index = 1,
+            ans = '', cap;
 
         while (cap = imageReg.exec(main)) {
             const num = String(index).padStart(rank, '0'),
