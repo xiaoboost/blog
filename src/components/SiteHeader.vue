@@ -120,7 +120,7 @@ form.search
 ::-moz-placeholder,
 :-ms-input-placeholder,
 ::-webkit-input-placeholder
-  font-family font-default
+  font-family font-content
   color color-white
   padding 2px 0 0 4px
 */
