@@ -40,9 +40,10 @@ function get(input) {
 //ajax方法
 function ajax(urls) {
     if (typeof urls === 'string') {
-        return get(urls);
+        return get(urls).catch(() => {});
     } else if (urls instanceof Array) {
-        return Promise.all(urls.map((url) => get(url)));
+        return Promise.all(urls.map((url) => get(url)))
+            .catch(() => {});
     }
 }
 //部分英汉转换
