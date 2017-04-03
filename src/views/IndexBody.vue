@@ -71,14 +71,14 @@ div.categories-list,
 div.tags-list,
 div.links-list
   overflow hidden
-  margin 1em 0 0 0
+  margin 12px 0 0 0
   float none
   width 100%
   > p
-    font-size 1.1em
+    font-size 18px
     color #2ca6cb
-    padding 0 0 0.3125em 0
-    border-bottom 0.1875em solid #ccc
+    padding 0 0 4px 0
+    border-bottom 3px solid #ccc
   > ul
     list-style none
 
@@ -89,30 +89,28 @@ div.categories-list
     border-bottom 1px solid color-gray
     a
       display block
-      padding 0.3em 0.5em
+      padding 4px 8px
       &:hover
         color color-theme
 //标签列表
 .tags-list ul
-  padding-top 0.5em
+  padding 6px 0 0 0
   li
     display inline-block
-    margin 0.2em 0
+    margin 3px 0
     a
-      margin 0.3125em
-      padding 0.125em 0.3125em
+      margin 4px
+      padding 2px 4px
       background lighten(color-gray, 30%)
       &:hover
         color color-theme
         background lighten(color-gray, 50%)
 //链接列表
 .links-list ul
-  padding 0.5em 0 0 0
+  padding 6px 0 0 0
   a
-    font-size 1em
-    line-height line-height
     display block
-    padding 0 3%
+    padding 0 8px
     &:hover
       color color-theme
       transition color .25s

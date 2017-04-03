@@ -30,23 +30,26 @@ export default {
 <style lang="stylus" scoped>
 @import '../css/variable'
 
+asideWidth = 300px
+asidePadding = 15px
+
 //侧边栏公共属性
 aside
   font-size 100%
-  margin 2em 5px 0 0
+  margin 30px 5px 0 0
   box-shadow 0 0 3px #888
   float right
-  width 300px
+  width asideWidth
   position relative
   overflow hidden
   @media medium
     display none
   > div
     background color-post
-    padding 1em
+    padding asidePadding
     box-shadow 0 0 3px #888
     &.fixed
-      width calc(300px - 2em)
+      width asideWidth - asidePadding * 2
       position fixed
       top 40px
 </style>
