@@ -97,6 +97,10 @@ div.header-desc
       &:hover,
       &.router-link-active
         color color-font-nav
+    @media phone
+      > a:last-child
+        padding-right: 0
+    
 /*
 // 搜索框样式，暂存
 form.search
