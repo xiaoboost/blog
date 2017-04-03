@@ -33,7 +33,8 @@ body, html
   font-smoothing()
   color color-font
   font-size font-size
-  font-family font-default
+  font-family font-content
+  text-shadow silver 0px 0px 1px
   background color-background
   line-height line-height
   height 100%
