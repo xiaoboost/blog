@@ -89,5 +89,10 @@ renderer.sup = function(text) {
         return `<sup>${text}</sup>`;
     }
 };
+//表格
+renderer.table = function(header, body) {
+    return `<div class="table"><table><thead>${header}</thead>` +
+        `<tbody>${body}</tbody></table></div>`;
+};
 
 module.exports = marked;
