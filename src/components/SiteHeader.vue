@@ -81,7 +81,6 @@ div.header-desc
     font-size 0.7em
   > h1
     font-family font-title-family
-    line-height line-height
     font-size 2.8em
     font-weight normal
     font-smoothing()
@@ -97,7 +96,7 @@ div.header-desc
       &:hover,
       &.router-link-active
         color color-font-nav
-    @media phone
+    @media mini
       > a:last-child
         padding-right: 0
     

@@ -32,11 +32,11 @@ body, html
 #app
   font-smoothing()
   color color-font
-  font-size font-size
+  font-size 16px
+  line-height 1.5
   font-family font-content
   text-shadow silver 0px 0px 1px
   background color-background
-  line-height line-height
   height 100%
   width 100%
   display flex
