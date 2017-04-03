@@ -20,25 +20,28 @@ import { ajax } from '@/util';
 export default {
     data() {
         return {
-            collection: []
+            collection: [],
+            archive: ''
         };
-    },
-    computed: {
-        archive() {
-            const ans = this.$route.params.archive;
-            document.title = `DC | ${this.$t(ans)}`;
-            return ans;
-        }
     },
     beforeRouteEnter(to, from, next) {
         const archive = to.params.archive;
         ajax(`/api/${archive}/aside`)
-            .then((collection) => next((vm) => vm.collection = collection));
+            .then((collection) => next((vm) => {
+                vm.collection = collection;
+                vm.archive = archive;
+                document.title = `DC | ${vm.$t(archive)}`;
+            }));
     },
     watch: {
         $route() {
-            ajax(`/api/${this.archive}/aside`)
-                .then((collection) => this.collection = collection);
+            const archive = this.$route.params.archive;
+            ajax(`/api/${archive}/aside`)
+                .then((collection) => {
+                    this.collection = collection;
+                    this.archive = archive;
+                    document.title = `DC | ${this.$t(archive)}`;
+                });
         }
     }
 };
