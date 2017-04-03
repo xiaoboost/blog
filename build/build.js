@@ -80,10 +80,13 @@ status = status.then(() => {
     // 压缩字体
     return new Promise((res, rej) => {
         const text = Object.keys(site)
-            .filter((url) => site[url].hasOwnProperty('content'))
-            .map((url) => (site[url].excerpt.join('') + site[url].content));
+                .filter((url) => site[url].hasOwnProperty('content'))
+                .map((url) => (site[url].excerpt.join('') + site[url].content)),
+            font = path.normalize('./static/font/iosevka/inziu-iosevkaCC-SC-Regular.ttf'),
+            out = path.join(output, 'font/iosevka/');
 
-        fontMin(text).then(res)
+        fontMin(text, font, out)
+            .then(res)
             .catch((e) => rej(e));
     });
 });
