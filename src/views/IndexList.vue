@@ -51,18 +51,18 @@ export default {
 <style lang="stylus">
 @import '../css/variable'
 #main
-  font-size 1em
+  font-size 1rem
   @media medium
     margin-left calc((100% - 950px) / 2) !important
   @media mini
-    margin-left 0 !important
+    margin 1em 0 0 0 !important
     width 100% !important
   @media phone
-    font-size 0.9em
+    font-size 0.9rem
 
 ul#main.post-list
   width width-post
-  margin 2em 0 0 0
+  margin 30px 0 0 0
   padding 0
   list-style none
   float left
@@ -81,27 +81,31 @@ ul#main.post-list
         border none
     header
       padding 0.5em 0
+      display flex
+      justify-content space-between
       a
         font-smoothing()
-        font-size 180%
-        padding 0.3em 1em
+        font-size 1.5em
+        margin 0 0 0 1em
         word-wrap break-word
         word-break normal
         color color-theme
+        display inline-block
         transition color 300ms ease-out
         cursor pointer
         &:hover
           color color-orange
         @media mini
-          padding-left .5em
+          margin 0 0 0 1em
       time
-        margin 0.5em 1em
-        float right
+        margin .3rem 1rem .3rem .3rem
+        font-size 1em
     article
-      padding 1em 4%
+      padding .5em 2.5em
       color color-black
-      font-size 100%
       border-top 1px solid color-border
+      @media mini
+        padding .5em 1em
       span
         display block
         text-indent 2em
