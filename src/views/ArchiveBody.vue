@@ -59,15 +59,16 @@ export default {
   background #fafafa
   border-left 0.2em solid color-theme
   color color-theme
-  font-size 1em
+  font-size 1rem
   box-shadow 0 0 3px color-gray
+  @media mini
+    font-size 0.9rem
   > p
     font-size 1.2em
   > ul
     list-style none
     padding 0
     a
-      font-size 100%
       display block
       transition color 0.2s
       margin 0.4em 0 0 1.5em

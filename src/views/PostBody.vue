@@ -129,7 +129,7 @@ export default {
       > p:nth-child(1)
         font-smoothing()
         color color-theme
-        font-size 200%
+        font-size 1.8em
         word-wrap break-word
         word-break normal
         border-left 5px solid color-theme
