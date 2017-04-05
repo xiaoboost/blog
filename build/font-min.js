@@ -28,7 +28,7 @@ module.exports = function(text, src, output) {
                 reject(err);
             }
 
-            console.log(chalk.green('INFO: ') + '字体压制结束');
+            console.log(chalk.green('INFO: ') + '字体压制结束\n');
             resolve(files);
         });
     });

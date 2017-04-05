@@ -63,7 +63,7 @@ status = status.then(() => {
             // 构建进度条结束
             build.stop();
             if (err) rej(err);
-            console.log(chalk.cyan('  Build complete.\n'));
+            console.log(chalk.green('INFO: ') + '文件打包完成');
 
             res();
         });
