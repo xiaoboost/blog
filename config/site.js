@@ -25,6 +25,6 @@ module.exports = {
     },
     //友情链接
     friend_link: {
-        '电路仿真': 'https://xiaoboost.github.io/circuitlab/'
+        '电路仿真': 'https://xiaoboost.github.io/Circuit-Simulator/'
     }
 };
