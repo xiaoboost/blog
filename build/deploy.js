@@ -1,5 +1,4 @@
 const Transform = require('stream').Transform,
-    setPrototypeOf = require('util').inherits,
     spawn = require('child_process').spawn,
     path = require('path'),
     fs = require('fs'),
@@ -16,21 +15,24 @@ const Transform = require('stream').Transform,
     opt = { cwd: path.join(config.build.assetsRoot, config.build.assetsSubDirectory) };
 
 //缓存类
-function CacheStream() {
-    Transform.call(this);
-    this._cache = [];
-}
-CacheStream.prototype = {
+class CacheStream extends Transform {
+    constructor() {
+        super();
+        this._cache = [];
+    }
+
     _transform(chunk, enc, callback) {
-        const buf = chunk instanceof Buffer ? chunk : new Buffer(chunk, enc);
+        const buf = chunk instanceof Buffer
+            ? chunk
+            : new Buffer(chunk, enc);
 
         this._cache.push(buf);
         this.push(buf);
         callback();
-    },
+    }
     destroy() {
         this._cache.length = 0;
-    },
+    }
     getCache(encoding) {
         //取出所有信息
         const buf = Buffer.concat(this._cache);
@@ -39,9 +41,7 @@ CacheStream.prototype = {
         if (!encoding) return buf;
         return buf.toString(encoding).trim();
     }
-};
-setPrototypeOf(CacheStream, Transform);
-
+}
 //git操作入口
 function git(...args) {
     if (args[0] === 'init') {
@@ -119,11 +119,10 @@ build
     .then(git('add', '-A'))
     .then(git('commit', '-m', message))
     .then(git('push', '-u', url, 'master:' + branch, '--force'))
-    .then(() => console.log(chalk.green('\n INFO: ') + '文件上传完毕'));
-
-// 错误捕获
-build.catch((e) => {
-    console.log(chalk.red('\n ERROR: ') + '上传发生错误，意外中止\n');
-    console.error(chalk.red('\n 错误信息: ') + e);
-});
+    .then(() => console.log(chalk.green('\n INFO: ') + '文件上传完毕'))
+    // 错误捕获
+    .catch((e) => {
+        console.log(chalk.red('\n ERROR: ') + '上传发生错误，意外中止\n');
+        console.error(chalk.red('\n 错误信息: ') + e);
+    });
 
