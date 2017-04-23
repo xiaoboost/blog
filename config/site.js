@@ -20,7 +20,7 @@ module.exports = {
     //上传设定
     deploy: {
         type: 'git',
-        url: 'https://github.com/xiaoboost/blog.git',
+        url: 'https://github.com/xiaoboost/Blog-Creator.git',
         branch: 'gh-pages'
     },
     //友情链接
