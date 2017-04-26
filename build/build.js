@@ -78,21 +78,15 @@ status = status.then(() => {
     });
 }).then(() => {
     // 压缩字体
-    return new Promise((res, rej) => {
-        const text = Object.keys(site)
-                .filter((url) => site[url].hasOwnProperty('content'))
-                .map((url) => (site[url].excerpt.join('') + site[url].content)),
-            font = config.build.fontMinInput,
-            out = path.join(output, config.build.fontMinOutput);
+    const text = Object.keys(site)
+            .filter((url) => site[url].hasOwnProperty('content'))
+            .map((url) => (site[url].excerpt.join('') + site[url].content)),
+        font = config.build.fontMinInput,
+        out = path.join(output, config.build.fontMinOutput);
 
-        fontMin(text, font, out)
-            .then(res)
-            .catch((e) => rej(e));
-    });
-});
-
-// 错误捕获
-status.catch((e) => {
+    return fontMin(text, font, out);
+}).catch((e) => {
+    // 错误捕获
     console.log(chalk.red('\n ERROR: ') + '构建发生错误，意外中止\n');
     console.error(chalk.red('\n 错误信息: ') + e);
 });
