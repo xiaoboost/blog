@@ -101,7 +101,7 @@ const webpackConfig = merge(baseWebpackConfig, {
 if (config.build.productionGzip) {
     // 加载 compression-webpack-plugin 插件
     const CompressionWebpackPlugin = require('compression-webpack-plugin');
-    // 向webpackconfig.plugins中加入下方的插件
+    // 向 webpackconfig.plugins 中加入下方的插件
     webpackConfig.plugins.push(
         // 启用插件对文件进行压缩
         new CompressionWebpackPlugin({
