@@ -12,7 +12,7 @@ Object.keys(baseWebpackConfig.entry).forEach((name) => {
     baseWebpackConfig.entry[name] = ['./build/dev-client'].concat(baseWebpackConfig.entry[name]);
 });
 
-// 将base配置和dev配置合并
+// 将 base 配置和 dev 配置合并
 module.exports = merge(baseWebpackConfig, {
     module: {
         // 使用 styleLoaders
