@@ -213,11 +213,13 @@ customfont("EM-Lora", "/font/Lora/Lora-Italic", normal, normal)
 //代码高亮部分
 #main.post article.post-content pre
   text-shadow none
-  padding 0em 0 0 0.5em
+  padding 0 0 0 .5em
   background-color #2b303b
   position relative
   font-size 0.9em
-  margin 0.8em 0
+  margin .8em 0
+  @media mini
+    margin .8em -8px
   @media phone
     font-size 0.8em
   ul
