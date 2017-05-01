@@ -66,11 +66,29 @@ function toPath(str) {
         .replace(/%/g, '').toLowerCase();
 }
 
+// 读取所有文件的路径
+function readAllDir(base) {
+    const ans = [];
+
+    fs.readdirSync(base).forEach((name) => {
+        const filePath = path.join(base, name),
+            file = fs.statSync(filePath);
+
+        if (file.isDirectory()) {
+            ans.push(...readAllDir(filePath));
+        } else if (name.slice(-3) === '.md') {
+            ans.push(filePath);
+        }
+    });
+
+    return (ans);
+}
+
 function create() {
     //生成所有文章，并排序
-    const posts = fs.readdirSync(mdFiles)
-        .map((file) => (file.slice(-3) === '.md') && (new Post(path.join(mdFiles, file))))
-        .filter((n) => n).sort((x, y) => (+x.date.join('') < +y.date.join('')) ? 1 : -1),
+    const posts = readAllDir(mdFiles)
+            .map((file) => new Post(file))
+            .sort((x, y) => (+x.date.join('') < +y.date.join('')) ? 1 : -1),
         //分类聚合对象
         collection = {},
         tags = collection.tags = {},             //标签归档
