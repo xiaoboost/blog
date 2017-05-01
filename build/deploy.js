@@ -63,14 +63,17 @@ function log(message) {
     if (!message) {
         return;
     }
-    return message
-        .replace(/ changed,?/, chalk.green(' changed') + ',')
-        .replace(/( insertions?\(\+\))/, chalk.yellow('$1'))
-        .replace(/( deletions?\(-\))/, chalk.red('$1'))
-        .replace(/\n create/g, chalk.green('\n create'))
-        .replace(/\n rewrite/g, chalk.blue('\n rewrite'))
-        .replace(/\n delete/g, chalk.red('\n delete'))
-        .replace(/\n rename/g, chalk.cyan('\n rename'));
+
+    console.log(
+        message
+            .replace(/ changed,?/, chalk.green(' changed') + ',')
+            .replace(/( insertions?\(\+\))/, chalk.yellow('$1'))
+            .replace(/( deletions?\(-\))/, chalk.red('$1'))
+            .replace(/\n create/g, chalk.green('\n create'))
+            .replace(/\n rewrite/g, chalk.blue('\n rewrite'))
+            .replace(/\n delete/g, chalk.red('\n delete'))
+            .replace(/\n rename/g, chalk.cyan('\n rename'))
+    );
 }
 //异步子进程
 function promiseSpawn(command, args, options) {
@@ -118,10 +121,10 @@ build
     .then(git('add', '-A'))
     .then(git('commit', '-m', message))
     .then(git('push', '-u', url, 'master:' + branch, '--force'))
-    .then(() => console.log(chalk.green('\n INFO: ') + '文件上传完毕'))
+    .then(() => console.log(chalk.green('\nINFO: ') + '文件上传完毕'))
     // 错误捕获
     .catch((e) => {
-        console.log(chalk.red('\n ERROR: ') + '上传发生错误，意外中止\n');
+        console.log(chalk.red('\nERROR: ') + '上传发生错误，意外中止\n');
         console.error(chalk.red('\n 错误信息: ') + e);
     });
 
