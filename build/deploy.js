@@ -63,15 +63,14 @@ function log(message) {
     if (!message) {
         return;
     }
-    const ans = message.replace(/ changed,?/, chalk.green(' changed') + ',')
+    return message
+        .replace(/ changed,?/, chalk.green(' changed') + ',')
         .replace(/( insertions?\(\+\))/, chalk.yellow('$1'))
         .replace(/( deletions?\(-\))/, chalk.red('$1'))
         .replace(/\n create/g, chalk.green('\n create'))
         .replace(/\n rewrite/g, chalk.blue('\n rewrite'))
         .replace(/\n delete/g, chalk.red('\n delete'))
         .replace(/\n rename/g, chalk.cyan('\n rename'));
-
-    console.log(ans);
 }
 //异步子进程
 function promiseSpawn(command, args, options) {

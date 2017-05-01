@@ -168,8 +168,6 @@ class post {
         const file = fs.readFileSync(paths, 'utf8')
             .replace(/\r\n|\r/g, '\n')
             .split(/\n---+\n/),
-            //文件名字将会统一转换为小写
-            name = path.basename(paths, '.md').toLowerCase(),
             article = file.splice(1).join('\n---\n'),
             postConfig = file[0].split('\n'),
             excerpt = article.search(excerptReg);
@@ -179,9 +177,13 @@ class post {
             return (this);
         }
 
-        //当前文章路径文件名
-        this.path = path.join('/post/', name).toPosix();
-        this.name = name;
+        //当前文章名字
+        this.name = /post[\/\\]([\d\D]+?)\.md/.exec(paths)[1]
+            .replace(/[\\\/]/g, '-')
+            .toLowerCase();
+        //当前文章路径
+        this.path = path.join('/post/', this.name)
+            .toPosix();
 
         //读取文章属性
         for (let i = 0; i < postConfig.length; i++) {
