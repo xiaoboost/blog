@@ -32,6 +32,14 @@ import pageAside from '@/components/PageAside';
 import postFooter from '@/components/PostFooter';
 
 const doc = document;
+// 计算dom到网页顶端的距离
+function offsetDocTop(dom) {
+    let ans = 0;
+    for (let i = dom; i !== doc.body; i = i.offsetParent) {
+        ans += i.offsetTop;
+    }
+    return ans;
+}
 
 export default {
     data() {
@@ -74,7 +82,7 @@ export default {
                     if (!toc[i].el) {
                         toc[i].el = doc.getElementById(toc[i].bolt);
                     }
-                    const offsetTop = toc[i].el.offsetTop - 30;
+                    const offsetTop = offsetDocTop(toc[i].el) - 30;
                     // 如果当前元素在视窗上方
                     if (offsetTop < viewTop) {
                         const childBolt = toc[i].child && search(toc[i].child);
