@@ -122,9 +122,7 @@ build
     .then(git('commit', '-m', message))
     .then(git('push', '-u', url, 'master:' + branch, '--force'))
     .then(() => console.log(chalk.green('\nINFO: ') + '文件上传完毕'))
-    // 错误捕获
     .catch((e) => {
         console.log(chalk.red('\nERROR: ') + '上传发生错误，意外中止\n');
         console.error(chalk.red('\n 错误信息: ') + e);
     });
-

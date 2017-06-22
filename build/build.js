@@ -64,7 +64,6 @@ status = status.then(() => {
             build.stop();
             if (err) rej(err);
             console.log(chalk.green('INFO: ') + '文件打包完成');
-
             res();
         });
     });
@@ -77,12 +76,38 @@ status = status.then(() => {
         });
     });
 }).then(() => {
-    // 压缩字体
-    const text = Object.keys(site)
+    // 压缩中文字体
+    const post = Object.keys(site)
             .filter((url) => site[url].hasOwnProperty('content'))
-            .map((url) => (site[url].excerpt.join('') + site[url].content)),
-        font = config.build.fontMinInput,
-        out = path.join(output, config.build.fontMinOutput);
+            .map((url) => (site[url].excerpt.join('') + site[url].content))
+            .reduce((ans, text) => (ans + text), '').replace(/[\x00-\xff]/g, ''),
+
+        text = Array.from(new Set(post)).join(''),
+        out = path.join(output, './font/iosevka/'),
+        font = path.resolve(__dirname, '../static/font/iosevka/inziu-iosevkaCC-SC-Regular.ttf');
+
+    return fontMin(text, font, out);
+}).then(() => {
+    // 压缩图标字体
+    const out = path.join(output, './font/icon/'),
+        font = path.resolve(__dirname, '../static/font/icon/fontawesome.ttf'),
+        // 读取所有页面、组件、css文件，提取所有图标
+        text = ['components', 'views', 'css']
+            .map((n) => path.resolve(__dirname, `../src/${n}`))
+            .map((dir) => fs.readdirSync(dir).map((file) => path.join(dir, file)))
+            .reduce((ans, files) => ans.concat(files), [])
+            .map((src) => fs.readFileSync(src).toString().match(/\\[a-fA-F0-9]{4}/g))
+            .reduce((ans, text) => ans.concat(text || []), [])
+            .map((n) => n.slice(1))
+            .map((hex) => {
+                let num = 0;
+                Array.from(hex).forEach((n, i) =>
+                    num += /[0-9]/.test(n)
+                        ? n * (16 ** (3 - i))
+                        : (n.charCodeAt() - 87) * (16 ** (3 - i)));
+
+                return String.fromCodePoint(num);
+            }).join('');
 
     return fontMin(text, font, out);
 }).catch((e) => {
