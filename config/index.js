@@ -10,10 +10,6 @@ module.exports = {
         index: path.resolve(__dirname, '../.deploy_git/index.html'),
         // 静态资源路径
         assetsRoot: path.resolve(__dirname, '../.deploy_git'),
-        // 需要压缩的字体路径
-        fontMinInput: path.resolve(__dirname, '../static/font/iosevka/inziu-iosevkaCC-SC-Regular.ttf'),
-        // 压缩字体输出路径，此路径需要和编译输出路径组合
-        fontMinOutput: path.normalize('./font/iosevka/'),
         // 编译输出的二级目录
         assetsSubDirectory: '',
         // 编译发布的根目录，可配置为资源服务器域名或 CDN 域名

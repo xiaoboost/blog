@@ -18,9 +18,7 @@ function compressor(text, src, output) {
 }
 
 module.exports = function(text, src, output) {
-    const fontSet = text.reduce((set, text) => new Set([...set, ...text]), new Set()),
-        texts = Array.from(fontSet).join('').replace(/[\x00-\xff]/g, ''),
-        task = compressor(texts, src, output);
+    const task = compressor(text, src, output);
 
     return new Promise((resolve, reject) => {
         task.run((err, files) => {
@@ -28,7 +26,7 @@ module.exports = function(text, src, output) {
                 reject(err);
             }
 
-            console.log(chalk.green('INFO: ') + '字体压制结束\n');
+            console.log(`${chalk.green('INFO: ')}字体压制结束，共 ${chalk.red(text.length)} 个字符。`);
             resolve(files);
         });
     });
