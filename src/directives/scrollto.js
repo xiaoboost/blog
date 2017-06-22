@@ -5,7 +5,18 @@
  *   target 目标位置，可以是距离顶端距离或选择器
  *          选择器只会匹配第一个元素，如果元素不存在，那么放弃滚动
  */
-const body = document.body;
+
+// 全局回调函数缓存
+const cache = new Map();
+
+// 当前元素距离网页顶端的距离
+function offsetTop(el) {
+    let ans = 0;
+    for (let i = el; i !== document.body; i = i.offsetParent) {
+        ans += i.offsetTop;
+    }
+    return ans;
+}
 
 export default {
     bind(el, binding, vnode) {
@@ -22,7 +33,7 @@ export default {
         speed = 100 - speed;
         target = target ? target : -1;
         // 事件回调
-        el.__vueScrollTo__ = function() {
+        function callback() {
             if (!target) {
                 // 目标不存在，跳出回调
                 return (false);
@@ -32,12 +43,10 @@ export default {
             }
 
             // 求目标距离顶端的距离
-            const targetOffset = (typeof target === 'number')
-                    ? target
-                    : target.offsetTop,
-                offset = (body.scrollTop - targetOffset) / speed,
-                // 当前页面总高度
-                pageHeight = body.scrollHeight;
+            const body = document.body,
+                pageHeight = body.scrollHeight,
+                targetOffset = (typeof target === 'number') ? target : offsetTop(target),
+                offset = (body.scrollTop - targetOffset) / speed;
 
             // 每隔10ms滚动页面
             const timer = setInterval(() => {
@@ -53,11 +62,14 @@ export default {
                     body.scrollTop = targetOffset;
                 }
             }, 10);
-        };
-        el.addEventListener('click', el.__vueScrollTo__);
+        }
+
+        cache.set(el, callback);
+        el.addEventListener('click', callback);
     },
     unbind(el) {
-        el.removeEventListener('click', el.__vueScrollTo__);
-        delete el.__vueScrollTo__;
+        const fn = cache.get(el);
+        cache.delete(el);
+        el.removeEventListener('click', fn);
     }
 };
