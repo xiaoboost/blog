@@ -96,11 +96,11 @@ status = status.then(() => {
             .map((n) => path.resolve(__dirname, `../src/${n}`))
             .map((dir) => fs.readdirSync(dir).map((file) => path.join(dir, file)))
             .reduce((ans, files) => ans.concat(files), [])
-            .map((src) => fs.readFileSync(src).toString().match(/\\[a-fA-F0-9]{4}/g))
+            .map((src) => fs.readFileSync(src).toString().match(/\\[a-f0-9]{4}/ig))
             .reduce((ans, text) => ans.concat(text || []), [])
-            .map((n) => n.slice(1))
             .map((hex) => {
                 let num = 0;
+                hex = hex.slice(1).toLowerCase();
                 Array.from(hex).forEach((n, i) =>
                     num += /[0-9]/.test(n)
                         ? n * (16 ** (3 - i))
