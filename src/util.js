@@ -35,7 +35,7 @@ function get(input) {
                 }
             }
         };
-    });
+    }).catch((e) => console.log(e));
 }
 //ajax方法
 function ajax(urls) {

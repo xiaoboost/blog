@@ -51,6 +51,7 @@ function tabPage(arrs, peer, base) {
             ans[i - 1].prev = ans[i].path;
         } else {
             ans[0].next = '';
+            ans[0].prev = '';
         }
     }
 

@@ -7,6 +7,8 @@
         </router-link>
     </li>
     <list-nav
+        key="nav-footer"
+        class="fade-list-footer"
         v-if="prev || next"
         :prev="prev" :next="next">
     </list-nav>
@@ -57,16 +59,17 @@ export default {
 @import '../css/variable'
 
 // 动画设置
-.fade-list-item
+.fade-list-item,
+.fade-list-footer
     transition all .5s ease
 .fade-list-enter
     opacity 0
-    transform translateX(-30px)
+    transform translateX(-50px)
 .fade-list-leave-active
     opacity 0
     width 800px
     position absolute
-    transform translateX(30px)
+    transform translateX(50px)
 
 ul#main
     float right
