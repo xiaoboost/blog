@@ -1,15 +1,22 @@
 <template>
-  <ol :class="tocClass">
-    <li v-for="(node, i) in tocTree" :class="`toc-item toc-level-${level}`" :bolt="node.bolt">
-      <a class="toc-link" v-scrollto="{speed: 60, target: `#${node.bolt}`}">
-        <span class="toc-number">{{`${number}${i+1}.`}}</span>
-        <span class="toc-text">{{node.tocTitle}}</span>
-      </a>
-      <post-toc v-if="!!node.child" :tocTree="node.child" :nav="nav"
-                :number="`${number}${i+1}.`" :level="level + 1" tocClass="toc-child">
-      </post-toc>
-    </li>
-  </ol>
+<ol :class="tocClass">
+    <li
+        v-for="(node, i) in tocTree"
+        :bolt="node.bolt" :key="i"
+        :class="`toc-item toc-level-${level}`" >
+        <a class="toc-link" v-scrollto="{speed: 60, target: `#${node.bolt}`}">
+            <span class="toc-number">{{`${number}${i+1}.`}}</span>
+            <span class="toc-text">{{node.tocTitle}}</span>
+        </a>
+        <post-toc
+            v-if="!!node.child"
+            :nav="nav"
+            :tocTree="node.child"
+            :number="`${number}${i+1}.`"
+            :level="level + 1" tocClass="toc-child">
+            </post-toc>
+        </li>
+</ol>
 </template>
 
 <script>
@@ -86,32 +93,32 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-  @import '../css/variable'
+@import '../css/variable'
 
-  ol
+ol
     list-style none
-  ol.toc
+ol.toc
     a
-      padding 0.3em 0
-      border-bottom 1px solid color-gray
-      transition color 200ms ease-out, border-bottom 200ms ease-out
-      &:hover
-        color color-theme
-        border-bottom 1px solid color-orange
+        padding 0.3em 0
+        border-bottom 1px solid color-gray
+        transition color 200ms ease-out, border-bottom 200ms ease-out
+        &:hover
+            color color-theme
+            border-bottom 1px solid color-orange
     li,ol
-      margin 0.5em 0
-      transition all 300ms ease-out
+        margin 0.5em 0
+        transition all 300ms ease-out
     .toc-level-2,
     .toc-level-3,
     .toc-level-4,
     .toc-level-5,
     .toc-level-6
-      padding-left 1em
+        padding-left 1em
     .toc-child
-      display none
+        display none
     .toc-current > a
-      color color-theme
-      border-bottom 1px solid color-theme
+        color color-theme
+        border-bottom 1px solid color-theme
     .toc-child-vision > .toc-child
-        display block
+            display block
 </style>

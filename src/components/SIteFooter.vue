@@ -1,14 +1,17 @@
 <template>
-  <footer>
+<footer>
     <span>Powered by </span>
     <a href="/">Xiao</a>
     <span> © 2014 - 2016</span>
     <transition name="fade">
-      <div id="goto-up" v-show="show" v-scrollto="{speed: 80}"
-           v-followscroll="{bias: 500, callback: showGoto}">
-      </div>
+        <div
+            id="goto-up"
+            v-show="show"
+            v-scrollto="{speed: 80}"
+            v-followscroll="{bias: 500, callback: showGoto}">
+        </div>
     </transition>
-  </footer>
+</footer>
 </template>
 
 <script>
@@ -38,52 +41,52 @@ export default {
 @import '../css/variable'
 
 footer
-  font-family font-title-family
-  font-size 100%
-  font-weight bold
-  margin 3em 0 1em 0
-  text-align center
-  width 100%
-  color color-font
-  text-align center
-  flex 0 0 auto
-  a
-    color color-black
-    transition color 200ms ease-out
-    &:hover
-      color color-orange
+    font-family font-title-family
+    font-size 100%
+    font-weight bold
+    margin 3em 0 1em 0
+    text-align center
+    width 100%
+    color color-font
+    text-align center
+    flex 0 0 auto
+    a
+        color color-black
+        transition color 200ms ease-out
+        &:hover
+            color color-orange
 
 footer > div#goto-up
-  position fixed
-  bottom 2em
-  right 2em
-  height 3.5em
-  width 3.5em
-  border-radius 50%
-  color #FFFFFF
-  box-shadow 0px 2px 3px rgba(0, 0, 0, 0.3)
-  background #E53935
-  transition box-shadow .3s ease
-  cursor pointer
-  opacity 1
-  &:hover
-    box-shadow 0px 1px 6px rgba(0, 0, 0, 0.5)
-  &:before
-    font-family font-icon-family
-    content "\f102"
-    font-size 230%
-  @media phone
-    bottom 1.6em
-    right 1.6em
-    height 2.8em
-    width 2.8em
+    position fixed
+    bottom 2em
+    right 2em
+    height 3.5em
+    width 3.5em
+    border-radius 50%
+    color #FFFFFF
+    box-shadow 0px 2px 3px rgba(0, 0, 0, 0.3)
+    background #E53935
+    transition box-shadow .3s ease
+    cursor pointer
+    opacity 1
+    &:hover
+        box-shadow 0px 1px 6px rgba(0, 0, 0, 0.5)
     &:before
-      font-size 180%
+        font-family font-icon-family
+        content "\f102"
+        font-size 230%
+    @media phone
+        bottom 1.6em
+        right 1.6em
+        height 2.8em
+        width 2.8em
+        &:before
+            font-size 180%
 
 #goto-up.fade-enter-active,
 #goto-up.fade-leave-active
-  transition opacity .3s ease
+    transition opacity .3s ease
 #goto-up.fade-enter,
 #goto-up.fade-leave-active
-  opacity 0
+    opacity 0
 </style>
