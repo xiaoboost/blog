@@ -1,9 +1,9 @@
 <template>
-  <div id="app">
+<div id="app">
     <site-header></site-header>
     <router-view></router-view>
     <site-footer></site-footer>
-  </div>
+</div>
 </template>
 
 <script>
@@ -26,32 +26,32 @@ export default {
 @import './css/post'
 
 body, html
-  height 100%
-  background #ddd
+    height 100%
+    background #ddd
 
 #app
-  font-smoothing()
-  color color-font
-  font-size 16px
-  line-height 1.5
-  font-family font-content
-  text-shadow silver 0px 0px 1px
-  background color-background
-  height 100%
-  width 100%
-  display flex
-  flex-direction column
-  > header,
-  > footer
-    flex 0 0 auto
-  > article
-    flex 1 0 auto
+    font-smoothing()
+    color color-font
+    font-size 16px
+    line-height 1.5
+    font-family font-content
+    text-shadow silver 0px 0px 1px
+    background color-background
+    height 100%
+    width 100%
+    display flex
+    flex-direction column
+    > header,
+    > footer
+        flex 0 0 auto
+    > article
+        flex 1 0 auto
 
 article#container
-  margin auto
-  width width-main
-  overflow hidden
-  @media medium
-    width 100%
-    margin 0
+    margin auto
+    width width-main
+    overflow hidden
+    @media medium
+        width 100%
+        margin 0
 </style>

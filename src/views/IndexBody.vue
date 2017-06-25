@@ -1,37 +1,37 @@
 <template>
-  <article id="container">
+<article id="container">
     <router-view></router-view>
     <page-aside>
-      <div class="categories-list">
-        <p>分类</p>
-        <ul>
-          <li v-for="cate in categories">
-            <router-link :to="`/categories/${cate.key}`">
-              {{cate.key}}<sup>{{cate.total}}</sup>
-            </router-link>
-          </li>
-        </ul>
-      </div>
-      <div class="tags-list">
-        <p>标签</p>
-        <ul>
-          <li v-for="tag in tags">
-            <router-link :to="`/tags/${tag.key}`">
-              {{tag.key}}<sup>{{tag.total}}</sup>
-            </router-link>
-          </li>
-        </ul>
-      </div>
-      <div class="links-list">
-        <p>链接</p>
-        <ul>
-          <li v-for="(url, text) in links">
-            <a :href="url" target="_blank">{{text}}</a>
-          </li>
-        </ul>
-      </div>
+        <div class="categories-list">
+            <p>分类</p>
+            <ul>
+                <li v-for="cate in categories" :key="cate.key">
+                    <router-link :to="`/categories/${cate.key}`">
+                        {{cate.key}}<sup>{{cate.total}}</sup>
+                    </router-link>
+                </li>
+            </ul>
+        </div>
+        <div class="tags-list">
+            <p>标签</p>
+            <ul>
+                <li v-for="tag in tags" :key="tag.key">
+                    <router-link :to="`/tags/${tag.key}`">
+                        {{tag.key}}<sup>{{tag.total}}</sup>
+                    </router-link>
+                </li>
+            </ul>
+        </div>
+        <div class="links-list">
+            <p>链接</p>
+            <ul>
+                <li v-for="(url, text) in links" :key="url">
+                    <a :href="url" target="_blank">{{text}}</a>
+                </li>
+            </ul>
+        </div>
     </page-aside>
-  </article>
+</article>
 </template>
 
 <script>
@@ -70,48 +70,48 @@ export default {
 div.categories-list,
 div.tags-list,
 div.links-list
-  overflow hidden
-  margin 12px 0 0 0
-  float none
-  width 100%
-  > p
-    font-size 18px
-    color #2ca6cb
-    padding 0 0 4px 0
-    border-bottom 3px solid #ccc
-  > ul
-    list-style none
+    overflow hidden
+    margin 12px 0 0 0
+    float none
+    width 100%
+    > p
+        font-size 18px
+        color #2ca6cb
+        padding 0 0 4px 0
+        border-bottom 3px solid #ccc
+    > ul
+        list-style none
 
 //分类列表
 div.categories-list
-  margin 0
-  li
-    border-bottom 1px solid color-gray
-    a
-      display block
-      padding 4px 8px
-      &:hover
-        color color-theme
+    margin 0
+    li
+        border-bottom 1px solid color-gray
+        a
+            display block
+            padding 4px 8px
+            &:hover
+                color color-theme
 //标签列表
 .tags-list ul
-  padding 6px 0 0 0
-  li
-    display inline-block
-    margin 3px 0
-    a
-      margin 4px
-      padding 2px 4px
-      background lighten(color-gray, 30%)
-      &:hover
-        color color-theme
-        background lighten(color-gray, 50%)
+    padding 6px 0 0 0
+    li
+        display inline-block
+        margin 3px 0
+        a
+            margin 4px
+            padding 2px 4px
+            background lighten(color-gray, 30%)
+            &:hover
+                color color-theme
+                background lighten(color-gray, 50%)
 //链接列表
 .links-list ul
-  padding 6px 0 0 0
-  a
-    display block
-    padding 0 8px
-    &:hover
-      color color-theme
-      transition color .25s
+    padding 6px 0 0 0
+    a
+        display block
+        padding 0 8px
+        &:hover
+            color color-theme
+            transition color .25s
 </style>

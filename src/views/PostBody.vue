@@ -1,28 +1,28 @@
 <template>
-  <article id="container">
+<article id="container">
     <div :class="['post', {'post-center': !toc}]" id="main">
-      <header>
-        <p>{{title}}</p>
-        <p>发表于：{{date.join('-')}}</p>
-      </header>
-      <article class="post-content" v-html="content"></article>
-      <post-footer :category="category" :tags="tag"></post-footer>
-      <nav v-if="next || prev">
-        <router-link class="next" v-if="next" :to="next.path">
-          <p>下一篇：</p>
-          <p>{{next.title}}</p>
-        </router-link>
-        <router-link class="prev" v-if="prev" :to="prev.path">
-          <p>上一篇：</p>
-          <p>{{prev.title}}</p>
-        </router-link>
-      </nav>
+        <header>
+            <p>{{title}}</p>
+            <p>发表于：{{date.join('-')}}</p>
+        </header>
+        <article class="post-content" v-html="content"></article>
+        <post-footer :category="category" :tags="tag"></post-footer>
+        <nav v-if="next || prev">
+            <router-link class="next" v-if="next" :to="next.path">
+                <p>下一篇：</p>
+                <p>{{next.title}}</p>
+            </router-link>
+            <router-link class="prev" v-if="prev" :to="prev.path">
+                <p>上一篇：</p>
+                <p>{{prev.title}}</p>
+            </router-link>
+        </nav>
     </div>
     <page-aside v-if="!!toc">
-      <p class="toc-title">文章目录</p>
-      <post-toc :tocTree="toc" :nav="tocNav"></post-toc>
+        <p class="toc-title">文章目录</p>
+        <post-toc :tocTree="toc" :nav="tocNav"></post-toc>
     </page-aside>
-  </article>
+</article>
 </template>
 
 <script>
@@ -112,17 +112,17 @@ export default {
 </script>
 
 <style lang="stylus">
-  @import '../css/variable'
+@import '../css/variable'
 
-  //目录标题样式
-  p.toc-title
+//目录标题样式
+p.toc-title
     color #000
     margin-bottom .5em
     padding-bottom .5em
     border-bottom 2px solid #ccc
 
-  //正文样式设定，这里和主页面文章列表有部分共用
-  #main.post
+//正文样式设定，这里和主页面文章列表有部分共用
+#main.post
     width width-post
     background color-post
     box-shadow 0 0 3px #888
@@ -131,57 +131,57 @@ export default {
     transition margin 0.5s ease-out
     line-height 1.8
     &.post-center
-      margin-left 175px
+        margin-left 175px
     > header
-      border-bottom 1px solid color-border
-      > p:nth-child(1)
-        font-smoothing()
-        color color-theme
-        font-size 1.8em
-        word-wrap break-word
-        word-break normal
-        border-left 5px solid color-theme
-        padding 0.3em 1em
-        line-height 1.5
-      > p:nth-child(2)
-        margin-right 1em
-        padding .3em
-        font-size .9em
-        text-align right
-        &:before
-          font-smoothing()
-          font-size 110%
-          content "\f017"
-          font-family font-icon-family
-          margin 0 0.5em
+        border-bottom 1px solid color-border
+        > p:nth-child(1)
+            font-smoothing()
+            color color-theme
+            font-size 1.8em
+            word-wrap break-word
+            word-break normal
+            border-left 5px solid color-theme
+            padding 0.3em 1em
+            line-height 1.5
+        > p:nth-child(2)
+            margin-right 1em
+            padding .3em
+            font-size .9em
+            text-align right
+            &:before
+                font-smoothing()
+                font-size 110%
+                content "\f017"
+                font-family font-icon-family
+                margin 0 0.5em
 
-  //文章底部导航栏
-  #main.post > nav
+//文章底部导航栏
+#main.post > nav
     padding 1em
     font-size 120%
     overflow hidden
     a:hover
-      color color-theme
+        color color-theme
     a.next
-      float left
-      padding-left 2em
-      > p:nth-child(1)
-        text-align left
-        &:before
-          font-smoothing()
-          content "\f053"
-          font-family font-icon-family
-          position absolute
-          transform translate(-1.5em, 1em)
+        float left
+        padding-left 2em
+        > p:nth-child(1)
+            text-align left
+            &:before
+                font-smoothing()
+                content "\f053"
+                font-family font-icon-family
+                position absolute
+                transform translate(-1.5em, 1em)
     a.prev
-      float right
-      padding-right 2em
-      > p:nth-child(1)
-        text-align right
-        &:after
-          font-smoothing()
-          content "\f054"
-          font-family font-icon-family
-          position absolute
-          transform translate(0.5em, 1em)
+        float right
+        padding-right 2em
+        > p:nth-child(1)
+            text-align right
+            &:after
+                font-smoothing()
+                content "\f054"
+                font-family font-icon-family
+                position absolute
+                transform translate(0.5em, 1em)
 </style>
