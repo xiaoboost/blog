@@ -1,4 +1,5 @@
-const path = require('path'),
+const fs = require('fs'),
+    path = require('path'),
     config = require('../config'),
     ExtractTextPlugin = require('extract-text-webpack-plugin');
 
@@ -70,4 +71,21 @@ exports.styleLoaders = function(options) {
         });
     }
     return output;
+};
+
+exports.readFileAll = function read(input) {
+    const ans = [],
+        dirs = fs.readdirSync(input);
+
+    for (let i = 0; i < dirs.length; i++) {
+        const folder = path.join(input, dirs[i]),
+            stat = fs.lstatSync(folder);
+
+        if (stat.isDirectory()) {
+            ans.push(...read(folder));
+        } else {
+            ans.push(folder);
+        }
+    }
+    return ans;
 };
