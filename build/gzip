@@ -1,0 +1,36 @@
+const fs = require('fs'),
+    path = require('path'),
+    gzip = require('zlib').createGzip;
+
+function readFiles(input) {
+    const ans = [],
+        dirs = fs.readdirSync(input);
+
+    for (let i = 0; i < dirs.length; i++) {
+        const folder = path.join(input, dirs[i]),
+            stat = fs.lstatSync(folder);
+
+        if (stat.isDirectory()) {
+            ans.push(...readFiles(folder));
+        } else if (/\.gz$/.test(folder)) {
+            fs.unlinkSync(folder);
+        } else {
+            ans.push(folder);
+        }
+    }
+    return ans;
+}
+
+const files = readFiles(path.join(__dirname, './origin'));
+Promise.all(
+    files
+        .filter((file) => (fs.lstatSync(file).size > 1024))
+        .map((file) => new Promise((resolve) => {
+            const input = fs.createReadStream(file);
+            input
+                .pipe(gzip({ level: 9 }))
+                .pipe(fs.createWriteStream(file + '.gz'))
+                .on('finish', () => (input.destroy(), resolve()));
+        }))
+)
+    .then(() => console.log('压缩完成！'));
