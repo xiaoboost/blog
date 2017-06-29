@@ -12,7 +12,9 @@ const // 一个比较漂亮的loading界面
     fs = require('fs'),
     chalk = require('chalk'),
     webpack = require('webpack'),
+    utils = require('./utils'),
     config = require('../config'),
+    gzip = require('zlib').createGzip,
     // 字体压缩任务
     fontMin = require('./font-min'),
     // 生成博客网站
@@ -36,46 +38,42 @@ status = status.then(() => {
         .map((file) => new Promise((res) => rm(path.join(output, file), res)));
 
     return Promise.all(files);
-}).then(() => {
+}).then(() =>
     // 生成所有API文件
-    const files = [];
-    for (const i in site) {
-        const out = path.join(output, 'api', i);
-        files.push(new Promise((res) => {
-            mkdirp(path.dirname(out), (err) => {
-                if (err) console.error(err);
-                const content = site[i];
-                // 渲染文章，并删除原文
-                if (content.render instanceof Function) {
-                    content.render();
-                    delete content.markdown;
-                }
-                fs.writeFile(out, JSON.stringify(site[i]), res);
-            });
-        }));
-    }
+    Promise.all(Object.entries(site).map(([key, content]) => {
+        const out = path.join(output, 'api', key);
 
-    return Promise.all(files);
-}).then(() => {
+        return new Promise((resolve, reject) => mkdirp(path.dirname(out), (err) => {
+            if (err) { reject(err); }
+            if (content.render instanceof Function) {
+                content.render();
+                delete content.markdown;
+            }
+
+            fs.writeFile(out, JSON.stringify(content), resolve);
+        }));
+    }))
+).then(() =>
     // webpack打包网站
-    return new Promise((res, rej) => {
+    new Promise((resolve, reject) =>
         webpack(webpackConfig, (err, stats) => {
-            // 构建进度条结束
             build.stop();
-            if (err) rej(err);
+            if (err) { reject(err); }
+
             console.log(chalk.green('INFO: ') + '文件打包完成');
-            res();
-        });
-    });
-}).then(() => {
+            resolve();
+        })
+    )
+).then(() =>
     // 复制CNAME文件
-    return new Promise((res, rej) => {
+    new Promise((resolve, reject) => {
         fs.readFile(path.join(__dirname, '../CNAME'), (e, data) => {
-            if (e) rej(e);
-            fs.writeFile(path.join(output, 'CNAME'), data, res);
+            if (e) { reject(e); }
+
+            fs.writeFile(path.join(output, 'CNAME'), data, resolve);
         });
-    });
-}).then(() => {
+    })
+).then(() => {
     // 压缩中文字体
     const post = Object.keys(site)
             .filter((url) => site[url].hasOwnProperty('content'))
@@ -89,14 +87,12 @@ status = status.then(() => {
     return fontMin(text, font, out);
 }).then(() => {
     // 压缩图标字体
-    const out = path.join(output, './font/icon/'),
+    const css = path.join(output, './css'),
+        out = path.join(output, './font/icon/'),
         font = path.resolve(__dirname, '../static/font/icon/fontawesome.ttf'),
-        // 读取所有页面、组件、css文件，提取所有图标
-        text = ['components', 'views', 'css']
-            .map((n) => path.resolve(__dirname, `../src/${n}`))
-            .map((dir) => fs.readdirSync(dir).map((file) => path.join(dir, file)))
-            .reduce((ans, files) => ans.concat(files), [])
-            .map((src) => fs.readFileSync(src).toString().match(/\\[a-f0-9]{4}/ig))
+        // 提取所有图标
+        text = fs.readdirSync(css).map((file) => path.join(css, file))
+            .map((src) => fs.readFileSync(src).toString().match(/\\f[a-f0-9]{3}/ig))
             .reduce((ans, text) => ans.concat(text || []), [])
             .map((hex) => {
                 let num = 0;
@@ -110,6 +106,23 @@ status = status.then(() => {
             }).join('');
 
     return fontMin(text, font, out);
+}).then(() => {
+    // 压缩所有文本
+    const exclude = [/\.git*/i, /\.(png|jpg|gif|woff|woff2)$/i],
+        include = [/\.(css|js|html)$/i, /api/],
+        files = utils.readFileAll(output)
+            .filter((file) => exclude.some((reg) => !reg.test(file)))
+            .filter((file) => include.some((reg) => reg.test(file)))
+            .filter((file) => (fs.lstatSync(file).size > 1024));
+
+    return Promise.all(files.map((file) =>
+        new Promise((resolve) => {
+            const input = fs.createReadStream(file);
+            input.pipe(gzip({ level: 9 }))
+                .pipe(fs.createWriteStream(file + '.gz'))
+                .on('finish', () => (input.destroy(), resolve()));
+        }))
+    );
 }).catch((e) => {
     // 错误捕获
     console.log(chalk.red('\n ERROR: ') + '构建发生错误，意外中止\n');
