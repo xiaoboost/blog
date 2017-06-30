@@ -17,7 +17,7 @@ module.exports = {
         // 是否开启 cssSourceMap
         productionSourceMap: false,
         // 是否开启Gzip
-        productionGzip: true,
+        productionGzip: false,
         // 运行带有额外参数的 build命令以在构建完成后查看 bundle分析器报告：
         // npm run build --report
         // 直接设置为 true 或 false 可以直接打开或者关闭它

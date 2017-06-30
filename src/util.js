@@ -13,7 +13,7 @@ function $path(str) {
 }
 //单 get方法
 function get(input) {
-    const url = $path(input);
+    const url = $path(input) + '.json';
     return new Promise((res, rej) => {
         //链接数据已经存在
         if (getData[url]) {
