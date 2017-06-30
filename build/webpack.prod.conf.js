@@ -11,7 +11,8 @@ const path = require('path'),
     // webpack插件，从文件中分离代码
     ExtractTextPlugin = require('extract-text-webpack-plugin'),
     // webpack插件，优化、最小化css文件
-    OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin'),
+    // OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin'),
+    OptimizeCSSPlugin = require('./optimize-css'),
     // 当前环境
     env = config.build.env;
 
