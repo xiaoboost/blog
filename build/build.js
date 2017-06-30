@@ -107,6 +107,10 @@ status = status.then(() => {
 
     return fontMin(text, font, out);
 }).then(() => {
+    // 若未开启Gzip则跳过
+    if (!config.build.productionGzip) {
+        return Promise.resolve();
+    }
     // 压缩所有文本
     const exclude = [/\.git*/i, /\.(png|jpg|gif|woff|woff2)$/i],
         include = [/\.(css|js|html)$/i, /api/],

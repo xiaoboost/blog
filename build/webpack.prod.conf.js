@@ -97,27 +97,6 @@ const webpackConfig = merge(baseWebpackConfig, {
     ]
 });
 
-// 如果开启了 Gzip，那么启用下方的配置
-if (config.build.productionGzip) {
-    // 加载 compression-webpack-plugin 插件
-    const CompressionWebpackPlugin = require('compression-webpack-plugin');
-    // 向 webpackconfig.plugins 中加入下方的插件
-    webpackConfig.plugins.push(
-        // 启用插件对文件进行压缩
-        new CompressionWebpackPlugin({
-            asset: '[path].gz[query]',
-            algorithm: 'gzip',
-            test: new RegExp(
-                '\\.(' +
-                config.build.productionGzipExtensions.join('|') +
-                ')$'
-            ),
-            threshold: 10240,
-            minRatio: 0.8
-        })
-    );
-}
-
 if (config.build.bundleAnalyzerReport) {
     const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
     webpackConfig.plugins.push(new BundleAnalyzerPlugin());
