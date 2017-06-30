@@ -154,9 +154,8 @@ function create() {
     sortPost(categories, 'dict'); //类别按照字典顺序排序
     sortPost(time, 'large'); //时间按照距离现在的长短
 
-    //清空site对象所有内容
-    Object.keys(site).forEach((n) => delete site[n]);
-
+    // 网站数据暂存
+    const ans = {};
     //归档页面分页
     for (const key in collection) {
         const arr = collection[key] || [];
@@ -166,34 +165,34 @@ function create() {
                 per_post.archive,
                 arr.page[name].path
             );
-            arr.page[name].forEach((n) => site[n.path] = n);
+            arr.page[name].forEach((n) => ans[n.path] = n);
             const aside = path.join(
                 arr.page[name][0].path,
                 '../../aside'
             );
-            site[aside] = site[aside] || [];
-            site[aside].push({
+            ans[aside] = ans[aside] || [];
+            ans[aside].push({
                 key: name,
                 total: arr.page[name].total
             });
         });
     }
-    //首页分页
+    // 首页分页
     tabPage(
         posts.map((n) => n.simple({ index: true })),
         per_post.index,
         path.normalize('/index/')
-    ).forEach((n) => site[n.path] = n);
+    ).forEach((n) => ans[n.path] = n);
 
-    if (site['\\index\\page1']) {
-        site['\\index\\page1'].next = '/';
+    if (ans['\\index\\page1']) {
+        ans['\\index\\page1'].next = '/';
     }
 
-    //所有文章
-    posts.forEach((post) => site[path.join(post.path)] = post);
+    // 所有文章
+    posts.forEach((post) => ans[path.join(post.path)] = post);
 
-    for (const i in site) {
-        const content = site[i],
+    for (const i in ans) {
+        const content = ans[i],
             keys = ['path', 'prev', 'next'];
 
         for (let j = 0; j < keys.length; j++) {
@@ -202,6 +201,11 @@ function create() {
             }
         }
     }
+
+    // 清空site对象所有内容
+    Object.keys(site).forEach((n) => delete site[n]);
+    // 为所有 api 添加 json 后缀
+    Object.entries(ans).forEach(([key, content]) => site[`${key}.json`] = content);
 }
 
 // 首次运行
