@@ -107,6 +107,9 @@ status = status.then(() => {
 
     return fontMin(text, font, out);
 }).then(() => {
+    // 字体压缩完毕之后空一行
+    console.log('\n');
+
     // 若未开启Gzip则跳过
     if (!config.build.productionGzip) {
         return Promise.resolve();
