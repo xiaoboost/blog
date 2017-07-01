@@ -59,14 +59,12 @@ export default {
         ajax(`/api/post/${to.params.name}`)
             .then((page) => next((vm) => Object.assign(vm, page)));
     },
-    watch: {
-        $route() {
-            ajax(`/api/post/${this.$route.params.name}`)
-                .then((page) => Object.assign(this, page));
-        },
-        title() {
+    beforeRouteUpdate(to, from, next) {
+        ajax(`/api/post/${to.params.name}`).then((page) => {
+            Object.assign(this, page);
             doc.title = this.$t(this.title);
-        }
+            next();
+        });
     },
     computed: {
         cacheToc() {
