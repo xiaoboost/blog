@@ -18,58 +18,67 @@ function offsetTop(el) {
     return ans;
 }
 
-export default {
-    bind(el, binding, vnode) {
-        // 非法参数，直接返回
-        if (!binding.expression) return (false);
-        // 指令输入的参数
-        let { speed, target } = binding.value;
-        // 数据处理
-        if (speed > 99) {
-            speed = 99;
-        } else if (speed < 1) {
-            speed = 1;
-        }
-        speed = 100 - speed;
-        target = target ? target : -1;
-        // 事件回调
-        function callback() {
-            if (!target) {
-                // 目标不存在，跳出回调
-                return (false);
-            } else if (typeof target === 'string') {
-                // 如果是选择器，那么缓存目标DOM
-                target = document.querySelector(target);
-            }
+// 解除指令
+function remove(el) {
+    if (!cache.has(el)) { return; }
 
-            // 求目标距离顶端的距离
-            const body = document.body,
-                pageHeight = body.scrollHeight,
-                targetOffset = (typeof target === 'number') ? target : offsetTop(target),
-                offset = (body.scrollTop - targetOffset) / speed;
+    el.removeEventListener('click', cache.get(el));
+    cache.delete(el);
+}
 
-            // 每隔10ms滚动页面
-            const timer = setInterval(() => {
-                // 滚动屏幕
-                body.scrollTop -= offset;
-                // 当前屏幕底部
-                const scrollBottom = body.clientHeight + body.scrollTop;
-                // 超过目标，则取消定时器
-                if ((offset > 0 && body.scrollTop <= targetOffset + 1) ||
-                    ((offset < 0 && body.scrollTop >= targetOffset - 1)) ||
-                    (pageHeight - scrollBottom <= 1)) {
-                    clearInterval(timer);
-                    body.scrollTop = targetOffset;
-                }
-            }, 10);
-        }
-
-        cache.set(el, callback);
-        el.addEventListener('click', callback);
-    },
-    unbind(el) {
-        const fn = cache.get(el);
-        cache.delete(el);
-        el.removeEventListener('click', fn);
+// 绑定指令
+function add(el, binding, vnode) {
+    // 指令未更新则直接退出
+    if (binding.oldValue && binding.oldValue.target === binding.value.target) {
+        return;
     }
+
+    // 非法参数，直接返回
+    if (!binding.expression) return (false);
+    // 指令输入的参数
+    let { speed, target } = binding.value;
+    // 数据处理
+    if (speed > 99) {
+        speed = 99;
+    } else if (speed < 1) {
+        speed = 1;
+    }
+    speed = 100 - speed;
+    target = target || -1;
+
+    // 事件回调
+    function callback() {
+        // 求目标距离顶端的距离
+        const body = document.body,
+            pageHeight = body.scrollHeight,
+            targetOffset = (typeof target === 'number')
+                ? target
+                : offsetTop(document.querySelector(target)),
+            offset = (body.scrollTop - targetOffset) / speed;
+
+        // 每隔10ms滚动页面
+        const timer = setInterval(() => {
+            // 滚动屏幕
+            body.scrollTop -= offset;
+            // 当前屏幕底部
+            const scrollBottom = body.clientHeight + body.scrollTop;
+            // 超过目标，则取消定时器
+            if ((offset > 0 && body.scrollTop <= targetOffset + 1) ||
+                ((offset < 0 && body.scrollTop >= targetOffset - 1)) ||
+                (pageHeight - scrollBottom <= 1)) {
+                clearInterval(timer);
+                body.scrollTop = targetOffset;
+            }
+        }, 10);
+    }
+
+    remove(el);
+    cache.set(el, callback);
+    el.addEventListener('click', callback);
+}
+
+export default {
+    bind: add,
+    update: add,
+    unbind: remove
 };
