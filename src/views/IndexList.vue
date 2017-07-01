@@ -35,12 +35,10 @@ export default {
         ajax(`/api/index/${page}`)
             .then((page) => next((vm) => Object.assign(vm, page)));
     },
-    watch: {
-        $route() {
-            const page = this.$route.params.page || 'page0';
-            ajax(`/api/index/${page}`)
-                .then((page) => Object.assign(this, page));
-        }
+    beforeRouteUpdate(to, from, next) {
+        ajax(`/api/index/${to.params.page}`)
+            .then((page) => Object.assign(this, page))
+            .then(() => next());
     },
     components: {
         'list-nav': listNav,

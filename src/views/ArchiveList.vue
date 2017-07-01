@@ -31,22 +31,21 @@ export default {
         const { archive, key, page } = to.params;
         if (key === '$first') {
             ajax(`/api/${archive}/aside`)
-                .then((list) => next(`/${archive}/${list[0].key}/page0`));
+                .then((list) => next(`/${archive}/${list[0].key}/page0` ));
         } else {
             ajax(`/api/${archive}/${key}/${page}`)
                 .then((page) => next((vm) => Object.assign(vm, page)));
         }
     },
-    watch: {
-        $route() {
-            const { archive, key, page } = this.$route.params;
-            if (key === '$first') {
-                ajax(`/api/${archive}/aside`)
-                    .then((list) => this.$router.push(`/${archive}/${list[0].key}/page0`));
-            } else {
-                ajax(`/api/${archive}/${key}/${page}`)
-                    .then((page) => Object.assign(this, page));
-            }
+    beforeRouteUpdate(to, from, next) {
+        const { archive, key, page } = to.params;
+        if (key === '$first') {
+            ajax(`/api/${archive}/aside`)
+                .then((list) => next(`/${archive}/${list[0].key}/page0` ));
+        } else {
+            ajax(`/api/${archive}/${key}/${page}`)
+                .then((page) => Object.assign(this, page))
+                .then(() => next());
         }
     },
     components: {

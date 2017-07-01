@@ -33,17 +33,16 @@ export default {
                 document.title = `DC | ${vm.$t(archive)}`;
             }));
     },
-    watch: {
-        $route() {
-            const archive = this.$route.params.archive;
-            ajax(`/api/${archive}/aside`)
-                .then((collection) => {
-                    this.collection = collection;
-                    this.archive = archive;
-                    document.title = `DC | ${this.$t(archive)}`;
-                });
-        }
-    }
+    beforeRouteUpdate(to, from, next) {
+        const archive = to.params.archive;
+        ajax(`/api/${archive}/aside`)
+            .then((collection) => {
+                this.collection = collection;
+                this.archive = archive;
+                document.title = `DC | ${this.$t(archive)}`;
+                next();
+            });
+    },
 };
 </script>
 
