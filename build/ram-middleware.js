@@ -3,8 +3,7 @@ const path = require('path'),
     url = require('url'),
     etag = require('etag'),
     mime = require('mime-types'),
-    parseUrl = require('parseurl'),
-    destroy = require('destroy');
+    parseUrl = require('parseurl');
 
 //从Buffer创建读取流
 class readRam extends Readable {
@@ -74,8 +73,7 @@ function ramMiddleware(site) {
         res.setHeader('Content-Type', 'application/json;charset:utf-8');
 
         //数据流连接至http响应
-        resStream.pipe(res)
-            .on('finish', () => destroy(resStream));
+        resStream.pipe(res).on('finish', () => resStream.destroy());
 
         //响应终止
         return (true);
