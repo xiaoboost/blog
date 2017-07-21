@@ -56,8 +56,10 @@ export default {
         };
     },
     beforeRouteEnter(to, from, next) {
-        ajax(`/api/post/${to.params.name}`)
-            .then((page) => next((vm) => Object.assign(vm, page)));
+        ajax(`/api/post/${to.params.name}`).then((page) => next((vm) => {
+            Object.assign(vm, page);
+            doc.title = vm.$t(vm.title);
+        }));
     },
     beforeRouteUpdate(to, from, next) {
         ajax(`/api/post/${to.params.name}`).then((page) => {
