@@ -79,4 +79,9 @@ function clone(from) {
     }
 }
 
-export { ajax, clone };
+// 延迟函数
+function delay(fn, time = 0) {
+    return new Promise((resolve) => setTimeout(() => (fn(), resolve()), time));
+}
+
+export { ajax, clone, delay };
