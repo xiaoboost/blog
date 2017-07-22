@@ -14,7 +14,7 @@
                 @enter="enter"
                 @leave="leave"
                 @after-enter="afterEnter"
-                @after-leave="afterLeave"> 
+                @after-leave="afterLeave">
                 <post-toc
                     v-show="node.showChild"
                     :tocTree="node.child"
@@ -22,7 +22,7 @@
                     :number="`${number}${i+1}.`"
                     :level="level + 1" tocClass="toc-child">
                 </post-toc>
-            </transition>  
+            </transition>
         </template>
     </li>
 </ol>
@@ -130,7 +130,7 @@ ol.toc
         transition color 200ms ease-out, border-bottom 200ms ease-out
         &:hover
             color color-theme
-            border-bottom 1px solid color-orange
+            border-bottom 1px solid color-orange !important
     li,ol
         padding 0.25em 0
         box-sizing border-box
