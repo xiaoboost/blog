@@ -99,7 +99,6 @@ export default {
             // 初始高度为 0px
             el.style.height = '0px';
 
-            console.log(height);
             setTimeout(() => el.style.height = `${height}px`);
             setTimeout(() => done(), 200);
         },
