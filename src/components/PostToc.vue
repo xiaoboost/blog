@@ -135,6 +135,10 @@ ol.toc
         padding 0.25em 0
         box-sizing border-box
         transition all 200ms ease-out
+    li.toc-item
+        overflow hidden
+        white-space nowrap
+        text-overflow ellipsis
     .toc-level-2,
     .toc-level-3,
     .toc-level-4,
