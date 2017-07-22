@@ -20,7 +20,7 @@
     </div>
     <page-aside v-if="!!toc">
         <p class="toc-title">文章目录</p>
-        <post-toc :tocTree="toc" :nav="tocNav"></post-toc>
+        <post-toc ref="toc" :tocTree="toc"></post-toc>
     </page-aside>
 </article>
 </template>
@@ -50,38 +50,36 @@ export default {
             toc: [],
             category: '',
             tag: [],
-            tocNav: '',
             next: false,
-            prev: false
+            prev: false,
+
+            tocNav: '',
         };
     },
     beforeRouteEnter(to, from, next) {
         ajax(`/api/post/${to.params.name}`).then((page) => next((vm) => {
             Object.assign(vm, page);
             doc.title = vm.$t(vm.title);
+            vm.addPropToc(vm.toc);
         }));
     },
     beforeRouteUpdate(to, from, next) {
         ajax(`/api/post/${to.params.name}`).then((page) => {
             Object.assign(this, page);
             doc.title = this.$t(this.title);
+            this.addPropToc(this.toc);
             next();
         });
     },
-    computed: {
-        cacheToc() {
-            return clone(this.toc);
-        }
-    },
     methods: {
         pageNav() {
-            const viewTop = doc.body.scrollTop;
+            const viewTop = doc.body.scrollTop,
+                navL = this.tocNav;
+
             this.tocNav = function search(toc) {
                 for (let i = toc.length - 1; i >= 0; i--) {
                     // 缓存绑定的DOM对象
-                    if (!toc[i].el) {
-                        toc[i].el = doc.getElementById(toc[i].bolt);
-                    }
+                    toc[i].el = doc.getElementById(toc[i].bolt);
                     const offsetTop = offsetDocTop(toc[i].el) - 30;
                     // 如果当前元素在视窗上方
                     if (offsetTop < viewTop) {
@@ -94,8 +92,23 @@ export default {
                     }
                 }
                 return ('');
-            }(this.cacheToc);
-        }
+            }(this.toc);
+
+            // 目录导航发生改变
+            if (navL !== this.tocNav) {
+                this.$refs.toc.captureToc(this.tocNav);
+            }
+        },
+        addPropToc(toc) {
+            toc.forEach((item) => {
+                this.$set(item, 'current', false);
+                this.$set(item, 'showChild', false);
+
+                if (item.child && item.child.length) {
+                    this.addPropToc(item.child);
+                }
+            });
+        },
     },
     mounted() {
         doc.addEventListener('scroll', this.pageNav);
@@ -104,8 +117,8 @@ export default {
         doc.removeEventListener('scroll', this.pageNav);
     },
     components: {
-        'page-aside': pageAside,
         'post-toc': postToc,
+        'page-aside': pageAside,
         'post-footer': postFooter
     }
 };
