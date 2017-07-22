@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import { ajax, clone } from '@/util';
+import { ajax } from '@/util';
 import postToc from '@/components/PostToc';
 import pageAside from '@/components/PageAside';
 import postFooter from '@/components/PostFooter';

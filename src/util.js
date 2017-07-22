@@ -11,13 +11,13 @@ function $path(str) {
             .toLowerCase()
         : str.toLowerCase();
 }
-//单 get方法
+// ajax 方法
 function get(input) {
     const url = $path(input) + '.json';
     return new Promise((res, rej) => {
-        //链接数据已经存在
+        //链接数据已经存在，导出数据副本
         if (getData[url]) {
-            setTimeout(() => res(getData[url]));
+            setTimeout(() => res(clone(getData[url])));
             return (true);
         }
 
@@ -27,9 +27,9 @@ function get(input) {
         oAjax.onreadystatechange = function() {
             if (oAjax.readyState === 4) {
                 if (oAjax.status === 200) {
-                    //转换为DOM并缓存
+                    //转换数据格式并缓存
                     getData[url] = JSON.parse(oAjax.responseText);
-                    res(getData[url]);
+                    res(clone(getData[url]));
                 } else {
                     rej(oAjax);
                 }
