@@ -3,19 +3,28 @@
     <li
         v-for="(node, i) in tocTree"
         :bolt="node.bolt" :key="i"
-        :class="`toc-item toc-level-${level}`" >
+        :class="['toc-item', `toc-level-${level}`, { 'toc-current': node.current }]">
         <a class="toc-link" v-scrollto="{speed: 60, target: `#${node.bolt}`}">
             <span class="toc-number">{{`${number}${i+1}.`}}</span>
             <span class="toc-text">{{node.tocTitle}}</span>
         </a>
-        <post-toc
-            v-if="!!node.child"
-            :nav="nav"
-            :tocTree="node.child"
-            :number="`${number}${i+1}.`"
-            :level="level + 1" tocClass="toc-child">
-            </post-toc>
-        </li>
+        <template v-if="node.child && node.child.length">
+            <transition
+                name="height"
+                @enter="enter"
+                @leave="leave"
+                @after-enter="afterEnter"
+                @after-leave="afterLeave"> 
+                <post-toc
+                    v-show="node.showChild"
+                    :tocTree="node.child"
+                    :ref="`childToc-${i}`"
+                    :number="`${number}${i+1}.`"
+                    :level="level + 1" tocClass="toc-child">
+                </post-toc>
+            </transition>  
+        </template>
+    </li>
 </ol>
 </template>
 
@@ -29,7 +38,7 @@ export default {
     props: {
         tocTree: {
             type: Array,
-            default: []
+            default: () => []
         },
         number: {
             type: String,
@@ -40,9 +49,7 @@ export default {
             default: 1
         },
         tocClass: {
-            validator(value) {
-                return (['toc', 'toc-child'].indexOf(value) !== -1);
-            },
+            validator: (value) => (['toc', 'toc-child'].includes(value)),
             type: String,
             default: 'toc'
         },
@@ -51,42 +58,61 @@ export default {
             default: ''
         }
     },
-    computed: {
-        cacheTree() {
-            return clone(this.tocTree);
-        }
-    },
     methods: {
-        positioning(e) {
-            for (let i = 0; i < this.cacheTree.length; i++) {
-                const node = this.cacheTree[i];
-                if (!node.el) {
-                    node.el = document.querySelector(`[bolt="${node.bolt}"]`);
+        captureToc(target) {
+            this.tocTree.forEach((node, i) => {
+                node.current = false;
+                node.showChild = false;
+
+                if (target === node.bolt) {
+                    // 捕获到目标，开始冒泡
+                    this.bubbleToc({
+                        target,
+                        currentTarget: target
+                    });
+                } else if (node.child && node.child.length) {
+                    // 继续向下捕获
+                    this.$refs[`childToc-${i}`][0].captureToc(target);
                 }
-                const el = node.el;
-                el.classList.remove('toc-current', 'toc-child-vision');
-                if (e.currentTarget === node.bolt) {
+            });
+        },
+        bubbleToc({ target, currentTarget }) {
+            this.tocTree.forEach((node) => {
+                if (currentTarget === node.bolt) {
+                    node.current = true;
+                    node.showChild = (target !== currentTarget);
+
                     if (node.parent) {
                         // 事件冒泡
-                        this.$parent.positioning({
-                            target: e.target,
+                        this.$parent.bubbleToc({
+                            target,
                             currentTarget: node.parent
                         });
                     }
-                    el.classList.add('toc-current');
-                    if (e.target !== e.currentTarget) {
-                        el.classList.add('toc-child-vision');
-                    }
                 }
-            }
-        }
-    },
-    watch: {
-        nav() {
-            this.positioning({
-                target: this.nav,
-                currentTarget: this.nav
             });
+        },
+        enter(el, done) {
+            el.style.display = 'block';
+            // 获取更新后的计算高度
+            const height = el.clientHeight;
+            // 初始高度为 0px
+            el.style.height = '0px';
+
+            console.log(height);
+            setTimeout(() => el.style.height = `${height}px`);
+            setTimeout(() => done(), 200);
+        },
+        afterEnter(el) {
+            el.style.height = '';
+        },
+        leave(el, done) {
+            el.style.height = `${el.clientHeight}px`;
+            setTimeout(() => el.style.height = '0px');
+            setTimeout(() => done(), 200);
+        },
+        afterLeave(el) {
+            el.style.height = '';
         }
     }
 };
@@ -106,8 +132,9 @@ ol.toc
             color color-theme
             border-bottom 1px solid color-orange
     li,ol
-        margin 0.5em 0
-        transition all 300ms ease-out
+        padding 0.25em 0
+        box-sizing border-box
+        transition all 200ms ease-out
     .toc-level-2,
     .toc-level-3,
     .toc-level-4,
@@ -115,10 +142,9 @@ ol.toc
     .toc-level-6
         padding-left 1em
     .toc-child
-        display none
+        padding-bottom 0
+        overflow hidden
     .toc-current > a
         color color-theme
         border-bottom 1px solid color-theme
-    .toc-child-vision > .toc-child
-            display block
 </style>
