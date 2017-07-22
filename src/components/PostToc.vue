@@ -30,7 +30,7 @@
 
 <script>
 import scrollto from '@/directives/scrollto';
-import { ajax, clone } from '@/util';
+import { ajax, clone, delay } from '@/util';
 
 export default {
     name: 'post-toc',
@@ -99,16 +99,17 @@ export default {
             // 初始高度为 0px
             el.style.height = '0px';
 
-            setTimeout(() => el.style.height = `${height}px`);
-            setTimeout(() => done(), 200);
+            delay(() => el.style.height = `${height}px`)
+                .then(() => delay(done, 200));
         },
         afterEnter(el) {
             el.style.height = '';
         },
         leave(el, done) {
             el.style.height = `${el.clientHeight}px`;
-            setTimeout(() => el.style.height = '0px');
-            setTimeout(() => done(), 200);
+
+            delay(() => el.style.height = '0px')
+                .then(() => delay(done, 200));
         },
         afterLeave(el) {
             el.style.height = '';
