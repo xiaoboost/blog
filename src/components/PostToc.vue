@@ -13,8 +13,8 @@
                 name="height"
                 @enter="enter"
                 @leave="leave"
-                @after-enter="afterEnter"
-                @after-leave="afterLeave">
+                @after-enter="clear"
+                @after-leave="clear">
                 <post-toc
                     v-show="node.showChild"
                     :tocTree="node.child"
@@ -102,16 +102,13 @@ export default {
             delay(() => el.style.height = `${height}px`)
                 .then(() => delay(done, 200));
         },
-        afterEnter(el) {
-            el.style.height = '';
-        },
         leave(el, done) {
             el.style.height = `${el.clientHeight}px`;
 
             delay(() => el.style.height = '0px')
                 .then(() => delay(done, 200));
         },
-        afterLeave(el) {
+        clear(el) {
             el.style.height = '';
         }
     }
@@ -125,14 +122,15 @@ ol
     list-style none
 ol.toc
     a
-        padding 0.3em 0
+        padding 0
+        display inline-block
         border-bottom 1px solid color-gray
         transition color 200ms ease-out, border-bottom 200ms ease-out
         &:hover
             color color-theme
             border-bottom 1px solid color-orange !important
-    li,ol
-        padding 0.25em 0
+    li, ol
+        padding 0.1em 0
         box-sizing border-box
         transition all 200ms ease-out
     li.toc-item
@@ -146,7 +144,7 @@ ol.toc
     .toc-level-6
         padding-left 1em
     .toc-child
-        padding-bottom 0
+        padding 0
         overflow hidden
     .toc-current > a
         color color-theme
