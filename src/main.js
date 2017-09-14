@@ -2,6 +2,8 @@ import Vue from 'vue';
 import App from './App';
 import router from './router';
 
+import './css/main';
+
 const app = new Vue({
     el: '#app',
     router,
