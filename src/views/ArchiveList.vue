@@ -74,7 +74,7 @@ ul#main
     float right
     list-style none
     padding 0
-    margin 2em 100px 0 0
+    margin 30px 100px 0 0
     width 800px
     li
         background #fafafa

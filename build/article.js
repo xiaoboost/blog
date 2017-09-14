@@ -166,8 +166,8 @@ function simpleTocTree(tocTree) {
 class post {
     constructor(paths) {
         const file = fs.readFileSync(paths, 'utf8')
-            .replace(/\r\n|\r/g, '\n')
-            .split(/\n---+\n/),
+                .replace(/\r\n|\r/g, '\n')
+                .split(/\n---+\n/),
             article = file.splice(1).join('\n---\n'),
             postConfig = file[0].split('\n'),
             excerpt = article.search(excerptReg);

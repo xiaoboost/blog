@@ -49,7 +49,7 @@ function add(el, binding, vnode) {
     // 事件回调
     function callback() {
         // 求目标距离顶端的距离
-        const body = document.body,
+        const body = document.documentElement,
             pageHeight = body.scrollHeight,
             targetOffset = (typeof target === 'number')
                 ? target

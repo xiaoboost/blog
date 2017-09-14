@@ -73,7 +73,7 @@ export default {
     },
     methods: {
         pageNav() {
-            const viewTop = doc.body.scrollTop,
+            const viewTop = doc.documentElement.scrollTop,
                 navL = this.tocNav;
 
             this.tocNav = function search(toc) {
@@ -139,7 +139,7 @@ p.toc-title
     width width-post
     background color-post
     box-shadow 0 0 3px #888
-    margin 2em 0 3px 3px
+    margin 30px 0 3px 3px
     float left
     transition margin 0.5s ease-out
     line-height 1.8

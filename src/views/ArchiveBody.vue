@@ -50,7 +50,7 @@ export default {
 @import '../css/variable'
 
 #container > aside
-    margin 2em 0 0 50px
+    margin 30px 0 0 50px
     box-sizing border-box
     width 280px
     float left
