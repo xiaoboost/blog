@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import { ajax } from '@/util';
+import { ajax } from '@/libraries/util';
 
 export default {
     data() {

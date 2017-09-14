@@ -1,4 +1,5 @@
-const path = require('path'),
+const fs = require('fs'),
+    path = require('path'),
     utils = require('./utils'),
     config = require('../config'),
     vueLoaderConfig = require('./vue-loader.conf');
@@ -8,10 +9,34 @@ function resolve(dir) {
     return path.join(__dirname, '..', dir);
 }
 
+function readdir(dir) {
+    const ans = [];
+
+    fs.readdirSync(resolve(`src/${dir}`)).forEach((name) => {
+        const nextPath = path.join(dir, name),
+            filePath = resolve(`src/${nextPath}`),
+            file = fs.statSync(filePath);
+
+        if (file.isDirectory()) {
+            ans.push(...readdir(nextPath));
+        } else if (name.slice(-3) === '.js') {
+            ans.push(filePath);
+        }
+    });
+
+    return (ans);
+}
+
 module.exports = {
     entry: {
+        common: [
+            'vue',
+            'vue-router',
+            ...readdir('libraries'),
+            ...readdir('directives'),
+        ],
         // 编译文件入口
-        app: './src/main.js'
+        main: './src/main.js'
     },
     output: {
         // 编译输出的静态资源根路径
@@ -25,7 +50,7 @@ module.exports = {
     },
     resolve: {
         // 自动补全的扩展名
-        extensions: ['.js', '.vue', '.json'],
+        extensions: ['.js', '.vue', '.json', '.styl'],
         // 默认路径代理
         // 例如 import Vue from 'vue'，会自动到 'vue/dist/vue.common.js'中寻找
         alias: {

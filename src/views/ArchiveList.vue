@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import { ajax } from '@/util';
+import { ajax } from '@/libraries/util';
 import listNav from '@/components/ListNav';
 
 export default {
