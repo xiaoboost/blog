@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import { ajax } from '@/util';
+import { ajax } from '@/libraries/util';
 import config from '@config/site';
 import pageAside from '@/components/PageAside';
 

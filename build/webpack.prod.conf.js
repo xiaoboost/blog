@@ -32,10 +32,12 @@ const webpackConfig = merge(baseWebpackConfig, {
         path: config.build.assetsRoot,
         // 编译输出文件名
         filename: utils.assetsPath('js/[name].[chunkhash].js'),
-        // 没有指定输出文件名的输出文件名
-        chunkFilename: utils.assetsPath('js/[id].[chunkhash].js')
     },
     plugins: [
+        // 给每个文件创建顶部注释
+        new webpack.BannerPlugin({
+            banner: 'Project: My Blog\nAuthor: 2015 - 2017 XiaoBoost\nfilename: [name], chunkhash: [chunkhash]\nReleased under the MIT License.',
+        }),
         // http://vuejs.github.io/vue-loader/en/workflow/production.html
         new webpack.DefinePlugin({
             'process.env': env
@@ -52,7 +54,11 @@ const webpackConfig = merge(baseWebpackConfig, {
             filename: utils.assetsPath('css/[name].[contenthash].css')
         }),
         // 压缩提取出来的css文本，这里将会把不同组件中重复的css合并
-        new OptimizeCSSPlugin(),
+        new OptimizeCSSPlugin({
+            cssProcessorOptions: {
+                safe: true,
+            },
+        }),
         // 输出 index.html文件，你也可以通过编辑 index.html自定义输出，具体请参考下面的链接
         // https://github.com/ampedandwired/html-webpack-plugin
         new HtmlWebpackPlugin({
@@ -62,32 +68,16 @@ const webpackConfig = merge(baseWebpackConfig, {
             minify: {
                 removeComments: true,
                 collapseWhitespace: true,
-                removeAttributeQuotes: true
                 // 更多选项请参考下面的链接:
                 // https://github.com/kangax/html-minifier#options-quick-reference
             },
             // necessary to consistently work with multiple chunks via CommonsChunkPlugin
             chunksSortMode: 'dependency'
         }),
-        // 没有指定输出文件名的文件输出的静态文件名
+        // 指定 common 文件
         new webpack.optimize.CommonsChunkPlugin({
-            name: 'vendor',
-            minChunks(module, count) {
-                // any required modules inside node_modules are extracted to vendor
-                return (
-                    module.resource &&
-                    /\.js$/.test(module.resource) &&
-                    module.resource.indexOf(
-                        path.join(__dirname, '../node_modules')
-                    ) === 0
-                );
-            }
-        }),
-        // extract webpack runtime and module manifest to its own file in order to
-        // prevent vendor hash from being updated whenever app bundle is updated
-        new webpack.optimize.CommonsChunkPlugin({
-            name: 'manifest',
-            chunks: ['vendor']
+            name: 'common',
+            filename: 'js/common.[chunkhash].js',
         }),
         // copy custom static assets
         new CopyWebpackPlugin([{

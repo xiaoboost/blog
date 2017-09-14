@@ -30,7 +30,7 @@
 
 <script>
 import scrollto from '@/directives/scrollto';
-import { ajax, clone, delay } from '@/util';
+import { ajax, clone, delay } from '@/libraries/util';
 
 export default {
     name: 'post-toc',
