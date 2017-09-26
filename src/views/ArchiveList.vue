@@ -27,25 +27,28 @@ export default {
             next: '',
         };
     },
-    beforeRouteEnter(to, from, next) {
+    async beforeRouteEnter(to, from, next) {
         const { archive, key, page } = to.params;
+
         if (key === '$first') {
-            ajax(`/api/${archive}/aside`)
-                .then((list) => next(`/${archive}/${list[0].key}/page0`));
+            const list = await ajax(`/api/${archive}/aside`);
+            next(`/${archive}/${list[0].key}/page0`);
         } else {
-            ajax(`/api/${archive}/${key}/${page}`)
-                .then((page) => next((vm) => Object.assign(vm, page)));
+            const nPage = await ajax(`/api/${archive}/${key}/${page}`);
+            next((vm) => Object.assign(vm, nPage));
         }
     },
-    beforeRouteUpdate(to, from, next) {
+    async beforeRouteUpdate(to, from, next) {
         const { archive, key, page } = to.params;
+
         if (key === '$first') {
-            ajax(`/api/${archive}/aside`)
-                .then((list) => next(`/${archive}/${list[0].key}/page0`));
+            const list = await ajax(`/api/${archive}/aside`);
+            next(`/${archive}/${list[0].key}/page0`);
         } else {
-            ajax(`/api/${archive}/${key}/${page}`)
-                .then((page) => Object.assign(this, page))
-                .then(() => next());
+            const nPage = await ajax(`/api/${archive}/${key}/${page}`);
+
+            Object.assign(this, nPage);
+            setTimeout(next);
         }
     },
     components: {
