@@ -47,14 +47,17 @@ export default {
             links: config.friend_link,
         };
     },
-    beforeRouteEnter(to, from, next) {
-        ajax([
+    async beforeRouteEnter(to, from, next) {
+        const [tags, cates] = await ajax([
             '/api/tags/aside',
             '/api/categories/aside',
-        ]).then(([tags, cates]) => next((vm) => {
+        ]);
+
+        next((vm) => {
             vm.tags = tags;
             vm.categories = cates;
-        }));
+        });
+
         // 网站主标题
         document.title = config.title;
     },

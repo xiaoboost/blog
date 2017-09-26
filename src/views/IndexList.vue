@@ -30,15 +30,16 @@ export default {
             next: '',
         };
     },
-    beforeRouteEnter(to, from, next) {
+    async beforeRouteEnter(to, from, next) {
         const page = to.params.page || 'page0';
-        ajax(`/api/index/${page}`)
-            .then((page) => next((vm) => Object.assign(vm, page)));
+        const data = await ajax(`/api/index/${page}`);
+        next((vm) => Object.assign(vm, data));
     },
-    beforeRouteUpdate(to, from, next) {
-        ajax(`/api/index/${to.params.page}`)
-            .then((page) => Object.assign(this, page))
-            .then(() => next());
+    async beforeRouteUpdate(to, from, next) {
+        const data = await ajax(`/api/index/${to.params.page}`);
+
+        Object.assign(this, data);
+        setTimeout(next);
     },
     components: {
         'list-nav': listNav,

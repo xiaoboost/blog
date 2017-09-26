@@ -56,20 +56,22 @@ export default {
             tocNav: '',
         };
     },
-    beforeRouteEnter(to, from, next) {
-        ajax(`/api/post/${to.params.name}`).then((page) => next((vm) => {
+    async beforeRouteEnter(to, from, next) {
+        const page = await ajax(`/api/post/${to.params.name}`);
+
+        next((vm) => {
             Object.assign(vm, page);
             doc.title = vm.$t(vm.title);
             vm.addPropToc(vm.toc);
-        }));
-    },
-    beforeRouteUpdate(to, from, next) {
-        ajax(`/api/post/${to.params.name}`).then((page) => {
-            Object.assign(this, page);
-            doc.title = this.$t(this.title);
-            this.addPropToc(this.toc);
-            next();
         });
+    },
+    async beforeRouteUpdate(to, from, next) {
+        const page = await ajax(`/api/post/${to.params.name}`);
+
+        Object.assign(this, page);
+        doc.title = this.$t(this.title);
+        this.addPropToc(this.toc);
+        next();
     },
     methods: {
         pageNav() {

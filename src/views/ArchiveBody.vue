@@ -24,24 +24,24 @@ export default {
             archive: '',
         };
     },
-    beforeRouteEnter(to, from, next) {
+    async beforeRouteEnter(to, from, next) {
         const archive = to.params.archive;
-        ajax(`/api/${archive}/aside`)
-            .then((collection) => next((vm) => {
-                vm.collection = collection;
-                vm.archive = archive;
-                document.title = `DC | ${vm.$t(archive)}`;
-            }));
+        const collection = await ajax(`/api/${archive}/aside`);
+
+        next((vm) => {
+            vm.collection = collection;
+            vm.archive = archive;
+            document.title = `DC | ${vm.$t(archive)}`;
+        });
     },
-    beforeRouteUpdate(to, from, next) {
+    async beforeRouteUpdate(to, from, next) {
         const archive = to.params.archive;
-        ajax(`/api/${archive}/aside`)
-            .then((collection) => {
-                this.collection = collection;
-                this.archive = archive;
-                document.title = `DC | ${this.$t(archive)}`;
-                next();
-            });
+        const collection = await ajax(`/api/${archive}/aside`);
+
+        this.collection = collection;
+        this.archive = archive;
+        document.title = `DC | ${this.$t(archive)}`;
+        next();
     },
 };
 </script>

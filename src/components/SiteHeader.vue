@@ -9,8 +9,10 @@
             <h2>
                 <span>{{subtitle}}</span>
                 <span class="header-links">
-                    <router-link v-for="(href, text) in headerLinks"
-                                                :to="href" :key="text">{{text}}</router-link>
+                    <router-link
+                        v-for="(href, text) in headerLinks"
+                        :to="href" :key="text">{{text}}
+                    </router-link>
                 </span>
             </h2>
         </div>
@@ -99,7 +101,7 @@ div.header-desc
         @media mini
             > a:last-child
                 padding-right: 0
-        
+
 /*
 // 搜索框样式，暂存
 form.search
