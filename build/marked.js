@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 /**
  * 自用的markdown解析器，修改自开源项目：marked（https://github.com/chjj/marked）
  * 自己改编的主要原因是我想使用一些自定义的格式，如果不动源代码的话实在是太难以实现了
@@ -40,28 +42,28 @@
  */
 
 (function() {
-    //正则扩展
+    // 正则扩展
     function replace(regex, opt) {
         regex = regex.source;
         opt = opt || '';
         return function self(name, val) {
             if (!name) return new RegExp(regex, opt);
             val = val.source || val;
-            val = val.replace(/(^|[^\[])\^/g, '$1');
+            val = val.replace(/(^|[^[])\^/g, '$1');
             regex = regex.replace(name, val);
             return self;
         };
     }
-    //特殊字符转义
+    // 特殊字符转义
     function escape(html) {
         return html
-            //.replace(/&/g, '&amp;')
+            // .replace(/&/g, '&amp;')
             .replace(/</g, '&lt;')
             .replace(/>/g, '&gt;');
-            //.replace(/"/g, '&quot;')
-            //.replace(/'/g, '&#39;');
+        // .replace(/"/g, '&quot;')
+        // .replace(/'/g, '&#39;');
     }
-    //排除上下标的特殊字符转义
+    // 排除上下标的特殊字符转义
     function escapeEx(html) {
         return escape(html)
             .replace(/&lt;(\/?sub)&gt;/g, '<$1>')
@@ -69,71 +71,71 @@
             .replace(/&lt;(\/?code)&gt;/g, '<$1>');
     }
 
-    //渲染器定义
+    // 渲染器定义
     function Renderer() {}
     Renderer.prototype = {
-        //下面是区块元素的渲染
-        //代码块
+        // 下面是区块元素的渲染
+        // 代码块
         code(code, lang) {
             if (!lang) {
-                return '<pre><code>'
-                    + code
-                    + '\n</code></pre>';
+                return '<pre><code>' +
+                    code +
+                    '\n</code></pre>';
             }
 
-            return '<pre><code class="'
-                + escape(lang, true)
-                + '">'
-                + escape(code)
-                + '\n</code></pre>\n';
+            return '<pre><code class="' +
+                escape(lang, true) +
+                '">' +
+                escape(code) +
+                '\n</code></pre>\n';
         },
-        //区块引用
+        // 区块引用
         blockquote(quote) {
             return '<blockquote>\n' + quote + '</blockquote>\n';
         },
-        //html文本
+        // html文本
         html(html) {
             return html;
         },
-        //标题
+        // 标题
         heading(text, level) {
-            return '<h' + level + '>'
-                + text
-                + '</h' + level + '>\n';
+            return '<h' + level + '>' +
+                text +
+                '</h' + level + '>\n';
         },
-        //分割线
+        // 分割线
         hr() {
             return '<hr>\n';
         },
-        //列表
+        // 列表
         list(body, ordered) {
             const type = ordered ? 'ol' : 'ul';
             return '<' + type + '>\n' + body + '</' + type + '>\n';
         },
-        //列表元素
+        // 列表元素
         listitem(text) {
             return '<li>' + text + '</li>\n';
         },
-        //段落正文
+        // 段落正文
         paragraph(text) {
             return '<p>' + text + '</p>\n';
         },
-        //表格
+        // 表格
         table(header, body) {
-            return '<table>\n'
-                + '<thead>\n'
-                + header
-                + '</thead>\n'
-                + '<tbody>\n'
-                + body
-                + '</tbody>\n'
-                + '</table>\n';
+            return '<table>\n' +
+                '<thead>\n' +
+                header +
+                '</thead>\n' +
+                '<tbody>\n' +
+                body +
+                '</tbody>\n' +
+                '</table>\n';
         },
-        //表格行
+        // 表格行
         tablerow(content) {
             return '<tr>\n' + content + '</tr>\n';
         },
-        //表格元素
+        // 表格元素
         tablecell(content, flags) {
             const type = flags.header ? 'th' : 'td',
                 tag = flags.align
@@ -142,44 +144,44 @@
             return tag + content + '</' + type + '>\n';
         },
 
-        //下面是区段元素的渲染
-        //行内公式
+        // 下面是区段元素的渲染
+        // 行内公式
         mathinline(math) {
             return ('<span>' + math + '</span>');
         },
-        //块级公式
+        // 块级公式
         mathblock(math) {
             return ('<p>' + math + '</p>\n');
         },
-        //粗体
+        // 粗体
         strong(text) {
             return '<strong>' + text + '</strong>';
         },
-        //下标
+        // 下标
         sub(text) {
             return '<sub>' + text + '</sub>';
         },
-        //上标
+        // 上标
         sup(text) {
             return '<sup>' + text + '</sup>';
         },
-        //斜体
+        // 斜体
         em(text) {
             return '<em>' + text + '</em>';
         },
-        //行内代码
+        // 行内代码
         codespan(text) {
             return '<code>' + text + '</code>';
         },
-        //空行
+        // 空行
         br() {
             return '<br>';
         },
-        //删除线
+        // 删除线
         del(text) {
             return '<del>' + text + '</del>';
         },
-        //链接
+        // 链接
         link(href, title, text) {
             let out = '<a href="' + href + '"';
             if (title) {
@@ -188,7 +190,7 @@
             out += '>' + text + '</a>';
             return out;
         },
-        //图片
+        // 图片
         image(href, title, text) {
             let out = '<img src="' + href + '" alt="' + text + '"';
             if (title) {
@@ -197,13 +199,13 @@
             out += '>';
             return out;
         },
-        //文本
+        // 文本
         text(text) {
             return text;
-        }
+        },
     };
-    //区块元素规则
-    const block = function() {
+    // 区块元素规则
+    const block = (function() {
         const ans = {
             newline: /^\n+/,
             code: /^ *(`{3,}|~{3,})[ .]*(\S+)? *\n([\s\S]*?)\s*\1 *(?:\n+|$)/,
@@ -214,47 +216,45 @@
             html: /^ *(?:comment *(?:\n|\s*$)|closed *(?:\n{2,}|\s*$)|closing *(?:\n{2,}|\s*$))/,
             table: /^ *\|(.+)\n *\|( *[-:]+[-| :]*)\n((?: *\|.*(?:\n|$))*)\n*/,
             paragraph: /^((?:[^\n]+\n?(?!code|list|hr|heading|blockquote|tag))+)\n*/,
-            text: /^[^\n]+/
+            text: /^[^\n]+/,
         };
 
         ans.bullet = /(?:[*+-]|\d+\.)/;
         ans.item = /^( *)(bull) [^\n]*(?:\n(?!\1bull )[^\n]*)*/;
-        ans.item = replace(ans.item, 'gm')
-            (/bull/g, ans.bullet)
-            ();
+        ans.item = replace(ans.item, 'gm')(/bull/g, ans.bullet)();
 
         ans.list = replace(ans.list)
-            (/bull/g, ans.bullet)
-            ('hr', '\\n+(?=\\1?(?:[-*_] *){3,}(?:\\n+|$))')
-            ();
+        (/bull/g, ans.bullet)
+        ('hr', '\\n+(?=\\1?(?:[-*_] *){3,}(?:\\n+|$))')
+        ();
 
-        ans._tag = '(?!(?:'
-            + 'a|em|strong|small|s|cite|q|dfn|abbr|data|time|code'
-            + '|let|samp|kbd|sub|sup|i|b|u|mark|ruby|rt|rp|bdi|bdo'
-            + '|span|br|wbr|ins|del|img)\\b)\\w+(?!:/|[^\\w\\s@]*@)\\b';
+        ans._tag = '(?!(?:' +
+            'a|em|strong|small|s|cite|q|dfn|abbr|data|time|code' +
+            '|let|samp|kbd|sub|sup|i|b|u|mark|ruby|rt|rp|bdi|bdo' +
+            '|span|br|wbr|ins|del|img)\\b)\\w+(?!:/|[^\\w\\s@]*@)\\b';
 
         ans.html = replace(ans.html)
-            ('comment', /<!--[\s\S]*?-->/)
-            ('closed', /<(tag)[\s\S]+?<\/\1>/)
-            ('closing', /<tag(?:"[^"]*"|'[^']*'|[^'">])*?>/)
-            (/tag/g, ans._tag)
-            ();
+        ('comment', /<!--[\s\S]*?-->/)
+        ('closed', /<(tag)[\s\S]+?<\/\1>/)
+        ('closing', /<tag(?:"[^"]*"|'[^']*'|[^'">])*?>/)
+        (/tag/g, ans._tag)
+        ();
 
         ans.paragraph = replace(ans.paragraph)
-            ('hr', ans.hr)
-            ('heading', ans.heading)
-            ('blockquote', ans.blockquote)
-            ('tag', '<' + ans._tag)
-            ('code', ans.code.source.replace('\\1', '\\2'))
-            ('list', ans.list.source.replace('\\1', '\\3'))
-            ();
+        ('hr', ans.hr)
+        ('heading', ans.heading)
+        ('blockquote', ans.blockquote)
+        ('tag', '<' + ans._tag)
+        ('code', ans.code.source.replace('\\1', '\\2'))
+        ('list', ans.list.source.replace('\\1', '\\3'))
+        ();
 
         return (ans);
-    }();
-    //区段元素规则
-    const inline = function() {
+    })();
+    // 区段元素规则
+    const inline = (function() {
         const ans = {
-            escape: /^\\([\\`*{}\[\]()#+\-.!_>~|])/,      //这个是特殊符号的转义
+            escape: /^\\([\\`*{}\[\]()#+\-.!_>~|])/,      // 这个是特殊符号的转义
             url: /^(https?:\/\/[^\s<]+[^<.,:;"')\]\s])/,
             tag: /^<!--[\s\S]*?-->|^<\/?\w+(?:"[^"]*"|'[^']*'|[^'">])*?>/,
             link: /^!?\[(inside)\]\(href\)/,
@@ -266,20 +266,20 @@
             del: /^~~(?=\S)([\s\S]*?\S)~~/,
             mathinline: /^\$\$ *([\\\{\}\-\(\)a-zA-Z0-9<>\|,&_^+*/.= '\[\]]+?) *\$\$/,
             mathblock: /^\$\$ *\n[\n ]*([\\\{\}\-\(\)\[\]\na-zA-Z0-9<>\|,&_^+*/.= ']+?)[\n ]*\n\$\$ *(?:$|\n)/,
-            text: /^[\s\S]+?(?=[\\<!\[_*`~\^(?:\$\$)]|https?:\/\/| *\n|$)/
+            text: /^[\s\S]+?(?=[\\<!\[_*`~\^(?:\$\$)]|https?:\/\/| *\n|$)/,
         };
 
         ans._inside = /(?:\[[^\]]*\]|[^\[\]]|\](?=[^\[]*\]))*/;
         ans._href = /\s*<?([\s\S]*?)>?(?:\s+['"]([\s\S]*?)['"])?\s*/;
 
         ans.link = replace(ans.link)
-            ('inside', ans._inside)
-            ('href', ans._href)
-            ();
+        ('inside', ans._inside)
+        ('href', ans._href)
+        ();
 
         return ans;
-    }();
-    //区段元素解析器
+    })();
+    // 区段元素解析器
     function inlineLexer(src, render) {
         let out = '', title = '',
             text = '', href = '', cap = '';
@@ -375,13 +375,13 @@
 
             if (src) {
                 throw new
-                    Error('Infinite loop on byte: ' + src.charCodeAt(0));
+                Error('Infinite loop on byte: ' + src.charCodeAt(0));
             }
         }
 
         return out;
     }
-    //词法分析
+    // 词法分析
     function lexer(context) {
         const tokens = [],
             rules = block,
@@ -391,8 +391,8 @@
                 .replace(/\u00a0/g, ' ')
                 .replace(/\u2424/g, '\n');
 
-        //词法分解
-        (function token(txt, top){
+        // 词法分解
+        (function token(txt, top) {
             let src = txt.replace(/^ +$/gm, ''),
                 next = '', loose = '', cap = '', bull = '',
                 item = '', space = 0, i = 0, l = 0;
@@ -403,7 +403,7 @@
                     src = src.substring(cap[0].length);
                     if (cap[0].length > 1) {
                         tokens.push({
-                            type: 'space'
+                            type: 'space',
                         });
                     }
                 }
@@ -413,7 +413,7 @@
                     tokens.push({
                         type: 'code',
                         lang: cap[2],
-                        text: cap[3] || ''
+                        text: cap[3] || '',
                     });
                     continue;
                 }
@@ -423,7 +423,7 @@
                     tokens.push({
                         type: 'heading',
                         depth: cap[1].length,
-                        text: cap[2]
+                        text: cap[2],
                     });
                     continue;
                 }
@@ -431,7 +431,7 @@
                 if (cap = rules.hr.exec(src)) {
                     src = src.substring(cap[0].length);
                     tokens.push({
-                        type: 'hr'
+                        type: 'hr',
                     });
                     continue;
                 }
@@ -440,16 +440,16 @@
                     src = src.substring(cap[0].length);
 
                     tokens.push({
-                        type: 'blockquote_start'
+                        type: 'blockquote_start',
                     });
 
                     cap = cap[0].replace(/^ *> ?/gm, '');
 
-                    //递归分解引用的内部元素
+                    // 递归分解引用的内部元素
                     token(cap, top);
 
                     tokens.push({
-                        type: 'blockquote_end'
+                        type: 'blockquote_end',
                     });
 
                     continue;
@@ -461,7 +461,7 @@
 
                     tokens.push({
                         type: 'list_start',
-                        ordered: bull.length > 1
+                        ordered: bull.length > 1,
                     });
 
                     // 匹配每行元素
@@ -497,19 +497,19 @@
                         tokens.push({
                             type: loose
                                 ? 'loose_item_start'
-                                : 'list_item_start'
+                                : 'list_item_start',
                         });
 
                         // 递归分解
                         token(item, false);
 
                         tokens.push({
-                            type: 'list_item_end'
+                            type: 'list_item_end',
                         });
                     }
 
                     tokens.push({
-                        type: 'list_end'
+                        type: 'list_end',
                     });
 
                     continue;
@@ -520,7 +520,7 @@
                     tokens.push({
                         type: 'html',
                         pre: (cap[1] === 'pre' || cap[1] === 'script' || cap[1] === 'style'),
-                        text: cap[0]
+                        text: cap[0],
                     });
                     continue;
                 }
@@ -532,7 +532,7 @@
                         type: 'table',
                         header: cap[1].replace(/^ *| *\| *$/g, '').split(/ *\| */),
                         align: cap[2].replace(/^ *|\| *$/g, '').split(/ *\| */),
-                        cells: cap[3].replace(/(?: *\| *)?\n$/, '').split('\n')
+                        cells: cap[3].replace(/(?: *\| *)?\n$/, '').split('\n'),
                     };
 
                     for (i = 0; i < item.align.length; i++) {
@@ -564,7 +564,7 @@
                         type: 'paragraph',
                         text: cap[1].charAt(cap[1].length - 1) === '\n'
                             ? cap[1].slice(0, -1)
-                            : cap[1]
+                            : cap[1],
                     });
                     continue;
                 }
@@ -574,28 +574,28 @@
                     src = src.substring(cap[0].length);
                     tokens.push({
                         type: 'text',
-                        text: cap[0]
+                        text: cap[0],
                     });
                     continue;
                 }
                 // 错误处理
                 if (src) {
                     throw new
-                        Error('Infinite loop on byte: ' + src.charCodeAt(0));
+                    Error('Infinite loop on byte: ' + src.charCodeAt(0));
                 }
             }
         })(elem, true);
 
         return tokens;
     }
-    //语法解析
+    // 语法解析
     function parser(context, render) {
         const tokens = context.reverse(),
             renderer = render || new Renderer();
 
         let out = '', toke = void 0;
         while (toke = tokens.pop()) {
-            out += function tok(token) {
+            out += (function tok(token) {
                 switch (token.type) {
                     case 'space': {
                         return '';
@@ -611,7 +611,7 @@
                         );
                     }
                     case 'code': {
-                        //代码中可能含有标签，所以这里必须转义
+                        // 代码中可能含有标签，所以这里必须转义
                         return renderer.code(token.text,
                             token.lang
                         );
@@ -697,23 +697,23 @@
                         return renderer.paragraph(inlineLexer(body, render));
                     }
                 }
-            }(toke);
+            })(toke);
         }
         return out;
     }
-    //主程序入口
+    // 主程序入口
     function marked(src, renderer) {
         return (parser(lexer(src), (renderer || marked.setRender || (new Renderer()))));
     }
 
-    //公共API
-    marked.Renderer = Renderer;     //渲染器构造函数
-    marked.setRender = null;        //外部渲染器入口
+    // 公共API
+    marked.Renderer = Renderer;     // 渲染器构造函数
+    marked.setRender = null;        // 外部渲染器入口
 
-    //封闭当前模块
+    // 封闭当前模块
     Object.seal(marked);
 
-    //对外接口
+    // 对外接口
     if (typeof module !== 'undefined' && typeof exports === 'object') {
         module.exports = marked;
     } else if (typeof define === 'function' && define.amd) {
@@ -721,7 +721,6 @@
     } else {
         this.marked = marked;
     }
-
 }).call(function() {
     return this || (typeof window !== 'undefined' ? window : global);
 }());

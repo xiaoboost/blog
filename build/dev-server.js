@@ -34,11 +34,11 @@ const // opn插件可以强制打开浏览器并跳转到指定url
     // 启动webpack编译器，并将编译好的文件保存到内存中
     devMiddleware = require('webpack-dev-middleware')(compiler, {
         publicPath: webpackConfig.output.publicPath,
-        quiet: true
+        quiet: true,
     }),
     // 设定热更新中间件
     hotMiddleware = require('webpack-hot-middleware')(compiler, {
-        log: () => {}
+        log: () => {},
     });
 
 // 监控文件，当它们有变化时热更新至网站

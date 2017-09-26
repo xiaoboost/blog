@@ -1,19 +1,16 @@
-const path = require('path'),
-    Readable = require('stream').Readable,
-    url = require('url'),
+const Readable = require('stream').Readable,
     etag = require('etag'),
-    mime = require('mime-types'),
     parseUrl = require('parseurl');
 
-//从Buffer创建读取流
-class readRam extends Readable {
+// 从Buffer创建读取流
+class ReadRam extends Readable {
     constructor(buf) {
         super();
-        //保存读取的 buffer
+        // 保存读取的 buffer
         this._cache = buf;
-        //读取的起点
+        // 读取的起点
         this._index = 0;
-        //每次读取 60kb
+        // 每次读取 60kb
         this._peer = 61440;
     }
     _read() {
@@ -28,10 +25,10 @@ class readRam extends Readable {
         this.push(frag);
     }
 }
-//内存中间件
+// 内存中间件
 function ramMiddleware(site) {
     return (req, res, next) => {
-        //不允许GET或HEAD以外的方法
+        // 不允许GET或HEAD以外的方法
         if (req.method !== 'GET' && req.method !== 'HEAD') {
             res.statusCode = 405;
             res.setHeader('Allow', 'GET, HEAD');
@@ -46,12 +43,12 @@ function ramMiddleware(site) {
             isPost = /\\post\\/.test(url);
 
         let content = site[url];
-        //无效api，跳过
+        // 无效api，跳过
         if (!isPost && !content) {
             next();
             return (false);
         }
-        //渲染文章
+        // 渲染文章
         if (isPost) {
             // 文章渲染
             content.render();
@@ -62,9 +59,9 @@ function ramMiddleware(site) {
         }
 
         const file = Buffer.from(JSON.stringify(content)),
-            resStream = new readRam(file);
+            resStream = new ReadRam(file);
 
-        //设置响应的Header
+        // 设置响应的Header
         res.setHeader('Accept-Ranges', 'bytes');
         res.setHeader('Cache-Control', 'max-age=0');
         res.setHeader('Last-Modified', (new Date()).toUTCString());
@@ -72,10 +69,10 @@ function ramMiddleware(site) {
         res.setHeader('Content-Length', file.length);
         res.setHeader('Content-Type', 'application/json;charset:utf-8');
 
-        //数据流连接至http响应
+        // 数据流连接至http响应
         resStream.pipe(res).on('finish', () => resStream.destroy());
 
-        //响应终止
+        // 响应终止
         return (true);
     };
 }
