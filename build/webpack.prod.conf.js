@@ -22,8 +22,8 @@ const webpackConfig = merge(baseWebpackConfig, {
         // css的 loader
         rules: utils.styleLoaders({
             sourceMap: config.build.productionSourceMap,
-            extract: true
-        })
+            extract: true,
+        }),
     },
     // 是否使用 #source-map
     devtool: config.build.productionSourceMap ? '#source-map' : false,
@@ -40,18 +40,18 @@ const webpackConfig = merge(baseWebpackConfig, {
         }),
         // http://vuejs.github.io/vue-loader/en/workflow/production.html
         new webpack.DefinePlugin({
-            'process.env': env
+            'process.env': env,
         }),
         // js压缩插件
         new webpack.optimize.UglifyJsPlugin({
             compress: {
-                warnings: false
+                warnings: false,
             },
-            sourceMap: false
+            sourceMap: false,
         }),
         // 从文件中分离css部分
         new ExtractTextPlugin({
-            filename: utils.assetsPath('css/[name].[contenthash].css')
+            filename: utils.assetsPath('css/[name].[contenthash].css'),
         }),
         // 压缩提取出来的css文本，这里将会把不同组件中重复的css合并
         new OptimizeCSSPlugin({
@@ -72,7 +72,7 @@ const webpackConfig = merge(baseWebpackConfig, {
                 // https://github.com/kangax/html-minifier#options-quick-reference
             },
             // necessary to consistently work with multiple chunks via CommonsChunkPlugin
-            chunksSortMode: 'dependency'
+            chunksSortMode: 'dependency',
         }),
         // 指定 common 文件
         new webpack.optimize.CommonsChunkPlugin({
@@ -83,9 +83,9 @@ const webpackConfig = merge(baseWebpackConfig, {
         new CopyWebpackPlugin([{
             from: path.resolve(__dirname, '../static'),
             to: config.build.assetsSubDirectory,
-            ignore: ['.*']
-        }])
-    ]
+            ignore: ['.*'],
+        }]),
+    ],
 });
 
 if (config.build.bundleAnalyzerReport) {

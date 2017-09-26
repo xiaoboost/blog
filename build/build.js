@@ -78,7 +78,7 @@ status = status.then(() => {
     const post = Object.keys(site)
             .filter((url) => site[url].hasOwnProperty('content'))
             .map((url) => (site[url].excerpt.join('') + site[url].content))
-            .reduce((ans, text) => (ans + text), '').replace(/[\x00-\xff]/g, ''),
+            .reduce((ans, text) => (ans + text), '').replace(/[\x20-\xff]/g, ''),
 
         text = Array.from(new Set(post)).join(''),
         out = path.join(output, './font/iosevka/'),
@@ -98,9 +98,10 @@ status = status.then(() => {
                 let num = 0;
                 hex = hex.slice(1).toLowerCase();
                 Array.from(hex).forEach((n, i) =>
-                    num += /[0-9]/.test(n)
+                    (num += /[0-9]/.test(n)
                         ? n * (16 ** (3 - i))
-                        : (n.charCodeAt() - 87) * (16 ** (3 - i)));
+                        : (n.charCodeAt() - 87) * (16 ** (3 - i)))
+                );
 
                 return String.fromCodePoint(num);
             }).join('');

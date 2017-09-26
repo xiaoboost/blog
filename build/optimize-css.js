@@ -50,7 +50,7 @@ Object.assign(OptimizeCssAssetsPlugin.prototype, {
                 .then(() => finish())
                 .catch(finish);
         });
-    }
+    },
 });
 
 module.exports = OptimizeCssAssetsPlugin;

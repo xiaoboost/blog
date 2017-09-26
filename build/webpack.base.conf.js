@@ -36,7 +36,7 @@ module.exports = {
             ...readdir('directives'),
         ],
         // 编译文件入口
-        main: './src/main.js'
+        main: './src/main.js',
     },
     output: {
         // 编译输出的静态资源根路径
@@ -46,7 +46,7 @@ module.exports = {
         // 根据当前环境配置静态资源路径
         publicPath: process.env.NODE_ENV === 'production'
             ? config.build.assetsPublicPath
-            : config.dev.assetsPublicPath
+            : config.dev.assetsPublicPath,
     },
     resolve: {
         // 自动补全的扩展名
@@ -56,8 +56,8 @@ module.exports = {
         alias: {
             '@': resolve('src'),
             '@config': resolve('config'),
-            'vue$': 'vue/dist/vue.common.js'
-        }
+            'vue$': 'vue/dist/vue.common.js',
+        },
     },
     module: {
         rules: [
@@ -68,35 +68,35 @@ module.exports = {
                 enforce: 'pre',
                 include: [resolve('src'), resolve('test')],
                 options: {
-                    formatter: require('eslint-friendly-formatter')
-                }
+                    formatter: require('eslint-friendly-formatter'),
+                },
             },
             {
                 test: /\.vue$/,
                 loader: 'vue-loader',
-                options: vueLoaderConfig
+                options: vueLoaderConfig,
             },
             {
                 test: /\.js$/,
                 loader: 'babel-loader',
-                include: [resolve('src'), resolve('test')]
+                include: [resolve('src'), resolve('test')],
             },
             {
                 test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
                 loader: 'url-loader',
                 query: {
                     limit: 10000,
-                    name: utils.assetsPath('img/[name].[hash:7].[ext]')
-                }
+                    name: utils.assetsPath('img/[name].[hash:7].[ext]'),
+                },
             },
             {
                 test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
                 loader: 'url-loader',
                 query: {
                     limit: 10000,
-                    name: utils.assetsPath('fonts/[name].[hash:7].[ext]')
-                }
-            }
-        ]
-    }
+                    name: utils.assetsPath('fonts/[name].[hash:7].[ext]'),
+                },
+            },
+        ],
+    },
 };

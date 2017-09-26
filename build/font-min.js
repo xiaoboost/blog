@@ -7,12 +7,12 @@ function compressor(text, src, output) {
         .src(src)
         .use(Fontmin.glyph({
             text,
-            hinting: false
+            hinting: false,
         }))
         .use(Fontmin.ttf2eot())
         .use(Fontmin.ttf2svg())
         .use(Fontmin.ttf2woff({
-            deflate: true
+            deflate: true,
         }))
         .dest(output);
 }
