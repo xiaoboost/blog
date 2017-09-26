@@ -76,7 +76,7 @@ export default {
             const viewTop = doc.documentElement.scrollTop,
                 navL = this.tocNav;
 
-            this.tocNav = function search(toc) {
+            this.tocNav = (function search(toc) {
                 for (let i = toc.length - 1; i >= 0; i--) {
                     // 缓存绑定的DOM对象
                     toc[i].el = doc.getElementById(toc[i].bolt);
@@ -92,7 +92,7 @@ export default {
                     }
                 }
                 return ('');
-            }(this.toc);
+            })(this.toc);
 
             // 目录导航发生改变
             if (navL !== this.tocNav) {
@@ -119,8 +119,8 @@ export default {
     components: {
         'post-toc': postToc,
         'page-aside': pageAside,
-        'post-footer': postFooter
-    }
+        'post-footer': postFooter,
+    },
 };
 </script>
 

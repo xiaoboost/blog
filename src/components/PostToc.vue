@@ -38,25 +38,25 @@ export default {
     props: {
         tocTree: {
             type: Array,
-            default: () => []
+            default: () => [],
         },
         number: {
             type: String,
-            default: ''
+            default: '',
         },
         level: {
             type: Number,
-            default: 1
+            default: 1,
         },
         tocClass: {
             validator: (value) => (['toc', 'toc-child'].includes(value)),
             type: String,
-            default: 'toc'
+            default: 'toc',
         },
         nav: {
             type: String,
-            default: ''
-        }
+            default: '',
+        },
     },
     methods: {
         captureToc(target) {
@@ -68,7 +68,7 @@ export default {
                     // 捕获到目标，开始冒泡
                     this.bubbleToc({
                         target,
-                        currentTarget: target
+                        currentTarget: target,
                     });
                 } else if (node.child && node.child.length) {
                     // 继续向下捕获
@@ -86,7 +86,7 @@ export default {
                         // 事件冒泡
                         this.$parent.bubbleToc({
                             target,
-                            currentTarget: node.parent
+                            currentTarget: node.parent,
                         });
                     }
                 }
@@ -99,19 +99,19 @@ export default {
             // 初始高度为 0px
             el.style.height = '0px';
 
-            delay(() => el.style.height = `${height}px`)
+            delay(() => (el.style.height = `${height}px`))
                 .then(() => delay(done, 200));
         },
         leave(el, done) {
             el.style.height = `${el.clientHeight}px`;
 
-            delay(() => el.style.height = '0px')
+            delay(() => (el.style.height = '0px'))
                 .then(() => delay(done, 200));
         },
         clear(el) {
             el.style.height = '';
-        }
-    }
+        },
+    },
 };
 </script>
 

@@ -22,18 +22,18 @@ export default {
     name: 'SiteFooter',
     directives: {
         followscroll,
-        scrollto
+        scrollto,
     },
     data() {
         return {
-            show: false
+            show: false,
         };
     },
     methods: {
         showGoto(show) {
             this.show = show;
-        }
-    }
+        },
+    },
 };
 </script>
 

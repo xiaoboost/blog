@@ -33,12 +33,12 @@ export default {
                 '分类': '/categories/',
                 '标签': '/tags/',
                 // '关于': '/archives/about/'
-            }
+            },
         };
     },
     mounted() {
         document.title = this.title;
-    }
+    },
 };
 </script>
 

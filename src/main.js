@@ -8,7 +8,7 @@ const app = new Vue({
     el: '#app',
     router,
     template: '<App ref="main"/>',
-    components: { App }
+    components: { App },
 });
 
 // 全局导航 loading 图标控制
@@ -17,6 +17,6 @@ router.beforeEach((to, from, next) => {
     next();
 });
 
-router.afterEach((route) => {
+router.afterEach(() => {
     app.$refs.main.loading = false;
 });

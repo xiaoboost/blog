@@ -17,12 +17,12 @@ export default {
     components: {
         Loading,
         SiteHeader,
-        SiteFooter
+        SiteFooter,
     },
     data() {
         return {
-            loading: false
+            loading: false,
         };
-    }
+    },
 };
 </script>

@@ -27,7 +27,7 @@ function remove(el) {
 }
 
 // 绑定指令
-function add(el, binding, vnode) {
+function add(el, binding) {
     // 指令未更新则直接退出
     if (binding.oldValue && binding.oldValue.target === binding.value.target) {
         return;
@@ -80,5 +80,5 @@ function add(el, binding, vnode) {
 export default {
     bind: add,
     update: add,
-    unbind: remove
+    unbind: remove,
 };
