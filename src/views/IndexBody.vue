@@ -50,7 +50,7 @@ export default {
     beforeRouteEnter(to, from, next) {
         ajax([
             '/api/tags/aside',
-            '/api/categories/aside'
+            '/api/categories/aside',
         ]).then(([tags, cates]) => next((vm) => {
             vm.tags = tags;
             vm.categories = cates;
@@ -59,8 +59,8 @@ export default {
         document.title = config.title;
     },
     components: {
-        'page-aside': pageAside
-    }
+        'page-aside': pageAside,
+    },
 };
 </script>
 

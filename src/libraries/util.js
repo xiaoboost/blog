@@ -1,10 +1,12 @@
 import Vue from 'vue';
 
-//get方法的缓存
+// get方法的缓存
 const getData = {};
-//中文路径转英文
+// 中文路径转英文
 function $path(str) {
-    return /[^\x00-\xff]/.test(str)
+    // 含有非双字节符时需要转码
+    // ASCII 码中 0-31 范围内为控制字符，通常不可见，所以这里将之排除
+    return /[^\x20-\xff]/.test(str)
         ? encodeURIComponent(str)
             .replace(/%2F/g, '/')
             .replace(/%/g, '')
@@ -15,7 +17,7 @@ function $path(str) {
 function get(input) {
     const url = $path(input) + '.json';
     return new Promise((res, rej) => {
-        //链接数据已经存在，导出数据副本
+        // 链接数据已经存在，导出数据副本
         if (getData[url]) {
             setTimeout(() => res(clone(getData[url])));
             return (true);
@@ -27,7 +29,7 @@ function get(input) {
         oAjax.onreadystatechange = function() {
             if (oAjax.readyState === 4) {
                 if (oAjax.status === 200) {
-                    //转换数据格式并缓存
+                    // 转换数据格式并缓存
                     getData[url] = JSON.parse(oAjax.responseText);
                     res(clone(getData[url]));
                 } else {
@@ -37,7 +39,7 @@ function get(input) {
         };
     }).catch((e) => console.log(e));
 }
-//ajax方法
+// ajax方法
 function ajax(urls) {
     if (typeof urls === 'string') {
         return get(urls).catch((e) => console.info(e));
@@ -46,12 +48,12 @@ function ajax(urls) {
             .catch((e) => console.info(e));
     }
 }
-//部分英汉转换
+// 部分英汉转换
 Vue.prototype.$t = function(str) {
     const transfrom = {
         'categories': '分类',
         'tags': '标签',
-        'time': '时间'
+        'time': '时间',
     };
 
     return transfrom[str]
@@ -59,12 +61,12 @@ Vue.prototype.$t = function(str) {
         : str;
 };
 
-//对象深复制，不考虑循环引用的情况
+// 对象深复制，不考虑循环引用的情况
 function cloneObj(from) {
     return Object.keys(from)
-        .reduce((obj, key) => (obj[key] = clone(from[key]), obj), {});
+        .reduce((obj, key) => ((obj[key] = clone(from[key])), obj), {});
 }
-//数组深复制，不考虑循环引用的情况
+// 数组深复制，不考虑循环引用的情况
 function cloneArr(from) {
     return from.map((n) => clone(n));
 }

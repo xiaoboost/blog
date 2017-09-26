@@ -16,8 +16,8 @@ export default new Router({
         { path: '/index', alias: '/', name: 'index', component: IndexBody,
             children: [
                 { path: ':page(page\\d+)', name: 'indexList', component: IndexList },
-                { path: 'page0', alias: '' }
-            ]
+                { path: 'page0', alias: '' },
+            ],
         },
         // 文章页面
         { path: '/post/:name', name: 'post', component: PostBody },
@@ -26,8 +26,8 @@ export default new Router({
             children: [
                 { path: ':key/:page(page\\d+)', name: 'archiveList', component: ArchiveList },
                 { path: ':key/page0', alias: ':key' },
-                { path: '$first', alias: '' }
-            ]
-        }
-    ]
+                { path: '$first', alias: '' },
+            ],
+        },
+    ],
 });

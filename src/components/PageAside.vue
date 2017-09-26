@@ -16,14 +16,14 @@ export default {
     directives: { followscroll },
     data() {
         return {
-            fixed: false
+            fixed: false,
         };
     },
     methods: {
         fixAside(fix) {
             this.fixed = fix;
-        }
-    }
+        },
+    },
 };
 
 </script>

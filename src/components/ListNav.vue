@@ -10,13 +10,13 @@ export default {
     props: {
         prev: {
             type: String,
-            default: ''
+            default: '',
         },
         next: {
             type: String,
-            default: ''
-        }
-    }
+            default: '',
+        },
+    },
 };
 </script>
 

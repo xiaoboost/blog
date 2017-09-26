@@ -9,7 +9,7 @@
 const cache = new Map();
 
 export default {
-    bind(el, binding, vnode) {
+    bind(el, binding) {
         // 非法参数，直接返回
         if (!binding.expression) return (false);
         // 指令输入的参数
@@ -35,5 +35,5 @@ export default {
 
         el.removeEventListener('click', cache.get(el));
         cache.delete(el);
-    }
+    },
 };

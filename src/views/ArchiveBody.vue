@@ -21,7 +21,7 @@ export default {
     data() {
         return {
             collection: [],
-            archive: ''
+            archive: '',
         };
     },
     beforeRouteEnter(to, from, next) {

@@ -1,0 +1,5 @@
+.deploy_git
+node_modules
+dist
+_draft
+.vscode/launch.json

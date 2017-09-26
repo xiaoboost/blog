@@ -7,16 +7,14 @@
 </template>
 
 <script>
-import config from '@config/site';
-
 export default {
     name: 'Loading',
     props: {
         vision: {
             type: Boolean,
-            default: false
-        }
-    }
+            default: false,
+        },
+    },
 };
 </script>
 

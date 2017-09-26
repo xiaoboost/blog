@@ -16,13 +16,13 @@ export default {
     props: {
         category: {
             type: String,
-            default: ''
+            default: '',
         },
         tags: {
             type: Array,
-            default: () => []
-        }
-    }
+            default: () => [],
+        },
+    },
 };
 </script>
 

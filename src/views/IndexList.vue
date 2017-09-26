@@ -27,7 +27,7 @@ export default {
         return {
             posts: [],
             prev: '',
-            next: ''
+            next: '',
         };
     },
     beforeRouteEnter(to, from, next) {
@@ -42,8 +42,8 @@ export default {
     },
     components: {
         'list-nav': listNav,
-        'post-footer': postFooter
-    }
+        'post-footer': postFooter,
+    },
 };
 </script>
 
