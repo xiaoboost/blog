@@ -1,58 +1,13 @@
 # 博客生成器
-自己用的博客生成器，使用vue架构。  
+
+自己的博客，使用`React`架构。  
 
 [Dreaming Cat](http://www.dreamingcat.me)
 
-## 相关说明
-数学公式是使用`katex`进行解析的。  
-
-## markdown
-markdown解析器修改自`marked`开源项目。  
-我删除了一些我觉得很繁琐的规则，添加了一些我自己常用的“方言”，并修改了部分格式的规则。  
-
-### 区块元素
-
-|格式|代号|说明|
-|:--:|:--:|:--|
-|空行|newline|多个空格将会变成一个空行|
-|正文|paragraph|前后空格或者是非区块元素|
-|分割线|hr|单独一行并且是连续三个及以上的`-`或者`=`符号|
-|区块引用|blockquote|以`> `符号开始，以最后空一行结束|
-|列表|list|`*`、`+`和`-`是无序列表标记，数字是有序列表标记，标记与正文中要空一格，新行退三格表示下级列表|
-|表格|table|必须有首行以及表示表格元素对齐格式的第二行|
-|标题|heading|1-6个`#`号表示标题等级，`#`号之后必须空格|
-|网页元素|html|兼容网页标签，标签内的元素默认不会进行渲染，也不会被转义|
-|代码|code|被 ``` 符号前后包围，这个符号必须独立成行，开头可以指定语言|
-  
-### 区段元素
-
-|格式|代号|说明|
-|:--:|:--:|:--|
-|块级公式|mathblock|被`$$`符号前后包围，这个符号必须独立成行|
-|行内公式|mathinline|被`$$`符号前后包围，这个符号和公式在都同一行中，公式必须只有一行|
-|行内链接|link|只允许行内式链接，即`[title](http://……)`|
-|图片|image|只允许行内式，即`![title](href)`|
-|裸露链接|url|直接以 `https?://text` 这种形式出现的链接|
-|下标|sub|被单独一个下划线包围起来的文字，形如`_text_`|
-|上标|sup|被单独的上角标包围起来的文字，形如`^text^`|
-|斜体|em|被单独的星号包围的文字，形如`*text*`|
-|粗体|bold|被两个星号包围的文字，形如`**text**`|
-|行内代码|codespan|被 \` 符号包围的文字，形如 \`text\`|
-|删除线|del|被`~~`包围的文字|
-|文本|txt|什么格式都没有的普通文本|
-
-### 注意
-1. 想要在文档中显示上述格式中存在的特殊符号，需要使用反斜杠转义 "\\"。比如，想在行内代码中使用含有下划线的变量，就需要这样 `\_a\_`。但是，当你把本脚本当作是网页脚本去渲染字符串时，那么就需要两个反斜杠转义 `\\_a\\_`。
-2. 在区段元素中，mathblock、mathinline、sub、sup、codespan、text内部不会再继续进行行内渲染，而其余元素内部将会继续（递归）。
-3. 两个数学公式元素的默认渲染器不会对内容做任何处理，需要单独引用外部渲染器。
-4. 尖括号（&lt; &gt;）默认将会全部被转义，但是有两种例外情况：
-   1. 渲染器不会对数学公式元素的内容做任何处理
-   2. em、bold、txt以及image和link的title部分，渲染器将会保留它们的上下标和行内代码（&lt;sub&gt;、&lt;sup&gt;、&lt;code&gt;）
-
-## 链接
-- [Vue](https://github.com/vuejs/vue)
+## 技术支持
+- [react](https://github.com/facebook/react)
 - [katex](https://github.com/Khan/KaTeX)
-- [marked](https://github.com/chjj/marked)
+- [markdown-it](https://github.com/markdown-it/markdown-it)
 
 ## 许可
-[MIT](http://opensource.org/licenses/MIT) License
+[CC 4.0](https://creativecommons.org/licenses/by/4.0/deed.zh) License

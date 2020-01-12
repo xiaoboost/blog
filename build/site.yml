@@ -1,0 +1,14 @@
+site:
+    title: 'Dreaming Cat\'s'
+    subtitle: 梦之上
+    description: 闲言碎语
+    url: www.dreamingcat.me
+author:
+    name: xiaoboost
+    email: xiaoboost@qq.com
+    github: https://github.com/xiaoboost
+page:
+    index: 15
+    archive: 10
+friendLinks:
+    电路仿真: https://xiaoboost.github.io/circuit-simulator/
