@@ -4,13 +4,13 @@ import { Layout } from 'template/components/layout';
 
 interface Props {
     publicPath: string;
-    article: string;
+    content: string;
 }
 
-export function Post({ publicPath, article }: Props) {
+export function Post({ publicPath, content }: Props) {
     return (
         <Layout publicPath={publicPath}>
-            {article}
+            <div dangerouslySetInnerHTML={{ __html: content }} />
         </Layout>
     )
 }
