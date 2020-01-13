@@ -9,7 +9,7 @@
     "url": "https://github.com/xiaoboost/blog"
   },
   "scripts": {
-    "ts-node": "node -r ts-node/register -r tsconfig-paths/register",
+    "ts-node": "node -r ts-node/register/transpile-only -r tsconfig-paths/register",
     "dev": "npm run ts-node build/dev.ts",
     "serve": "npm run ts-node build/serve.ts",
     "build": "npm run ts-node build/build.ts"
@@ -20,9 +20,11 @@
   },
   "devDependencies": {
     "@types/fs-extra": "^8.0.1",
+    "@types/markdown-it": "0.0.9",
     "@types/node": "^13.1.6",
     "@types/react": "^16.9.17",
     "@types/react-dom": "^16.9.4",
+    "@types/yaml": "^1.2.0",
     "@typescript-eslint/eslint-plugin": "^2.15.0",
     "@typescript-eslint/parser": "^2.15.0",
     "chalk": "^3.0.0",
@@ -35,8 +37,10 @@
     "katex": "^0.11.1",
     "less": "^3.10.3",
     "markdown-it": "^10.0.0",
+    "markdown-it-attrs": "^3.0.1",
     "markdown-it-container": "^2.0.0",
     "markdown-it-footnote": "^3.0.2",
+    "markdown-it-katex": "^2.0.3",
     "markdown-it-mark": "^3.0.0",
     "markdown-it-sub": "^1.0.0",
     "markdown-it-sup": "^1.0.0",
