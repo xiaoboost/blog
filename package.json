@@ -9,9 +9,10 @@
     "url": "https://github.com/xiaoboost/blog"
   },
   "scripts": {
-    "dev": "node build/dev-server.js",
-    "build": "node build/build.js",
-    "deploy": "node build/deploy.js"
+    "ts-node": "node -r ts-node/register -r tsconfig-paths/register",
+    "dev": "npm run ts-node build/dev.ts",
+    "serve": "npm run ts-node build/serve.ts",
+    "build": "npm run ts-node build/build.ts"
   },
   "dependencies": {
     "react": "^16.12.0",
@@ -40,6 +41,7 @@
     "markdown-it-sub": "^1.0.0",
     "markdown-it-sup": "^1.0.0",
     "ts-node": "^8.6.1",
+    "tsconfig-paths": "^3.9.0",
     "typescript": "^3.7.4",
     "yaml": "^1.7.2"
   }

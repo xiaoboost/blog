@@ -1,8 +1,6 @@
 import { join } from 'path';
-import { existsSync } from 'fs';
 
+/** 指向项目根目录的绝对路径 */
 export const resolve = (...dir: (string | number)[]) => {
-    return process.env.NODE_ENV === 'development'
-        ? join(__dirname, '../../', ...dir.map(String))
-        : join(__dirname, '../', ...dir.map(String));
+    return join(__dirname, '../', ...dir.map(String));
 };

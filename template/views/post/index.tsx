@@ -1,11 +1,16 @@
 import React from 'react';
 
-import { Layout } from '../../components/layout';
+import { Layout } from 'template/components/layout';
 
-export function Post() {
+interface Props {
+    publicPath: string;
+    article: string;
+}
+
+export function Post({ publicPath, article }: Props) {
     return (
-        <Layout>
-            内容
+        <Layout publicPath={publicPath}>
+            {article}
         </Layout>
     )
 }
