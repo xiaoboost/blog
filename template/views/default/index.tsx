@@ -7,7 +7,7 @@ interface Props {
     content: string;
 }
 
-export function Post({ publicPath, content }: Props) {
+export function Template({ publicPath, content }: Props) {
     return (
         <Layout publicPath={publicPath}>
             <div dangerouslySetInnerHTML={{ __html: content }} />

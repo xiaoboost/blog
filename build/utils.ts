@@ -4,3 +4,8 @@ import { join } from 'path';
 export const resolve = (...dir: (string | number)[]) => {
     return join(__dirname, '../', ...dir.map(String));
 };
+
+/** html 修饰 */
+export function fixHtml(html: string) {
+    return '<!DOCTYPE html>' + html;
+}
