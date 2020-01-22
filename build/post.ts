@@ -7,7 +7,7 @@ import { markdown } from './markdown';
 import { Template as DefaultTemplate } from 'template/views/default';
 
 import * as fs from 'fs';
-import * as config from './config';
+import * as project from '../config/project';
 
 /** 文章模板 */
 enum PostTemplate {
@@ -19,13 +19,12 @@ const templates = {
     [PostTemplate.default]: DefaultTemplate,
 };
 
+/** 文章元数据 */
 interface PostMeta {
     /** 文章标题 */
     title: string;
     /** 文章创建时间 */
     create: string;
-    /** 文章类别 */
-    category?: string;
     /** 文章标签 */
     tags?: string[];
     /** 文章最后更新时间 */
@@ -36,11 +35,11 @@ interface PostMeta {
     template?: string;
 }
 
+/** 文章数据 */
 interface Post {
     title: string;
     create: number;
     update: number;
-    category: string;
     tags: string[];
     html: string;
     path: string;
@@ -68,14 +67,13 @@ export function renderPost(path: string): Post | undefined {
     const templateName = meta.template || PostTemplate[0];
     const Template = templates[PostTemplate[templateName] as PostTemplate];
     const html = renderToString(createElement(Template, {
-        ...config,
+        project,
         content: markdown.render(contentStr.trim()).trim(),
     }));
 
     return {
         title: meta.title,
         create: new Date(meta.create).getTime(),
-        category: meta.category || '未分类',
         tags: meta.tags || [],
         update,
         html,
