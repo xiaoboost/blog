@@ -2,8 +2,6 @@ import { parse } from 'yaml';
 import { createElement } from 'react';
 import { renderToString } from 'react-dom/server';
 
-import { markdown } from './markdown';
-
 import { Template as DefaultTemplate } from 'template/views/default';
 
 import * as fs from 'fs';
@@ -29,10 +27,12 @@ interface PostMeta {
     tags?: string[];
     /** 文章最后更新时间 */
     update?: string;
-    /** 文章启用的插件 */
-    plugins?: string[];
     /** 文章模板 */
     template?: string;
+    /** 文章启用的插件 */
+    plugins?: string[];
+    /** 禁用的插件 */
+    disabledPlugins?: string[];
 }
 
 /** 文章数据 */
@@ -45,6 +45,8 @@ interface Post {
     path: string;
 }
 
+const defaultPlugins = ['goto-top', 'toc'];
+
 export function renderPost(path: string): Post | undefined {
     const file = fs.readFileSync(path).toString();
     const result = file.match(/---([\d\D]+?)---([\d\D]*)/);
@@ -53,29 +55,53 @@ export function renderPost(path: string): Post | undefined {
         return;
     }
 
-    const [, metaStr, contentStr] = result;
+    const [, metaStr, content] = result;
     const meta = parse(metaStr) as PostMeta;
 
     if (!meta) {
         return;
     }
 
-    const update = meta.update
+    const createTime = new Date(meta.create).getTime();
+    const updateTime = meta.update
         ? new Date(meta.update).getTime()
         : fs.statSync(path).mtimeMs;
+    
+    // 插件列表
+    let postPlugins: string[] = [];
+    // 默认全部加载
+    if (!meta.plugins && !meta.disabledPlugins) {
+        postPlugins = defaultPlugins;
+    }
+    // 输入插件列表，则以此为准
+    else if (meta.plugins) {
+        postPlugins = meta.plugins.map((item) => item.trim().toLowerCase());
+    }
+    // 禁用插件列表，则取反
+    else if (meta.disabledPlugins) {
+        const disabled = meta.disabledPlugins.map((item) => item.trim().toLowerCase());
+        postPlugins = defaultPlugins.filter((item) => !disabled.includes(item));
+    }
 
     const templateName = meta.template || PostTemplate[0];
     const Template = templates[PostTemplate[templateName] as PostTemplate];
     const html = renderToString(createElement(Template, {
         project,
-        content: markdown.render(contentStr.trim()).trim(),
+        post: {
+            title: meta.title,
+            content: content.trim(),
+            create: createTime,
+            update: updateTime,
+            plugins: postPlugins,
+            tags: meta.tags || [],
+        },
     }));
 
     return {
         title: meta.title,
-        create: new Date(meta.create).getTime(),
+        create: createTime,
+        update: updateTime,
         tags: meta.tags || [],
-        update,
         html,
         path,
     };
