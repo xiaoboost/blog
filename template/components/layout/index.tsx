@@ -5,8 +5,8 @@ import { Footer } from '../footer';
 
 interface Props {
     title: string;
-    stylePath: string;
-    scriptPath: string;
+    styleFile: string;
+    scriptFile: string;
     publicPath: string;
 }
 
@@ -19,7 +19,7 @@ export function Layout(props: PropsWithChildren<Props>) {
                 <meta name='X-UA-Compatible' content='IE=edge' />
                 <meta name='viewport' content='width=device-width, initial-scale=1' />
                 <link rel='short icon' href={`${props.publicPath}img/favicon.ico`} />
-                <link rel='stylesheet' type='text/css' href={`${props.publicPath}${props.stylePath}`} />
+                <link rel='stylesheet' type='text/css' href={`${props.publicPath}${props.styleFile}`} />
             </head>
             <body>
                 <Header />
@@ -27,7 +27,7 @@ export function Layout(props: PropsWithChildren<Props>) {
                     {props.children}
                 </article>
                 <Footer />
-                <script type='text/javascript' src={`${props.publicPath}${props.scriptPath}`} />
+                <script type='text/javascript' src={`${props.publicPath}${props.scriptFile}`} />
             </body>
         </html>
     );
