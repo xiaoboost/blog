@@ -2,8 +2,6 @@ import { resolve } from '../build/utils';
 
 /** 项目输出文件路径 */
 export const buildOutput = resolve('dist');
-/** 网站地址 */
-export const website = 'www.dreamingcat.me';
 
 /** 网站资源公共路径 */
 export const publicPath = '/';
