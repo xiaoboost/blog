@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { markdown } from 'build/markdown';
+import { markdown } from 'build/renderer/markdown';
 import { Layout } from 'template/components/layout';
 
 /** 项目公共配置 */

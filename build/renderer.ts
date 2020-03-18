@@ -1,13 +1,10 @@
-import { renderPost } from './post';
+import { build } from './post';
 
 import * as fs from 'fs';
 import * as util from './utils';
 
 export async function render() {
-    const posts = fs.readdirSync(util.resolve('posts'))
-        .map((post) => renderPost(util.resolve('posts', post, 'index.md')))
-        .filter(<T>(post: T): post is NonNullable<T> => Boolean(post));
+    const posts = await build();
 
-    console.log(posts);
     debugger;
 }
