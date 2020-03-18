@@ -1,12 +1,10 @@
-import { mkdirp } from 'fs-extra';
-
 import { render } from './renderer';
-import { build as buildAssets } from './assets';
-import { buildOutput } from '../config/project';
+import { buildOutput } from './config/project';
+
+// 生产模式
+process.env.NODE_ENV === 'production';
 
 async function main() {
-    await mkdirp(buildOutput);
-    await buildAssets();
     await render();
 }
 
