@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { markdown } from 'build/renderer/markdown';
-import { Layout } from 'template/components/layout';
+// import { markdown } from 'build/renderer/markdown';
+import { Layout } from 'src/template/components/layout';
 
 /** 项目公共配置 */
 interface ProjectEv {
@@ -36,15 +36,15 @@ interface Props {
 }
 
 export function Template({ project, post }: Props) {
-    const content = markdown.render(post.content);
-    const tokens = markdown.parse(post.content, {});
+    // const content = markdown.render(post.content);
+    // const tokens = markdown.parse(post.content, {});
 
     return (
         <Layout {...{
             ...project,
             title: post.title,
         }}>
-            <div dangerouslySetInnerHTML={{ __html: content }} />
+            <div dangerouslySetInnerHTML={{ __html: post.content }} />
         </Layout>
     )
 }

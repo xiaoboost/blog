@@ -1,18 +1,21 @@
-import { BaseItem } from './base';
+import * as fs from 'fs-extra';
+import * as path from 'path';
 
 import { PostItem } from './post';
-import { ImageItem } from './image';
+import { BaseItem, sources } from './base';
 
-export const data: BaseItem[] = [];
+import { resolve } from 'src/utils/path';
 
-export function add(path: string) {
+const postsDir = resolve('posts');
 
-}
+/** 初始化 */
+export const loaded = (async () => {
+    const postNames = await fs.readdir(postsDir);
+    const posts = postNames.map((dir) => new PostItem(path.join(postsDir, dir, 'index.md')));
 
-export function watch() {
+    if (process.env.NODE_ENV === 'development') {
+        posts.forEach((post) => post.watch());
+    }
 
-}
-
-export function write() {
-
-}
+    await Promise.all(sources.map((item) => item.write()));
+})();
