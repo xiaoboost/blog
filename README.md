@@ -2,7 +2,9 @@
 
 自己的博客，使用`React`构建。  
 
-[Dreaming Cat](http://www.dreamingcat.me)
+Coding...
+
+<!-- [Dreaming Cat](http://www.dreamingcat.me) -->
 
 ## 技术支持
 - [react](https://github.com/facebook/react)
