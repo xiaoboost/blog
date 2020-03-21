@@ -1,4 +1,4 @@
-import Markdown from 'markdown-it';
+import MarkdownIt from 'markdown-it';
 
 import MarkdownSub from 'markdown-it-sub';
 import MarkdownSup from 'markdown-it-sup';
@@ -8,8 +8,8 @@ import MarkdownAttrs from 'markdown-it-attrs';
 import MarkdownFootnote from 'markdown-it-footnote';
 import MarkdownContainer from 'markdown-it-container';
 
-export const markdown = (
-    new Markdown()
+export const Markdown = (
+    new MarkdownIt()
         .use(MarkdownSub)
         .use(MarkdownSup)
         .use(MarkdownMark)

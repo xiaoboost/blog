@@ -1,4 +1,4 @@
-import { resolve } from '../utils';
+import { resolve } from '../utils/path';
 
 /** 项目输出文件路径 */
 export const buildOutput = resolve('dist');
