@@ -3,10 +3,10 @@ import { normalize } from 'path';
 import { createElement } from 'react';
 import { renderToString } from 'react-dom/server';
 
-import { Template as DefaultTemplate } from 'template/views/default';
+import { Template as DefaultTemplate } from 'src/template/views/default';
 
 import * as fs from 'fs-extra';
-import * as util from './utils';
+import * as util from '../utils/path';
 import * as project from '../config/project';
 
 /** 文章模板 */
