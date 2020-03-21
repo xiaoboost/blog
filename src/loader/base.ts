@@ -73,7 +73,6 @@ export class BaseItem {
 
     /** 设置输出文件路径 */
     protected async setBuildTo() {
-        debugger;
         return '';
     }
 
@@ -113,8 +112,8 @@ export class BaseItem {
         if (!output) {
             throw new Error('未设置输出路径')
         }
-        
-        await fileSystem.mkdir(path.join(buildOutput, path.dirname(output)));
+
+        await fileSystem.mkdirp(path.join(buildOutput, path.dirname(output)));
         await fileSystem.writeFile(path.join(buildOutput, output), source);
     }
 }
