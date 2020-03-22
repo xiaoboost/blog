@@ -3,6 +3,8 @@ import Token from 'markdown-it/lib/token';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 
+import * as project from 'src/config/project';
+
 import { parse } from 'yaml';
 import { createElement } from 'react';
 import { renderToString } from 'react-dom/server';
@@ -42,15 +44,23 @@ interface PostMeta {
     disabledPlugins?: string[];
 }
 
-/** 文章数据 */
-interface PostData {
-
+/** 文章元数据 */
+export interface PostData {
+    title: string;
+    date: number;
+    update: number;
+    tags: string[];
+    html: string;
+    content: string;
+    template: PostTemplate;
+    tokens: Token[];
+    plugins: string[];
 }
 
 /** 默认插件 */
 const defaultPlugins = ['goto-top', 'toc']; 
 
-export class PostItem extends BaseItem {
+export class PostItem extends BaseItem implements PostData {
     /** 文章标题 */
     title = '';
     /** 文章创建日期 */
@@ -128,10 +138,19 @@ export class PostItem extends BaseItem {
 
     protected async transform() {
         await this.readMeta();
+        
+        this.tokens = Markdown.parse(this.content, {});
 
-        return Buffer.from('test');
+        // TODO: 图片、文章等引用的重置
+        this.html = Markdown.render(this.content);
 
-        // const decodeTitle = meta.title.replace(/ /g, '-').toLowerCase();
+        const Template = Templates[this.template];
+        const html = renderToString(createElement(Template, {
+            project,
+            post: this,
+        }));
+
+        return Buffer.from(`<!DOCTYPE html>${html}`);
     }
 
     protected async setBuildTo() {

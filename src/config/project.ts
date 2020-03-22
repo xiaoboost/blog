@@ -14,5 +14,3 @@ export const scriptFile = 'js/script.js';
 export const assetsPath = resolve('template/assets');
 /** 插件路径 */
 export const pluginPath = resolve('template/plugins');
-/** 全局 css 入口文件 */
-export const styleEntryFile = resolve('template/styles/index.less');
