@@ -4,14 +4,14 @@ import * as path from 'path';
 import { PostItem } from './post';
 import { BaseItem, sources } from './base';
 
-import { resolve } from 'src/utils/path';
+import { resolveRoot } from 'src/utils/path';
 
-const postsDir = resolve('posts');
+const postsDir = resolveRoot('posts');
 
 /** 初始化 */
 export const loaded = (async () => {
     const postNames = await fs.readdir(postsDir);
-    const posts = postNames.map((dir) => new PostItem(path.join(postsDir, dir, 'index.md')));
+    const posts = await Promise.all(postNames.map((dir) => PostItem.Create(path.join(postsDir, dir, 'index.md'))));
 
     if (process.env.NODE_ENV === 'development') {
         posts.forEach((post) => post.watch());

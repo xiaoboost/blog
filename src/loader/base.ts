@@ -22,58 +22,20 @@ export class BaseItem {
     isDelete = false;
 
     /** 元素源代码 */
-    private _origin?: Buffer;
+    origin = Buffer.from('');
     /** 转换之后元素内容 */
-    private _source?: Buffer;
+    source = Buffer.from('');
     /** 相对于根目录的相对路径 */
-    private _buildTo = '';
+    buildTo = '';
 
     constructor(path: string) {
         this.from = path;
         sources.push(this);
     }
 
-    get origin() {
-        if (this._origin) {
-            return Promise.resolve(this._origin);
-        }
-
-        return fs.readFile(this.from).then((data) => {
-            this._origin = data;
-            return data;
-        });
-    }
-
-    get source() {
-        if (this._source) {
-            return Promise.resolve(this._source);
-        }
-
-        return this.transform().then((data) => {
-            this._source = data;
-            return data;
-        });
-    }
-
-    get buildTo() {
-        if (this._buildTo.length > 0) {
-            return Promise.resolve(this._buildTo);
-        }
-
-        return this.setBuildTo().then((data) => {
-            this._buildTo = data;
-            return data;
-        });
-    }
-    
-    /** 转换器 */
-    protected async transform() {
-        return this.origin;
-    }
-
-    /** 设置输出文件路径 */
-    protected async setBuildTo() {
-        return '';
+    /** 初始化 */
+    protected async init() {
+        return;
     }
 
     /** 此资源被删除 */
