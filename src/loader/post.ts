@@ -10,7 +10,10 @@ import { createElement } from 'react';
 import { renderToString } from 'react-dom/server';
 
 import { BaseItem } from './base';
+import { ImageItem } from './image';
 import { Markdown } from 'src/renderer/markdown';
+
+import { normalize } from 'src/utils/path';
 
 import { Template as DefaultTemplate } from 'src/template/views/default';
 
@@ -80,14 +83,25 @@ export class PostItem extends BaseItem implements PostData {
     /** 文章所使用的插件列表 */
     plugins: string[] = [];
 
+    /** 创建文章 */
+    static async Create(from: string) {
+        const post = new PostItem(from);
+
+        await post.readMeta();
+        await post.setBuildTo();
+        await post.transform();
+
+        return post;
+    }
+
     private errorHandler(msg: string) {
         this.html = msg;
         throw new Error(msg);
     }
 
     private async readMeta() {
-        const source = (await this.origin).toString();
-        const result = source.match(/^---([\d\D]+?)---([\d\D]*)$/);
+        const origin = this.origin = await fs.readFile(this.from);
+        const result = origin.toString().match(/^---([\d\D]+?)---([\d\D]*)$/);
 
         if (!result) {
             this.errorHandler('文件格式错误');
@@ -136,30 +150,54 @@ export class PostItem extends BaseItem implements PostData {
         }
     }
 
-    protected async transform() {
-        await this.readMeta();
-        
+    private async setBuildTo() {
+        const create = new Date(this.date);
+        const dirName = path.basename(path.dirname(this.from));
+        const decodeTitle = dirName.replace(/ /g, '-').toLowerCase();
+
+        this.buildTo = path.normalize(`/posts/${create.getFullYear()}/${decodeTitle}/index.html`);
+    }
+
+    private async resetToken(token: Token) {
+        const dirpath = path.dirname(this.from);
+
+        switch (token.type) {
+            case 'image': {
+                const imageRef = normalize(dirpath, token.attrGet('src') || '');
+
+                if (!imageRef) {
+                    break;
+                }
+
+                const image = await ImageItem.Create(imageRef);
+
+                debugger;
+                token.attrSet('src', image.buildTo);
+
+                debugger;
+                break;
+            }
+        }
+
+        if (token.children.length > 0) {
+            token.children.forEach(this.resetToken.bind(this));
+        }
+    }
+
+    private async transform() {
         this.tokens = Markdown.parse(this.content, {});
+        // 异步等待
+        this.tokens.forEach(this.resetToken.bind(this));
+        this.html = Markdown.renderer.render(this.tokens, {}, {});
 
-        // TODO: 图片、文章等引用的重置
-        this.html = Markdown.render(this.content);
-
+        debugger;
         const Template = Templates[this.template];
         const html = renderToString(createElement(Template, {
             project,
             post: this,
         }));
 
-        return Buffer.from(`<!DOCTYPE html>${html}`);
+        this.source = Buffer.from(`<!DOCTYPE html>${html}`);
     }
 
-    protected async setBuildTo() {
-        await this.readMeta();
-
-        const create = new Date(this.date);
-        const dirName = path.basename(path.dirname(this.from));
-        const decodeTitle = dirName.replace(/ /g, '-').toLowerCase();
-
-        return path.normalize(`/posts/${create.getFullYear()}/${decodeTitle}/index.html`);
-    }
 }
