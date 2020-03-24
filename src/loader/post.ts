@@ -13,6 +13,7 @@ import { BaseItem } from './base';
 import { ImageItem } from './image';
 import { Markdown } from 'src/renderer/markdown';
 
+import { isArray } from 'src/utils/assert';
 import { normalize } from 'src/utils/path';
 
 import { Template as DefaultTemplate } from 'src/template/views/default';
@@ -158,7 +159,12 @@ export class PostItem extends BaseItem implements PostData {
         this.buildTo = path.normalize(`/posts/${create.getFullYear()}/${decodeTitle}/index.html`);
     }
 
-    private async resetToken(token: Token) {
+    private async resetToken(token: Token | Token[]) {
+        if (isArray(token)) {
+            await Promise.all(token.map(this.resetToken.bind(this)));
+            return;
+        }
+
         const dirpath = path.dirname(this.from);
 
         switch (token.type) {
@@ -171,26 +177,24 @@ export class PostItem extends BaseItem implements PostData {
 
                 const image = await ImageItem.Create(imageRef);
 
-                debugger;
                 token.attrSet('src', image.buildTo);
 
-                debugger;
                 break;
             }
         }
 
-        if (token.children.length > 0) {
-            token.children.forEach(this.resetToken.bind(this));
+        if (token.children?.length > 0) {
+            await this.resetToken(token.children);
         }
     }
 
     private async transform() {
         this.tokens = Markdown.parse(this.content, {});
         // 异步等待
-        this.tokens.forEach(this.resetToken.bind(this));
+        await this.resetToken(this.tokens);
+        // 重新编译
         this.html = Markdown.renderer.render(this.tokens, {}, {});
 
-        debugger;
         const Template = Templates[this.template];
         const html = renderToString(createElement(Template, {
             project,
@@ -199,5 +203,4 @@ export class PostItem extends BaseItem implements PostData {
 
         this.source = Buffer.from(`<!DOCTYPE html>${html}`);
     }
-
 }
