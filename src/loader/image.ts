@@ -10,17 +10,9 @@ export class ImageItem extends BaseItem {
     static async Create(from: string) {
         const image = new ImageItem(from);
 
-        debugger;
-        image.origin = await fs.readFile(from).catch((e) => {
-            debugger;
-            console.log(e);
-            return Buffer.from('');
-        });
-
-        debugger;
+        image.origin = await fs.readFile(from);
         image.source = image.origin;
 
-        debugger;
         await image.setBuildTo();
 
         return image;
@@ -32,7 +24,6 @@ export class ImageItem extends BaseItem {
         const stat = await fs.stat(this.from);
         const year = new Date(stat.ctimeMs).getFullYear();
 
-        debugger;
         this.buildTo = `/images/${year}/${md5Str}${extname}`;
     }
 }
