@@ -1,4 +1,4 @@
-import { BaseItem } from './base';
+import { BaseItem, sources } from './base';
 
 import md5 from 'md5';
 
@@ -8,6 +8,12 @@ import * as fs from 'fs-extra';
 export class ImageItem extends BaseItem {
     /** 创建图片元素 */
     static async Create(from: string) {
+        const exist = sources.find((image) => image.from === from);
+
+        if (exist) {
+            return exist;
+        }
+
         const image = new ImageItem(from);
 
         image.origin = await fs.readFile(from);
