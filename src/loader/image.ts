@@ -1,4 +1,4 @@
-import { BaseItem, sources } from './base';
+import { BaseItem } from './base';
 
 import md5 from 'md5';
 
@@ -8,7 +8,7 @@ import * as fs from 'fs-extra';
 export class ImageItem extends BaseItem {
     /** 创建图片元素 */
     static async Create(from: string) {
-        const exist = sources.find((image) => image.from === from);
+        const exist = BaseItem.FindSource(from);
 
         if (exist) {
             return exist;
@@ -16,10 +16,16 @@ export class ImageItem extends BaseItem {
 
         const image = new ImageItem(from);
 
-        image.origin = await fs.readFile(from);
-        image.source = image.origin;
+        try {
+            image.origin = await fs.readFile(from);
+            image.source = image.origin;
+    
+            await image.setBuildTo();
+        }
+        catch (e) {
+            image.errorMessage = '图片不存在'
+        }
 
-        await image.setBuildTo();
 
         return image;
     }

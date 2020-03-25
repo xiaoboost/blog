@@ -9,14 +9,14 @@ import { parse } from 'yaml';
 import { createElement } from 'react';
 import { renderToString } from 'react-dom/server';
 
-import { BaseItem } from './base';
 import { ImageItem } from './image';
+import { BaseItem } from './base';
 import { Markdown } from 'src/renderer/markdown';
 
 import { isArray } from 'src/utils/assert';
 import { normalize } from 'src/utils/path';
 
-import { Template as DefaultTemplate } from 'src/template/views/default';
+import { Template as DefaultTemplate } from 'src/template/views/post/default';
 
 /** 文章模板 */
 enum PostTemplate {
@@ -86,6 +86,12 @@ export class PostItem extends BaseItem implements PostData {
 
     /** 创建文章 */
     static async Create(from: string) {
+        const exist = BaseItem.FindSource(from);
+
+        if (exist) {
+            return exist;
+        }
+
         const post = new PostItem(from);
 
         await post.readMeta();
@@ -95,17 +101,12 @@ export class PostItem extends BaseItem implements PostData {
         return post;
     }
 
-    private errorHandler(msg: string) {
-        this.html = msg;
-        throw new Error(msg);
-    }
-
     private async readMeta() {
         const origin = this.origin = await fs.readFile(this.from);
         const result = origin.toString().match(/^---([\d\D]+?)---([\d\D]*)$/);
 
         if (!result) {
-            this.errorHandler('文件格式错误');
+            this.errorMessage = '文件格式错误';
             return;
         }
 
@@ -117,7 +118,7 @@ export class PostItem extends BaseItem implements PostData {
         }
 
         if (!meta.date) {
-            this.errorHandler('文章必须要有 [date] 字段');
+            this.errorMessage = '文章必须要有 [date] 字段';
             return;
         }
 
@@ -146,7 +147,7 @@ export class PostItem extends BaseItem implements PostData {
         this.template = PostTemplate[meta.template || PostTemplate[0]];
 
         if (typeof this.template !== 'number') {
-            this.errorHandler(`模板名称错误：${meta.title}`);
+            this.errorMessage = `模板名称错误：${meta.title}`;
             return;
         }
     }
@@ -161,7 +162,9 @@ export class PostItem extends BaseItem implements PostData {
 
     private async resetToken(token: Token | Token[]) {
         if (isArray(token)) {
-            await Promise.all(token.map(this.resetToken.bind(this)));
+            for (let i = 0; i < token.length; i++) {
+                await this.resetToken(token[i]);
+            }
             return;
         }
 
@@ -186,6 +189,7 @@ export class PostItem extends BaseItem implements PostData {
 
         if (item) {
             this.children.push(item);
+            item.parents.push(this);
         }
 
         if (token.children?.length > 0) {
