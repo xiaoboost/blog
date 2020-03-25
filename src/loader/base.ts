@@ -6,7 +6,7 @@ import { buildOutput } from 'src/config/project';
 
 interface ErrorMessage {
     message: string;
-    position: string;
+    stacks: string[];
 }
 
 /** 文件系统 */
@@ -23,11 +23,13 @@ export class BaseItem {
     /** 该元素在硬盘中的绝对路径 */
     from = '';
     /** 此元素依赖的元素 */
-    depends: BaseItem[] = [];
+    parents: BaseItem[] = [];
     /** 依赖此元素的元素 */
     children: BaseItem[] = [];
     /** 该元素是否被删除 */
     isDelete = false;
+    /** 错误信息 */
+    errorMessage = '';
 
     /** 元素源代码 */
     origin = Buffer.from('');
@@ -36,14 +38,24 @@ export class BaseItem {
     /** 相对于根目录的相对路径 */
     buildTo = '';
 
-    constructor(path: string) {
-        const last = sources.find(({ from }) => from === path);
+    static FindSource(from: string) {
+        const exist = sources.find((image) => image.from === from);
 
-        // 已经存在，则返回旧的数据
-        if (last) {
-            return last;
+        if (!exist) {
+            return null;
         }
 
+        //  若是被删除的资源，则重新初始化
+        if (exist.isDelete) {
+            exist.isDelete = false;
+            exist.parents = [];
+            exist.children = [];
+        }
+
+        return exist;
+    }
+
+    constructor(path: string) {
         this.from = path;
         sources.push(this);
     }
@@ -58,17 +70,17 @@ export class BaseItem {
         // 标记资源被删除
         this.isDelete = true;
         // 依赖资源移除当前元素
-        this.depends.forEach((dep) => {
+        this.parents.forEach((dep) => {
             dep.children = dep.children.filter((item) => item === this);
         });
         // 此元素离开资源树
-        this.depends = [];
+        this.parents = [];
     }
 
     /** 设置引用 */
     setDep(item: BaseItem) {
         this.isDelete = false;
-        this.depends.push(item);
+        this.parents.push(item);
         item.children.push(this);
     }
 
@@ -92,10 +104,5 @@ export class BaseItem {
 
         await fileSystem.mkdirp(path.join(buildOutput, path.dirname(output)));
         await fileSystem.writeFile(path.join(buildOutput, output), source);
-    }
-
-    /** 生成错误提示 */
-    errorHandler(msg: string) {
-        
     }
 }
