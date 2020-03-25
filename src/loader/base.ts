@@ -4,16 +4,24 @@ import * as fms from '../utils/memory-fs';
 
 import { buildOutput } from 'src/config/project';
 
+interface ErrorMessage {
+    message: string;
+    position: string;
+}
+
 /** 文件系统 */
 const fileSystem = process.env.NODE_ENV === 'development' ? fms : fs;
 
 /** 资源列表 */
 export const sources: BaseItem[] = [];
 
+/** 错误信息 */
+export const errors: ErrorMessage[] = [];
+
 /** 元素类 */
 export class BaseItem {
     /** 该元素在硬盘中的绝对路径 */
-    from: string;
+    from = '';
     /** 此元素依赖的元素 */
     depends: BaseItem[] = [];
     /** 依赖此元素的元素 */
@@ -29,6 +37,13 @@ export class BaseItem {
     buildTo = '';
 
     constructor(path: string) {
+        const last = sources.find(({ from }) => from === path);
+
+        // 已经存在，则返回旧的数据
+        if (last) {
+            return last;
+        }
+
         this.from = path;
         sources.push(this);
     }
@@ -77,5 +92,10 @@ export class BaseItem {
 
         await fileSystem.mkdirp(path.join(buildOutput, path.dirname(output)));
         await fileSystem.writeFile(path.join(buildOutput, output), source);
+    }
+
+    /** 生成错误提示 */
+    errorHandler(msg: string) {
+        
     }
 }

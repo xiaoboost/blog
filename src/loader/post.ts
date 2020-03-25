@@ -165,6 +165,8 @@ export class PostItem extends BaseItem implements PostData {
             return;
         }
 
+        let item: BaseItem | null = null;
+
         const dirpath = path.dirname(this.from);
 
         switch (token.type) {
@@ -175,12 +177,15 @@ export class PostItem extends BaseItem implements PostData {
                     break;
                 }
 
-                const image = await ImageItem.Create(imageRef);
-
-                token.attrSet('src', image.buildTo);
+                item = await ImageItem.Create(imageRef);
+                token.attrSet('src', item.buildTo);
 
                 break;
             }
+        }
+
+        if (item) {
+            this.children.push(item);
         }
 
         if (token.children?.length > 0) {

@@ -2,7 +2,7 @@ import * as fs from 'fs-extra';
 import * as path from 'path';
 
 import { PostItem } from './post';
-import { BaseItem, sources } from './base';
+import { sources } from './base';
 
 import { resolveRoot } from 'src/utils/path';
 
