@@ -4,17 +4,24 @@ import * as path from 'path';
 import { PostItem } from './post';
 import { sources } from './base';
 
-import { resolveRoot } from 'src/utils/path';
-
-const postsDir = resolveRoot('posts');
+import { postsDir } from 'src/config/project';
 
 /** 初始化 */
 export const loaded = (async () => {
     const postNames = await fs.readdir(postsDir);
-    const posts = await Promise.all(postNames.map((dir) => PostItem.Create(path.join(postsDir, dir, 'index.md'))));
+    const posts: PostItem[] = [];
 
-    if (process.env.NODE_ENV === 'development') {
-        posts.forEach((post) => post.watch());
+    // 读取所有文章
+    for (let i = 0; i < postNames.length; i++) {
+        const postName = postNames[i];
+        const postPath = path.join(postsDir, postName, 'index.md');
+        const post = await PostItem.Create(postPath);
+
+        if (process.env.NODE_ENV !== 'production') {
+            post.watch();
+        }
+
+        posts.push(post);
     }
 
     await Promise.all(sources.map((item) => item.write()));

@@ -85,11 +85,11 @@ export class PostItem extends BaseItem implements PostData {
     plugins: string[] = [];
 
     /** 创建文章 */
-    static async Create(from: string) {
+    static async Create(from: string): Promise<PostItem> {
         const exist = BaseItem.FindSource(from);
 
         if (exist) {
-            return exist;
+            return exist as PostItem;
         }
 
         const post = new PostItem(from);

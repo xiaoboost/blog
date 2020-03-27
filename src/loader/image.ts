@@ -26,7 +26,6 @@ export class ImageItem extends BaseItem {
             image.errorMessage = '图片不存在'
         }
 
-
         return image;
     }
 

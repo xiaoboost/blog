@@ -94,15 +94,15 @@ export class BaseItem {
         if (this.isDelete) {
             return;
         }
-
-        const output = await this.buildTo;
-        const source = await this.source;
         
-        if (!output) {
-            throw new Error('未设置输出路径')
+        if (!this.buildTo) {
+            this.errorMessage = '未设置输出路径';
+            return;
         }
 
-        await fileSystem.mkdirp(path.join(buildOutput, path.dirname(output)));
-        await fileSystem.writeFile(path.join(buildOutput, output), source);
+        const output = path.join(buildOutput, this.buildTo);
+
+        await fileSystem.mkdirp(path.dirname(output));
+        await fileSystem.writeFile(output, this.source);
     }
 }
