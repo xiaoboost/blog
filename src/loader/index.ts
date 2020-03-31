@@ -6,6 +6,12 @@ import { sources } from './base';
 
 import { postsDir } from 'src/config/project';
 
+export * from './base';
+export * from './image';
+export * from './post';
+export * from './less';
+export * from './script';
+
 /** 初始化 */
 export const loaded = (async () => {
     const postNames = await fs.readdir(postsDir);
