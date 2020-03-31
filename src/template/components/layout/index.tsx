@@ -1,4 +1,7 @@
-import { default as React, PropsWithChildren } from 'react';
+import React from 'react';
+
+import { join } from 'path';
+import { PropsWithChildren } from 'react';
 
 import { Header } from '../header';
 import { Footer } from '../footer';
@@ -18,8 +21,8 @@ export function Layout(props: PropsWithChildren<Props>) {
                 <meta name='charset' content='utf-8' />
                 <meta name='X-UA-Compatible' content='IE=edge' />
                 <meta name='viewport' content='width=device-width, initial-scale=1' />
-                <link rel='short icon' href={`${props.publicPath}img/favicon.ico`} />
-                <link rel='stylesheet' type='text/css' href={`${props.publicPath}${props.styleFile}`} />
+                <link rel='short icon' href={join(props.publicPath, '/img/favicon.ico')} />
+                <link rel='stylesheet' type='text/css' href={join(props.publicPath, props.styleFile)} />
             </head>
             <body>
                 <Header />
@@ -27,7 +30,7 @@ export function Layout(props: PropsWithChildren<Props>) {
                     {props.children}
                 </article>
                 <Footer />
-                <script type='text/javascript' src={`${props.publicPath}${props.scriptFile}`} />
+                <script type='text/javascript' src={join(props.publicPath, props.scriptFile)} />
             </body>
         </html>
     );

@@ -114,6 +114,7 @@ export class PostItem extends BaseItem implements PostData {
         const meta = parse(metaStr) as PostMeta;
 
         if (!meta) {
+            this.errorMessage = '缺失文章属性';
             return;
         }
 
@@ -199,13 +200,12 @@ export class PostItem extends BaseItem implements PostData {
 
     private async transform() {
         this.tokens = Markdown.parse(this.content, {});
-        // 异步等待
+        // 编译引用资源
         await this.resetToken(this.tokens);
-        // 重新编译
+        // 编译文章内容
         this.html = Markdown.renderer.render(this.tokens, {}, {});
 
-        const Template = Templates[this.template];
-        const html = renderToString(createElement(Template, {
+        const html = renderToString(createElement(Templates[this.template], {
             project,
             post: this,
         }));
