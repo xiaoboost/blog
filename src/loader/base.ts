@@ -5,8 +5,9 @@ import * as fms from '../utils/memory-fs';
 import { buildOutput } from 'src/config/project';
 
 interface ErrorMessage {
+    id: number;
     message: string;
-    stacks: string[];
+    position: string;
 }
 
 /** 文件系统 */
@@ -20,6 +21,7 @@ export const errors: ErrorMessage[] = [];
 
 /** 元素类 */
 export class BaseItem {
+    id = 0;
     /** 该元素在硬盘中的绝对路径 */
     from = '';
     /** 此元素依赖的元素 */
@@ -32,9 +34,9 @@ export class BaseItem {
     errorMessage = '';
 
     /** 元素源代码 */
-    origin = Buffer.from('');
+    origin: Buffer | string = '';
     /** 转换之后元素内容 */
-    source = Buffer.from('');
+    source: Buffer | string = '';
     /** 相对于根目录的相对路径 */
     buildTo = '';
 
@@ -87,6 +89,14 @@ export class BaseItem {
     /** 监听文件变更 */
     watch() {
         // ..
+    }
+
+    setError(err: ErrorMessage) {
+
+    }
+
+    clearError() {
+
     }
 
     /** 此资源写入硬盘系统 */
