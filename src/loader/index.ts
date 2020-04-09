@@ -9,7 +9,7 @@ import { postsDir } from 'src/config/project';
 export * from './base';
 export * from './image';
 export * from './post';
-export * from './less';
+export * from './style';
 export * from './script';
 
 /** 初始化 */
