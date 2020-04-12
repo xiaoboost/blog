@@ -10,7 +10,7 @@ import { postsDir } from 'src/config/project';
 
 async function loadPosts() {
     const postNames = await fs.readdir(postsDir);
-    const posts: loader.PostItem[] = [];
+    const posts: loader.PostLoader[] = [];
 
     // 读取所有文章
     for (let i = 0; i < postNames.length; i++) {
@@ -21,7 +21,7 @@ async function loadPosts() {
             continue;
         }
 
-        const post = await loader.PostItem.Create(postPath);
+        const post = await loader.PostLoader.Create(postPath);
 
         if (process.env.NODE_ENV !== 'production') {
             post.watch();
@@ -36,13 +36,13 @@ async function loadPosts() {
 /** 初始化 */
 // export const loaded = (async () => {
 //     const postNames = await fs.readdir(postsDir);
-//     const posts: PostItem[] = [];
+//     const posts: PostLoader[] = [];
 
 //     // 读取所有文章
 //     for (let i = 0; i < postNames.length; i++) {
 //         const postName = postNames[i];
 //         const postPath = path.join(postsDir, postName, 'index.md');
-//         const post = await PostItem.Create(postPath);
+//         const post = await PostLoader.Create(postPath);
 
 //         if (process.env.NODE_ENV !== 'production') {
 //             post.watch();

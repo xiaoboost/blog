@@ -9,8 +9,8 @@ import { parse } from 'yaml';
 import { createElement } from 'react';
 import { renderToString } from 'react-dom/server';
 
-import { ImageItem } from './image';
-import { BaseItem } from './base';
+import { ImageLoader } from './image';
+import { BaseLoader } from './base';
 import { Markdown } from 'src/renderer/markdown';
 
 import { isArray } from 'src/utils/assert';
@@ -64,7 +64,7 @@ export interface PostData {
 /** 默认插件 */
 const defaultPlugins = ['goto-top', 'toc']; 
 
-export class PostItem extends BaseItem implements PostData {
+export class PostLoader extends BaseLoader implements PostData {
     /** 文章标题 */
     title = '';
     /** 文章创建日期 */
@@ -85,14 +85,14 @@ export class PostItem extends BaseItem implements PostData {
     plugins: string[] = [];
 
     /** 创建文章 */
-    static async Create(from: string): Promise<PostItem> {
-        const exist = BaseItem.FindSource(from);
+    static async Create(from: string): Promise<PostLoader> {
+        const exist = BaseLoader.FindSource(from);
 
         if (exist) {
-            return exist as PostItem;
+            return exist as PostLoader;
         }
 
-        const post = new PostItem(from);
+        const post = new PostLoader(from);
 
         await post.readMeta();
         await post.setBuildTo();
@@ -169,7 +169,7 @@ export class PostItem extends BaseItem implements PostData {
             return;
         }
 
-        let item: BaseItem | null = null;
+        let item: BaseLoader | null = null;
 
         const dirpath = path.dirname(this.from);
 
@@ -181,7 +181,7 @@ export class PostItem extends BaseItem implements PostData {
                     break;
                 }
 
-                item = await ImageItem.Create(imageRef);
+                item = await ImageLoader.Create(imageRef);
                 token.attrSet('src', item.buildTo);
 
                 break;

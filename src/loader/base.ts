@@ -15,7 +15,7 @@ interface ErrorMessage {
 const fileSystem = process.env.NODE_ENV === 'development' ? fms : fs;
 
 /** 资源列表 */
-export const sources: BaseItem[] = [];
+export const sources: BaseLoader[] = [];
 
 /** 错误信息 */
 export const errors: ErrorMessage[] = [];
@@ -31,12 +31,12 @@ interface WatchData {
 }
 
 interface DepData {
-    dep: BaseItem;
+    dep: BaseLoader;
     keys: string[];
 }
 
 /** 元素类 */
-export class BaseItem {
+export class BaseLoader {
     /** 当前资源编号 */
     id = id++;
     /** 该元素在硬盘中的绝对路径 */
@@ -82,7 +82,7 @@ export class BaseItem {
     }
 
     /** 监听某个属性 */
-    observe<T extends BaseItem, K extends GetString<keyof T>>(this: T, dep: BaseItem, keys: K[]) {
+    observe<T extends BaseLoader, K extends GetString<keyof T>>(this: T, dep: BaseLoader, keys: K[]) {
         this._observers.push({
             depId: dep.id,
             lastVal: [],
