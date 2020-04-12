@@ -1,20 +1,20 @@
-import { BaseItem } from './base';
+import { BaseLoader } from './base';
 
 import md5 from 'md5';
 
 import * as path from 'path';
 import * as fs from 'fs-extra';
 
-export class ImageItem extends BaseItem {
+export class ImageLoader extends BaseLoader {
     /** 创建图片元素 */
     static async Create(from: string) {
-        const exist = BaseItem.FindSource(from);
+        const exist = BaseLoader.FindSource(from);
 
         if (exist) {
             return exist;
         }
 
-        const image = new ImageItem(from);
+        const image = new ImageLoader(from);
 
         try {
             image.origin = await fs.readFile(from);

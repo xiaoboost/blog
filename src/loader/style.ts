@@ -1,20 +1,20 @@
 import md5 from 'md5';
 import less from 'less';
 
-import { BaseItem } from './base';
+import { BaseLoader } from './base';
 import { resolveRoot } from 'src/utils/path';
 import { readfiles } from 'src/utils/file-system';
 
 /** 全局唯一 style 资源 */
-let style: StyleItem | null;
+let style: StyleLoader | null;
 
-export class StyleItem extends BaseItem {
+export class StyleLoader extends BaseLoader {
     static async Create() {
         if (style) {
             return style;
         }
 
-        style = new StyleItem('');
+        style = new StyleLoader('');
 
         const files = await readfiles(resolveRoot('src/template'));
         const styles = files.filter((file) => /\.less$/.test(file));
