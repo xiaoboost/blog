@@ -109,16 +109,21 @@ export class BaseLoader {
     }
 
     /** 内部真实的转换器 */
-    private async _transform() {
+    protected async _transform() {
+        this.transforming = true;
+
         const result = await this.transform();
 
         if (isArray(result)) {
             return this.diffSources(result);
         }
+
+        this.transforming = false;
+        this.notify();
     }
 
     /** 检测引用元素是否变更 */
-    private diffSources(deps: DepData[]) {
+    protected diffSources(deps: DepData[]) {
         const inDeps = exclude(this._sources, deps, ({ dep }) => dep.id);
         const inSource = exclude(deps, this._sources, ({ dep }) => dep.id);
 
