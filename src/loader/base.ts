@@ -6,8 +6,9 @@ import { buildOutput } from 'src/config/project';
 import { deleteVal, exclude } from 'src/utils/array';
 
 interface ErrorMessage {
+    id: number;
     message: string;
-    stacks: string[];
+    position: string;
 }
 
 /** 文件系统 */
@@ -46,9 +47,9 @@ export class BaseItem {
     errorMessage = ''; 
 
     /** 元素源代码 */
-    origin = Buffer.from('');
+    origin: Buffer | string = '';
     /** 转换之后元素内容 */
-    source = Buffer.from('');
+    source: Buffer | string = '';
 
     /** 内部真实的转换器 */
     private _transform: () => Promise<void>;
@@ -133,6 +134,14 @@ export class BaseItem {
     /** 默认监听函数 */
     watch() {
         // ..
+    }
+
+    setError(err: ErrorMessage) {
+
+    }
+
+    clearError() {
+
     }
 
     /** 此资源写入硬盘系统 */
