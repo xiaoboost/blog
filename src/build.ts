@@ -30,10 +30,17 @@ async function loadPosts() {
         posts.push(post);
     }
 
-    return posts;
+    /** 时间从近至远排序 */
+    return posts.sort((pre, next) => pre.date < next.date ? 1 : -1);
+}
+
+async function build() {
+    const posts = await loadPosts();
 }
 
 /** 初始化 */
+build();
+
 // export const loaded = (async () => {
 //     const postNames = await fs.readdir(postsDir);
 //     const posts: PostLoader[] = [];

@@ -15,28 +15,40 @@ export class StyleLoader extends BaseLoader {
         }
 
         style = new StyleLoader('');
-
-        const files = await readfiles(resolveRoot('src/template'));
-        const styles = files.filter((file) => /\.less$/.test(file));
-
-        style.origin = styles.map((file) => `@import '${file}';`).join('\n');
-
-        await style.transform();
-        await style.setBuildTo();
+        
+        if (process.env.NODE_ENV === 'production') {
+            await style.transform();
+            style.setBuildTo();
+        }
+        else {
+            style.watch();
+            style.setBuildTo();
+        }
 
         return style;
     }
 
     async transform() {
-        return less.render(this.origin as string, {
-            paths: [resolveRoot('src/template')],
-        })
-            .then(({ css }) => this.source = css)
+        const files = await readfiles(resolveRoot('src/template'));
+        const styles = files.filter((file) => /\.less$/.test(file));
+        const origin = styles.map((file) => `@import '${file}';`).join('\n');
+
+        const result = await less.render(origin, { paths: [resolveRoot('src/template')] })
             .catch((e) => this.setError({
                 id: this.id,
                 message: e.message,
                 position: e.filename,
             }));
+        
+        if (!result) {
+            return;
+        }
+
+        this.source = result.css;
+    }
+
+    watch() {
+        // ..
     }
 
     setBuildTo() {
