@@ -1,12 +1,12 @@
+import md5 from 'md5';
 import less from 'less';
 
 import { BaseItem } from './base';
+import { resolveRoot } from 'src/utils/path';
+import { readfiles } from 'src/utils/file-system';
 
-import * as path from 'path';
-import * as fs from 'fs-extra';
-
-// 全局 style 文件
-let style: StyleItem;
+/** 全局唯一 style 资源 */
+let style: StyleItem | null;
 
 export class StyleItem extends BaseItem {
     static async Create() {
@@ -14,6 +14,37 @@ export class StyleItem extends BaseItem {
             return style;
         }
 
-        // ..
+        style = new StyleItem('');
+
+        const files = await readfiles(resolveRoot('src/template'));
+        const styles = files.filter((file) => /\.less$/.test(file));
+
+        style.origin = styles.map((file) => `@import '${file}';`).join('\n');
+
+        await style.transform();
+        await style.setBuildTo();
+
+        return style;
+    }
+
+    async transform() {
+        return less.render(this.origin as string, {
+            paths: [resolveRoot('src/template')],
+        })
+            .then(({ css }) => this.source = css)
+            .catch((e) => this.setError({
+                id: this.id,
+                message: e.message,
+                position: e.filename,
+            }));
+    }
+
+    setBuildTo() {
+        if (process.env.NODE_ENV === 'production') {
+            this.buildTo = `/css/style.${md5(this.source)}.css`;
+        }
+        else {
+            this.buildTo = '/css/style.css';
+        }
     }
 }
