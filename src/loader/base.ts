@@ -24,7 +24,7 @@ interface WatchData {
     compute(item: BaseLoader): any;
 }
 
-interface DepData {
+export interface DepData {
     dep: BaseLoader;
     compute(item: BaseLoader): any;
 }
@@ -64,8 +64,10 @@ export class BaseLoader {
 
     /** 作为被引用资源的数据 */
     private _observers: WatchData[] = [];
+    /** 上一次编译时的引用数据 */
+    private _lastDeps: DepData[] = [];
     /** 作为资源时引用的数据 */
-    private _sources: DepData[] = [];
+    private _deps: DepData[] = [];
 
     /** 引用计数 */
     get quoteCount() {
@@ -73,13 +75,8 @@ export class BaseLoader {
     }
 
     /** 监听某个属性 */
-    observe<T extends BaseLoader>(this: T, id: number, compute: (item: T) => any) {
-        this._observers.push({
-            compute,
-            depId: id,
-            lastVal: compute(this),
-            notify: this._transform.bind(this),
-        });
+    observe<T extends BaseLoader>(this: T, dep: BaseLoader, compute: (item: T) => any) {
+        this._deps.push({ dep, compute });
     }
 
     /** 取消某元素的引用 */
@@ -88,23 +85,20 @@ export class BaseLoader {
     }
 
     /** 通知元素引用变更 */
-    async notify() {
+    notify() {
         for (const ob of this._observers) {
             const last = ob.lastVal;
             const now = ob.compute(this);
 
             if (!isEqual(last, now)) {
                 ob.lastVal = now;
-                await ob.notify();
+                ob.notify();
             }
         }
     }
 
-    /**
-     * 外部数据变换函数
-     *  - 派生类全部需要扩写这个函数，可能的话，此函数可以返回引用的数据数组
-     */
-    transform(): void | DepData[] | Promise<void> | Promise<DepData[]> {
+    /** 外部数据变换函数 */
+    transform(): void | Promise<void> {
         this.source = this.origin;
     }
 
@@ -112,32 +106,32 @@ export class BaseLoader {
     protected async _transform() {
         this.transforming = true;
 
-        const result = await this.transform();
-
-        if (isArray(result)) {
-            return this.diffSources(result);
-        }
+        await this.transform();
+        await this.write();
 
         this.transforming = false;
+
         this.notify();
+        this.diffSources();
     }
 
     /** 检测引用元素是否变更 */
-    protected diffSources(deps: DepData[]) {
-        const inDeps = exclude(this._sources, deps, ({ dep }) => dep.id);
-        const inSource = exclude(deps, this._sources, ({ dep }) => dep.id);
+    protected diffSources() {
+        const inDeps = exclude(this._lastDeps, this._deps, ({ dep }) => dep.id);
+        const inSource = exclude(this._deps, this._lastDeps, ({ dep }) => dep.id);
 
-        // 绑定新的引用
-        inDeps.forEach(({ dep, compute }) => dep.observe(this.id, compute));
         // 解除不再引用的资源
         inSource.forEach(({ dep }) => dep.unObserve(this.id));
+        // 绑定新的引用
+        inDeps.forEach(({ dep, compute }) => this._observers.push({
+            compute,
+            depId: dep.id,
+            lastVal: compute(this),
+            notify: this._transform.bind(this),
+        }));
 
-        this._sources = deps.slice();
-    }
-
-    /** 默认监听函数 */
-    watch() {
-        // ..
+        this._lastDeps = this._deps;
+        this._deps = [];
     }
 
     /** 销毁资源 */
@@ -153,7 +147,7 @@ export class BaseLoader {
         }
 
         // 引用计数为 0，不输出
-        if (this.quoteCount === 0) {
+        if (process.env.NODE_ENV === 'development' && this.quoteCount === 0) {
             return;
         }
 

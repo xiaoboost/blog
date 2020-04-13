@@ -6,9 +6,9 @@ import { readfiles } from 'src/utils/file-system';
 import { pluginPath } from 'src/config/project';
 
 import { rollup } from 'rollup';
-import { basename, join } from 'path';
 import { writeFile, remove } from 'fs-extra';
 import { minify as uglify } from 'uglify-js';
+import { basename, join, sep } from 'path';
 
 import replace from '@rollup/plugin-replace';
 import commonjs from '@rollup/plugin-commonjs';
@@ -26,14 +26,7 @@ export class ScriptLoader extends BaseLoader {
 
         script = new ScriptLoader('');
         
-        if (process.env.NODE_ENV === 'production') {
-            await script._transform();
-            script.buildTo = `/js/script.${md5(script.source)}.css`;
-        }
-        else {
-            script.watch();
-            script.buildTo = '/js/script.css';
-        }
+        await script._transform();
 
         return script;
     }
@@ -42,12 +35,12 @@ export class ScriptLoader extends BaseLoader {
         const tempEntry = join(pluginPath, '_index.ts');
         const files = await readfiles(pluginPath);
         const scripts = files.filter((file) => basename(file) === 'script.ts');
-        const origin = scripts.map((file) => `import '${file}';`).join('\n').trim();
+        const origin = scripts.map((file) => `import '${file.replace(/\\/g, `\\${sep}`)}';`).join('\n').trim();
 
         if (!origin) {
             return;
         }
-        
+
         await writeFile(tempEntry, origin);
 
         const bundle = await rollup({
@@ -84,9 +77,15 @@ export class ScriptLoader extends BaseLoader {
         }
 
         this.source = code;
+        this.setBuildTo();
     }
-
-    watch() {
-        // ..
+    
+    setBuildTo() {
+        if (process.env.NODE_ENV === 'production') {
+            this.buildTo = `/js/script.${md5(this.source)}.js`;
+        }
+        else {
+            this.buildTo = '/js/script.js';
+        }
     }
 }

@@ -24,7 +24,7 @@ async function loadPosts() {
         const post = await loader.PostLoader.Create(postPath);
 
         if (process.env.NODE_ENV !== 'production') {
-            post.watch();
+            // ..
         }
 
         posts.push(post);
@@ -34,29 +34,7 @@ async function loadPosts() {
     return posts.sort((pre, next) => pre.date < next.date ? 1 : -1);
 }
 
-async function build() {
+/** 构建 */
+(async function build() {
     const posts = await loadPosts();
-}
-
-/** 初始化 */
-build();
-
-// export const loaded = (async () => {
-//     const postNames = await fs.readdir(postsDir);
-//     const posts: PostLoader[] = [];
-
-//     // 读取所有文章
-//     for (let i = 0; i < postNames.length; i++) {
-//         const postName = postNames[i];
-//         const postPath = path.join(postsDir, postName, 'index.md');
-//         const post = await PostLoader.Create(postPath);
-
-//         if (process.env.NODE_ENV !== 'production') {
-//             post.watch();
-//         }
-
-//         posts.push(post);
-//     }
-
-//     await Promise.all(sources.map((item) => item.write()));
-// })();
+})();
