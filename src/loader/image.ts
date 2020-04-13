@@ -23,7 +23,7 @@ export class ImageLoader extends BaseLoader {
             await image.setBuildTo();
         }
         catch (e) {
-            image.errorMessage = '图片不存在'
+            image.error = '图片不存在'
         }
 
         return image;

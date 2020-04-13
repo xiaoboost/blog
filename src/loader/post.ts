@@ -101,12 +101,12 @@ export class PostLoader extends BaseLoader implements PostData {
         return post;
     }
 
-    private async readMeta() {
+    async readMeta() {
         const origin = this.origin = await fs.readFile(this.from);
         const result = origin.toString().match(/^---([\d\D]+?)---([\d\D]*)$/);
 
         if (!result) {
-            this.errorMessage = '文件格式错误';
+            this.error = '文件格式错误';
             return;
         }
 
@@ -114,12 +114,12 @@ export class PostLoader extends BaseLoader implements PostData {
         const meta = parse(metaStr) as PostMeta;
 
         if (!meta) {
-            this.errorMessage = '缺失文章属性';
+            this.error = '缺失文章属性';
             return;
         }
 
         if (!meta.date) {
-            this.errorMessage = '文章必须要有 [date] 字段';
+            this.error = '文章必须要有 [date] 字段';
             return;
         }
 
@@ -148,12 +148,12 @@ export class PostLoader extends BaseLoader implements PostData {
         this.template = PostTemplate[meta.template || PostTemplate[0]];
 
         if (typeof this.template !== 'number') {
-            this.errorMessage = `模板名称错误：${meta.title}`;
+            this.error = `模板名称错误：${meta.title}`;
             return;
         }
     }
 
-    private async setBuildTo() {
+    async setBuildTo() {
         const create = new Date(this.date);
         const dirName = path.basename(path.dirname(this.from));
         const decodeTitle = dirName.replace(/ /g, '-').toLowerCase();
@@ -161,7 +161,7 @@ export class PostLoader extends BaseLoader implements PostData {
         this.buildTo = path.normalize(`/posts/${create.getFullYear()}/${decodeTitle}/index.html`);
     }
 
-    private async resetToken(token: Token | Token[]) {
+    async resetToken(token: Token | Token[]) {
         if (isArray(token)) {
             for (let i = 0; i < token.length; i++) {
                 await this.resetToken(token[i]);
@@ -189,16 +189,16 @@ export class PostLoader extends BaseLoader implements PostData {
         }
 
         if (item) {
-            this.children.push(item);
-            item.parents.push(this);
+            // this.children.push(item);
+            // item.parents.push(this);
         }
 
-        if (token.children?.length > 0) {
-            await this.resetToken(token.children);
-        }
+        // if (token.children?.length > 0) {
+        //     await this.resetToken(token.children);
+        // }
     }
 
-    private async transform() {
+    async transform() {
         this.tokens = Markdown.parse(this.content, {});
         // 编译引用资源
         await this.resetToken(this.tokens);
@@ -206,7 +206,7 @@ export class PostLoader extends BaseLoader implements PostData {
         this.html = Markdown.renderer.render(this.tokens, {}, {});
 
         const html = renderToString(createElement(Templates[this.template], {
-            project,
+            project: project as any,
             post: this,
         }));
 
