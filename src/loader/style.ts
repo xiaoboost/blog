@@ -1,5 +1,6 @@
 import md5 from 'md5';
 import less from 'less';
+import CleanCss from 'clean-css';
 
 import { BaseLoader } from './base';
 import { isString } from 'src/utils/assert';
@@ -9,6 +10,8 @@ import { templatePath } from 'src/config/project';
 
 /** 全局唯一 style 资源 */
 let style: StyleLoader | null;
+/** 全局 css 最小化处理器 */
+const minify = new CleanCss();
 
 export class StyleLoader extends BaseLoader {
     static async Create() {
@@ -18,14 +21,7 @@ export class StyleLoader extends BaseLoader {
 
         style = new StyleLoader('');
         
-        if (process.env.NODE_ENV === 'production') {
-            await style._transform();
-            style.buildTo = `/css/style.${md5(style.source)}.css`;
-        }
-        else {
-            style.watch();
-            style.buildTo = '/css/style.css';
-        }
+        await style._transform();
 
         return style;
     }
@@ -35,15 +31,27 @@ export class StyleLoader extends BaseLoader {
         const styles = files.filter((file) => /\.less$/.test(file));
         const origin = styles.map((file) => `@import '${file}';`).join('\n');
 
-        const result = await less.render(origin, { paths: [resolveRoot('src/template')] })
+        const lessOutput = await less.render(origin, { paths: [resolveRoot('src/template')] })
             .catch((e) => this.error = `${e.message}\n in ${e.filename}`);
-        
-        if (!isString(result)) {
-            this.source = result.css;
-        }
-    }
 
-    watch() {
-        // ..
+        if (isString(lessOutput)) {
+            this.setBuildTo();
+            return;
+        }
+
+        this.source = process.env.NODE_ENV === 'production'
+            ? minify.minify(lessOutput.css).styles
+            : lessOutput.css;
+
+        this.setBuildTo();
+    }
+    
+    setBuildTo() {
+        if (process.env.NODE_ENV === 'production') {
+            this.buildTo = `/css/style.${md5(this.source)}.css`;
+        }
+        else {
+            this.buildTo = '/css/style.css';
+        }
     }
 }

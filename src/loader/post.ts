@@ -3,14 +3,16 @@ import Token from 'markdown-it/lib/token';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 
-import * as project from 'src/config/project';
-
 import { parse } from 'yaml';
 import { createElement } from 'react';
 import { renderToString } from 'react-dom/server';
 
 import { ImageLoader } from './image';
-import { BaseLoader } from './base';
+import { StyleLoader } from './style';
+import { ScriptLoader } from './script';
+import { BaseLoader, DepData } from './base';
+
+import { publicPath } from 'src/config/project';
 import { Markdown } from 'src/renderer/markdown';
 
 import { isArray } from 'src/utils/assert';
@@ -84,6 +86,12 @@ export class PostLoader extends BaseLoader implements PostData {
     /** 文章所使用的插件列表 */
     plugins: string[] = [];
 
+    /** 网页相关数据 */
+    site = {
+        styleFile: '',
+        scriptFile: '',
+    };
+
     /** 创建文章 */
     static async Create(from: string): Promise<PostLoader> {
         const exist = BaseLoader.FindSource(from);
@@ -93,12 +101,27 @@ export class PostLoader extends BaseLoader implements PostData {
         }
 
         const post = new PostLoader(from);
-
-        await post.readMeta();
-        await post.setBuildTo();
-        await post.transform();
+        
+        await post._transform();
 
         return post;
+    }
+
+    async init() {
+        const [style, script] = await Promise.all([
+            StyleLoader.Create(),
+            ScriptLoader.Create(),
+        ]);
+
+        if (process.env.NODE_ENV === 'development') {
+            style.observe(this, ({ buildTo }) => buildTo);
+            script.observe(this, ({ buildTo }) => buildTo);
+        }
+
+        this.site = {
+            styleFile: style.buildTo,
+            scriptFile: script.buildTo,
+        };
     }
 
     async readMeta() {
@@ -161,10 +184,10 @@ export class PostLoader extends BaseLoader implements PostData {
         this.buildTo = path.normalize(`/posts/${create.getFullYear()}/${decodeTitle}/index.html`);
     }
 
-    async resetToken(token: Token | Token[]) {
+    async readToken(token: Token | Token[]) {
         if (isArray(token)) {
             for (let i = 0; i < token.length; i++) {
-                await this.resetToken(token[i]);
+                await this.readToken(token[i]);
             }
             return;
         }
@@ -188,27 +211,34 @@ export class PostLoader extends BaseLoader implements PostData {
             }
         }
 
-        if (item) {
-            item.observe(this.id, (image) => image.buildTo);
+        if (process.env.NODE_ENV === 'development' && item) {
+            item.observe(this, (image) => image.buildTo);
         }
 
         if (token.children && token.children.length > 0) {
-            await this.resetToken(token.children);
+            await this.readToken(token.children);
         }
     }
 
     async transform() {
+        await this.init();
+        await this.readMeta();
+        await this.setBuildTo();
+
         this.tokens = Markdown.parse(this.content, {});
-        // 编译引用资源
-        await this.resetToken(this.tokens);
-        // 编译文章内容
+
+        await this.readToken(this.tokens);
+
         this.html = Markdown.renderer.render(this.tokens, {}, {});
 
         const html = renderToString(createElement(Templates[this.template], {
-            project: project as any,
+            project: {
+                publicPath,
+                ...this.site,
+            },
             post: this,
         }));
 
-        this.source = Buffer.from(`<!DOCTYPE html>${html}`);
+        this.source = `<!DOCTYPE html>${html}`;
     }
 }
