@@ -5,7 +5,6 @@ import * as fms from 'src/utils/memory-fs';
 import { buildOutput } from 'src/config/project';
 
 import { isEqual } from 'src/utils/object';
-import { isArray } from 'src/utils/assert';
 import { deleteVal, exclude } from 'src/utils/array';
 
 /** 文件系统 */
@@ -123,9 +122,9 @@ export class BaseLoader {
         // 解除不再引用的资源
         inSource.forEach(({ dep }) => dep.unObserve(this.id));
         // 绑定新的引用
-        inDeps.forEach(({ dep, compute }) => this._observers.push({
+        inDeps.forEach(({ dep, compute }) => dep._observers.push({
             compute,
-            depId: dep.id,
+            depId: this.id,
             lastVal: compute(this),
             notify: this._transform.bind(this),
         }));
@@ -136,7 +135,20 @@ export class BaseLoader {
 
     /** 销毁资源 */
     destroy() {
-        // ..
+        // 解除所有监听事件
+        this._deps.forEach(({ dep }) => dep.unObserve(this.id));
+
+        // 清空所有数据
+        this._deps = [];
+        this._lastDeps = [];
+        this._observers = [];
+
+        // 从资源列表中删除
+        const index = sources.findIndex(({ id }) => id === this.id);
+
+        if (index > -1) {
+            sources.splice(index, 1);
+        }
     }
 
     /** 此资源写入硬盘系统 */
