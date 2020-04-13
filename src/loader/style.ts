@@ -5,6 +5,7 @@ import { BaseLoader } from './base';
 import { isString } from 'src/utils/assert';
 import { resolveRoot } from 'src/utils/path';
 import { readfiles } from 'src/utils/file-system';
+import { templatePath } from 'src/config/project';
 
 /** 全局唯一 style 资源 */
 let style: StyleLoader | null;
@@ -30,7 +31,7 @@ export class StyleLoader extends BaseLoader {
     }
 
     async transform() {
-        const files = await readfiles(resolveRoot('src/template'));
+        const files = await readfiles(templatePath);
         const styles = files.filter((file) => /\.less$/.test(file));
         const origin = styles.map((file) => `@import '${file}';`).join('\n');
 

@@ -1,12 +1,12 @@
 {
     "compilerOptions": {
-        "outDir": "dist",
-        "sourceMap": true,
+        "sourceMap": false,
         "strict": true,
-        "strictPropertyInitialization": true,
         "moduleResolution": "node",
-        "target": "es2017",
+        "target": "es6",
         "jsx": "react",
+        "module": "CommonJS",
+        "strictPropertyInitialization": true,
         "allowSyntheticDefaultImports": true,
         "resolveJsonModule": true,
         "esModuleInterop": true,
@@ -21,7 +21,6 @@
         "listFiles": false,
         "removeComments": false,
         "suppressImplicitAnyIndexErrors": true,
-        "allowJs": true,
         "lib": ["es2015", "es2016", "es2017", "dom"],
         "baseUrl": "."
     },
