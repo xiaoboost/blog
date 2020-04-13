@@ -189,13 +189,12 @@ export class PostLoader extends BaseLoader implements PostData {
         }
 
         if (item) {
-            // this.children.push(item);
-            // item.parents.push(this);
+            item.observe(this.id, (image) => image.buildTo);
         }
 
-        // if (token.children?.length > 0) {
-        //     await this.resetToken(token.children);
-        // }
+        if (token.children && token.children.length > 0) {
+            await this.resetToken(token.children);
+        }
     }
 
     async transform() {

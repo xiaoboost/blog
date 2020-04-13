@@ -1,6 +1,6 @@
 import * as path from 'path';
 import * as fs from 'fs-extra';
-import * as fms from '../utils/memory-fs';
+import * as fms from 'src/utils/memory-fs';
 
 import { buildOutput } from 'src/config/project';
 
@@ -77,7 +77,7 @@ export class BaseLoader {
         this._observers.push({
             compute,
             depId: id,
-            lastVal: [],
+            lastVal: compute(this),
             notify: this._transform.bind(this),
         });
     }
