@@ -1,14 +1,14 @@
+// 调试模式
 process.env.NODE_ENV = 'development';
 
 import './loader';
 
 import Koa from 'koa';
 
-import { join } from 'path';
-import { getType } from 'mime';
-
 import * as fs from 'src/utils/memory-fs';
 
+import { join } from 'path';
+import { getType } from 'mime';
 import { buildOutput as dist } from 'src/config/project';
 
 const app = new Koa();
