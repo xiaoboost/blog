@@ -212,7 +212,7 @@ export class PostLoader extends BaseLoader implements PostData {
         }
 
         if (process.env.NODE_ENV === 'development' && item) {
-            item.observe(this, (image) => image.buildTo);
+            this.observe(item, (image) => image.buildTo);
         }
 
         if (token.children && token.children.length > 0) {
