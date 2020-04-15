@@ -36,5 +36,9 @@ async function loadPosts() {
 
 /** 构建 */
 (async function build() {
+    // 复制静态资源
+    await loader.CopyLoader.Create(['src/template/assets']);
+
+    // 读取文章
     const posts = await loadPosts();
 })();

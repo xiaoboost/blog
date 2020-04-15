@@ -49,7 +49,7 @@ export class BaseLoader {
 
     static FindSource(from: string[]) {
         const exist = sources.find(({ origin }) => {
-            return from.every((_path, i) => _path === origin[i].path);
+            return from.every((_path, i) => _path === origin[i]?.path);
         });
 
         if (!exist) {
@@ -99,7 +99,7 @@ export class BaseLoader {
     /** 输出路径 */
     get output() {
         if (this.source.length > 0) {
-            return this.origin[0].path;
+            return this.source[0].path;
         }
         else {
             return '';
@@ -141,7 +141,7 @@ export class BaseLoader {
     }
 
     /** 外部数据变换函数 */
-    transform(): void | Promise<void> {
+    transform() {
         this.source = [...this.origin];
     }
 
