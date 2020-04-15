@@ -10,10 +10,10 @@ import { renderToString } from 'react-dom/server';
 import { ImageLoader } from './image';
 import { StyleLoader } from './style';
 import { ScriptLoader } from './script';
-import { BaseLoader, DepData } from './base';
+import { BaseLoader } from './base';
 
-import { publicPath } from 'src/config/project';
 import { Markdown } from 'src/renderer/markdown';
+import { publicPath, postsDir } from 'src/config/project';
 
 import { isArray } from 'src/utils/assert';
 import { normalize } from 'src/utils/path';
@@ -234,14 +234,33 @@ export class PostLoader extends BaseLoader implements PostData {
 
         this.html = Markdown.renderer.render(this.tokens, {}, {});
 
-        const html = renderToString(createElement(Templates[this.template], {
+        this.source[0].data = renderToString(createElement(Templates[this.template], {
             project: {
                 publicPath,
                 ...this.site,
             },
             post: this,
         }));
-
-        this.source[0].data = `<!DOCTYPE html>${html}`;
     }
 }
+
+// 读取所有文章
+(async function loadPosts() {
+    const postNames = await fs.readdir(postsDir);
+    const posts: PostLoader[] = [];
+
+    // 读取所有文章
+    for (let i = 0; i < postNames.length; i++) {
+        const postName = postNames[i];
+        const postPath = path.join(postsDir, postName, 'index.md');
+
+        if (!(await fs.pathExists(postPath))) {
+            continue;
+        }
+
+        posts.push(await PostLoader.Create(postPath));
+    }
+
+    /** 时间从近至远排序 */
+    return posts.sort((pre, next) => pre.date < next.date ? 1 : -1);
+})();
