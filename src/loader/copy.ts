@@ -2,9 +2,10 @@ import * as path from 'path';
 import * as fs from 'fs-extra';
 
 import { BaseLoader } from './base';
-import { resolveRoot } from 'src/utils/path';
-import { readfiles } from 'src/utils/file-system';
+
 import { toMap } from 'src/utils/array';
+import { assetsPath } from 'src/config/project';
+import { readfiles } from 'src/utils/file-system';
 
 /** 全局唯一 copy 资源 */
 let copy: CopyLoader | null;
@@ -35,7 +36,7 @@ export class CopyLoader extends BaseLoader {
         this.source = [];
 
         await Promise.all(this.base.map(async (from) => {
-            const files = await readfiles(resolveRoot(from));
+            const files = await readfiles(from);
 
             for (let i = 0; i < files.length; i++) {
                 const input = files[i];
@@ -58,3 +59,6 @@ export class CopyLoader extends BaseLoader {
         }));
     }
 }
+
+// 复制静态资源
+CopyLoader.Create([assetsPath]);

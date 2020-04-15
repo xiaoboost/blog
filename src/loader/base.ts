@@ -4,6 +4,7 @@ import * as fms from 'src/utils/memory-fs';
 
 import { buildOutput } from 'src/config/project';
 
+import { isString } from 'src/utils/assert';
 import { isEqual } from 'src/utils/object';
 import { deleteVal, exclude } from 'src/utils/array';
 
@@ -154,6 +155,18 @@ export class BaseLoader {
         this.transforming = true;
 
         await this.transform();
+
+        this.source.forEach((source) => {
+            if (path.extname(source.path) === '.html') {
+                if (isString(source.data)) {
+                    source.data = `<!DOCTYPE html>${source.data}`;
+                }
+                else {
+                    source.data = Buffer.from(`<!DOCTYPE html>${source.data.toString()}`);
+                }
+            }
+        });
+
         await this.write();
 
         this.transforming = false;
@@ -174,7 +187,7 @@ export class BaseLoader {
             compute,
             depId: this.id,
             lastVal: compute(this),
-            notify: this._transform.bind(this),
+            notify: dep._transform.bind(dep),
         }));
 
         this._lastDeps = this._deps;
