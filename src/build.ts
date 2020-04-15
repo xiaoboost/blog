@@ -21,13 +21,7 @@ async function loadPosts() {
             continue;
         }
 
-        const post = await loader.PostLoader.Create(postPath);
-
-        if (process.env.NODE_ENV !== 'production') {
-            // ..
-        }
-
-        posts.push(post);
+        posts.push(await loader.PostLoader.Create(postPath));
     }
 
     /** 时间从近至远排序 */
@@ -38,7 +32,7 @@ async function loadPosts() {
 (async function build() {
     // 复制静态资源
     await loader.CopyLoader.Create(['src/template/assets']);
-
     // 读取文章
-    const posts = await loadPosts();
+    await loadPosts();
+    // 生成聚合页
 })();
