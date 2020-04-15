@@ -94,14 +94,17 @@ export class PostLoader extends BaseLoader implements PostData {
 
     /** 创建文章 */
     static async Create(from: string): Promise<PostLoader> {
-        const exist = BaseLoader.FindSource(from);
+        const exist = BaseLoader.FindSource([from]);
 
         if (exist) {
             return exist as PostLoader;
         }
 
-        const post = new PostLoader(from);
-        
+        const post = new PostLoader();
+
+        post.from = from;
+
+        await post.read();
         await post._transform();
 
         return post;
@@ -114,18 +117,18 @@ export class PostLoader extends BaseLoader implements PostData {
         ]);
 
         if (process.env.NODE_ENV === 'development') {
-            style.observe(this, ({ buildTo }) => buildTo);
-            script.observe(this, ({ buildTo }) => buildTo);
+            style.observe(this, ({ output }) => output);
+            script.observe(this, ({ output }) => output);
         }
 
         this.site = {
-            styleFile: style.buildTo,
-            scriptFile: script.buildTo,
+            styleFile: style.output,
+            scriptFile: script.output,
         };
     }
 
     async readMeta() {
-        const origin = this.origin = await fs.readFile(this.from);
+        const origin = this.origin[0].data;
         const result = origin.toString().match(/^---([\d\D]+?)---([\d\D]*)$/);
 
         if (!result) {
@@ -181,7 +184,7 @@ export class PostLoader extends BaseLoader implements PostData {
         const dirName = path.basename(path.dirname(this.from));
         const decodeTitle = dirName.replace(/ /g, '-').toLowerCase();
 
-        this.buildTo = path.normalize(`/posts/${create.getFullYear()}/${decodeTitle}/index.html`);
+        this.output = path.normalize(`/posts/${create.getFullYear()}/${decodeTitle}/index.html`);
     }
 
     async readToken(token: Token | Token[]) {
@@ -205,14 +208,14 @@ export class PostLoader extends BaseLoader implements PostData {
                 }
 
                 item = await ImageLoader.Create(imageRef);
-                token.attrSet('src', item.buildTo);
+                token.attrSet('src', item.output);
 
                 break;
             }
         }
 
         if (process.env.NODE_ENV === 'development' && item) {
-            this.observe(item, (image) => image.buildTo);
+            this.observe(item, ({ source }) => source[0].path);
         }
 
         if (token.children && token.children.length > 0) {
@@ -239,6 +242,6 @@ export class PostLoader extends BaseLoader implements PostData {
             post: this,
         }));
 
-        this.source = `<!DOCTYPE html>${html}`;
+        this.source[0].data = `<!DOCTYPE html>${html}`;
     }
 }

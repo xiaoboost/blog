@@ -24,7 +24,7 @@ export class ScriptLoader extends BaseLoader {
             return script;
         }
 
-        script = new ScriptLoader('');
+        script = new ScriptLoader();
         
         await script._transform();
 
@@ -76,16 +76,22 @@ export class ScriptLoader extends BaseLoader {
             code = uglify(code).code;
         }
 
-        this.source = code;
+        this.source = [{
+            data: code,
+            path: '',
+        }];
+
         this.setBuildTo();
     }
     
     setBuildTo() {
+        const source = this.source[0];
+
         if (process.env.NODE_ENV === 'production') {
-            this.buildTo = `/js/script.${md5(this.source)}.js`;
+            source.path = `/js/script.${md5(source.data)}.js`;
         }
         else {
-            this.buildTo = '/js/script.js';
+            source.path = '/js/script.js';
         }
     }
 }

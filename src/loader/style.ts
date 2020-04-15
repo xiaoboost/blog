@@ -19,7 +19,7 @@ export class StyleLoader extends BaseLoader {
             return style;
         }
 
-        style = new StyleLoader('');
+        style = new StyleLoader();
         
         await style._transform();
 
@@ -39,19 +39,26 @@ export class StyleLoader extends BaseLoader {
             return;
         }
 
-        this.source = process.env.NODE_ENV === 'production'
+        const code = process.env.NODE_ENV === 'production'
             ? minify.minify(lessOutput.css).styles
             : lessOutput.css;
+
+        this.source = [{
+            data: code,
+            path: '',
+        }];
 
         this.setBuildTo();
     }
     
     setBuildTo() {
+        const source = this.source[0];
+
         if (process.env.NODE_ENV === 'production') {
-            this.buildTo = `/css/style.${md5(this.source)}.css`;
+            source.path = `/css/style.${md5(source.data)}.css`;
         }
         else {
-            this.buildTo = '/css/style.css';
+            source.path = '/css/style.css';
         }
     }
 }

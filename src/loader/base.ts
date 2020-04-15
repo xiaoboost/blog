@@ -28,26 +28,29 @@ export interface DepData {
     compute(item: BaseLoader): any;
 }
 
+interface FileData {
+    path: string;
+    data: Buffer | string;
+}
+
 /** 元素类 */
 export class BaseLoader {
     /** 当前资源编号 */
     id = id++;
-    /** 该元素在硬盘中的绝对路径 */
-    from = '';
-    /** 相对于根目录的相对路径 */
-    buildTo = '';
     /** 错误信息 */
     error = '';
     /** 是否正在编译 */
     transforming = false; 
 
     /** 元素源代码 */
-    origin: Buffer | string = '';
+    origin: FileData[] = [];
     /** 转换之后元素内容 */
-    source: Buffer | string = '';
+    source: FileData[] = [];
 
-    static FindSource(from: string) {
-        const exist = sources.find((image) => image.from === from);
+    static FindSource(from: string[]) {
+        const exist = sources.find(({ origin }) => {
+            return from.every((_path, i) => _path === origin[i].path);
+        });
 
         if (!exist) {
             return null;
@@ -56,8 +59,7 @@ export class BaseLoader {
         return exist;
     }
 
-    constructor(path: string) {
-        this.from = path;
+    constructor() {
         sources.push(this);
     }
 
@@ -71,6 +73,48 @@ export class BaseLoader {
     /** 引用计数 */
     get quoteCount() {
         return this._observers.length;
+    }
+
+    /** 源文件路径 */
+    get from() {
+        if (this.origin.length > 0) {
+            return this.origin[0].path;
+        }
+        else {
+            return '';
+        }
+    }
+    set from(val: string) {
+        if (this.origin[0]) {
+            this.origin[0].path = val;
+        }
+        else {
+            this.origin = [{
+                data: '',
+                path: val,
+            }];
+        }
+    }
+
+    /** 输出路径 */
+    get output() {
+        if (this.source.length > 0) {
+            return this.origin[0].path;
+        }
+        else {
+            return '';
+        }
+    }
+    set output(val: string) {
+        if (this.source[0]) {
+            this.source[0].path = val;
+        }
+        else {
+            this.source = [{
+                data: '',
+                path: val,
+            }];
+        }
     }
 
     /** 监听某个属性 */
@@ -98,7 +142,7 @@ export class BaseLoader {
 
     /** 外部数据变换函数 */
     transform(): void | Promise<void> {
-        this.source = this.origin;
+        this.source = [...this.origin];
     }
 
     /** 内部真实的转换器 */
@@ -151,10 +195,16 @@ export class BaseLoader {
         }
     }
 
+    /** 读取文件 */
+    async read() {
+        await Promise.all(this.origin.map(async (origin) => {
+            origin.data = await fs.readFile(origin.path);
+        }));
+    }
     /** 此资源写入硬盘系统 */
     async write() {
-        if (!this.buildTo) {
-            this.error = '未设置输出路径';
+        if (this.source.length === 0) {
+            this.error = '未设置输出';
             return;
         }
 
@@ -163,9 +213,11 @@ export class BaseLoader {
             return;
         }
 
-        const output = path.join(buildOutput, this.buildTo);
-
-        await fileSystem.mkdirp(path.dirname(output));
-        await fileSystem.writeFile(output, this.source);
+        await Promise.all(this.source.map(async (source) => {
+            const output = path.join(buildOutput, source.path);
+    
+            await fileSystem.mkdirp(path.dirname(output));
+            await fileSystem.writeFile(output, source.data);
+        }));
     }
 }
