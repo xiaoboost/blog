@@ -61,6 +61,10 @@ export class BaseLoader {
 
     constructor() {
         sources.push(this);
+
+        if (process.env.NODE_ENV === 'development') {
+            this.watch();
+        }
     }
 
     /** 作为被引用资源的数据 */
@@ -193,6 +197,11 @@ export class BaseLoader {
         if (index > -1) {
             sources.splice(index, 1);
         }
+    }
+
+    /** 监听变更 - 默认为空 */
+    watch() {
+        console.log('当前资源没有监听变更');
     }
 
     /** 读取文件 */
