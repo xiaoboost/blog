@@ -59,6 +59,3 @@ export class CopyLoader extends BaseLoader {
         }));
     }
 }
-
-// 复制静态资源
-CopyLoader.Create([assetsPath]);
