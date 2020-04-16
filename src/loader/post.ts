@@ -243,24 +243,3 @@ export class PostLoader extends BaseLoader implements PostData {
         }));
     }
 }
-
-// 读取所有文章
-(async function loadPosts() {
-    const postNames = await fs.readdir(postsDir);
-    const posts: PostLoader[] = [];
-
-    // 读取所有文章
-    for (let i = 0; i < postNames.length; i++) {
-        const postName = postNames[i];
-        const postPath = path.join(postsDir, postName, 'index.md');
-
-        if (!(await fs.pathExists(postPath))) {
-            continue;
-        }
-
-        posts.push(await PostLoader.Create(postPath));
-    }
-
-    /** 时间从近至远排序 */
-    return posts.sort((pre, next) => pre.date < next.date ? 1 : -1);
-})();
