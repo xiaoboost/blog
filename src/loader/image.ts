@@ -45,6 +45,6 @@ export class ImageLoader extends BaseLoader {
         const year = create.getFullYear();
         const month = String(create.getMonth() + 1).padStart(2, '0');
 
-        this.output = `/images/${year}/${month}/${md5Str}${extname}`;
+        this.output = `/image/${year}/${month}/${md5Str}${extname}`;
     }
 }
