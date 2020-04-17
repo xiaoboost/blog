@@ -8,6 +8,11 @@ export const postsDir = resolveRoot('posts');
 /** 网站资源公共路径 */
 export const publicPath = '/';
 
+/** 标签页路径 */
+export const tagsPath = 'tag';
+/** 归档页路径 */
+export const archivePath = 'archive';
+
 /** 全局模板文件夹 */
 export const templatePath = resolveRoot('src/template');
 /** 全局资源文件文件夹 */

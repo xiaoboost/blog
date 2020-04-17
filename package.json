@@ -31,6 +31,7 @@
     "@types/memory-fs": "^0.3.2",
     "@types/mime": "^2.0.1",
     "@types/node": "^13.11.1",
+    "@types/pinyin": "^2.8.1",
     "@types/react": "^16.9.34",
     "@types/react-dom": "^16.9.6",
     "@types/uglify-js": "^3.9.0",
@@ -57,11 +58,12 @@
     "md5": "^2.2.1",
     "memory-fs": "^0.5.0",
     "mime": "^2.4.4",
+    "pinyin": "^2.9.0",
     "rollup": "^2.6.1",
     "ts-node": "^8.8.2",
     "tsconfig-paths": "^3.9.0",
     "typescript": "^3.8.3",
-    "uglify-js": "^3.9.0",
+    "uglify-js": "^3.9.1",
     "yaml": "^1.8.3"
   }
 }

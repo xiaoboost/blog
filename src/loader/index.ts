@@ -16,7 +16,13 @@ import { PostLoader } from './post';
 import { CopyLoader } from './copy';
 import { PageLoader } from './page';
 
+import { concat } from 'src/utils/array';
+import { toPinyin } from 'src/utils/string';
+
 import { Template as IndexTemplate } from 'src/template/views/index';
+import { Template as TagsTemplate } from 'src/template/views/archive/tag-list';
+import { Template as YearTemplate } from 'src/template/views/archive/year-list';
+import { Template as PostListTemplate } from 'src/template/views/archive/post-list';
 
 // 读取所有文章
 async function loadPosts() {
@@ -41,6 +47,22 @@ async function loadPosts() {
 
 // 生成聚合页
 async function createPage() {
+    // 空标签属性
+    const spaceTag = {
+        name: '（空）',
+        url: '_space',
+    };
+
+    // 生成 tag 页路径
+    const tagPath = (tagName: string) => {
+        return `${project.tagsPath}/${tagName === spaceTag.name ? spaceTag.url : toPinyin(tagName)}/`;
+    };
+
+    // 生成归档页路径
+    const archivePath = (year: number | string) => {
+        return `${project.archivePath}/${year}/`;;
+    };
+
     // 生成首页
     await (function createIndex() {
         const watchPost = (post: PostLoader) => ({
@@ -70,17 +92,139 @@ async function createPage() {
 
     // 生成标签聚合页
     await (function createTagsList() {
+        const watchPost = ({ tags }: PostLoader) => tags;
+        const mergeProps = (posts: PostLoader[]) => {
+            const map = {} as Record<string, number>;
+            const tags = concat(posts.map(watchPost), (arr) => arr.length === 0 ? [spaceTag.name] : arr);
+            
+            tags.forEach((name) => {
+                if (map[name]) {
+                    map[name]++;
+                }
+                else {
+                    map[name] = 1;
+                }
+            });
 
+            const tagSummary = Object.entries(map).map(([name, number]) => ({
+                name, number,
+                url: tagPath(name),
+            }));
+
+            return {
+                title: `${site.site.title} | 标签页`,
+                output: `${project.tagsPath}/index.html`,
+                tags: tagSummary,
+            };
+        };
+
+        return PageLoader.Create(TagsTemplate, watchPost, mergeProps);
     })();
 
     // 生成标签文章列表页
     await (function createTagPosts() {
+        const watchPost = (post: PostLoader) => ({
+            tags: post.tags,
+            title: post.title,
+            output: post.output,
+        });
 
+        const mergeProps = (posts: PostLoader[]) => {
+            const map = {} as Record<string, Pick<PostLoader, 'title' | 'output'>[]>;
+            const postTags = posts.map(watchPost).map((data) => ({
+                ...data,
+                tags: data.tags.length === 0 ? [spaceTag.name] : data.tags,
+            }));
+            
+            postTags.forEach(({ tags, output, title }) => {
+                tags.forEach((tag) => {
+                    if (map[tag]) {
+                        map[tag].push({ title, output });
+                    }
+                    else {
+                        map[tag] = [{ title, output }];
+                    }
+                });
+            });
+
+            return Object.entries(map).map(([title, posts]) => ({
+                title,
+                output: `${tagPath(title)}index.html`,
+                posts: posts.map(({ title, output: url }) => ({
+                    title, url,
+                })),
+            }));
+        };
+
+        return PageLoader.Create(PostListTemplate, watchPost, mergeProps);
     })();
 
-    // 生成年度文章列表页
-    await (function createArchive() {
+    // 生成归档列表页
+    await (function createArchives() {
+        const watchPost = ({ date }: PostLoader) => date;
+        const mergeProps = (posts: PostLoader[]) => {
+            const map = {} as Record<number, number>;
+            
+            posts.forEach(({ date }) => {
+                const year = new Date(date).getFullYear();
 
+                if (map[year]) {
+                    map[year]++;
+                }
+                else {
+                    map[year] = 1;
+                }
+            });
+            
+            const yearSummary = Object.entries(map).map(([name, number]) => ({
+                number,
+                year: String(name),
+                url: tagPath(name),
+            }));
+
+            return {
+                title: `${site.site.title} | 归档`,
+                output: `${project.archivePath}/index.html`,
+                years: yearSummary,
+            };
+        };
+
+        return PageLoader.Create(YearTemplate, watchPost, mergeProps);
+    })();
+
+    // 生成归档文章列表页
+    await (function createArchivePosts() {
+        const watchPost = (post: PostLoader) => ({
+            date: post.date,
+            title: post.title,
+            output: post.output,
+        });
+
+        const mergeProps = (posts: PostLoader[]) => {
+            const map = {} as Record<number, Pick<PostLoader, 'title' | 'output'>[]>;
+            const postTags = posts.map(watchPost);
+            
+            postTags.forEach(({ date, output, title }) => {
+                const year = new Date(date).getFullYear();
+
+                if (map[year]) {
+                    map[year].push({ title, output });
+                }
+                else {
+                    map[year] = [{ title, output }];
+                }
+            });
+
+            return Object.entries(map).map(([year, posts]) => ({
+                title: `归档 ${year} 年`,
+                output: `${archivePath(year)}index.html`,
+                posts: posts.map(({ title, output: url }) => ({
+                    title, url,
+                })),
+            }));
+        };
+
+        return PageLoader.Create(PostListTemplate, watchPost, mergeProps);
     })();
 }
 
