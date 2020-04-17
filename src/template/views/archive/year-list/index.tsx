@@ -7,14 +7,10 @@ interface Props {
     publicPath: string;
     styleFile: string;
     scriptFile: string;
-    next: string | null;
-    pre: string | null;
-    posts: Array<{
-        title: string;
+    years: Array<{
+        year: string;
         url: string;
-        tags: string[];
-        create: number;
-        description: string;
+        number: number;
     }>;
 }
 
@@ -26,7 +22,7 @@ export function Template(props: Props) {
             scriptFile={props.scriptFile}
             title={props.title}
         >
-            index
+            year
         </Layout>
     )
 }

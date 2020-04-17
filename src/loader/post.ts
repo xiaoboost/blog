@@ -13,10 +13,11 @@ import { ScriptLoader } from './script';
 import { BaseLoader } from './base';
 
 import { Markdown } from 'src/renderer/markdown';
-import { publicPath, postsDir } from 'src/config/project';
+import { publicPath } from 'src/config/project';
 
 import { isArray } from 'src/utils/assert';
 import { normalize } from 'src/utils/path';
+import { toPinyin } from 'src/utils/string';
 
 import { Template as DefaultTemplate } from 'src/template/views/post/default';
 
@@ -181,8 +182,7 @@ export class PostLoader extends BaseLoader implements PostData {
 
     async setBuildTo() {
         const create = new Date(this.date);
-        const dirName = path.basename(path.dirname(this.from));
-        const decodeTitle = dirName.replace(/ /g, '-').toLowerCase();
+        const decodeTitle = toPinyin(this.title).toLowerCase();
 
         this.output = path.normalize(`/posts/${create.getFullYear()}/${decodeTitle}/index.html`);
     }
