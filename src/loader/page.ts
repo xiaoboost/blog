@@ -1,15 +1,18 @@
-import * as path from 'path';
-import * as fs from 'fs-extra';
+import { createElement } from 'react';
+import { renderToString } from 'react-dom/server';
+
+import { publicPath } from 'src/config/project';
 
 import { StyleLoader } from './style';
 import { ScriptLoader } from './script';
 import { PostLoader } from './post';
 import { BaseLoader, sources } from './base';
 
-import { isArray } from 'src/utils/assert';
+import { transArr } from 'src/utils/array';
 
 type PageCompute = (post: PostLoader) => any;
-type MergeProps<P> = (posts: PostLoader[]) => P | P[];
+type OmitSiteProps<P extends object> = Omit<P, 'publicPath' | 'styleFile' | 'scriptFile'> & { output: string };
+type MergeProps<P extends object> = (posts: PostLoader[]) => OmitSiteProps<P> | OmitSiteProps<P>[];
 type ReactComponent<P extends object> = (props: P) => JSX.Element;
 
 export class PageLoader<P extends object> extends BaseLoader {
@@ -24,6 +27,12 @@ export class PageLoader<P extends object> extends BaseLoader {
         style: '',
         script: '',
     };
+
+    static async Create<P extends object>(template: ReactComponent<P>, compute: PageCompute, mergeProps: MergeProps<P>) {
+        const loader = new PageLoader(template, compute, mergeProps);
+        await loader._transform();
+        return loader;
+    }
 
     constructor(template: ReactComponent<P>, compute: PageCompute, mergeProps: MergeProps<P>) {
         super();
@@ -61,13 +70,16 @@ export class PageLoader<P extends object> extends BaseLoader {
         await this.init();
 
         const posts = sources.filter((post) => post instanceof PostLoader) as PostLoader[];
-        const props = this.mergeProps(posts);
+        const props = transArr(this.mergeProps(posts));
 
-        if (isArray(props)) {
-
-        }
-        else {
-
-        }
+        this.source = props.map(({ output, ...prop }) => ({
+            path: output,
+            data: renderToString(createElement(this.template, {
+                ...prop,
+                publicPath,
+                styleFile: this.site.style,
+                scriptFile: this.site.script,
+            } as any)),
+        }));
     }
 }

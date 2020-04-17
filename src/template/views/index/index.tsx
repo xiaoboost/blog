@@ -3,8 +3,8 @@ import React from 'react';
 import { Layout } from 'src/template/components/layout';
 
 interface Props {
-    public: string;
     title: string;
+    publicPath: string;
     styleFile: string;
     scriptFile: string;
     next: string | null;
@@ -14,13 +14,14 @@ interface Props {
         url: string;
         tags: string[];
         create: number;
+        description: string;
     }>;
 }
 
 export function Template(props: Props) {
     return (
         <Layout
-            publicPath={props.public}
+            publicPath={props.publicPath}
             styleFile={props.styleFile}
             scriptFile={props.scriptFile}
             title={props.title}
