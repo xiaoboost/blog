@@ -1,15 +1,17 @@
+import chalk from 'chalk';
+
 import * as path from 'path';
 import * as fs from 'fs-extra';
 import * as fms from 'src/utils/memory-fs';
 
-import { buildOutput } from 'src/config/project';
+import { buildOutput, devPort } from 'src/config/project';
 
 import { isString } from 'src/utils/assert';
 import { isEqual } from 'src/utils/object';
 import { deleteVal, exclude } from 'src/utils/array';
 
 /** 文件系统 */
-const fileSystem = process.env.NODE_ENV === 'development' ? fms : fs;
+const fileSystem = process.env.NODE_ENV === 'production' ? fs : fms;
 
 /** 资源列表 */
 export const sources: BaseLoader[] = [];
@@ -63,7 +65,8 @@ export class BaseLoader {
     constructor() {
         sources.push(this);
 
-        if (process.env.NODE_ENV === 'development') {
+        // 不是产品模式，则需要监听
+        if (process.env.NODE_ENV !== 'production') {
             this.watch();
         }
     }
@@ -153,23 +156,45 @@ export class BaseLoader {
     /** 内部真实的转换器 */
     protected async _transform() {
         this.transforming = true;
+        
+        console.log('\x1Bc');
+        console.log(chalk.yellow(' Compile...\n'));
 
-        await this.transform();
+        try {
+            await this.transform();
 
-        this.source.forEach((source) => {
-            if (path.extname(source.path) === '.html') {
-                if (isString(source.data)) {
-                    source.data = `<!DOCTYPE html>${source.data}`;
+            this.source.forEach((source) => {
+                if (path.extname(source.path) === '.html') {
+                    if (isString(source.data)) {
+                        source.data = `<!DOCTYPE html>${source.data}`;
+                    }
+                    else {
+                        source.data = Buffer.from(`<!DOCTYPE html>${source.data.toString()}`);
+                    }
                 }
-                else {
-                    source.data = Buffer.from(`<!DOCTYPE html>${source.data.toString()}`);
-                }
-            }
-        });
-
-        await this.write();
+            });
+    
+            await this.write();
+        }
+        catch (err) {
+            this.error = err.message;
+        }
 
         this.transforming = false;
+
+        // 整体的编译情况
+        setTimeout(() => {
+            if (!sources.every((item) => item.transforming)) {
+                console.log('\x1Bc');
+
+                if (process.env.NODE_ENV === 'production') {
+                    console.log(chalk.cyan('Build complete.\n'));
+                }
+                else {
+                    console.log(chalk.blue('Complete, ') + chalk.green(`Your application is already set at http://localhost:${devPort}/.\n`));
+                }
+            }
+        }, 500);
 
         this.notify();
         this.diffSources();
@@ -231,9 +256,9 @@ export class BaseLoader {
         }
 
         // 引用计数为 0，不输出
-        if (process.env.NODE_ENV === 'development' && this.quoteCount === 0) {
-            return;
-        }
+        // if (process.env.NODE_ENV === 'development' && this.quoteCount === 0) {
+        //     return;
+        // }
 
         await Promise.all(this.source.map(async (source) => {
             const output = path.join(buildOutput, source.path);

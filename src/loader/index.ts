@@ -6,7 +6,6 @@ export * from './script';
 export * from './copy';
 export * from './page';
 
-import * as fs from 'fs-extra';
 import * as path from 'path';
 
 import * as site from 'src/config/site';
@@ -18,6 +17,7 @@ import { PageLoader } from './page';
 
 import { concat } from 'src/utils/array';
 import { toPinyin } from 'src/utils/string';
+import { readfiles } from 'src/utils/file-system';
 
 import { Template as IndexTemplate } from 'src/template/views/index';
 import { Template as TagsTemplate } from 'src/template/views/archive/tag-list';
@@ -26,15 +26,14 @@ import { Template as PostListTemplate } from 'src/template/views/archive/post-li
 
 // 读取所有文章
 async function loadPosts() {
-    const postNames = await fs.readdir(project.postsDir);
+    const files = await readfiles(project.postsDir);
     const posts: PostLoader[] = [];
 
     // 读取所有文章
-    for (let i = 0; i < postNames.length; i++) {
-        const postName = postNames[i];
-        const postPath = path.join(project.postsDir, postName, 'index.md');
+    for (let i = 0; i < files.length; i++) {
+        const postPath = files[i];
 
-        if (!(await fs.pathExists(postPath))) {
+        if (path.extname(postPath) !== '.md') {
             continue;
         }
 

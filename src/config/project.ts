@@ -13,6 +13,9 @@ export const tagsPath = 'tag';
 /** 归档页路径 */
 export const archivePath = 'archive';
 
+/** 本地调试时的端口号 */
+export const devPort = 6060;
+
 /** 全局模板文件夹 */
 export const templatePath = resolveRoot('src/template');
 /** 全局资源文件文件夹 */
