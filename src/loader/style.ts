@@ -1,6 +1,10 @@
 import md5 from 'md5';
 import less from 'less';
+import chalk from 'chalk';
 import CleanCss from 'clean-css';
+
+import { join } from 'path';
+import { watch } from 'chokidar';
 
 import { BaseLoader } from './base';
 import { isString } from 'src/utils/assert';
@@ -32,10 +36,9 @@ export class StyleLoader extends BaseLoader {
         const origin = styles.map((file) => `@import '${file}';`).join('\n');
 
         const lessOutput = await less.render(origin, { paths: [resolveRoot('src/template')] })
-            .catch((e) => this.error = `${e.message}\n in ${e.filename}`);
+            .catch((e) => this.error = chalk.red(`${e.message}\nin ${e.filename}\nat column ${e.column} line ${e.line}`));
 
         if (isString(lessOutput)) {
-            this.setBuildTo();
             return;
         }
 
@@ -43,12 +46,30 @@ export class StyleLoader extends BaseLoader {
             ? minify.minify(lessOutput.css).styles
             : lessOutput.css;
 
+        this.error = '';
         this.source = [{
             data: code,
             path: '',
         }];
 
         this.setBuildTo();
+    }
+
+    watch() {
+        // 开发模式监听
+        if (process.env.NODE_ENV === 'development') {
+            const watcher = watch(join(templatePath, '**/*.less'), {
+                ignored: /(^|[\/\\])\../,
+                persistent: true
+            });
+
+            watcher
+                .on('add', () => this._transform())
+                .on('unlink', () => this._transform())
+                .on('change', () => this._transform());
+            
+            this.fsWatcher = watcher;
+        }
     }
     
     setBuildTo() {

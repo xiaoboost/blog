@@ -6,6 +6,7 @@ import { publicPath } from 'src/config/project';
 import { StyleLoader } from './style';
 import { ScriptLoader } from './script';
 import { PostLoader } from './post';
+import { TemplateLoader } from './template';
 import { BaseLoader, sources } from './base';
 
 import { transArr } from 'src/utils/array';
@@ -17,7 +18,9 @@ type ReactComponent<P extends object> = (props: P) => JSX.Element;
 
 export class PageLoader<P extends object> extends BaseLoader {
     /** 页面模板 */
-    template: ReactComponent<P>;
+    template!: ReactComponent<P>;
+    /** 页面模板 */
+    templatePath: string;
     /** 文章数据监听 */
     compute: PageCompute;
     /** 组合 props */
@@ -28,29 +31,33 @@ export class PageLoader<P extends object> extends BaseLoader {
         script: '',
     };
 
-    static async Create<P extends object>(template: ReactComponent<P>, compute: PageCompute, mergeProps: MergeProps<P>) {
+    static async Create<P extends object>(template: string, compute: PageCompute, mergeProps: MergeProps<P>) {
         const loader = new PageLoader(template, compute, mergeProps);
         await loader._transform();
         return loader;
     }
 
-    constructor(template: ReactComponent<P>, compute: PageCompute, mergeProps: MergeProps<P>) {
+    constructor(template: string, compute: PageCompute, mergeProps: MergeProps<P>) {
         super();
         this.compute = compute;
-        this.template = template;
+        this.templatePath = template;
         this.mergeProps = mergeProps;
     }
 
     async init() {
-        const [style, script] = await Promise.all([
+        const [style, script, template] = await Promise.all([
             StyleLoader.Create(),
             ScriptLoader.Create(),
+            TemplateLoader.Create<(props: P) => JSX.Element>(this.templatePath),
         ]);
 
         if (process.env.NODE_ENV === 'development') {
-            style.observe(this, ({ output }) => output);
-            script.observe(this, ({ output }) => output);
+            this.observe(style, ({ output }) => output);
+            this.observe(script, ({ output }) => output);
+            this.observe(template, ({ template }) => template);
         }
+
+        this.template = template.template;
 
         this.site = {
             style: style.output,
@@ -61,7 +68,7 @@ export class PageLoader<P extends object> extends BaseLoader {
 
         if (process.env.NODE_ENV === 'development') {
             posts.forEach((post) => {
-                post.observe(this, this.compute);
+                this.observe(post, this.compute);
             });
         }
     }

@@ -1,10 +1,11 @@
 import * as path from 'path';
 import * as fs from 'fs-extra';
 
+import { watch } from 'chokidar';
+
 import { BaseLoader } from './base';
 
 import { toMap } from 'src/utils/array';
-import { assetsPath } from 'src/config/project';
 import { readfiles } from 'src/utils/file-system';
 
 /** 全局唯一 copy 资源 */
@@ -57,5 +58,25 @@ export class CopyLoader extends BaseLoader {
                 }
             }
         }));
+    }
+
+    watch() {
+        // 开发模式监听
+        if (process.env.NODE_ENV === 'development') {
+            const watcher = watch(this.base, {
+                ignored: /(^|[\/\\])\../,
+                persistent: true
+            });
+
+            watcher
+                .on('add', () => this._transform())
+                .on('unlink', () => this._transform())
+                .on('change', (path) => {
+                    this.source = this.source.filter((data) => data.path !== path);
+                    this._transform();
+                });
+            
+            this.fsWatcher = watcher;
+        }
     }
 }
