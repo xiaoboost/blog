@@ -118,8 +118,8 @@ export class PostLoader extends BaseLoader implements PostData {
         ]);
 
         if (process.env.NODE_ENV === 'development') {
-            style.observe(this, ({ output }) => output);
-            script.observe(this, ({ output }) => output);
+            this.observe(style, ({ output }) => output);
+            this.observe(script, ({ output }) => output);
         }
 
         this.site = {

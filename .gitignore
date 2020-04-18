@@ -6,3 +6,5 @@ node_modules
 old
 dist
 npm-debug.log
+
+_index.*

@@ -14,6 +14,7 @@ import * as project from 'src/config/project';
 import { PostLoader } from './post';
 import { CopyLoader } from './copy';
 import { PageLoader } from './page';
+import { TemplateLoader } from './template';
 
 import { concat } from 'src/utils/array';
 import { toPinyin } from 'src/utils/string';
@@ -69,7 +70,7 @@ async function createPage() {
             create: post.date,
             tags: post.tags,
             url: path.dirname(post.output),
-            description: post.content.trim().slice(0, 200),
+            description: (post.content || '').trim().slice(0, 200),
         });
 
         const mergeProps = (posts: PostLoader[]) => {
@@ -86,7 +87,7 @@ async function createPage() {
             }));
         };
 
-        return PageLoader.Create(IndexTemplate, watchPost, mergeProps);
+        return PageLoader.Create<typeof IndexTemplate>('src/template/views/index/index.tsx', watchPost, mergeProps);
     })();
 
     // 生成标签聚合页
@@ -117,7 +118,7 @@ async function createPage() {
             };
         };
 
-        return PageLoader.Create(TagsTemplate, watchPost, mergeProps);
+        return PageLoader.Create<typeof TagsTemplate>('src/template/views/archive/tag-list/index.tsx', watchPost, mergeProps);
     })();
 
     // 生成标签文章列表页
@@ -155,7 +156,7 @@ async function createPage() {
             }));
         };
 
-        return PageLoader.Create(PostListTemplate, watchPost, mergeProps);
+        return PageLoader.Create<typeof PostListTemplate>('src/template/views/archive/post-list/index.tsx', watchPost, mergeProps);
     })();
 
     // 生成归档列表页
@@ -188,7 +189,7 @@ async function createPage() {
             };
         };
 
-        return PageLoader.Create(YearTemplate, watchPost, mergeProps);
+        return PageLoader.Create<typeof YearTemplate>('src/template/views/archive/year-list/index.tsx', watchPost, mergeProps);
     })();
 
     // 生成归档文章列表页
@@ -223,7 +224,7 @@ async function createPage() {
             }));
         };
 
-        return PageLoader.Create(PostListTemplate, watchPost, mergeProps);
+        return PageLoader.Create<typeof PostListTemplate>('src/template/views/archive/post-list/index.tsx', watchPost, mergeProps);
     })();
 }
 

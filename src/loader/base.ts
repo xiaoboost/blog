@@ -26,6 +26,10 @@ interface WatchData {
     compute(item: BaseLoader): any;
 }
 
+interface Watcher {
+    close(): void;
+}
+
 export interface DepData {
     dep: BaseLoader;
     compute(item: BaseLoader): any;
@@ -43,7 +47,11 @@ export class BaseLoader {
     /** 错误信息 */
     error = '';
     /** 是否正在编译 */
-    transforming = false; 
+    transformCount = 0;
+    /** 文件监听器 */
+    fsWatcher?: Watcher;
+    /** 默认自动转换 */
+    readonly autoTransform: boolean = true;
 
     /** 元素源代码 */
     origin: FileData[] = [];
@@ -52,7 +60,7 @@ export class BaseLoader {
 
     static FindSource(from: string[]) {
         const exist = sources.find(({ origin }) => {
-            return from.every((_path, i) => _path === origin[i]?.path);
+            return from.every((_path, i) => _path === (origin[i] && origin[i].path));
         });
 
         if (!exist) {
@@ -77,6 +85,11 @@ export class BaseLoader {
     private _lastDeps: DepData[] = [];
     /** 作为资源时引用的数据 */
     private _deps: DepData[] = [];
+
+    /** 默认监听事件 */
+    watch() {}
+    /** 默认转换函数 */
+    transform() {}
 
     /** 引用计数 */
     get quoteCount() {
@@ -126,7 +139,7 @@ export class BaseLoader {
     }
 
     /** 监听某个属性 */
-    observe<T extends BaseLoader>(this: T, dep: BaseLoader, compute: (item: T) => any) {
+    observe<T extends BaseLoader>(dep: T, compute: (item: T) => any) {
         this._deps.push({ dep, compute });
     }
 
@@ -141,21 +154,20 @@ export class BaseLoader {
             const last = ob.lastVal;
             const now = ob.compute(this);
 
-            if (!isEqual(last, now)) {
+            if (last !== now || !isEqual(last, now)) {
                 ob.lastVal = now;
                 ob.notify();
             }
         }
     }
 
-    /** 外部数据变换函数 */
-    transform() {
-        this.source = [...this.origin];
-    }
-
     /** 内部真实的转换器 */
     protected async _transform() {
-        this.transforming = true;
+        if (!this.autoTransform) {
+            return;
+        }
+
+        this.transformCount++;
         
         console.log('\x1Bc');
         console.log(chalk.yellow(' Compile...\n'));
@@ -180,24 +192,57 @@ export class BaseLoader {
             this.error = err.message;
         }
 
-        this.transforming = false;
+        this.transformCount--;
 
-        // 整体的编译情况
+        this.viewError();
+        this.diffSources();
+        this.notify();
+    }
+
+    /** 转换开始 */
+    protected transformStart() {
+        this.transformCount++;
+        console.log('\x1Bc');
+        console.log(chalk.yellow(' Compile...\n'));
+    }
+    /** 转换结束 */
+    protected transformEnd() {
+        this.transformCount--;
+        this.viewError();
+        this.diffSources();
+        this.notify();
+    }
+    /** 错误显示 */
+    protected viewError() {
+        sources.forEach((item) => {
+            if (item.transformCount < 0) {
+                item.transformCount = 0;
+            }
+        });
+
         setTimeout(() => {
-            if (!sources.every((item) => item.transforming)) {
+            const errors = sources.map(({ error }) => error).filter((err) => err.length > 0);
+            const counts = sources.map((item) => item.transformCount);
+
+            if (errors.length > 0) {
+                console.log('\x1Bc');
+                errors.forEach((err) => console.log(err + '\n'));
+                return;
+            }
+
+            if (counts.every((count) => count === 0)) {
                 console.log('\x1Bc');
 
                 if (process.env.NODE_ENV === 'production') {
                     console.log(chalk.cyan('Build complete.\n'));
                 }
                 else {
-                    console.log(chalk.blue('Complete, ') + chalk.green(`Your application is already set at http://localhost:${devPort}/.\n`));
+                    console.log(chalk.blue('Complete.\n') + chalk.green(`Your application is already set at http://localhost:${devPort}/.\n`));
                 }
-            }
-        }, 500);
 
-        this.notify();
-        this.diffSources();
+                return;
+            }
+        }, 100);
     }
 
     /** 检测引用元素是否变更 */
@@ -212,7 +257,7 @@ export class BaseLoader {
             compute,
             depId: this.id,
             lastVal: compute(this),
-            notify: dep._transform.bind(dep),
+            notify: this._transform.bind(this),
         }));
 
         this._lastDeps = this._deps;
@@ -229,17 +274,17 @@ export class BaseLoader {
         this._lastDeps = [];
         this._observers = [];
 
+        if (this.fsWatcher) {
+            this.fsWatcher.close();
+            this.fsWatcher = undefined;
+        }
+
         // 从资源列表中删除
         const index = sources.findIndex(({ id }) => id === this.id);
 
         if (index > -1) {
             sources.splice(index, 1);
         }
-    }
-
-    /** 监听变更 - 默认为空 */
-    watch() {
-        console.log('当前资源没有监听变更');
     }
 
     /** 读取文件 */
@@ -251,7 +296,6 @@ export class BaseLoader {
     /** 此资源写入硬盘系统 */
     async write() {
         if (this.source.length === 0) {
-            this.error = '未设置输出';
             return;
         }
 
