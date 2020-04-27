@@ -17,12 +17,16 @@ let script: ScriptLoader | null;
 const tempEntry = join(pluginPath, '_index.ts');
 
 export class ScriptLoader extends BaseLoader {
+    /** 类型 */
+    type = 'script';
+
     static async Create() {
         if (script) {
             return script;
         }
 
         script = new ScriptLoader();
+        script.output = [{ data: '', path: '' }];
 
         // 写入临时入口文件
         await script.beforeTransform();
@@ -67,8 +71,8 @@ export class ScriptLoader extends BaseLoader {
         }
 
         const path = process.env.NODE_ENV === 'production'
-            ? `/css/script.${md5(data)}.js`
-            : '/css/script.js';
+            ? `/js/script.${md5(data)}.js`
+            : '/js/script.js';
 
         this.output = [{ data, path }];
     }
@@ -115,7 +119,7 @@ export class ScriptLoader extends BaseLoader {
                 else {
                     this.output = [{
                         data: result.code,
-                        path: '/css/script.js',
+                        path: '/js/script.js',
                     }];
 
                     this.transformEnd();

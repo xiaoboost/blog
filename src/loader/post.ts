@@ -3,6 +3,8 @@ import Token from 'markdown-it/lib/token';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 
+import * as project from 'src/config/project';
+
 import { parse } from 'yaml';
 import { createElement } from 'react';
 import { renderToString } from 'react-dom/server';
@@ -14,6 +16,7 @@ import { BaseLoader } from './base';
 
 import { Markdown } from 'src/renderer/markdown';
 import { publicPath } from 'src/config/project';
+import { readfiles } from 'src/utils/file-system';
 
 import { isArray } from 'src/utils/assert';
 import { normalize } from 'src/utils/path';
@@ -68,6 +71,8 @@ export interface PostData {
 const defaultPlugins = ['goto-top', 'toc']; 
 
 export class PostLoader extends BaseLoader implements PostData {
+    /** 类型 */
+    type = 'post';
     /** 文章标题 */
     title = '';
     /** 文章创建日期 */
@@ -87,15 +92,15 @@ export class PostLoader extends BaseLoader implements PostData {
     /** 文章所使用的插件列表 */
     plugins: string[] = [];
 
-    /** 网页相关数据 */
-    site = {
+    /** 其余相关数据 */
+    attr = {
         styleFile: '',
         scriptFile: '',
     };
 
     /** 创建文章 */
     static async Create(from: string): Promise<PostLoader> {
-        const exist = BaseLoader.FindSource([from]);
+        const exist = BaseLoader.FindSource(from);
 
         if (exist) {
             return exist as PostLoader;
@@ -106,9 +111,26 @@ export class PostLoader extends BaseLoader implements PostData {
         post.from = from;
 
         await post.read();
+
+        debugger;
         await post._transform();
 
         return post;
+    }
+    /** 读取所有文章 */
+    static async LoadPosts() {
+        const files = await readfiles(project.postsDir);
+
+        // 读取所有文章
+        for (let i = 0; i < files.length; i++) {
+            const postPath = files[i];
+
+            if (path.extname(postPath) !== '.md') {
+                continue;
+            }
+
+            await PostLoader.Create(postPath);
+        }
     }
 
     async init() {
@@ -118,22 +140,32 @@ export class PostLoader extends BaseLoader implements PostData {
         ]);
 
         if (process.env.NODE_ENV === 'development') {
-            this.observe(style, ({ output }) => output);
-            this.observe(script, ({ output }) => output);
+            style.addObserver(this.id, ({ output }) => output[0].path);
+            style.addObserver(this.id, ({ output }) => output[0].path);
         }
 
-        this.site = {
-            styleFile: style.output,
-            scriptFile: script.output,
+        this.attr = {
+            styleFile: style.output[0].path,
+            scriptFile: script.output[0].path,
         };
+
+        if (this.output.length === 0) {
+            this.output = [{
+                data: '',
+                path: '',
+            }];
+        }
     }
 
     async readMeta() {
-        const origin = this.origin[0].data;
-        const result = origin.toString().match(/^---([\d\D]+?)---([\d\D]*)$/);
+        const result = this.origin.toString().match(/^---([\d\D]+?)---([\d\D]*)$/);
+        const setErr = (msg: string) => this.errors = [{
+            message: msg,
+            filename: this.from,
+        }];
 
         if (!result) {
-            this.error = '文件格式错误';
+            setErr('文件格式错误');
             return;
         }
 
@@ -141,12 +173,12 @@ export class PostLoader extends BaseLoader implements PostData {
         const meta = parse(metaStr) as PostMeta;
 
         if (!meta) {
-            this.error = '缺失文章属性';
+            setErr('缺失文章属性');
             return;
         }
 
         if (!meta.date) {
-            this.error = '文章必须要有 [date] 字段';
+            setErr('文章必须要有 [date] 字段');
             return;
         }
 
@@ -157,6 +189,8 @@ export class PostLoader extends BaseLoader implements PostData {
         this.update = meta.update
             ? new Date(meta.update).getTime()
             : (await fs.stat(this.from)).mtimeMs;
+        
+        console.log(this.date);
 
         // 默认全部加载
         if (!meta.plugins && !meta.disabledPlugins) {
@@ -175,7 +209,7 @@ export class PostLoader extends BaseLoader implements PostData {
         this.template = PostTemplate[meta.template || PostTemplate[0]];
 
         if (typeof this.template !== 'number') {
-            this.error = `模板名称错误：${meta.title}`;
+            setErr(`模板名称错误：${meta.title}`);
             return;
         }
     }
@@ -184,7 +218,7 @@ export class PostLoader extends BaseLoader implements PostData {
         const create = new Date(this.date);
         const decodeTitle = toPinyin(this.title).toLowerCase();
 
-        this.output = path.normalize(`/posts/${create.getFullYear()}/${decodeTitle}/index.html`);
+        this.output[0].path = path.normalize(`/posts/${create.getFullYear()}/${decodeTitle}/index.html`);
     }
 
     async readToken(token: Token | Token[]) {
@@ -208,14 +242,14 @@ export class PostLoader extends BaseLoader implements PostData {
                 }
 
                 item = await ImageLoader.Create(imageRef);
-                token.attrSet('src', item.output);
+                token.attrSet('src', item.output[0].path);
 
                 break;
             }
         }
 
         if (process.env.NODE_ENV === 'development' && item) {
-            this.observe(item, ({ source }) => source[0].path);
+            item.addObserver(this.id, ({ output }) => output[0].path);
         }
 
         if (token.children && token.children.length > 0) {
@@ -234,10 +268,10 @@ export class PostLoader extends BaseLoader implements PostData {
 
         this.html = Markdown.renderer.render(this.tokens, {}, {});
 
-        this.source[0].data = renderToString(createElement(Templates[this.template], {
+        this.output[0].data = renderToString(createElement(Templates[this.template], {
             project: {
                 publicPath,
-                ...this.site,
+                ...this.attr,
             },
             post: this,
         }));
