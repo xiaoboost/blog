@@ -1,13 +1,11 @@
 import md5 from 'md5';
 import less from 'less';
-import chalk from 'chalk';
 import CleanCss from 'clean-css';
 
 import { join } from 'path';
 import { watch } from 'chokidar';
 
 import { BaseLoader } from './base';
-import { isString } from 'src/utils/assert';
 import { resolveRoot } from 'src/utils/path';
 import { readfiles } from 'src/utils/file-system';
 import { templatePath } from 'src/config/project';
@@ -24,6 +22,8 @@ export class StyleLoader extends BaseLoader {
         }
 
         style = new StyleLoader();
+
+        style.watch();
         
         await style._transform();
 
@@ -36,23 +36,29 @@ export class StyleLoader extends BaseLoader {
         const origin = styles.map((file) => `@import '${file}';`).join('\n');
 
         const lessOutput = await less.render(origin, { paths: [resolveRoot('src/template')] })
-            .catch((e) => this.error = chalk.red(`${e.message}\nin ${e.filename}\nat column ${e.column} line ${e.line}`));
+            .catch((e: Less.RenderError) => {
+                this.errors = [{
+                    message: e.message,
+                    filename: e.filename,
+                    location: {
+                        column: e.column,
+                        line: e.line,
+                    },
+                }];
+            });
 
-        if (isString(lessOutput)) {
+        if (!lessOutput) {
             return;
         }
 
-        const code = process.env.NODE_ENV === 'production'
+        const data = process.env.NODE_ENV === 'production'
             ? minify.minify(lessOutput.css).styles
             : lessOutput.css;
+        const path = process.env.NODE_ENV === 'production'
+            ? `/css/style.${md5(data)}.css`
+            : '/css/style.css';
 
-        this.error = '';
-        this.source = [{
-            data: code,
-            path: '',
-        }];
-
-        this.setBuildTo();
+        this.output = [{ data, path }];
     }
 
     watch() {
@@ -60,26 +66,17 @@ export class StyleLoader extends BaseLoader {
         if (process.env.NODE_ENV === 'development') {
             const watcher = watch(join(templatePath, '**/*.less'), {
                 ignored: /(^|[\/\\])\../,
-                persistent: true
+                persistent: true,
             });
 
-            watcher
-                .on('add', () => this._transform())
-                .on('unlink', () => this._transform())
-                .on('change', () => this._transform());
-            
-            this.fsWatcher = watcher;
-        }
-    }
-    
-    setBuildTo() {
-        const source = this.source[0];
+            const update = () => this._transform();
 
-        if (process.env.NODE_ENV === 'production') {
-            source.path = `/css/style.${md5(source.data)}.css`;
-        }
-        else {
-            source.path = '/css/style.css';
+            watcher
+                .on('add', update)
+                .on('unlink', update)
+                .on('change', update);
+            
+            this.diskWatcher = [watcher];
         }
     }
 }

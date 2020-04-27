@@ -24,6 +24,7 @@ export class CopyLoader extends BaseLoader {
         copy = new CopyLoader();
 
         copy.base = from;
+        copy.watch();
 
         await copy._transform();
 
@@ -32,9 +33,9 @@ export class CopyLoader extends BaseLoader {
 
     async transform() {
         // 旧数据
-        const dataMap = toMap(this.source, ({ path }) => path, ({ data }) => data);
+        const dataMap = toMap(this.output, ({ path }) => path, ({ data }) => data);
         // 数据列表清空
-        this.source = [];
+        this.output = [];
 
         await Promise.all(this.base.map(async (from) => {
             const files = await readfiles(from);
@@ -45,13 +46,13 @@ export class CopyLoader extends BaseLoader {
                 const oldData = dataMap[output];
 
                 if (oldData) {
-                    this.source.push({
+                    this.output.push({
                         path: output,
                         data: oldData,
                     });
                 }
                 else {
-                    this.source.push({
+                    this.output.push({
                         path: output,
                         data: await fs.readFile(input),
                     });
@@ -61,22 +62,23 @@ export class CopyLoader extends BaseLoader {
     }
 
     watch() {
-        // 开发模式监听
         if (process.env.NODE_ENV === 'development') {
             const watcher = watch(this.base, {
                 ignored: /(^|[\/\\])\../,
                 persistent: true
             });
 
+            const update = () => this._transform();
+
             watcher
-                .on('add', () => this._transform())
-                .on('unlink', () => this._transform())
+                .on('add', update)
+                .on('unlink', update)
                 .on('change', (path) => {
-                    this.source = this.source.filter((data) => data.path !== path);
-                    this._transform();
+                    this.output = this.output.filter((data) => data.path !== path);
+                    update();
                 });
             
-            this.fsWatcher = watcher;
+            this.diskWatcher = [watcher];
         }
     }
 }

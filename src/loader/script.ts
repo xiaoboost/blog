@@ -1,24 +1,20 @@
 import md5 from 'md5';
-import chalk from 'chalk';
 
 import { BaseLoader } from './base';
-import { resolveRoot } from 'src/utils/path';
 import { readfiles } from 'src/utils/file-system';
 import { pluginPath } from 'src/config/project';
 
-import { watch } from 'chokidar';
-import { rollup } from 'rollup';
 import { writeFile } from 'fs-extra';
 import { minify as uglify } from 'uglify-js';
-import { basename, join, sep, relative } from 'path';
+import { watch as watchFs } from 'chokidar';
+import { basename, join, sep } from 'path';
 
-import replace from '@rollup/plugin-replace';
-import commonjs from '@rollup/plugin-commonjs';
-import typescript from '@rollup/plugin-typescript';
-import nodeResolve from '@rollup/plugin-node-resolve';
+import { build, watch, WatchEventType, RollupError } from 'src/utils/rollup';
 
 /** 全局唯一 script 资源 */
 let script: ScriptLoader | null;
+/** 临时入口文件 */
+const tempEntry = join(pluginPath, '_index.ts');
 
 export class ScriptLoader extends BaseLoader {
     static async Create() {
@@ -27,98 +23,106 @@ export class ScriptLoader extends BaseLoader {
         }
 
         script = new ScriptLoader();
-        
-        await script._transform();
+
+        // 写入临时入口文件
+        await script.beforeTransform();
+
+        // 非开发模式需要手动启动转换
+        if (process.env.NODE_ENV === 'development') {
+            script.watch();
+        }
+        else {
+            await script._transform();
+        }
 
         return script;
     }
 
-    async transform() {
-        const tempEntry = join(pluginPath, '_index.ts');
+    async beforeTransform() {
         const files = await readfiles(pluginPath);
         const scripts = files.filter((file) => basename(file) === 'script.ts');
         const origin = scripts.map((file) => `import '${file.replace(/\\/g, `\\${sep}`)}';`).join('\n').trim();
 
-        if (!origin) {
-            return;
-        }
-
         await writeFile(tempEntry, origin);
+    }
 
-        const bundle = await rollup({
+    async transform() {
+        await this.beforeTransform();
+
+        let data = await build({
             input: tempEntry,
-            plugins: [
-                commonjs({
-                    exclude: 'src/**',
-                    include: 'node_modules/**',
-                }),
-                typescript({
-                    tsconfig: resolveRoot('tsconfig.json'),
-                    target: 'es5',
-                    module: 'esnext',
-                }),
-                replace({
-                    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
-                }),
-                nodeResolve({
-                    extensions: ['.ts', '.js', '.json'],
-                }),
-            ],
-        }).catch((err) => {
-            this.error = chalk.red(
-                `${err.message}\nin ${err.loc.file}\nat ` +
-                `column ${err.loc.column} line ${err.loc.line}`
-            );
+            output: {
+                format: 'iife',
+            },
+        }).catch((err: RollupError) => {
+            this.setRollupError(err);
         });
 
-        if (!bundle) {
+        if (!data) {
             return;
         }
-
-        const { output } = await bundle.generate({
-            format: 'iife',
-        });
-
-        let code = output[0].code;
 
         if (process.env.NODE_ENV === 'production') {
-            code = uglify(code).code;
+            data = uglify(data).code;
         }
 
-        this.error = '';
-        this.source = [{
-            data: code,
-            path: '',
-        }];
+        const path = process.env.NODE_ENV === 'production'
+            ? `/css/script.${md5(data)}.js`
+            : '/css/script.js';
 
-        this.setBuildTo();
+        this.output = [{ data, path }];
     }
-    
+
+    setRollupError(err: RollupError) {
+        this.errors = [{
+            message: err.message,
+            filename: err.loc?.file,
+            location: {
+                column: err.loc?.column || -1,
+                line: err.loc?.line || -1,
+            },
+        }];
+    }
+
     watch() {
-        // 开发模式监听
         if (process.env.NODE_ENV === 'development') {
-            const watcher = watch(join(pluginPath, '**/script.ts'), {
+            const fsWatcher = watchFs(join(pluginPath, '**/script.ts'), {
                 ignored: /(^|[\/\\])\../,
-                persistent: true
+                persistent: true,
             });
 
-            watcher
-                .on('add', () => this._transform())
-                .on('unlink', () => this._transform())
-                .on('change', () => this._transform());
+            const update = () => this.beforeTransform();
+
+            fsWatcher
+                .on('add', update)
+                .on('unlink', update);
+
+            const rollupOpt = {
+                input: tempEntry,
+                output: {
+                    format: 'iife' as const,
+                },
+            };
             
-            this.fsWatcher = watcher;
-        }
-    }
+            const scriptWatcher = watch(rollupOpt, (result) => {
+                if (result.type === WatchEventType.Start) {
+                    this.transformStart();
+                }
+                else if (result.type === WatchEventType.Error) {
+                    this.setRollupError(result.error);
+                    this.transformEnd();
+                }
+                else {
+                    this.output = [{
+                        data: result.code,
+                        path: '/css/script.js',
+                    }];
 
-    setBuildTo() {
-        const source = this.source[0];
-
-        if (process.env.NODE_ENV === 'production') {
-            source.path = `/js/script.${md5(source.data)}.js`;
-        }
-        else {
-            source.path = '/js/script.js';
+                    this.transformEnd();
+                }
+            });
+            
+            this.diskWatcher = [fsWatcher, scriptWatcher];
         }
     }
 }
