@@ -5,6 +5,8 @@ import {
 
 /** 索引类型 */
 type Index = string | number;
+/** 数组断言函数 */
+type Predicate<T> = (value: T, index: number) => boolean;
 
 /**
  * 根据下标取出当前数组元素
@@ -25,26 +27,21 @@ export function get<T>(arr: T[], index: number): T {
 
 /**
  * 删除满足条件的元素
- *  - 原数组不变，返回新数组
+ *  - 直接在原数组中操作
  *  - predicate 为函数时，删除 predicate 返回 true 的元素
  *  - predicate 为非函数时，删除与 predicate 严格相等的元素
  *  - 当 whole 为 false 时，只删除匹配到的第一个元素；为 true 时，删除所有匹配到的元素
  */
-export function deleteVal<T>(
-    arr: T[],
-    predicate: T | ((value: T, index: number) => boolean),
-    whole = true,
-) {
+export function removeVal<T>(arr: T[], predicate: T | Predicate<T>, whole = true) {
     const fn = isFunc(predicate) ? predicate : (item: T) => item === predicate;
-    const newArr = arr.slice();
 
     let index = 0;
 
     while (index >= 0) {
-        index = newArr.findIndex(fn);
+        index = arr.findIndex(fn);
 
         if (index !== -1) {
-            newArr.splice(index, 1);
+            arr.splice(index, 1);
         }
 
         if (!whole) {
@@ -52,7 +49,18 @@ export function deleteVal<T>(
         }
     }
 
-    return newArr;
+    return arr;
+}
+
+/**
+ * 删除满足条件的元素
+ *  - 原数组不变，返回新数组
+ *  - predicate 为函数时，删除 predicate 返回 true 的元素
+ *  - predicate 为非函数时，删除与 predicate 严格相等的元素
+ *  - 当 whole 为 false 时，只删除匹配到的第一个元素；为 true 时，删除所有匹配到的元素
+ */
+export function deleteVal<T>(arr: T[], predicate: T | Predicate<T>, whole = true) {
+    return removeVal(arr.slice(), predicate, whole);
 }
 
 /**
@@ -61,12 +69,7 @@ export function deleteVal<T>(
  *  - predicate 为函数时，删除 predicate 返回 true 的元素
  *  - predicate 为非函数时，删除与 predicate 严格相等的元素
  */
-export function replace<T>(
-    arr: T[],
-    newVal: T,
-    predicate: T | ((value: T, index: number) => boolean),
-    whole = false,
-) {
+export function replace<T>(arr: T[], newVal: T, predicate: T | Predicate<T>, whole = false) {
     const fn = isFunc(predicate) ? predicate : (item: T) => item === predicate;
     const newArr = arr.slice();
 
