@@ -1,3 +1,5 @@
+import chalk from 'chalk';
+
 import * as path from 'path';
 import * as fs from 'fs-extra';
 import * as fms from 'src/utils/memory-fs';
@@ -5,12 +7,16 @@ import * as fms from 'src/utils/memory-fs';
 import { buildOutput, devPort } from 'src/config/project';
 
 import { isEqual } from 'src/utils/object';
-import { isString } from 'src/utils/assert';
-import { removeVal } from 'src/utils/array';
+import { removeVal, concat } from 'src/utils/array';
 import { fixHtml } from 'src/utils/string';
+import { isString, isFunc } from 'src/utils/assert';
+
+import { PostLoader } from './post';
 
 /** 全局编号 */
 let id = 1;
+/** 全局编译进程 */
+let transformCount = 0;
 /** 文件系统 */
 const fileSystem = process.env.NODE_ENV === 'production' ? fs : fms;
 
@@ -78,8 +84,6 @@ export class BaseLoader {
     id = id++;
     /** 资源类型 */
     type = '';
-    /** 当前正在编译的次数 */
-    transformCount = 0;
     /** 错误信息 */
     errors: LoaderError[] = [];
 
@@ -103,13 +107,50 @@ export class BaseLoader {
     /** 转换开始 */
     protected transformStart() {
         this.errors = [];
-        this.transformCount++;
+        transformCount++;
+
+        if (transformCount === 1) {
+            console.log('\x1Bc');
+            console.log(chalk.yellow(' Compile...\n'));
+        }
     }
     /** 转换结束 */
     protected transformEnd() {
-        this.transformCount--;
+        transformCount--;
+
         this.updateDeps();
         this.notify();
+        
+        if (transformCount === 0) {
+            const errs = concat(Object.values(BaseLoader.Sources), (item) => item?.errors);
+
+            if (errs.length === 0) {
+                let content = `${chalk.green.inverse(' DONE ')} ${chalk.green('Compiled successfully.')}\n`;
+
+                if (process.env.NODE_ENV !== 'production') {
+                    content += `\n${chalk.blue.inverse(' Info ')} ${chalk.green(`Your application is already set at http://localhost:${devPort}/.\n`)}`;
+                }
+
+                console.log('\x1Bc');
+                console.log(content);
+            }
+            else {
+                let content = `${chalk.red.inverse(' ERROR ')} ${chalk.red(`There are ${errs.length} Error.`)}\n\n`;
+
+                errs.forEach((err) => {
+                    content += chalk.red(err.message) + '\n';
+
+                    if (err.filename) {
+                        content += chalk.red(`in ${err.filename}`) + '\n';
+                    }
+
+                    content += '\n';
+                });
+
+                console.log('\x1Bc');
+                console.log(content);
+            }
+        }
     }
     /** 依赖更新 */
     protected updateDeps() {
@@ -124,9 +165,6 @@ export class BaseLoader {
     /** 内部真实的转换器 */
     protected async _transform() {
         this.transformStart();
-        
-        // console.log('\x1Bc');
-        // console.log(chalk.yellow(' Compile...\n'));
 
         try {
             await this.transform();
@@ -142,7 +180,7 @@ export class BaseLoader {
     }
 
     /** 添加监听 */
-    addObserver<T extends BaseLoader>(source: number, compute: (source: T) => any) {
+    addObserver<T extends BaseLoader>(this: T, source: number, compute: (source: T) => any) {
         this._deps.push({
             source,
             compute,
@@ -172,7 +210,10 @@ export class BaseLoader {
                 const val = ob.compute(data);
 
                 // 相等则跳过
-                if (isEqual(val, ob.lastVal)) {
+                if (
+                    (isFunc(ob.lastVal) && ob.lastVal === val) ||
+                    isEqual(val, ob.lastVal)
+                ) {
                     continue;
                 }
 
@@ -186,8 +227,10 @@ export class BaseLoader {
 
         // 文章类型有特殊事件
         if (this.type === 'post') {
-            const posts = allSources.filter((item) => item?.type === 'post');
             const observers = BaseLoader.Observers.posts || [];
+            const posts = allSources
+                .filter((item): item is PostLoader => item?.type === 'post')
+                .sort((pre, next) => pre.date < next.date ? 1 : -1);
 
             check(observers, posts);
 
@@ -201,7 +244,7 @@ export class BaseLoader {
             throw new Error('Input file is empty.');
         }
 
-        return fs.readFile(this.from);
+        return fs.readFile(this.from).then((data) => this.origin = data);
     }
     /** 编译后数据写入硬盘 */
     write() {

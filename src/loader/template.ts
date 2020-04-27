@@ -1,25 +1,15 @@
-import chalk from 'chalk';
-
 import { BaseLoader } from './base';
 import { resolveRoot } from 'src/utils/path';
-
-import { watch } from 'rollup';
-
-import replace from '@rollup/plugin-replace';
-import commonjs from '@rollup/plugin-commonjs';
-import typescript from '@rollup/plugin-typescript';
-import nodeResolve from '@rollup/plugin-node-resolve';
+import { watch, WatchEventType } from 'src/utils/rollup';
 
 export class TemplateLoader<T> extends BaseLoader {
+    /** 类型 */
+    type = 'template';
     /** 模板本体 */
-    template!: T;
-    /** 不自动转换 */
-    readonly autoTransform = false;
-    /** 初始化转换开关 */
-    private _switch?: () => void;
+    template: T = (() => '') as any;
 
     static async Create<T>(entry: string) {
-        const exist = BaseLoader.FindSource([entry]);
+        const exist = BaseLoader.FindSource(entry);
 
         if (exist) {
             return exist as TemplateLoader<T>;
@@ -28,88 +18,55 @@ export class TemplateLoader<T> extends BaseLoader {
         const template = new TemplateLoader<T>();
 
         template.from = resolveRoot(entry);
+        template.watch();
 
         // 产品模式直接等于
         if (process.env.NODE_ENV === 'production') {
             template.template = require(template.from).Template;
-        }
-        else {
-            template.watch();
-            await (new Promise((resolve) => {
-                template._switch = resolve;
-            }));
         }
 
         return template;
     }
 
     watch() {
-        if (!this.from) {
-            return;
-        }
-
-        const watcher = watch({
-            input: this.from,
-            external: ['react'],
-            plugins: [
-                commonjs({
-                    exclude: 'src/**',
-                    include: 'node_modules/**',
-                }),
-                typescript({
-                    tsconfig: resolveRoot('tsconfig.json'),
-                    target: 'esnext',
-                    module: 'esnext',
-                }),
-                replace({
-                    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
-                }),
-                nodeResolve({
-                    extensions: ['.tsx', '.ts', '.js', '.json'],
-                    mainFields: ['index.tsx', 'index.ts'],
-                }),
-            ],
-            watch: {
-                skipWrite: true,
-            },
-        });
-
-        watcher.on('event', async (event) => {
-            if (event.code === 'START') {
-                this.transformStart();
-            }
-            else if (event.code === 'BUNDLE_END') {
-                const { result } = event;
-                const { output } = await result.generate({
-                    format: 'commonjs',
-                });
-                
-                const Modules = (() => {
-                    const exports = {};
-                    eval(output[0].code);
-                    return exports
-                })() as any;
-
-                this.template = Modules.Template;
-
-                if (this._switch) {
-                    this._switch();
+        if (process.env.NODE_ENV === 'development') {
+            const rollupOpt = {
+                input: this.from,
+                external: ['react'],
+                output: {
+                    format: 'commonjs' as const,
+                },
+            };
+    
+            const watcher = watch(rollupOpt, (result) => {
+                if (result.type === WatchEventType.Start) {
+                    this.transformStart();
                 }
+                else if (result.type === WatchEventType.Error) {
+                    this.errors = [{
+                        message: result.error.message,
+                        filename: result.error.loc?.file,
+                        location: {
+                            column: result.error.loc?.column || -1,
+                            line: result.error.loc?.line || -1,
+                        },
+                    }];
 
-                this.transformEnd();
-            }
-            else if (event.code === 'ERROR') {
-                const err = event.error;
+                    this.transformEnd();
+                }
+                else {
+                    const Modules = (() => {
+                        const exports = {};
+                        eval(result.code);
+                        return exports
+                    })() as any;
+    
+                    this.template = Modules.Template;
+                    this.transformEnd();
+                }
+            });
 
-                this.error = chalk.red(
-                    `${err.message}\nin ${err.loc?.file}\nat ` +
-                    `column ${err.loc?.column} line ${err.loc?.line}`
-                );
-
-                this.transformEnd();
-            }
-        });
-
-        this.fsWatcher = watcher;
+            this.diskWatcher = [watcher];
+        }
     }
 }

@@ -12,6 +12,8 @@ import { readfiles } from 'src/utils/file-system';
 let copy: CopyLoader | null;
 
 export class CopyLoader extends BaseLoader {
+    /** 类型 */
+    type = 'copy';
     /** 基础路径 */
     base: string[] = [];
 

@@ -16,6 +16,9 @@ let style: StyleLoader | null;
 const minify = new CleanCss();
 
 export class StyleLoader extends BaseLoader {
+    /** 类型 */
+    type = 'style';
+
     static async Create() {
         if (style) {
             return style;
@@ -24,6 +27,7 @@ export class StyleLoader extends BaseLoader {
         style = new StyleLoader();
 
         style.watch();
+        style.output = [{ data: '', path: '' }];
         
         await style._transform();
 

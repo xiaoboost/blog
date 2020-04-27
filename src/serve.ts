@@ -1,5 +1,3 @@
-process.env.NODE_ENV = 'development';
-
 import './loader';
 
 import Koa from 'koa';

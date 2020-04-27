@@ -3,43 +3,60 @@ import { renderToString } from 'react-dom/server';
 
 import { publicPath } from 'src/config/project';
 
+import { BaseLoader } from './base';
 import { StyleLoader } from './style';
 import { ScriptLoader } from './script';
 import { PostLoader } from './post';
 import { TemplateLoader } from './template';
-import { BaseLoader, sources } from './base';
 
-import { transArr } from 'src/utils/array';
+import * as path from 'path';
 
-type PageCompute = (post: PostLoader) => any;
+import { toPinyin } from 'src/utils/string';
+import { transArr, concat } from 'src/utils/array';
+import { site, pageConfig } from 'src/config/site';
+import { tagsPath, archivePath } from 'src/config/project';
+
+import { Template as IndexTemplate } from 'src/template/views/index';
+import { Template as TagsTemplate } from 'src/template/views/archive/tag-list';
+import { Template as YearTemplate } from 'src/template/views/archive/year-list';
+import { Template as PostListTemplate } from 'src/template/views/archive/post-list';
+
 type OmitSiteProps<P extends object> = Omit<P, 'publicPath' | 'styleFile' | 'scriptFile'> & { output: string };
-type MergeProps<P extends object> = (posts: PostLoader[]) => OmitSiteProps<P> | OmitSiteProps<P>[];
+type MergeProps<P extends object> = (posts: PostLoader[]) => OmitSiteProps<P>[];
 type ReactComponent<P extends object> = (props: P) => JSX.Element;
 
 export class PageLoader<P extends object> extends BaseLoader {
+    /** 类型 */
+    type = 'page';
     /** 页面模板 */
     template!: ReactComponent<P>;
     /** 页面模板 */
     templatePath: string;
-    /** 文章数据监听 */
-    compute: PageCompute;
     /** 组合 props */
     mergeProps: MergeProps<P>;
-    /** 网页相关数据 */
-    site = {
+
+    /** 其余相关数据 */
+    attr = {
         style: '',
         script: '',
     };
 
-    static async Create<P extends object>(template: string, compute: PageCompute, mergeProps: MergeProps<P>) {
-        const loader = new PageLoader(template, compute, mergeProps);
-        await loader._transform();
-        return loader;
+    /** 生成聚合页 */
+    static Create() {
+        [
+            createIndex(),
+            createTagsList(),
+            createTagPosts(),
+            createArchives(),
+            createArchivePosts(),
+        ].forEach((page) => {
+            page['_transform']();
+            page.watch();
+        });
     }
 
-    constructor(template: string, compute: PageCompute, mergeProps: MergeProps<P>) {
+    constructor(template: string, mergeProps: MergeProps<P>) {
         super();
-        this.compute = compute;
         this.templatePath = template;
         this.mergeProps = mergeProps;
     }
@@ -52,41 +69,228 @@ export class PageLoader<P extends object> extends BaseLoader {
         ]);
 
         if (process.env.NODE_ENV === 'development') {
-            this.observe(style, ({ output }) => output);
-            this.observe(script, ({ output }) => output);
-            this.observe(template, ({ template }) => template);
+            style.addObserver(this.id, ({ output }) => output[0].path);
+            script.addObserver(this.id, ({ output }) => output[0].path);
+            template.addObserver(this.id, ({ template }) => template);
         }
 
         this.template = template.template;
 
-        this.site = {
-            style: style.output,
-            script: script.output,
+        this.attr = {
+            style: style.output[0]?.path || '',
+            script: script.output[0]?.path || '',
         };
-
-        const posts = sources.filter((post) => post instanceof PostLoader) as PostLoader[];
-
-        if (process.env.NODE_ENV === 'development') {
-            posts.forEach((post) => {
-                this.observe(post, this.compute);
-            });
-        }
     }
 
     async transform() {
         await this.init();
 
-        const posts = sources.filter((post) => post instanceof PostLoader) as PostLoader[];
+        const allSources = Object.values(BaseLoader.Sources);
+        const posts = allSources
+            .filter((item): item is PostLoader => item?.type === 'post')
+            .sort((pre, next) => pre.date < next.date ? 1 : -1);
         const props = transArr(this.mergeProps(posts));
 
-        this.source = props.map(({ output, ...prop }) => ({
+        this.output = props.map(({ output, ...prop }) => ({
             path: output,
             data: renderToString(createElement(this.template, {
                 ...prop,
                 publicPath,
-                styleFile: this.site.style,
-                scriptFile: this.site.script,
+                styleFile: this.attr.style,
+                scriptFile: this.attr.script,
             } as any)),
         }));
     }
+
+    watch() {
+        BaseLoader.addObserver('posts', this.id, this.mergeProps);
+    }
+}
+
+// 空标签属性
+const spaceTag = {
+    name: '（空）',
+    url: '_space',
+};
+
+// 生成 tag 页路径
+const getTagPath = (tagName: string) => {
+    return `${tagsPath}/${tagName === spaceTag.name ? spaceTag.url : toPinyin(tagName)}/`;
+};
+
+// 生成归档页路径
+const getArchivePath = (year: number | string) => {
+    return `${archivePath}/${year}/`;;
+};
+
+// 生成首页
+function createIndex() {
+    const watchPost = (posts: PostLoader[]) => posts.map((post) => ({
+        title: post.title,
+        create: post.date,
+        tags: post.tags,
+        url: path.dirname(post.output[0]?.path || ''),
+        description: (post.content || '').trim().slice(0, 200),
+    }));
+
+    const mergeProps = (posts: PostLoader[]) => {
+        const postsData = watchPost(posts);
+        const peerPost = pageConfig.index;
+        const indexLength = Math.ceil(postsData.length / peerPost);
+
+        return Array(indexLength).fill(true).map((_, i) => ({
+            title: i === 0 ? site.title : `${site.title} | 第 ${i + 1} 页`,
+            output: i === 0 ? 'index.html' : `page/${i + 1}/index.html`,
+            pre: i === 0 ? null : i === 1 ? '' : `page/${i}/`,
+            next: i === indexLength - 1 ? null : `page/${i + 1}/`,
+            posts: postsData.slice(i * peerPost, (i + 1) * peerPost),
+        }));
+    };
+
+    return new PageLoader<typeof IndexTemplate>('src/template/views/index/index.tsx', mergeProps);
+}
+
+// 生成标签聚合页
+function createTagsList() {
+    const watchPost = (posts: PostLoader[]) => {
+        const map = {} as Record<string, number>;
+        const tags = concat(posts.map(({ tags }) =>  tags), (tags) => tags.length === 0 ? [spaceTag.name] : tags);
+        
+        tags.forEach((name) => {
+            if (map[name]) {
+                map[name]++;
+            }
+            else {
+                map[name] = 1;
+            }
+        });
+
+        return Object.entries(map).map(([name, number]) => ({
+            name, number,
+        }));
+    };
+    const mergeProps = (posts: PostLoader[]) => {
+        const tagSummary = watchPost(posts).map((tag) => ({
+            ...tag,
+            url: getTagPath(tag.name),
+        }));
+
+        return [{
+            title: `${site.title} | 标签页`,
+            output: `${tagsPath}/index.html`,
+            tags: tagSummary.sort((pre, next) => {
+                return pre.number > next.number ? -1 : 1;
+            }),
+        }];
+    };
+
+    return new PageLoader<typeof TagsTemplate>('src/template/views/archive/tag-list/index.tsx', mergeProps);
+}
+
+// 生成标签文章列表页
+function createTagPosts() {
+    const watchPost = (posts: PostLoader[]) => posts.map((post) => ({
+        tags: post.tags,
+        title: post.title,
+        output: post.output[0]?.path || '',
+    }));
+
+    const mergeProps = (posts: PostLoader[]) => {
+        const map = {} as Record<string, Array<{ title: string; output: string }>>;
+        const postTags = watchPost(posts).map((data) => ({
+            ...data,
+            tags: data.tags.length === 0 ? [spaceTag.name] : data.tags,
+        }));
+        
+        postTags.forEach(({ tags, output, title }) => {
+            tags.forEach((tag) => {
+                if (map[tag]) {
+                    map[tag].push({ title, output });
+                }
+                else {
+                    map[tag] = [{ title, output }];
+                }
+            });
+        });
+
+        return Object.entries(map).map(([title, posts]) => ({
+            title,
+            output: `${getTagPath(title)}index.html`,
+            posts: posts.map(({ title, output: url }) => ({
+                title, url,
+            })),
+        }));
+    };
+
+    return new PageLoader<typeof PostListTemplate>('src/template/views/archive/post-list/index.tsx', mergeProps);
+}
+
+// 生成归档列表页
+function createArchives() {
+    const watchPost = (posts: PostLoader[]) => posts.map(({ date }: PostLoader) => date);
+    const mergeProps = (posts: PostLoader[]) => {
+        const map = {} as Record<number, number>;
+        
+        posts.forEach(({ date }) => {
+            const year = new Date(date).getFullYear();
+
+            if (map[year]) {
+                map[year]++;
+            }
+            else {
+                map[year] = 1;
+            }
+        });
+        
+        const yearSummary = Object.entries(map).map(([name, number]) => ({
+            number,
+            year: String(name),
+            url: getTagPath(name),
+        }));
+
+        return [{
+            title: `${site.title} | 归档`,
+            output: `${archivePath}/index.html`,
+            years: yearSummary.sort((pre, next) => {
+                return pre.year > next.year ? -1 : 1;
+            }),
+        }];
+    };
+
+    return new PageLoader<typeof YearTemplate>('src/template/views/archive/year-list/index.tsx', mergeProps);
+}
+
+// 生成归档文章列表页
+function createArchivePosts() {
+    const watchPost = (posts: PostLoader[]) => posts.map((post: PostLoader) => ({
+        date: post.date,
+        title: post.title,
+        output: post.output[0]?.path || '',
+    }));
+
+    const mergeProps = (posts: PostLoader[]) => {
+        const map = {} as Record<number, Array<{ title: string; output: string }>>;
+        const postTags = watchPost(posts);
+        
+        postTags.forEach(({ date, output, title }) => {
+            const year = new Date(date).getFullYear();
+
+            if (map[year]) {
+                map[year].push({ title, output });
+            }
+            else {
+                map[year] = [{ title, output }];
+            }
+        });
+
+        return Object.entries(map).map(([year, posts]) => ({
+            title: `归档 ${year} 年`,
+            output: `${getArchivePath(year)}index.html`,
+            posts: posts.map(({ title, output: url }) => ({
+                title, url,
+            })),
+        }));
+    };
+
+    return new PageLoader<typeof PostListTemplate>('src/template/views/archive/post-list/index.tsx', mergeProps);
 }
