@@ -50,6 +50,8 @@ function mergeRollupOpt(...opts: rollup.RollupOptions[]) {
     return { option, output };
 }
 
+export * from 'rollup';
+
 export async function build(opt: rollup.RollupOptions) {
     const { option, output } = mergeRollupOpt(baseConfig, opt);
     const bundle = await rollup.rollup(option);
