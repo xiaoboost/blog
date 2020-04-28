@@ -106,8 +106,6 @@ export class BaseLoader {
         this.errors = [];
         transformCount++;
 
-        // console.log(`start id: ${this.id}`);
-
         if (transformCount === 1) {
             console.log('\x1Bc');
             console.log(chalk.yellow(' Compile...\n'));
@@ -116,9 +114,6 @@ export class BaseLoader {
     /** 转换结束 */
     protected transformEnd() {
         transformCount--;
-
-        // console.log(`end count: ${transformCount}`);
-        // console.log(`end id: ${transformCount}`);
 
         this.updateDeps();
         this.notify();
