@@ -1,5 +1,5 @@
 import md5 from 'md5';
-import less from 'less';
+import Stylus from 'stylus';
 import CleanCss from 'clean-css';
 
 import { join } from 'path';
@@ -36,28 +36,26 @@ export class StyleLoader extends BaseLoader {
 
     async transform() {
         const files = await readfiles(templatePath);
-        const styles = files.filter((file) => /\.less$/.test(file));
+        const styles = files.filter((file) => /\.styl$/.test(file));
         const origin = styles.map((file) => `@import '${file}';`).join('\n');
 
-        const lessOutput = await less.render(origin, { paths: [resolveRoot('src/template')] })
-            .catch((e: Less.RenderError) => {
-                this.errors = [{
-                    message: e.message,
-                    filename: e.filename,
-                    location: {
-                        column: e.column,
-                        line: e.line,
-                    },
-                }];
-            });
+        const stylusOutput = await (new Promise<string>((resolve) => {
+            const config = {
+                paths: [resolveRoot('src/template')],
+            };
 
-        if (!lessOutput) {
-            return;
-        }
+            Stylus.render(origin, config, (err, css) => {
+                if (err) {
+                    this.errors = [err];
+                }
+                
+                resolve(css || '');
+            });
+        }));
 
         const data = process.env.NODE_ENV === 'production'
-            ? minify.minify(lessOutput.css).styles
-            : lessOutput.css;
+            ? minify.minify(stylusOutput).styles
+            : stylusOutput;
         const path = process.env.NODE_ENV === 'production'
             ? `/css/style.${md5(data)}.css`
             : '/css/style.css';
@@ -68,7 +66,7 @@ export class StyleLoader extends BaseLoader {
     watch() {
         // 开发模式监听
         if (process.env.NODE_ENV === 'development') {
-            const watcher = watch(join(templatePath, '**/*.less'), {
+            const watcher = watch(join(templatePath, '**/*.styl'), {
                 ignored: /(^|[\/\\])\../,
                 persistent: true,
             });
