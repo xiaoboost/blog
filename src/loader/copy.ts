@@ -6,6 +6,7 @@ import { watch } from 'chokidar';
 import { BaseLoader } from './base';
 
 import { toMap } from 'src/utils/array';
+import { assetsPath } from 'src/config/project';
 import { readfiles } from 'src/utils/file-system';
 
 /** 全局唯一 copy 资源 */
@@ -47,6 +48,10 @@ export class CopyLoader extends BaseLoader {
                 const output = path.relative(from, input);
                 const oldData = dataMap[output];
 
+                if (this.output.some(({ path }) => path === output)) {
+                    continue;
+                }
+
                 if (oldData) {
                     this.output.push({
                         path: output,
@@ -75,8 +80,9 @@ export class CopyLoader extends BaseLoader {
             watcher
                 .on('add', update)
                 .on('unlink', update)
-                .on('change', (path) => {
-                    this.output = this.output.filter((data) => data.path !== path);
+                .on('change', (file) => {
+                    const changeFile = path.relative(assetsPath, file);
+                    this.output = this.output.filter((data) => data.path !== changeFile);
                     update();
                 });
             
