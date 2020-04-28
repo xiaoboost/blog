@@ -5,16 +5,13 @@ import { PropsWithChildren } from 'react';
 import { Header } from '../header';
 import { Footer } from '../footer';
 
+import { resolvePublic } from 'src/utils/template';
+
 interface Props {
     title: string;
     styleFile: string;
     scriptFile: string;
-    publicPath: string;
 }
-
-const join = (...path: string[]) => {
-    return path.join('').replace(/\/+/g, '/');
-};
 
 export function Layout(props: PropsWithChildren<Props>) {
     return (
@@ -26,16 +23,16 @@ export function Layout(props: PropsWithChildren<Props>) {
                 <meta name='description' content='xiao 的个人博客' />
                 <meta name='X-UA-Compatible' content='IE=edge' />
                 <meta name='viewport' content='width=device-width, initial-scale=1' />
-                <link rel='short icon' href={join(props.publicPath, '/image/favicon.ico')} />
-                <link rel='stylesheet' type='text/css' href={join(props.publicPath, props.styleFile)} />
+                <link rel='short icon' href={resolvePublic('image/favicon.ico')} />
+                <link rel='stylesheet' type='text/css' href={resolvePublic(props.styleFile)} />
             </head>
             <body>
                 <Header />
-                <article>
+                <article className='page-article'>
                     {props.children}
                 </article>
                 <Footer />
-                <script type='text/javascript' src={join(props.publicPath, props.scriptFile)} />
+                <script type='text/javascript' src={resolvePublic(props.scriptFile)} />
             </body>
         </html>
     );

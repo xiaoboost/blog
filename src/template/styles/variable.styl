@@ -19,16 +19,14 @@ font-default = "Lato", "-apple-system", "BlinkMacSystemFont", "Helvetica Neue", 
 font-serif = "Georgia", "Hiragino Sans GB", "WenQuanYi Micro Hei", "Microsoft YaHei", serif;
 // 等宽字体
 font-mono = Menlo, Monaco, Consolas, Courier New, monospace;
+// 标题字体
+font-title= "American Typewriter";
 
-// 主页及分页的相关参数
-width-main = 1300px;
-width-post = 950px;
-width-phone = 568px;
+// 文章宽度
+width-main = 1000px;
 
-// 根据宽度设定的三个 Media
-medium = "only screen and (max-width = {width-main})";
-mini = "only screen and (max-width = {width-post})";
-phone = "only screen and (max-width = {width-phone})";
+// 根据宽度设定的 Media
+phone = "only screen and (max-width: " + width-main + ")";
 
 // 默认字体大小
 font-default-size = 16px;

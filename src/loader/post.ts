@@ -268,11 +268,8 @@ export class PostLoader extends BaseLoader implements PostData {
         this.html = Markdown.renderer.render(this.tokens, {}, {});
 
         this.output[0].data = renderToString(createElement(Templates[this.template], {
-            project: {
-                publicPath,
-                ...this.attr,
-            },
-            post: this,
+            ...this.attr,
+            ...this,
         }));
     }
 }
