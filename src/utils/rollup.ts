@@ -9,6 +9,7 @@ import typescript from '@rollup/plugin-typescript';
 import nodeResolve from '@rollup/plugin-node-resolve';
 
 const baseConfig: rollup.RollupOptions = {
+    external: ['path', 'fs', 'fs-extra'],
     plugins: [
         commonjs({
             exclude: 'src/**',

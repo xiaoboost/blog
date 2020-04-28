@@ -1,7 +1,6 @@
 /** 网站简介 */
 export const site = {
     title: 'Dreaming Cat\'s',
-    subtitle: '梦之上',
     description: '闲言碎语',
     link: 'www.dreamingcat.me',
 };
