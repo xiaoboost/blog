@@ -1,4 +1,8 @@
-@import './variable.less';
+@import './variable.styl';
+@import './font.styl';
+
+// 全局字体定义
+font-face('American Typewriter', font-url('americantypewriter'), normal, normal);
 
 * {
     margin: 0;
@@ -16,7 +20,7 @@ html, body, #root {
     height: 100%;
     cursor: default;
     color: Black;
-    font-family: @font-default;
-    font-size: @font-default-size;
-    .font-smoothing();
+    font-family: font-default;
+    font-size: font-default-size;
+    font-smoothing();
 }
