@@ -28,12 +28,12 @@ type ReactComponent<P extends object> = (props: P) => JSX.Element;
 export class PageLoader<P extends object> extends BaseLoader {
     /** 类型 */
     type = 'page';
-    /** 页面模板 */
-    template!: ReactComponent<P>;
-    /** 页面模板 */
-    templatePath: string;
     /** 组合 props */
     mergeProps: MergeProps<P>;
+    /** 页面模板文件 */
+    templateFile: string;
+    /** 页面模板 */
+    template: ReactComponent<P> = () => '' as any;
 
     /** 其余相关数据 */
     attr = {
@@ -57,7 +57,7 @@ export class PageLoader<P extends object> extends BaseLoader {
 
     constructor(template: string, mergeProps: MergeProps<P>) {
         super();
-        this.templatePath = template;
+        this.templateFile = template;
         this.mergeProps = mergeProps;
     }
 
@@ -65,7 +65,7 @@ export class PageLoader<P extends object> extends BaseLoader {
         const [style, script, template] = await Promise.all([
             StyleLoader.Create(),
             ScriptLoader.Create(),
-            TemplateLoader.Create<(props: P) => JSX.Element>(this.templatePath),
+            TemplateLoader.Create<(props: P) => JSX.Element>(this.templateFile),
         ]);
 
         if (process.env.NODE_ENV === 'development') {
@@ -227,7 +227,6 @@ function createTagPosts() {
 
 // 生成归档列表页
 function createArchives() {
-    const watchPost = (posts: PostLoader[]) => posts.map(({ date }: PostLoader) => date);
     const mergeProps = (posts: PostLoader[]) => {
         const map = {} as Record<number, number>;
         
