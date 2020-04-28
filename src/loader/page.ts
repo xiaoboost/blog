@@ -1,8 +1,6 @@
 import { createElement } from 'react';
 import { renderToString } from 'react-dom/server';
 
-import { publicPath } from 'src/config/project';
-
 import { BaseLoader } from './base';
 import { StyleLoader } from './style';
 import { ScriptLoader } from './script';
@@ -21,7 +19,7 @@ import { Template as TagsTemplate } from 'src/template/views/archive/tag-list';
 import { Template as YearTemplate } from 'src/template/views/archive/year-list';
 import { Template as PostListTemplate } from 'src/template/views/archive/post-list';
 
-type OmitSiteProps<P extends object> = Omit<P, 'publicPath' | 'styleFile' | 'scriptFile'> & { output: string };
+type OmitSiteProps<P extends object> = Omit<P, 'styleFile' | 'scriptFile'> & { output: string };
 type MergeProps<P extends object> = (posts: PostLoader[]) => OmitSiteProps<P>[];
 type ReactComponent<P extends object> = (props: P) => JSX.Element;
 
@@ -95,7 +93,6 @@ export class PageLoader<P extends object> extends BaseLoader {
             path: output,
             data: renderToString(createElement(this.template, {
                 ...prop,
-                publicPath,
                 styleFile: this.attr.style,
                 scriptFile: this.attr.script,
             } as any)),
