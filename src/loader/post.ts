@@ -68,11 +68,13 @@ export interface PostData {
 }
 
 /** 默认插件 */
-const defaultPlugins = ['goto-top', 'toc']; 
+const defaultPlugins = ['goto-top', 'toc'];
+/** 加载器类型 */
+const typeName = 'post';
 
 export class PostLoader extends BaseLoader implements PostData {
     /** 类型 */
-    type = 'post';
+    type = typeName;
     /** 文章标题 */
     title = '';
     /** 文章创建日期 */
@@ -100,7 +102,7 @@ export class PostLoader extends BaseLoader implements PostData {
 
     /** 创建文章 */
     static async Create(from: string): Promise<PostLoader> {
-        const exist = BaseLoader.FindSource(from);
+        const exist = BaseLoader.FindSource(from, typeName);
 
         if (exist) {
             return exist as PostLoader;
@@ -112,7 +114,6 @@ export class PostLoader extends BaseLoader implements PostData {
 
         await post.read();
 
-        debugger;
         await post._transform();
 
         return post;
@@ -189,8 +190,6 @@ export class PostLoader extends BaseLoader implements PostData {
         this.update = meta.update
             ? new Date(meta.update).getTime()
             : (await fs.stat(this.from)).mtimeMs;
-        
-        console.log(this.date);
 
         // 默认全部加载
         if (!meta.plugins && !meta.disabledPlugins) {

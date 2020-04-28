@@ -5,13 +5,16 @@ import md5 from 'md5';
 import * as path from 'path';
 import * as fs from 'fs-extra';
 
+/** 加载器类型 */
+const typeName = 'image';
+
 export class ImageLoader extends BaseLoader {
     /** 类型 */
-    type = 'image';
+    type = typeName;
 
     /** 创建图片元素 */
     static async Create(from: string) {
-        const exist = BaseLoader.FindSource(from);
+        const exist = BaseLoader.FindSource(from, typeName);
 
         if (exist) {
             return exist;

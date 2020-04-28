@@ -2,14 +2,18 @@ import { BaseLoader } from './base';
 import { resolveRoot } from 'src/utils/path';
 import { watch, WatchEventType } from 'src/utils/rollup';
 
+/** 加载器类型 */
+const typeName = 'template';
+
 export class TemplateLoader<T> extends BaseLoader {
     /** 类型 */
-    type = 'template';
+    type = typeName;
     /** 模板本体 */
     template: T = (() => '') as any;
 
     static async Create<T>(entry: string) {
-        const exist = BaseLoader.FindSource(entry);
+        const fullPath = resolveRoot(entry);
+        const exist = BaseLoader.FindSource(fullPath, typeName);
 
         if (exist) {
             return exist as TemplateLoader<T>;
@@ -17,7 +21,7 @@ export class TemplateLoader<T> extends BaseLoader {
 
         const template = new TemplateLoader<T>();
 
-        template.from = resolveRoot(entry);
+        template.from = fullPath;
         template.watch();
 
         // 产品模式直接等于

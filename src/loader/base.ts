@@ -66,13 +66,10 @@ export class BaseLoader {
         });
     }
     /** 搜索资源 */
-    static FindSource(label: number | string) {
-        if (isString(label)) {
-            return Object.values(BaseLoader.Sources).find((source) => source?.from === label);
-        }
-        else {
-            return BaseLoader.Sources[label];
-        }
+    static FindSource(from: string, type: string) {
+        return Object.values(BaseLoader.Sources).find((source) => {
+            return source?.from === from && source?.type === type;
+        });
     }
 
     /** 构造函数 */
@@ -109,6 +106,8 @@ export class BaseLoader {
         this.errors = [];
         transformCount++;
 
+        // console.log(`start id: ${this.id}`);
+
         if (transformCount === 1) {
             console.log('\x1Bc');
             console.log(chalk.yellow(' Compile...\n'));
@@ -117,6 +116,9 @@ export class BaseLoader {
     /** 转换结束 */
     protected transformEnd() {
         transformCount--;
+
+        // console.log(`end count: ${transformCount}`);
+        // console.log(`end id: ${transformCount}`);
 
         this.updateDeps();
         this.notify();
@@ -207,6 +209,7 @@ export class BaseLoader {
                     continue;
                 }
 
+                // console.log(`transform id ${this.id}`);
                 const val = ob.compute(data);
 
                 // 相等则跳过
