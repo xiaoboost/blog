@@ -64,7 +64,7 @@ export class TemplateLoader<T> extends BaseLoader {
                         eval(result.code);
                         return exports
                     })() as any;
-    
+
                     this.template = Modules.Template;
                     this.transformEnd();
                 }

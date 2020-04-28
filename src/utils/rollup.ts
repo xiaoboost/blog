@@ -38,7 +38,7 @@ function mergeRollupOpt(...opts: rollup.RollupOptions[]) {
     opts.forEach((opt) => {
         option.input = opt.input;
         option.output = Object.assign({}, option.output, opt.output);
-        option.plugins = option.plugins?.concat(opt.plugins || []);
+        option.plugins = ([] as rollup.Plugin[]).concat(option.plugins || [], opt.plugins || []);
         option.external = transArr(option.external).concat(opt.external || []) as string[];
     });
 
