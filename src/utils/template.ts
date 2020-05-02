@@ -6,8 +6,19 @@ import { isString, isObject } from './assert';
 export const normalize = (href: string) => {
     let str = href.replace(/[\\\/]+/g, '/');
 
+    // 链接开始没有加上公共路径
     if (str[0] !== '/') {
-        str = '/' + str;
+        str = publicPath + str;
+    }
+
+    // 以文件结尾的链接
+    if (/\.[a-z]+$/.test(str)) {
+        return str;
+    }
+
+    // 超链接末尾没有 / 时就加上
+    if (str[str.length - 1] !== '/') {
+        str += '/';
     }
 
     return str;
