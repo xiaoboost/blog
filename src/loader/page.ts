@@ -66,11 +66,9 @@ export class PageLoader<P extends object> extends BaseLoader {
             TemplateLoader.Create<(props: P) => JSX.Element>(this.templateFile),
         ]);
 
-        if (process.env.NODE_ENV === 'development') {
-            style.addObserver(this.id, ({ output }) => output[0].path);
-            script.addObserver(this.id, ({ output }) => output[0].path);
-            template.addObserver(this.id, ({ template }) => template);
-        }
+        style.addObserver(this.id, ({ output }) => output[0].path);
+        script.addObserver(this.id, ({ output }) => output[0].path);
+        template.addObserver(this.id, ({ template }) => template);
 
         this.template = template.template;
 

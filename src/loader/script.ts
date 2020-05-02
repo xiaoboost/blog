@@ -122,8 +122,8 @@ export class ScriptLoader extends BaseLoader {
                         path: '/js/script.js',
                     }];
 
-                    this.transformEnd();
                     this.write();
+                    this.transformEnd();
                 }
             });
             

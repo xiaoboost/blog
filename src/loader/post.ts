@@ -121,7 +121,6 @@ export class PostLoader extends BaseLoader implements PostData {
         post.from = from;
 
         await post.read();
-
         await post._transform();
 
         return post;
@@ -149,11 +148,9 @@ export class PostLoader extends BaseLoader implements PostData {
             TemplateLoader.Create<typeof DefaultTemplate>('src/template/views/post/default'),
         ]);
 
-        if (process.env.NODE_ENV === 'development') {
-            style.addObserver(this.id, ({ output }) => output[0].path);
-            style.addObserver(this.id, ({ output }) => output[0].path);
-            template.addObserver(this.id, ({ template }) => template);
-        }
+        style.addObserver(this.id, ({ output }) => output[0].path);
+        style.addObserver(this.id, ({ output }) => output[0].path);
+        template.addObserver(this.id, ({ template }) => template);
 
         this.attr = {
             styleFile: style.output[0].path,
