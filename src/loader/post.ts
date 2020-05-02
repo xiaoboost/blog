@@ -13,9 +13,9 @@ import { ImageLoader } from './image';
 import { StyleLoader } from './style';
 import { ScriptLoader } from './script';
 import { BaseLoader } from './base';
+import { TemplateLoader } from './template';
 
 import { Markdown } from 'src/renderer/markdown';
-import { publicPath } from 'src/config/project';
 import { readfiles } from 'src/utils/file-system';
 
 import { isArray } from 'src/utils/assert';
@@ -67,6 +67,13 @@ export interface PostData {
     plugins: string[];
 }
 
+/** 文章外部属性 */
+interface AttrData {
+    styleFile: string;
+    scriptFile: string;
+    [PostTemplate.default]: typeof DefaultTemplate;
+}
+
 /** 默认插件 */
 const defaultPlugins = ['goto-top', 'toc'];
 /** 加载器类型 */
@@ -95,9 +102,10 @@ export class PostLoader extends BaseLoader implements PostData {
     plugins: string[] = [];
 
     /** 其余相关数据 */
-    attr = {
+    attr: AttrData = {
         styleFile: '',
         scriptFile: '',
+        [PostTemplate.default]: () => '' as any,
     };
 
     /** 创建文章 */
@@ -135,19 +143,22 @@ export class PostLoader extends BaseLoader implements PostData {
     }
 
     async init() {
-        const [style, script] = await Promise.all([
+        const [style, script, template] = await Promise.all([
             StyleLoader.Create(),
             ScriptLoader.Create(),
+            TemplateLoader.Create<typeof DefaultTemplate>('src/template/views/post/default'),
         ]);
 
         if (process.env.NODE_ENV === 'development') {
             style.addObserver(this.id, ({ output }) => output[0].path);
             style.addObserver(this.id, ({ output }) => output[0].path);
+            template.addObserver(this.id, ({ template }) => template);
         }
 
         this.attr = {
             styleFile: style.output[0].path,
             scriptFile: script.output[0].path,
+            [PostTemplate.default]: template.template,
         };
 
         if (this.output.length === 0) {
@@ -267,7 +278,7 @@ export class PostLoader extends BaseLoader implements PostData {
 
         this.html = Markdown.renderer.render(this.tokens, {}, {});
 
-        this.output[0].data = renderToString(createElement(Templates[this.template], {
+        this.output[0].data = renderToString(createElement(this.attr[this.template], {
             location: this.output[0].path,
             ...this.attr,
             ...this,
