@@ -1,13 +1,14 @@
 import md5 from 'md5';
 
 import { BaseLoader } from './base';
+import { resolveRoot } from 'src/utils/path';
 import { readfiles } from 'src/utils/file-system';
 import { pluginPath } from 'src/config/project';
 
 import { writeFile } from 'fs-extra';
 import { minify as uglify } from 'uglify-js';
 import { watch as watchFs } from 'chokidar';
-import { basename, join, sep } from 'path';
+import { basename, relative, dirname, join } from 'path';
 
 import { build, watch, WatchEventType, RollupError } from 'src/utils/rollup';
 
@@ -44,12 +45,13 @@ export class ScriptLoader extends BaseLoader {
 
     async beforeTransform() {
         const files = await readfiles(pluginPath);
-        const scripts = files.filter((file) => basename(file) === 'script.ts');
-        const origin = scripts.map((file) => `import '${file.replace(/\\/g, `\\${sep}`)}';`).join('\n').trim();
-        
-        console.log(pluginPath);
-        console.log(scripts);
-        console.log(origin);
+        const origin = files
+            .filter((file) => basename(file) === 'script.ts')
+            .map((file) => relative(resolveRoot(), file))
+            .map((file) => join(dirname(file), basename(file, '.ts')))
+            .map((file) => file.replace(/\\/g, '/'))
+            .map((file) => `import '${file}';`)
+            .join('\n').trim();
 
         await writeFile(tempEntry, origin);
     }
