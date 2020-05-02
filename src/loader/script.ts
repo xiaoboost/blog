@@ -123,6 +123,7 @@ export class ScriptLoader extends BaseLoader {
                     }];
 
                     this.transformEnd();
+                    this.write();
                 }
             });
             
