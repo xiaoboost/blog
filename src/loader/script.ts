@@ -1,11 +1,11 @@
 import md5 from 'md5';
+import virtual from '@rollup/plugin-virtual';
 
 import { BaseLoader } from './base';
 import { resolveRoot } from 'src/utils/path';
 import { readfiles } from 'src/utils/file-system';
 import { pluginPath } from 'src/config/project';
 
-import { writeFile } from 'fs-extra';
 import { minify as uglify } from 'uglify-js';
 import { watch as watchFs } from 'chokidar';
 import { basename, relative, dirname, join } from 'path';
@@ -20,6 +20,8 @@ const tempEntry = join(pluginPath, '_index.ts');
 export class ScriptLoader extends BaseLoader {
     /** 类型 */
     type = 'script';
+    /** 入口代码 */
+    inputCode = '';
 
     static async Create() {
         if (script) {
@@ -45,15 +47,14 @@ export class ScriptLoader extends BaseLoader {
 
     async beforeTransform() {
         const files = await readfiles(pluginPath);
-        const origin = files
+
+        this.inputCode = files
             .filter((file) => basename(file) === 'script.ts')
             .map((file) => relative(resolveRoot(), file))
             .map((file) => join(dirname(file), basename(file, '.ts')))
             .map((file) => file.replace(/\\/g, '/'))
             .map((file) => `import '${file}';`)
             .join('\n').trim();
-
-        await writeFile(tempEntry, origin);
     }
 
     async transform() {
@@ -64,6 +65,11 @@ export class ScriptLoader extends BaseLoader {
             output: {
                 format: 'iife',
             },
+            plugins: [
+                virtual({
+                    [tempEntry]: this.inputCode,
+                }),
+            ],
         }).catch((err: RollupError) => {
             this.setRollupError(err);
         });
