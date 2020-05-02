@@ -93,6 +93,7 @@ export class PageLoader<P extends object> extends BaseLoader {
             path: output,
             data: renderToString(createElement(this.template, {
                 ...prop,
+                location: output,
                 styleFile: this.attr.style,
                 scriptFile: this.attr.script,
             } as any)),
