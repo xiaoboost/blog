@@ -46,6 +46,10 @@ export class ScriptLoader extends BaseLoader {
         const files = await readfiles(pluginPath);
         const scripts = files.filter((file) => basename(file) === 'script.ts');
         const origin = scripts.map((file) => `import '${file.replace(/\\/g, `\\${sep}`)}';`).join('\n').trim();
+        
+        console.log(pluginPath);
+        console.log(scripts);
+        console.log(origin);
 
         await writeFile(tempEntry, origin);
     }
