@@ -26,6 +26,7 @@ const baseConfig: rollup.RollupOptions = {
         nodeResolve({
             extensions: ['.tsx', '.ts', '.js', '.json'],
             mainFields: ['index.tsx', 'index.ts'],
+            rootDir: resolveRoot(),
         }),
     ],
     watch: {
