@@ -20,21 +20,21 @@ export function Header({ location }: Props) {
             href: indexHref,
             highlight: location === '/' || location === '/index.html',
         },
-        {
-            name: '归档',
-            href: archiveHref,
-            highlight: location.indexOf(archiveHref) === 0,
-        },
-        {
-            name: '标签',
-            href: tagHref,
-            highlight: location.indexOf(tagHref) === 0,
-        },
-        {
-            name: '关于',
-            href: aboutHref,
-            highlight: location === '/about/' || location === '/about/index.html',
-        },
+        // {
+        //     name: '归档',
+        //     href: archiveHref,
+        //     highlight: location.indexOf(archiveHref) === 0,
+        // },
+        // {
+        //     name: '标签',
+        //     href: tagHref,
+        //     highlight: location.indexOf(tagHref) === 0,
+        // },
+        // {
+        //     name: '关于',
+        //     href: aboutHref,
+        //     highlight: location === '/about/' || location === '/about/index.html',
+        // },
     ];
 
     return <header className='main-header-wrapper'>

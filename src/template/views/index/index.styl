@@ -11,7 +11,7 @@
         box-shadow: none;
         box-sizing: border-box;
         background-color: #fff;
-        border-bottom: 1px solid BlackExtraLight;
+        border-bottom: 1px solid GrayLight;
 
         font-family: font-default;
         font-weight: normal;
@@ -21,13 +21,23 @@
             border-bottom: none;
         }
 
-        .posts-list__item-title {
-            font-size: 18px;
-            font-weight: 600;
-            font-family: font-serif;
+        .posts-list__item-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
 
             a {
                 color: Black;
+                font-size: 18px;
+                font-weight: 600;
+                font-family: font-serif;
+            }
+
+            time {
+                color: BlackLighter;
+                font-size: 12px;
+                font-weight: normal;
+                font-family: font-default;
             }
         }
 
@@ -39,7 +49,6 @@
         .posts-list__item-footer {
             font-size: 12px;
             margin-top: 10px;
-            color: BlackLighter;
         }
     }
 }
