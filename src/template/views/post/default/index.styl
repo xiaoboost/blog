@@ -1,0 +1,36 @@
+@import 'styles/variable.styl';
+@import './post.styl';
+
+.post-default {
+    color: Black;
+    background-color: #fff;
+    box-shadow: 0 1px 3px Shadow;
+
+    .post-header {
+        margin: 0 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid GrayLight;
+
+        .post-header__title {
+            color: Black;
+            font-size: 18px;
+            font-weight: 600;
+            font-family: font-serif;
+            padding: 8px 0;
+        }
+
+        .post-header__create {
+            color: BlackLighter;
+            font-size: 12px;
+            font-weight: normal;
+            font-family: font-default;
+        }
+    }
+
+    .post-article {
+        padding: 16px 20px;
+        post-default-style();
+    }
+}
