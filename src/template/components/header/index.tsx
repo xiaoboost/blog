@@ -1,22 +1,60 @@
 import React from 'react';
 
 import { site } from 'src/config/site';
-import { resolvePublic } from 'src/utils/template';
 import { tagsPath, archivePath } from 'src/config/project';
+import { resolvePublic, normalize, stringifyClass } from 'src/utils/template';
 
-export function Header() {
-    return <header className='page-header-wrapper'>
-        <span className='page-header'>
-            <span className='header-title'>
-                <a className='site-logo' href={resolvePublic()}>
-                    <img className='site-logo-img' src={resolvePublic('image/logo.png')} />
-                </a>
-                <span className='site-title'>{site.title}</span>
-            </span>
-            <span className='header-action'>
-                <a href={resolvePublic(archivePath, '/')} className='header-action-name'>归档</a>
-                <a href={resolvePublic(tagsPath, '/')} className='header-action-name'>标签</a>
-            </span>
+interface Props {
+    /** 当前页面网址 */
+    location: string;
+}
+
+export function Header({ location }: Props) {
+    const indexHref = normalize('/');
+    const aboutHref = normalize('/about/');
+    const tagHref = resolvePublic(tagsPath, '/');
+    const archiveHref = resolvePublic(archivePath, '/');
+    const navs = [
+        {
+            name: '首页',
+            href: indexHref,
+            highlight: location === '/' || location === '/index.html',
+        },
+        {
+            name: '归档',
+            href: archiveHref,
+            highlight: location.indexOf(archiveHref) === 0,
+        },
+        {
+            name: '标签',
+            href: tagHref,
+            highlight: location.indexOf(tagHref) === 0,
+        },
+        {
+            name: '关于',
+            href: aboutHref,
+            highlight: location === '/about/' || location === '/about/index.html',
+        },
+    ];
+
+    return <header className='main-header-wrapper'>
+        <span className='main-header'>
+            <a className='main-title'>
+                {site.title}
+            </a>
+            <nav className='main-nav'>
+                {navs.map((nav, i) => (
+                    <a
+                        key={i}
+                        href={nav.href}
+                        className={stringifyClass('main-nav__item', {
+                            'main-nav__item-highlight': nav.highlight,
+                        })}>
+                        {nav.name}
+                        {nav.highlight ? <span className='main-nav__item-bar' /> : ''}
+                    </a>
+                ))}
+            </nav>
         </span>
     </header>;
 }

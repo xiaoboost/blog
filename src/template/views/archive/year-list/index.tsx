@@ -1,11 +1,8 @@
 import React from 'react';
 
-import { Layout } from 'src/template/components/layout';
+import { Layout, LayoutProps } from 'src/template/components/layout';
 
-interface Props {
-    title: string;
-    styleFile: string;
-    scriptFile: string;
+interface Props extends LayoutProps {
     years: Array<{
         year: string;
         url: string;
@@ -15,11 +12,7 @@ interface Props {
 
 export function Template(props: Props) {
     return (
-        <Layout
-            styleFile={props.styleFile}
-            scriptFile={props.scriptFile}
-            title={props.title}
-        >
+        <Layout {...props}>
             year
         </Layout>
     )

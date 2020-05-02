@@ -1,11 +1,10 @@
 import React from 'react';
 
-import { Layout } from 'src/template/components/layout';
 import { PostData } from 'src/loader/post';
+import { Layout, LayoutProps } from 'src/template/components/layout';
 
-interface Props extends PostData {
-    styleFile: string;
-    scriptFile: string;
+interface Props extends PostData, LayoutProps {
+    // ..
 }
 
 export function Template(props: Props) {

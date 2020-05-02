@@ -1,8 +1,8 @@
 @import 'styles/variable.styl';
 
-.page-header-wrapper {
+.main-header-wrapper {
     width: 100%;
-    height: 50px;
+    height: 40px;
     background-color: #fff;
     box-shadow: 0 1px 3px rgba(26,26,26,.1);
 
@@ -12,31 +12,49 @@
     justify-content: center;
 }
 
-.page-header {
+.main-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: width-main;
 }
 
-.header-title {
+.main-title {
+    display: flex;
+    font-size: 24px;
+    align-items: center;
+    font-family: font-title;
+}
+
+.main-nav {
     display: flex;
     align-items: center;
+    height: 100%;
 
-    .site-logo {
-        height: 40px;
-        width: 40px;
+    .main-nav__item {
+        margin-left: 20px;
+        color: BlackLighter;
         display: flex;
-        margin-right: 10px;
+        align-items: center;
+        position: relative;
+        height: 100%;
+        transition: color .2s;
+
+        &.main-nav__item-highlight {
+            color: Black;
+        }
+
+        &:hover {
+            color: BlackLight;
+        }
     }
 
-    .site-logo-img {
-        height: 100%;
+    .main-nav__item-bar {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 3px;
         width: 100%;
-    }
-    
-    .site-title {
-        font-family: font-title;
-        font-size: 30px;
+        background: Black;
     }
 }
