@@ -11,8 +11,13 @@ import * as project from 'src/config/project';
 import { PostLoader } from './post';
 import { CopyLoader } from './copy';
 import { PageLoader } from './page';
+import { CnameLoader } from './cname';
 
 // 构建
 CopyLoader.Create([project.assetsPath]);
 PostLoader.LoadPosts();
 PageLoader.Create();
+
+if (process.env.NODE_ENV === 'production') {
+    CnameLoader.Create();
+}

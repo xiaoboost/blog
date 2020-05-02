@@ -2,7 +2,7 @@
 export const site = {
     title: 'Dreaming Cat\'s',
     description: '闲言碎语',
-    link: 'www.dreamingcat.me',
+    cname: 'www.dreamingcat.me',
 };
 
 /** 作者信息 */
