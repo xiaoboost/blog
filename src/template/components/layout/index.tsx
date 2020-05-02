@@ -4,6 +4,7 @@ import { PropsWithChildren } from 'react';
 
 import { Header } from '../header';
 import { Footer } from '../footer';
+import { Article } from '../article';
 
 import { resolvePublic, normalize } from 'src/utils/template';
 
@@ -34,9 +35,9 @@ export function Layout(props: PropsWithChildren<LayoutProps>) {
             </head>
             <body>
                 <Header location={location} />
-                <article className='page-article'>
+                <Article>
                     {props.children}
-                </article>
+                </Article>
                 <Footer />
                 <script type='text/javascript' src={scriptFile} />
             </body>
