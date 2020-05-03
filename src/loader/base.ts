@@ -204,7 +204,6 @@ export class BaseLoader {
                     continue;
                 }
 
-                // console.log(`transform id ${this.id}`);
                 const val = ob.compute(data);
 
                 // 相等则跳过
@@ -228,6 +227,7 @@ export class BaseLoader {
             const observers = BaseLoader.Observers.posts || [];
             const posts = allSources
                 .filter((item): item is PostLoader => item?.type === 'post')
+                .filter((item) => item.public)
                 .sort((pre, next) => pre.date < next.date ? 1 : -1);
 
             check(observers, posts);

@@ -84,7 +84,9 @@ export class PageLoader<P extends object> extends BaseLoader {
         const allSources = Object.values(BaseLoader.Sources);
         const posts = allSources
             .filter((item): item is PostLoader => item?.type === 'post')
+            .filter((item) => item.public)
             .sort((pre, next) => pre.date < next.date ? 1 : -1);
+
         const props = transArr(this.mergeProps(posts));
 
         this.output = props.map(({ output, ...prop }) => ({
@@ -126,7 +128,7 @@ function createIndex() {
         create: post.date,
         tags: post.tags,
         url: path.dirname(post.output[0]?.path || ''),
-        description: (post.content || '').trim().slice(0, 200),
+        description: (post.content || '').trim().slice(0, 200).replace(/[\n\r]/g, ''),
     }));
 
     const mergeProps = (posts: PostLoader[]) => {
@@ -172,7 +174,7 @@ function createTagsList() {
         }));
 
         return [{
-            title: `${site.title} | 标签页`,
+            title: `标签 | ${site.title}`,
             output: `${tagsPath}/index.html`,
             tags: tagSummary.sort((pre, next) => {
                 return pre.number > next.number ? -1 : 1;
@@ -244,7 +246,7 @@ function createArchives() {
         }));
 
         return [{
-            title: `${site.title} | 归档`,
+            title: `归档 | ${site.title}`,
             output: `${archivePath}/index.html`,
             years: yearSummary.sort((pre, next) => {
                 return pre.year > next.year ? -1 : 1;

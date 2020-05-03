@@ -11,7 +11,7 @@ interface Props {
 
 export function Header({ location }: Props) {
     const indexHref = normalize('/');
-    const aboutHref = normalize('/about/');
+    const aboutHref = normalize('/posts/about/');
     const tagHref = resolvePublic(tagsPath, '/');
     const archiveHref = resolvePublic(archivePath, '/');
     const navs = [
@@ -30,11 +30,11 @@ export function Header({ location }: Props) {
         //     href: tagHref,
         //     highlight: location.indexOf(tagHref) === 0,
         // },
-        // {
-        //     name: '关于',
-        //     href: aboutHref,
-        //     highlight: location === '/about/' || location === '/about/index.html',
-        // },
+        {
+            name: '关于',
+            href: aboutHref,
+            highlight: location === '/posts/about/' || location === '/posts/about/index.html',
+        },
     ];
 
     return <header className='main-header-wrapper'>
