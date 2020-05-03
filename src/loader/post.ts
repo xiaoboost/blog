@@ -18,7 +18,7 @@ import { TemplateLoader } from './template';
 import { Markdown } from 'src/renderer/markdown';
 import { readfiles } from 'src/utils/file-system';
 
-import { isArray } from 'src/utils/assert';
+import { isArray, isUndef } from 'src/utils/assert';
 import { normalize } from 'src/utils/path';
 import { toPinyin } from 'src/utils/string';
 
@@ -29,11 +29,6 @@ enum PostTemplate {
     default,
 }
 
-/** 模板内容 */
-const Templates = {
-    [PostTemplate.default]: DefaultTemplate,
-};
-
 /** 文章原始元数据 */
 interface PostMeta {
     /** 文章标题 */
@@ -42,6 +37,10 @@ interface PostMeta {
     date: string;
     /** 文章原文 */
     content: string;
+    /** 是否可以被列表检索 */
+    public?: boolean;
+    /** 指定链接标题 */
+    url?: string;
     /** 文章标签 */
     tags?: string[];
     /** 文章最后更新时间 */
@@ -51,7 +50,7 @@ interface PostMeta {
     /** 文章启用的插件 */
     plugins?: string[];
     /** 禁用的插件 */
-    disabledPlugins?: string[];
+    disabled?: string[];
 }
 
 /** 文章元数据 */
@@ -61,6 +60,8 @@ export interface PostData {
     update: number;
     tags: string[];
     html: string;
+    url: string;
+    public: boolean;
     content: string;
     template: PostTemplate;
     tokens: Token[];
@@ -88,6 +89,10 @@ export class PostLoader extends BaseLoader implements PostData {
     date = -1;
     /** 文章更新日期 */
     update = -1;
+    /** 是否可以被列表检索 */
+    public = true;
+    /** 指定链接标题 */
+    url = '';
     /** 文章标签内容 */
     tags: string[] = [];
     /** 文章编译后的 html 源码 */
@@ -191,26 +196,42 @@ export class PostLoader extends BaseLoader implements PostData {
             return;
         }
 
-        this.content = content.trim();
         this.tags = meta.tags || [];
         this.title = meta.title;
+        this.content = content.trim();
+        this.url = meta.url || '';
+        this.public = isUndef(meta.public) ? true : meta.public;
         this.date = new Date(meta.date).getTime();
         this.update = meta.update
             ? new Date(meta.update).getTime()
             : (await fs.stat(this.from)).mtimeMs;
+        
+        const readArr = (str?: string | string[]) => {
+            if (!str) {
+                return [];
+            }
+            else if (isArray(str)) {
+                return str;
+            }
+            else {
+                return str.split(',').map((item) => item.trim().toLowerCase());
+            }
+        };
+
+        meta.plugins = readArr(meta.plugins);
+        meta.disabled = readArr(meta.disabled);
 
         // 默认全部加载
-        if (!meta.plugins && !meta.disabledPlugins) {
+        if (meta.plugins.length === 0 && meta.disabled.length === 0) {
             this.plugins = defaultPlugins;
         }
         // 输入插件列表，则以此为准
-        else if (meta.plugins) {
-            this.plugins = meta.plugins.map((item) => item.trim().toLowerCase());
+        else if (meta.plugins.length > 0) {
+            this.plugins = meta.plugins;
         }
         // 禁用插件列表，则取反
-        else if (meta.disabledPlugins) {
-            const disabled = meta.disabledPlugins.map((item) => item.trim().toLowerCase());
-            this.plugins = defaultPlugins.filter((item) => !disabled.includes(item));
+        else if (meta.disabled.length > 0) {
+            this.plugins = defaultPlugins.filter((item) => !meta.disabled!.includes(item));
         }
 
         this.template = PostTemplate[meta.template || PostTemplate[0]];
@@ -222,10 +243,16 @@ export class PostLoader extends BaseLoader implements PostData {
     }
 
     async setBuildTo() {
-        const create = new Date(this.date);
+        const createAt = (new Date(this.date)).getFullYear();
         const decodeTitle = toPinyin(this.title).toLowerCase();
 
-        this.output[0].path = path.normalize(`/posts/${create.getFullYear()}/${decodeTitle}/index.html`);
+        // 指定链接
+        if (this.url) {
+            this.output[0].path = path.normalize(`/posts/${this.url}/index.html`);
+        }
+        else {
+            this.output[0].path = path.normalize(`/posts/${createAt}/${decodeTitle}/index.html`);
+        }
     }
 
     async readToken(token: Token | Token[]) {

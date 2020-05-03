@@ -6,19 +6,20 @@ import MarkdownMark from 'markdown-it-mark';
 import MarkdownKatex from 'markdown-it-katex';
 import MarkdownAttrs from 'markdown-it-attrs';
 import MarkdownFootnote from 'markdown-it-footnote';
-import MarkdownContainer from 'markdown-it-container';
 
-export const Markdown = (
-    new MarkdownIt()
-        .use(MarkdownSub)
-        .use(MarkdownSup)
-        .use(MarkdownMark)
-        .use(MarkdownKatex)
-        .use(MarkdownAttrs, {
-            leftDelimiter: '{',
-            rightDelimiter: '}',
-            allowedAttributes: ['id', 'class'],
-        })
-        .use(MarkdownFootnote)
-        .use(MarkdownContainer)
-);
+import { ParagraphRender } from './paragraph';
+
+export const Markdown = new MarkdownIt();
+
+Markdown
+    .use(MarkdownSub)
+    .use(MarkdownSup)
+    .use(MarkdownMark)
+    .use(MarkdownKatex)
+    .use(MarkdownFootnote)
+    .use(MarkdownAttrs, {
+        leftDelimiter: '{',
+        rightDelimiter: '}',
+        allowedAttributes: ['id', 'class'],
+    })
+    .use(ParagraphRender);
