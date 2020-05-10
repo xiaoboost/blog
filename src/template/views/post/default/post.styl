@@ -1,11 +1,35 @@
 post-default-style() {
     p {
+        line-height: 1.7;
         text-indent: 2em;
-        margin-bottom: 0.8em;
+        margin: 0 0 0.8em 0;
 
         &:last-child {
             margin-bottom: 0;
         }
+    }
+
+    code {
+        margin: 0 0.2em;
+        padding: 0.2em;
+        font-size: 0.85em;
+        background-color: YellowLighter;
+        border-bottom: 0.1em solid YellowLight;
+        border-top-left-radius: 4px;
+        border-top-right-radius: 4px;
+    }
+
+    em {
+        font-family: "EM-Lora", font-default;
+        margin: 0 3px;
+        font-style: normal;
+        text-decoration: none;
+        background-image: linear-gradient(to top, transparent, transparent 0px, BlackLighter 0px, BlackLighter 1px, transparent 1px);
+        text-shadow -1px -1px 0 #fafafa, 1px -1px 0 WhiteBg, -1px 1px 0 WhiteBg, 1px 1px WhiteBg;
+    }
+
+    s {
+        text-decoration-color: rgba(32, 32, 32, 0.5);
     }
 
     span.softbreak {
