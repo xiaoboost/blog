@@ -21,6 +21,3 @@ export function fixHtml<T extends string | Buffer>(content: T): T {
 
     return (isStr ? fixed : Buffer.from(fixed)) as T;
 }
-
-console.log(toPinyin('first测试文本scord'));
-console.log(toPinyin('中文测试'));
