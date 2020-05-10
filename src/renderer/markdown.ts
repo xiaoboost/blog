@@ -9,7 +9,11 @@ import MarkdownFootnote from 'markdown-it-footnote';
 
 import { ParagraphRender } from './paragraph';
 
-export const Markdown = new MarkdownIt();
+export const Markdown = new MarkdownIt({
+    html: true,
+    linkify: true,
+    typographer: true,
+});
 
 Markdown
     .use(MarkdownSub)
