@@ -6,6 +6,7 @@ import * as path from 'path';
 import * as project from 'src/config/project';
 
 import { parse } from 'yaml';
+import { watch } from 'chokidar';
 import { createElement } from 'react';
 import { renderToString } from 'react-dom/server';
 
@@ -127,6 +128,8 @@ export class PostLoader extends BaseLoader implements PostData {
 
         await post.read();
         await post._transform();
+
+        post.watch();
 
         return post;
     }
@@ -307,5 +310,20 @@ export class PostLoader extends BaseLoader implements PostData {
             ...this.attr,
             ...this,
         }));
+    }
+
+    watch() {
+        if (process.env.NODE_ENV === 'server') {
+            const watcher = watch(this.from);
+
+            watcher
+                .on('unlink', () => this.destroy())
+                .on('change', async () => {
+                    await this.read();
+                    await this._transform();
+                });
+            
+            this.diskWatcher = [watcher];
+        }
     }
 }
