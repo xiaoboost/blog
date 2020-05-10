@@ -7,6 +7,7 @@ import MarkdownKatex from 'markdown-it-katex';
 import MarkdownAttrs from 'markdown-it-attrs';
 import MarkdownFootnote from 'markdown-it-footnote';
 
+import { TitleRender } from './title';
 import { ParagraphRender } from './paragraph';
 
 export const Markdown = new MarkdownIt({
@@ -26,4 +27,5 @@ Markdown
         rightDelimiter: '}',
         allowedAttributes: ['id', 'class'],
     })
-    .use(ParagraphRender);
+    .use(ParagraphRender)
+    .use(TitleRender);

@@ -1,3 +1,5 @@
+@import 'styles/variable.styl';
+
 post-default-style() {
     p {
         line-height: 1.7;
@@ -35,5 +37,25 @@ post-default-style() {
     span.softbreak {
         display: inline-block;
         width: 2em;
+    }
+
+    {h-interation()} {
+        position: relative;
+        display: flex;
+        align-items: center;
+        margin-left: -1em;
+
+        .anchor {
+            font-size: .8em;
+            color: BlackLight;
+            cursor: pointer;
+            opacity: 0;
+            font-family: font-serif;
+            transition: opacity .2s;
+        }
+
+        &:hover .anchor {
+            opacity: 1;
+        }
     }
 }
