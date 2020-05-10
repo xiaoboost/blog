@@ -1,9 +1,11 @@
 @import 'styles/variable.styl';
 
+Indent = 24px;
+
 post-default-style() {
     p {
         line-height: 1.7;
-        text-indent: 2em;
+        text-Indent: 2em;
         margin: 0 0 0.8em 0;
 
         &:last-child {
@@ -43,15 +45,19 @@ post-default-style() {
         position: relative;
         display: flex;
         align-items: center;
-        margin-left: -1em;
+        margin-left: -1 * Indent;
+        margin-right: -1 * Indent;
 
         .anchor {
             font-size: .8em;
             color: BlackLight;
             cursor: pointer;
             opacity: 0;
+            width: Indent;
             font-family: font-serif;
             transition: opacity .2s;
+            box-sizing: border-box;
+            text-align: center;
         }
 
         &:hover .anchor {
