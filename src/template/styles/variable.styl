@@ -28,14 +28,22 @@ font-mono = Menlo, Monaco, Consolas, Courier New, monospace;
 // 标题字体
 font-title= "Dancing Script";
 
-// 标题列表
-h-list = 'h1,h2,h3,h4,h5,h6';
-
 // 文章宽度
 width-main = 800px;
 
 // 根据宽度设定的 Media
-phone = "only screen and (max-width: " + width-main + ")";
+phone = 'only screen and (max-width: ' + width-main + ')';
 
 // 默认字体大小
 font-default-size = 14px;
+
+// 标题选择器封装
+h-interation(selector = '') {
+    all = 'h1 ' + selector;
+
+    for level in (2..6) {
+        all += ', h' + level + ' ' + selector;
+    }
+
+    return all;
+}
