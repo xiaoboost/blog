@@ -4,12 +4,13 @@ import { concat } from './array';
 import { isString } from './assert';
 
 export function toPinyin(str: string) {
-    const str1 = str
+    const strs = concat(pinyin(str, { style: pinyin.STYLE_NORMAL }), (arr) => arr);
+
+    return strs
+        .join('-')
         .replace(/([a-zA-Z0-9]+)/g, '-$1-')
         .replace(/[ -]+/g, '-')
         .replace(/(^-|-$)/g, '');
-
-    return concat(pinyin(str1, { style: pinyin.STYLE_NORMAL }), (arr) => arr).join('');
 };
 
 export function fixHtml<T extends string | Buffer>(content: T): T {
@@ -20,3 +21,6 @@ export function fixHtml<T extends string | Buffer>(content: T): T {
 
     return (isStr ? fixed : Buffer.from(fixed)) as T;
 }
+
+console.log(toPinyin('first测试文本scord'));
+console.log(toPinyin('中文测试'));
