@@ -1,6 +1,7 @@
 @import 'styles/variable.styl';
 
 Indent = 24px;
+SmallIndent = 14px;
 
 post-default-style() {
     p {
@@ -41,12 +42,55 @@ post-default-style() {
         width: 2em;
     }
 
+    span.katex-mathml {
+        display: none;
+    }
+
+    // 块级公式
+    .block-formula {
+        margin: 1em 0;
+        position: relative;
+
+        .formula-index {
+            position: absolute;
+            top: 0;
+            right: 8px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+        }
+    }
+
+    // 行内公式
+    .inline-formula {
+        margin: 0 .2em;
+    }
+
+    .image-block {
+        text-indent: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        .image-inner {
+            max-width: 100%;
+        }
+
+        .image-title {
+            font-size: .8em;
+            color: #aaa;
+        }
+    }
+
     {h-interation()} {
         position: relative;
         display: flex;
         align-items: center;
-        margin-left: -1 * Indent;
-        margin-right: -1 * Indent;
+
+        media-templte(Indent, SmallIndent, @(indent) {
+            margin-left: -1 * indent;
+            margin-right: -1 * indent;
+        });
 
         .anchor {
             font-size: .8em;
