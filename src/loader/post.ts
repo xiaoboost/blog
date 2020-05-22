@@ -3,6 +3,7 @@ import Token from 'markdown-it/lib/token';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 
+import * as site from 'src/config/site';
 import * as project from 'src/config/project';
 
 import { parse } from 'yaml';
@@ -199,8 +200,11 @@ export class PostLoader extends BaseLoader implements PostData {
             return;
         }
 
-        if (!meta.date) {
-            setErr('文章必须要有 [date] 字段');
+        // 检查必填属性
+        const required = ['date', 'title'].filter((key) => !meta[key]);
+
+        if (required.length > 0) {
+            setErr(`文章必须要有 [${required.join(', ')}] 字段`);
             return;
         }
 
@@ -312,9 +316,14 @@ export class PostLoader extends BaseLoader implements PostData {
         this.html = Markdown.renderer.render(this.tokens, {}, {});
 
         this.output[0].data = renderToString(createElement(this.attr[this.template], {
-            location: this.output[0].path,
-            ...this.attr,
-            ...this,
+            post: this,
+            site: {
+                ...this.attr,
+                location: this.output[0].path,
+                title: `${this.title} | ${site.site.title}`,
+                keywords: this.tags,
+                description: this.description,
+            },
         }));
     }
 
