@@ -1,17 +1,10 @@
 /** 网站简介 */
 export const site = {
     title: 'Dreaming Cat\'s',
-    description: '闲言碎语',
+    author: 'xiao',
     cname: 'www.dreamingcat.me',
-};
-
-/** 作者信息 */
-export const author = {
-    name: 'xiaoboost',
-    contact: {
-        email: 'xiaoboost@qq.com',
-        github: 'https://github.com/xiaoboost',
-    },
+    description: 'xiao 的个人博客',
+    github: 'https://github.com/xiaoboost',
 };
 
 /** 链接 */

@@ -3,7 +3,6 @@ title: 关于我
 date: 2020/05/01
 public: false
 url: about
-toc: false
 disabled: toc
 ---
 

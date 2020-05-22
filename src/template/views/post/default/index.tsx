@@ -4,19 +4,22 @@ import Moment from 'moment';
 import { PostData } from 'src/loader/post';
 import { Layout, LayoutProps } from 'src/template/components/layout';
 
-type Props = PostData & LayoutProps;
+interface Props {
+    site: LayoutProps;
+    post: PostData;
+}
 
-export function Template(props: Props) {
+export function Template({ post, site }: Props) {
     return (
-        <Layout {...props}>
+        <Layout {...site}>
             <section className='post-default'>
                 <header className='post-header'>
-                    <h1 className='post-header__title'>{props.title}</h1>
-                    <time className='post-header__create'>{Moment(props.date).format('yyyy-MM-DD')}</time>
+                    <h1 className='post-header__title'>{post.title}</h1>
+                    <time className='post-header__create'>{Moment(post.date).format('yyyy-MM-DD')}</time>
                 </header>
                 <article
                     className='post-article'
-                    dangerouslySetInnerHTML={{ __html: props.html }}
+                    dangerouslySetInnerHTML={{ __html: post.html }}
                 />
             </section>
         </Layout>
