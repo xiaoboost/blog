@@ -175,15 +175,17 @@ post-default-style() {
 
     pre.code-block {
         // 白色主题
-        CodeColor = Black;
-        CodeBgColor = #f6f8fa;
-        LabelColor = BlackLighter;
-        LabelBgColor = #eef0f4;
+        CodeColor = #4d4d4c;
+        CodeBgColor = #f5f5f5;
+        GutterColor = #869194;
+        GutterBgColor = #eff2f3;
+        SplitColor = #ddd;
+        highlightBgColor = #d9d9d9;
 
         // 深色主题
-        // BgColor = #282C34;
-        // TextColor = #ABB2BF;
-        // LabelColor = #636D83;
+        // CodeColor = #ABB2BF;
+        // CodeBgColor = #282C34;
+        // GutterColor = #636D83;
 
         borderRadius = 4px;
 
@@ -200,7 +202,7 @@ post-default-style() {
 
         .code-block__label {
             position: absolute;
-            color: LabelColor;
+            color: GutterColor;
             background-color: transparent;
             font-size: 0.8em;
             right: 4px;
@@ -240,11 +242,11 @@ post-default-style() {
 
         .code-block__gutter {
             float: left;
-            padding: .4em .4em .4em .5em;
+            padding: .4em 0;
             flex-shrink: 0;
             flex-grow: 0;
-            color: LabelColor;
-            background-color: LabelBgColor;
+            color: GutterColor;
+            background-color: GutterBgColor;
             border-top-left-radius: borderRadius;
             border-bottom-left-radius: borderRadius;
 
@@ -255,12 +257,15 @@ post-default-style() {
             
             > li {
                 text-align: right;
+                padding-left: .4em;
+                padding-right: .5em;
             }
         }
 
         .code-block__code {
-            padding .4em;
-            min-width: 100%;
+            padding .4em 0;
+            flex-grow: 1;
+            flex-shrink: 0;
             color: CodeColor;
             background-color: CodeBgColor;
             border-top-right-radius: borderRadius;
@@ -271,9 +276,26 @@ post-default-style() {
                 border-bottom-right-radius: 0;
             }
 
+            > li {
+                position: relative;
+                padding-left: .4em;
+                padding-right: .4em;
+            }
+
             > li:after {
                 content: "　";
             }
+        }
+
+        .code-block__split {
+            width: 1px;
+            height: 100%;
+            position: absolute;
+            background-color: SplitColor;
+        }
+
+        .code-block__highlight-line {
+            background-color: highlightBgColor;
         }
     }
 }
