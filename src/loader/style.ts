@@ -40,11 +40,16 @@ export class StyleLoader extends BaseLoader {
         const origin = styles.map((file) => `@import '${file}';`).join('\n');
 
         const stylusOutput = await (new Promise<string>((resolve) => {
-            const config = {
-                paths: [resolveRoot('src/template')],
-            };
+            const style = Stylus(origin, {
+                paths: [
+                    resolveRoot('src/template'),
+                    resolveRoot('node_modules'),
+                ],
+            });
 
-            Stylus.render(origin, config, (err, css) => {
+            style.set('include css', true);
+
+            style.render((err, css) => {
                 if (err) {
                     this.errors = [err];
                 }

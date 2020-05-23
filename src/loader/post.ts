@@ -313,7 +313,7 @@ export class PostLoader extends BaseLoader implements PostData {
 
         await this.readToken(this.tokens);
 
-        this.html = Markdown.renderer.render(this.tokens, {}, {});
+        this.html = Markdown.renderer.render(this.tokens, Markdown.options, {});
 
         this.output[0].data = renderToString(createElement(this.attr[this.template], {
             post: this,

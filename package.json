@@ -26,6 +26,7 @@
     "@rollup/plugin-virtual": "^2.0.1",
     "@types/clean-css": "^4.2.1",
     "@types/fs-extra": "^8.1.0",
+    "@types/highlight.js": "^9.12.4",
     "@types/koa": "^2.11.3",
     "@types/markdown-it": "10.0.1",
     "@types/md5": "^2.2.0",
