@@ -4,6 +4,10 @@ Indent = 24px;
 SmallIndent = 14px;
 
 post-default-style() {
+    > *:first-child {
+        margin-top: 0 !important;
+    }
+
     p {
         line-height: 1.7;
         text-Indent: 2em;
@@ -35,6 +39,38 @@ post-default-style() {
 
     s {
         text-decoration-color: rgba(32, 32, 32, 0.5);
+    }
+    
+    small {
+        font-size: 0.8em;
+    }
+
+    sub, sup {
+        font-size: 0.8em;
+        margin-right: .2em;
+        line-height: 0;
+        position: relative;
+        vertical-align: baseline;
+    }
+
+    sup {
+        top: -0.5em;
+    }
+
+    sub {
+        bottom: -0.3em;
+    }
+
+    a {
+        cursor: pointer;
+        color: BlackLighter;
+        text-decoration: none;
+        transition: color .2s, background .4s;
+
+        &:hover, &:focus {
+            outline: 0;
+            color: Black;
+        }
     }
 
     span.softbreak {
@@ -107,5 +143,30 @@ post-default-style() {
         &:hover .anchor {
             opacity: 1;
         }
+    }
+
+    for level in (1..6) {
+        h{level} {
+            font-size: (1.6 - 0.2 * (level - 1))em;
+            margin-top: (1.1 - 0.1 * (level - 1))em;
+            margin-bottom: (0.8 - 0.05 * (level - 1))em;
+        }
+    }
+
+    .note, .warning {
+        padding: 6px 10px;
+        margin: .6em 0;
+        font-size: 90%;
+        text-indent: 0;
+        border-left: .3em solid transparent;
+        background-color: (WhiteBg + #010101);
+    }
+
+    .note {
+        border-color: Green;
+    }
+
+    .warning {
+        border-color: RedLight;
     }
 }

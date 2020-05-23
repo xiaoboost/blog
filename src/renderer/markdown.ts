@@ -25,7 +25,7 @@ Markdown
     .use(MarkdownAttrs, {
         leftDelimiter: '{',
         rightDelimiter: '}',
-        allowedAttributes: ['id', 'class'],
+        allowedAttributes: ['id', 'class', 'style'],
     })
     .use(ParagraphRender)
     .use(TitleRender);
