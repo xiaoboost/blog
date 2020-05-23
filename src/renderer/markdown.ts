@@ -8,12 +8,14 @@ import MarkdownAttrs from 'markdown-it-attrs';
 import MarkdownFootnote from 'markdown-it-footnote';
 
 import { TitleRender } from './title';
+import { CodeRenderer } from './code';
 import { ParagraphRender } from './paragraph';
 
 export const Markdown = new MarkdownIt({
     html: true,
     linkify: true,
     typographer: true,
+    highlight: CodeRenderer,
 });
 
 Markdown
