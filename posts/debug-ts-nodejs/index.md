@@ -1,6 +1,6 @@
 ---
 title: VSCode 中调试 TypeScript
-date: 2020/05/23
+date: 2016/10/23
 description: 总结了下现在在 VSCode 中调试 TypeScript 的三种方法。很常用，但是又略有些麻烦，经常忘掉，所以记录下来。
 ---
 

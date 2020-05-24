@@ -1,5 +1,5 @@
 @import 'styles/variable';
-@import 'katex/dist/katex.min.css';
+// @import 'katex/dist/katex.min.css';
 // @import 'highlight.js/styles/atom-one-dark-reasonable.css';
 @import 'highlight.js/styles/atom-one-light.css';
 
@@ -13,7 +13,7 @@ post-default-style() {
 
     p {
         line-height: 1.7;
-        text-Indent: 2em;
+        text-indent: 2em;
         margin: 0 0 0.8em 0;
 
         &:last-child {
@@ -73,6 +73,29 @@ post-default-style() {
         &:hover, &:focus {
             outline: 0;
             color: Black;
+        }
+    }
+
+    ul, ol {
+        padding-left: 1.5em;
+        line-height: 1.4;
+    }
+    
+    blockquote {
+        padding: .8em 1.2em;
+        margin: 1em 0;
+        line-height: 1.5;
+        font-size: 90%;
+        border-left: 0.3em solid YellowLight;
+        background-color: WhiteBg;
+
+        > * {
+            margin-top: 0;
+            margin-bottom: .4em;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
         }
     }
 
