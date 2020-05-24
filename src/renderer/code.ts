@@ -16,15 +16,40 @@ const langLabel = {
     json: 'JSON',
 };
 
-function getSpaceWidth(str: string) {
+function getLineSpaceWidth(str: string) {
     const result = /^ +/.exec(str);
     return result ? result[0].length : 0;
+}
+
+function getMinSpaceWidth(str: string) {
+    const result = str.trim().split('\n').reduce((ans, line) => {
+        const space = getLineSpaceWidth(line);
+
+        if (space <= 0) {
+            return ans;
+        }
+
+        if (ans === 0 || space < ans) {
+            return space;
+        }
+        else {
+            return ans;
+        }
+    }, 0);
+    const widths = [2, 4, 8, 16].sort((pre, next) => {
+        const preRes = Math.abs(pre - result);
+        const nextRes = Math.abs(next - result);
+
+        return preRes < nextRes ? -1 : 1;
+    });
+
+    return widths[0];
 }
 
 function getHighlightCode(code: string) {
     const hlLabel = /\/\*\*\* +hl +\*\*\*\//g;
     const highlightLine: Record<number, boolean> = {};
-    const lines = code.trim().split(/[\n\r]+/).map((line, index) => {
+    const lines = code.trim().split(/[\n\r]/).map((line, index) => {
         const match = line.match(hlLabel);
 
         if (match) {
@@ -41,6 +66,12 @@ function getHighlightCode(code: string) {
     };
 }
 
+function splitLabel(number: number, width: number, rightSpace = true) {
+    const space = Array(width).fill(' ').join('');
+    const label = Array(number).fill(`<span class="code-block__split"></span>${space}`).join('');
+    return rightSpace ? label : label.trim();
+}
+
 export function CodeRenderer(input: string, lang: string) {
     /** 代码语言 */
     const lan = lang ? lang.toLowerCase() : '';
@@ -52,22 +83,27 @@ export function CodeRenderer(input: string, lang: string) {
     const text = lan ? highlight(lan, code) : highlightAuto(code);
     /** 按行切割代码 */
     const codeLines = text.value.trim().split('\n');
-    /** 总共有多少前置空格 */
-    const totalSpace = codeLines.reduce((ans, line) => ans + getSpaceWidth(line), 0);
     /** 空格宽度 */
-    const splitWidth = (totalSpace % 4 === 0) ? 4 : 2;
-    /** 空格字符串 */
-    const stringSpace = Array(splitWidth).fill(' ').join('');
+    const splitWidth = getMinSpaceWidth(code);
+
+    let lastSpaceWidth = 0;
+
     /** 按照行编译代码 */
     const content = codeLines.map((line, index) => {
-        const space = getSpaceWidth(line);
+        const space = getLineSpaceWidth(line);
         const number = space / splitWidth;
-        const spaceWithSplit = Array(number).fill(`<span class="code-block__split"></span>${stringSpace}`).join('');
+        const spaceWithSplit = splitLabel(number, splitWidth);
         const newLine = line.replace(/^ +/, spaceWithSplit);
+        const className = lines[index] ? ` class="code-block__highlight-line"` : '';
+        const lineCode = (line === '')
+            ? `<li${className}>${splitLabel(lastSpaceWidth, splitWidth, false)}</li>`
+            : `<li${className}>${newLine}</li>`;
 
-        return lines[index]
-            ? `<li class="code-block__highlight-line">${newLine}</li>`
-            : `<li>${newLine}</li>`;
+        if (number > 0) {
+            lastSpaceWidth = number;
+        }
+
+        return lineCode;
     });
     /** 代码行号 */
     const list = new Array(codeLines.length).fill(0).map((_, i) => {
