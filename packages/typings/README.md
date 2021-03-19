@@ -7,5 +7,5 @@
 在项目中安装即可生效
 
 ```shell
-npm install @types/blog -D
+pnpm install @types/blog -D
 ```
