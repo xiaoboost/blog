@@ -4,7 +4,13 @@
 
 ## 用法
 
-在项目的`tsconfig.json`文件中设置：
+先安装：
+
+```shell
+pnpm install @blog/tsconfig -D
+```
+
+然后在项目的`tsconfig.json`文件中设置：
 
 ```json
 {
