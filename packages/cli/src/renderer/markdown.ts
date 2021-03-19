@@ -25,9 +25,9 @@ Markdown
   .use(MarkdownKatex)
   .use(MarkdownFootnote)
   .use(MarkdownAttrs, {
-  leftDelimiter: '{',
-  rightDelimiter: '}',
-  allowedAttributes: ['id', 'class', 'style'],
+    leftDelimiter: '{',
+    rightDelimiter: '}',
+    allowedAttributes: ['id', 'class', 'style'],
   })
   .use(ParagraphRender)
   .use(TitleRender);
