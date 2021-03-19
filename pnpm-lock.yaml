@@ -1,6 +1,27 @@
 importers:
   .:
     devDependencies:
+      '@blog/cli': link:packages/cli
+      '@blog/post': link:packages/posts
+      '@blog/template': link:packages/templates
+      '@typescript-eslint/eslint-plugin': 4.18.0_ef0f217f6395606fd8bbe7b0291eff7e
+      '@typescript-eslint/parser': 4.18.0_eslint@7.22.0+typescript@4.2.3
+      eslint: 7.22.0
+      typescript: 4.2.3
+    specifiers:
+      '@blog/cli': workspace:*
+      '@blog/post': workspace:*
+      '@blog/template': workspace:*
+      '@typescript-eslint/eslint-plugin': ^4.18.0
+      '@typescript-eslint/parser': ^4.18.0
+      eslint: ^7.22.0
+      typescript: ^4.2.3
+  packages/cli:
+    dependencies:
+      tslib: 2.1.0
+    devDependencies:
+      '@blog/tsconfig': link:../tsconfig
+      '@types/blog': link:../typings
       '@types/highlight.js': 9.12.4
       '@types/koa': 2.13.1
       '@types/markdown-it': 12.0.1
@@ -8,15 +29,10 @@ importers:
       '@types/mime': 2.0.3
       '@types/node': 14.14.35
       '@types/pinyin': 2.8.2
-      '@types/react': 17.0.3
-      '@types/react-dom': 17.0.2
       '@types/stylus': 0.48.33
-      '@typescript-eslint/eslint-plugin': 4.18.0_ef0f217f6395606fd8bbe7b0291eff7e
-      '@typescript-eslint/parser': 4.18.0_eslint@7.22.0+typescript@4.2.3
       chalk: 4.1.0
       chokidar: 3.5.1
-      esbuild: 0.9.4
-      eslint: 7.22.0
+      esbuild: 0.9.5
       highlight.js: 10.6.0
       katex: 0.13.0
       koa: 2.13.1
@@ -33,13 +49,13 @@ importers:
       mime: 2.5.2
       moment: 2.29.1
       pinyin: 2.9.1
-      react: 17.0.1
-      react-dom: 17.0.1_react@17.0.1
+      rimraf: 3.0.2
       stylus: 0.54.8
-      tslib: 2.1.0
       typescript: 4.2.3
       yaml: 1.10.2
     specifiers:
+      '@blog/tsconfig': workspace:*
+      '@types/blog': workspace:*
       '@types/highlight.js': ^9.12.4
       '@types/koa': ^2.13.1
       '@types/markdown-it': 12.0.1
@@ -47,15 +63,10 @@ importers:
       '@types/mime': ^2.0.3
       '@types/node': ^14.14.35
       '@types/pinyin': ^2.8.2
-      '@types/react': ^17.0.3
-      '@types/react-dom': ^17.0.2
       '@types/stylus': ^0.48.33
-      '@typescript-eslint/eslint-plugin': ^4.18.0
-      '@typescript-eslint/parser': ^4.18.0
       chalk: ^4.1.0
       chokidar: ^3.5.1
-      esbuild: ^0.9.4
-      eslint: ^7.22.0
+      esbuild: ^0.9.5
       highlight.js: ^10.6.0
       katex: ^0.13.0
       koa: ^2.13.1
@@ -72,26 +83,11 @@ importers:
       mime: ^2.5.2
       moment: ^2.29.1
       pinyin: ^2.9.1
-      react: ^17.0.1
-      react-dom: ^17.0.1
+      rimraf: ^3.0.2
       stylus: ^0.54.8
       tslib: ^2.1.0
       typescript: ^4.2.3
       yaml: ^1.10.2
-  packages/cli:
-    dependencies:
-      tslib: 2.1.0
-    devDependencies:
-      '@blog/tsconfig': link:../tsconfig
-      '@types/blog': link:../typings
-      rimraf: 3.0.2
-      typescript: 4.2.3
-    specifiers:
-      '@blog/tsconfig': workspace:*
-      '@types/blog': workspace:*
-      rimraf: ^3.0.2
-      tslib: ^2.1.0
-      typescript: ^4.2.3
   packages/posts:
     dependencies:
       tslib: 2.1.0
@@ -112,11 +108,19 @@ importers:
     devDependencies:
       '@blog/tsconfig': link:../tsconfig
       '@types/blog': link:../typings
+      '@types/react': 17.0.3
+      '@types/react-dom': 17.0.2
+      react: 17.0.1
+      react-dom: 17.0.1_react@17.0.1
       rimraf: 3.0.2
       typescript: 4.2.3
     specifiers:
       '@blog/tsconfig': workspace:*
       '@types/blog': workspace:*
+      '@types/react': ^17.0.3
+      '@types/react-dom': ^17.0.2
+      react: ^17.0.1
+      react-dom: ^17.0.1
       rimraf: ^3.0.2
       tslib: ^2.1.0
       typescript: ^4.2.3
@@ -1041,13 +1045,13 @@ packages:
     resolution:
       integrity: sha1-mS0xKc999ocLlsV4WMJJoSD4uLU=
       tarball: entities/download/entities-2.1.0.tgz?cache=0&sync_timestamp=1611592691502&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fentities%2Fdownload%2Fentities-2.1.0.tgz
-  /esbuild/0.9.4:
+  /esbuild/0.9.5:
     dev: true
     hasBin: true
     requiresBuild: true
     resolution:
-      integrity: sha1-RID/xMHl1bsllY+Im13gJ5v7LW8=
-      tarball: esbuild/download/esbuild-0.9.4.tgz
+      integrity: sha1-IA54NlgMCniEnuJXZW79QNvwtN8=
+      tarball: esbuild/download/esbuild-0.9.5.tgz?cache=0&sync_timestamp=1616181919359&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fesbuild%2Fdownload%2Fesbuild-0.9.5.tgz
   /escape-html/1.0.3:
     dev: true
     resolution:
@@ -1911,7 +1915,7 @@ packages:
     dev: true
     resolution:
       integrity: sha1-VgiurfwAvmwpAd9fmGF4jeDVl8g=
-      tarball: ms/download/ms-2.0.0.tgz
+      tarball: ms/download/ms-2.0.0.tgz?cache=0&sync_timestamp=1607436580765&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fms%2Fdownload%2Fms-2.0.0.tgz
   /ms/2.1.2:
     dev: true
     resolution:
@@ -2618,6 +2622,7 @@ packages:
       integrity: sha1-zy04vcNKE0vK8QkcQfZhni9nLQA=
       tarball: tslib/download/tslib-1.14.1.tgz
   /tslib/2.1.0:
+    dev: false
     resolution:
       integrity: sha1-2mCGDxwuyqVwOrfTm8Bba/mIuXo=
       tarball: tslib/download/tslib-2.1.0.tgz
