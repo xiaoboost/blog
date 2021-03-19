@@ -1,0 +1,25 @@
+@import 'styles/variable.styl';
+
+.main-footer {
+  flex: 0 auto;
+  font-family: font-default;
+  font-weight: normal;
+  width: 100%;
+  color: BlackLighter;
+  text-align: center;
+  font-size: 12px;
+  
+  media-templte(40px, 24px, @(indent) {
+  margin: indent 0 12px 0;
+  });
+
+  .main-footer__href {
+  color: Black;
+  transition: color .2s ease-out;
+
+  &:hover {
+    color: RedLight;
+    cursor: pointer;
+  }
+  }
+}
