@@ -1,5 +1,5 @@
 {
-  "name": "@blog/posts",
+  "name": "@blog/post",
   "version": "1.0.0",
   "description": "blog posts",
   "source": "src/index.ts",
