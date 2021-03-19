@@ -4,15 +4,15 @@ import { concat } from './array';
 import { isString } from './assert';
 
 export function toPinyin(str: string) {
-  const strs = concat(pinyin(str, { style: pinyin.STYLE_NORMAL }), (arr) => arr);
+  const strings = concat(pinyin(str, { style: pinyin.STYLE_NORMAL }), (arr) => arr);
 
-  return strs
-  .join('-')
-  .toLowerCase()
-  .replace(/[^-a-z]/g, '')
-  .replace(/([a-zA-Z0-9]+)/g, '-$1-')
-  .replace(/[ \-]+/g, '-')
-  .replace(/(^-|-$)/g, '');
+  return strings
+    .join('-')
+    .toLowerCase()
+    .replace(/[^-a-z]/g, '')
+    .replace(/([a-zA-Z0-9]+)/g, '-$1-')
+    .replace(/[ \-]+/g, '-')
+    .replace(/(^-|-$)/g, '');
 };
 
 export function fixHtml<T extends string | Buffer>(content: T): T {
