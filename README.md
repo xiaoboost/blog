@@ -8,8 +8,6 @@
 - [ ] 文章目录
 - [ ] 标签页面
 - [ ] 归档页面
-- [ ] 插件按需加载
-- [ ] 字体压缩
 - [x] 代码行高亮
 - [ ] 代码折叠
 - [ ] 深色模式
@@ -17,6 +15,7 @@
 ## 技术支持
 - [react](https://github.com/facebook/react)
 - [katex](https://github.com/Khan/KaTeX)
+- [typescript](https://github.com/microsoft/TypeScript)
 - [markdown-it](https://github.com/markdown-it/markdown-it)
 
 ## 许可

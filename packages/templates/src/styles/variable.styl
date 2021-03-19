@@ -1,0 +1,66 @@
+// 主要颜色定义
+Shadow = #CCC;
+
+Blue = #1890FF;
+BlueLight = #69c0ff;
+
+Green = #bae637;
+GreenLight = #eaff8f;
+
+Gray = #DDD;
+GrayLight = #f0f2f7;
+
+WhiteBg = #F6F6F6;
+
+Red = #D41324;
+RedLight = #FF6969;
+
+Yellow = #fdcb6e;
+YellowLight = #ffeaa7;
+YellowLighter = #fef9ed;
+
+Black = #303133;
+BlackLight = #606266;
+BlackLighter = #909399;
+BlackExtraLight = #C0C4CC;
+
+// 无衬线字体
+font-default = "Lato", "-apple-system", "BlinkMacSystemFont", "PingFang SC", "思源黑体", "Source Han Sans SC", "Noto Sans CJK SC", "WenQuanYi Micro Hei", "Microsoft YaHei", sans-serif;
+// 衬线字体
+font-serif = "思源宋体", "STSong", "宋体", serif;
+// 等宽字体
+font-mono = Menlo, Monaco, Consolas, Courier New, monospace;
+// 标题字体
+font-title= "Dancing Script";
+
+// 文章宽度
+width-main = 800px;
+
+// 根据宽度设定范围
+pc = 'only screen and (min-width: ' + width-main + ')';
+phone = 'only screen and (max-width: ' + width-main + ')';
+
+// media 模板函数
+media-templte(pc, phone, templte) {
+  @media pc {
+    templte(pc);
+  }
+
+  @media phone {
+    templte(phone);
+  }
+}
+
+// 默认字体大小
+font-default-size = 14px;
+
+// 标题选择器封装
+h-interation(selector = '') {
+  all = 'h1 ' + selector;
+
+  for level in (2..6) {
+    all += ', h' + level + ' ' + selector;
+  }
+
+  return all;
+}

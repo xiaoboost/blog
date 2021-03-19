@@ -1,0 +1,29 @@
+{
+  "name": "@blog/cli",
+  "version": "1.0.0",
+  "description": "blog build cli tool",
+  "source": "src/index.ts",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "package.json"
+  ],
+  "scripts": {
+    "clear": "rimraf ./dist",
+    "dev": "tsc -w -p . --module=commonjs --sourceMap",
+    "build": "pnpm run clear && tsc -p .",
+    "lint": "eslint --quiet --no-error-on-unmatched-pattern --config ../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}",
+    "lint:fix": "eslint --fix --quiet --no-error-on-unmatched-pattern --config ../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}"
+  },
+  "devDependencies": {
+    "@blog/tsconfig": "workspace:*",
+    "@types/blog": "workspace:*",
+    "rimraf": "^3.0.2",
+    "typescript": "^4.2.3"
+  },
+  "dependencies": {
+    "tslib": "^2.1.0"
+  }
+}
