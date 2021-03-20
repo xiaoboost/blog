@@ -3,16 +3,16 @@ import { isDevelopment } from '../utils/env';
 import { resolveRoot } from '../utils/path';
 import { outputDir, publicPath, assetsPath } from '../config/project';
 import { stylusLoader, moduleCssLoader } from '../plugins';
-import { runScript } from '../utils';
+import { runScript, parseUrl } from '../utils';
 
-import type * as TemplateRender from '../../template';
+// import type * as TemplateRender from '@template';
 
 import * as files from './files';
 import * as path from 'path';
 
 import md5 from 'md5';
 
-export type Template = typeof TemplateRender;
+export type Template = any; // typeof TemplateRender;
 
 /** 静态文件后缀 */
 const fileExts = ['.eot', '.otf', '.svg', '.ttf', '.woff', '.woff2', '.ico'];
@@ -42,6 +42,7 @@ export async function buildTemplate(finish?: (template: Template) => void) {
     write: false,
     minify: !isDevelopment,
     sourcemap: false,
+    entryPoints: ['./template/index.ts'],
     external: ['pinyin', 'esbuild', 'react', 'react-dom'],
     mainFields: ["source", "module", "main"],
     watch: false,
@@ -50,7 +51,7 @@ export async function buildTemplate(finish?: (template: Template) => void) {
     bundle: true,
     outdir: resolveRoot('dist'),
     treeShaking: true,
-    publicPath: path.join(publicPath, assetsPath),
+    publicPath: parseUrl(publicPath, assetsPath),
     logLevel: 'warning',
     define: {
       ["process.env.NODE_ENV"]: isDevelopment
@@ -65,12 +66,6 @@ export async function buildTemplate(finish?: (template: Template) => void) {
       stylusLoader(),
       moduleCssLoader(),
     ],
-    stdin: {
-      contents: `export * from '@blog/template';`,
-      resolveDir: path.dirname(__dirname),
-      sourcefile: 'template.ts',
-      loader: 'ts',
-    },
   }).catch((e) => {
     const message = JSON.stringify(e, null, 2);
     console.error(message);

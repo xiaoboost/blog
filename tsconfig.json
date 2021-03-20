@@ -28,7 +28,9 @@
     "baseUrl": ".",
     "paths": {
       "@build/*": ["./build/*"],
-      "@template/*": ["./template/*"]
+      "@template/*": ["./template/*"],
+      "@build": ["./build/index.ts"],
+      "@template": ["./template/index.ts"]
     }
   },
   "include": ["build", "template", "typings"],

@@ -7,9 +7,6 @@ import path from 'path';
 import { promises as fs } from 'fs';
 import { resolveFile } from './utils';
 
-const resolveTemplate = (...paths: string[]) => {
-  return resolveRoot('packages/templates', ...paths);
-};
 
 export function stylusLoader(): Plugin {
   return {
@@ -28,8 +25,8 @@ export function stylusLoader(): Plugin {
 
         styl
           .set('filename', args.path)
-          .include(resolveTemplate('src'))
-          .include(resolveTemplate('node_modules'));
+          .include(resolveRoot('template'))
+          .include(resolveRoot('node_modules'));
 
         const css = await (new Promise<string>((resolve, reject) => {
           styl.render((err, css) => {
