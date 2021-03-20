@@ -16,8 +16,13 @@
     "clear": "rimraf ./dist",
     "dev": "tsc -w -p . --module=commonjs --sourceMap",
     "build": "pnpm run clear && tsc -p .",
+    "prepare": "pnpm run build",
     "lint": "eslint --quiet --no-error-on-unmatched-pattern --config ../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}",
     "lint:fix": "eslint --fix --quiet --no-error-on-unmatched-pattern --config ../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}"
+  },
+  "dependencies": {
+    "@blog/template": "workspace:*",
+    "esbuild": "^0.9.5"
   },
   "devDependencies": {
     "@blog/tsconfig": "workspace:*",
@@ -28,11 +33,9 @@
     "@types/md5": "^2.3.0",
     "@types/mime": "^2.0.3",
     "@types/node": "^14.14.35",
-    "@types/pinyin": "^2.8.2",
     "@types/stylus": "^0.48.33",
     "chalk": "^4.1.0",
     "chokidar": "^3.5.1",
-    "esbuild": "^0.9.5",
     "highlight.js": "^10.6.0",
     "katex": "^0.13.0",
     "koa": "^2.13.1",
@@ -48,7 +51,6 @@
     "memfs": "^3.2.0",
     "mime": "^2.5.2",
     "moment": "^2.29.1",
-    "pinyin": "^2.9.1",
     "rimraf": "^3.0.2",
     "stylus": "^0.54.8",
     "tslib": "^2.1.0",
