@@ -1,6 +1,6 @@
 import MarkdownIt from 'markdown-it';
 
-import { toPinyin } from '@blog/utils';
+import { toPinyin } from '../utils';
 
 export function TitleRender(md: MarkdownIt) {
   md.renderer.rules.heading_open = (tokens, idx, ops, env, self) => {

@@ -3,9 +3,9 @@ import { isDevelopment } from '../utils/env';
 import { resolveRoot } from '../utils/path';
 import { outputDir, publicPath, assetsPath } from '../config/project';
 import { stylusLoader, moduleCssLoader } from '../plugins';
-import { runScript } from '@blog/utils';
+import { runScript } from '../utils';
 
-import type * as TemplateRender from '@blog/template';
+import type * as TemplateRender from '../../template';
 
 import * as files from './files';
 import * as path from 'path';
@@ -42,7 +42,7 @@ export async function buildTemplate(finish?: (template: Template) => void) {
     write: false,
     minify: !isDevelopment,
     sourcemap: false,
-    external: ['pinyin', 'esbuild'],
+    external: ['pinyin', 'esbuild', 'react', 'react-dom'],
     mainFields: ["source", "module", "main"],
     watch: false,
     platform: 'node',

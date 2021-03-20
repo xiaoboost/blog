@@ -3,7 +3,7 @@ import './index.styl';
 import React from 'react';
 
 import { PropsWithChildren } from 'react';
-import { Empty } from '@blog/utils';
+import { Empty } from '@build/utils';
 
 export function Article({ children }: PropsWithChildren<Empty>) {
   return (

@@ -3,7 +3,7 @@ import './styles/index.styl';
 import { ReactNode, createElement } from 'react';
 import { renderToString } from 'react-dom/server';
 
-import { AnyObject } from '@blog/utils';
+import { AnyObject } from '../build/utils';
 
 import { Render as IndexRender } from './views/index';
 import { Render as DefaultPostRender } from './views/post/default';

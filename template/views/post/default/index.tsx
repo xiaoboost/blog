@@ -3,7 +3,7 @@ import './index.styl';
 import React from 'react';
 import Moment from 'moment';
 
-import { Layout, LayoutProps } from '../../../components/layout';
+import { Layout, LayoutProps } from '@template/components/layout';
 
 export interface Props extends LayoutProps {
   /** 文章本体 */

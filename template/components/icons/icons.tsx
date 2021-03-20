@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { stringifyClass } from '@blog/utils';
+import { stringifyClass } from '@build/utils';
 
 type SpanProps = React.DetailedHTMLProps<React.HTMLAttributes<HTMLSpanElement>, HTMLSpanElement>;
 
