@@ -22,6 +22,7 @@
   },
   "dependencies": {
     "@blog/template": "workspace:*",
+    "@blog/utils": "workspace:*",
     "@types/fs-extra": "^9.0.8",
     "esbuild": "^0.9.5",
     "fs-extra": "^9.1.0"

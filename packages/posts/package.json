@@ -2,9 +2,8 @@
   "name": "@blog/post",
   "version": "1.0.0",
   "description": "blog posts",
-  "source": "src/index.ts",
-  "module": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "index.js",
+  "types": "index.d.ts",
   "files": [
     "dist",
     "README.md",
@@ -12,14 +11,15 @@
   ],
   "scripts": {
     "clear": "rimraf ./dist",
-    "dev": "tsc -w -p .",
-    "build": "pnpm run clear && tsc -p .",
+    "build": "node scripts/build.js",
+    "prepare": "pnpm run build",
     "lint": "eslint --quiet --no-error-on-unmatched-pattern --config ../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}",
     "lint:fix": "eslint --fix --quiet --no-error-on-unmatched-pattern --config ../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}"
   },
   "devDependencies": {
     "@blog/tsconfig": "workspace:*",
     "@types/blog": "workspace:*",
+    "fast-glob": "^3.2.5",
     "rimraf": "^3.0.2",
     "typescript": "^4.2.3"
   },

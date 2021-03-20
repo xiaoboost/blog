@@ -19,6 +19,7 @@ importers:
   packages/cli:
     dependencies:
       '@blog/template': link:../templates
+      '@blog/utils': link:../utils
       '@types/fs-extra': 9.0.8
       esbuild: 0.9.5
       fs-extra: 9.1.0
@@ -45,6 +46,7 @@ importers:
     specifiers:
       '@blog/template': workspace:*
       '@blog/tsconfig': workspace:*
+      '@blog/utils': workspace:*
       '@types/blog': workspace:*
       '@types/fs-extra': ^9.0.8
       '@types/koa': ^2.13.1
@@ -72,11 +74,13 @@ importers:
     devDependencies:
       '@blog/tsconfig': link:../tsconfig
       '@types/blog': link:../typings
+      fast-glob: 3.2.5
       rimraf: 3.0.2
       typescript: 4.2.3
     specifiers:
       '@blog/tsconfig': workspace:*
       '@types/blog': workspace:*
+      fast-glob: ^3.2.5
       rimraf: ^3.0.2
       tslib: ^2.1.0
       typescript: ^4.2.3
