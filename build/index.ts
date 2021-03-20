@@ -1,1 +1,3 @@
-export { build as cli } from './process';
+import { build } from './process';
+
+build();

@@ -3,7 +3,7 @@
     "outDir": "builder",
     "sourceMap": true,
     "strict": true,
-    "declaration": false,
+    "declaration": true,
     "moduleResolution": "node",
     "target": "ESNext",
     "module": "CommonJS",
