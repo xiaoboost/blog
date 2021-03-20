@@ -3,7 +3,7 @@ import { resolveRoot } from '../utils/path';
 /** 项目输出文件路径 */
 export const outputDir = resolveRoot('dist');
 /** 文章路径 */
-export const postsDir = resolveRoot('node_modules/@blog/post/src');
+export const postsDir = resolveRoot('posts');
 
 /** 网站资源公共路径 */
 export const publicPath = '/';
