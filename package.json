@@ -9,10 +9,9 @@
     "url": "https://github.com/xiaoboost/blog"
   },
   "scripts": {
-    "ts-node": "node -r ts-node/register/transpile-only -r tsconfig-paths/register",
-    "dev": "cross-env NODE_ENV=development npm run ts-node src/serve.ts",
-    "serve": "cross-env NODE_ENV=server npm run ts-node src/serve.ts",
-    "build": "cross-env NODE_ENV=production npm run ts-node src/build.ts",
+    "serve": "blog --development --watch --serve",
+    "serve:template": "blog --development --serve --template --watch",
+    "build": "blog --production",
     "lint": "pnpm run -r lint --parallel --filter .",
     "lint:fix": "pnpm run -r lint:fix --parallel --filter ."
   },
@@ -22,6 +21,7 @@
     "@typescript-eslint/eslint-plugin": "^4.18.0",
     "@typescript-eslint/parser": "^4.18.0",
     "eslint": "^7.22.0",
+    "eslint-plugin-react": "^7.22.0",
     "typescript": "^4.2.3"
   }
 }

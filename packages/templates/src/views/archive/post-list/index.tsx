@@ -4,15 +4,15 @@ import { Layout, LayoutProps } from 'src/template/components/layout';
 
 interface Props extends LayoutProps {
   posts: Array<{
-  title: string;
-  url: string;
+    title: string;
+    url: string;
   }>;
 }
 
 export function Template(props: Props) {
   return (
-  <Layout {...props}>
+    <Layout {...props}>
     posts
-  </Layout>
+    </Layout>
   )
 }

@@ -4,9 +4,7 @@ import { stringifyClass } from 'src/utils/template';
 
 type SpanProps = React.DetailedHTMLProps<React.HTMLAttributes<HTMLSpanElement>, HTMLSpanElement>;
 
-export interface IconProps extends SpanProps {
-  // ..
-}
+export type IconProps = SpanProps
 
 interface IconCreatorProps extends IconProps {
   name: string;
@@ -14,9 +12,9 @@ interface IconCreatorProps extends IconProps {
 
 export function IconCreator(props: IconCreatorProps) {
   return <span
-  {...props}
-  aria-label={props.name}
-  className={stringifyClass('blog-icon', props.className)}>
-  {props.children}
+    {...props}
+    aria-label={props.name}
+    className={stringifyClass('blog-icon', props.className)}>
+    {props.children}
   </span>;
 }
