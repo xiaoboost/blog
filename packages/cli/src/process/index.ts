@@ -1,5 +1,6 @@
 import { cname } from './cname';
 import { buildTemplate } from './template';
+import { write } from './files';
 
 export async function build() {
   await cname();
@@ -7,4 +8,5 @@ export async function build() {
     debugger;
     console.log(param);
   });
+  await write();
 }

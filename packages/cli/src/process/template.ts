@@ -1,16 +1,26 @@
-import { build } from 'esbuild';
-import { dirname } from 'path';
+import { build, OutputFile } from 'esbuild';
 import { isDevelopment } from '../utils/env';
 import { resolveRoot } from '../utils/path';
-import { stylusLoader, fontLoader, moduleCssLoader } from '../utils/esbuild';
+import { outputDir, publicPath, assetsPath } from '../config/project';
+import { stylusLoader, moduleCssLoader } from '../utils/esbuild';
 
 import type * as Template from '@blog/template';
 
-function runScript(script: string): typeof Template {
+import * as files from './files';
+import * as path from 'path';
+
+import md5 from 'md5';
+
+/** 静态文件后缀 */
+const fileExts = ['.eot', '.otf', '.svg', '.ttf', '.woff', '.woff2', '.ico'];
+
+function runScript(script: string) {
+  // 去除 pinyin 的依赖
+  const code = script.replace('require("pinyin")', '{}');
+
   interface FakeModule {
     exports: {
       default: any;
-      [key: string]: any;
     }
   }
 
@@ -21,21 +31,41 @@ function runScript(script: string): typeof Template {
   try {
     (new Function(`
       return function box(module, exports, require) {
-        ${script}
+        ${code}
       }
     `))()(fake, fake.exports, require);
   }
   catch (e) {
     throw new Error(e);
   }
+  
+  return (fake.exports.default ? fake.exports.default : fake.exports) as typeof Template;
+}
 
-  return fake.exports as any;
+function fixFile(outputFiles: OutputFile[]) {
+  for (const file of outputFiles) {
+    const ext = path.extname(file.path);
+    const fileName = path.basename(file.path);
+
+    if (fileExts.includes(ext)) {
+      file.path = path.join(outputDir, assetsPath, fileName);
+      files.push(file);
+    }
+    else if (ext === '.css') {
+      const name = process.env.NODE_ENV === 'production'
+        ? `/css/style.${md5(file.contents)}.css`
+        : `/css/style.${md5(file.contents)}.css`;
+
+      file.path = path.join(outputDir, name);
+      files.push(file);
+    }
+  }
 }
 
 export async function buildTemplate(finish?: (template: typeof Template) => void) {
   const result = await build({
     write: false,
-    minify: false,
+    minify: !isDevelopment,
     sourcemap: false,
     external: ['pinyin', 'esbuild'],
     mainFields: ["source", "module", "main"],
@@ -45,46 +75,41 @@ export async function buildTemplate(finish?: (template: typeof Template) => void
     bundle: true,
     outdir: resolveRoot('dist'),
     treeShaking: true,
-    publicPath: 'font',
+    publicPath: path.join(publicPath, assetsPath),
     logLevel: 'warning',
     define: {
       ["process.env.NODE_ENV"]: isDevelopment
         ? '"development"'
         : '"production"',
     },
-    loader: {
-      '.eot': 'file',
-      '.otf': 'file',
-      '.svg': 'file',
-      '.ttf': 'file',
-      '.woff': 'file',
-      '.woff2': 'file',
-    },
+    loader: Object.fromEntries(
+      fileExts
+        .map((ext) => [ext, 'file'])
+    ),
     plugins: [
       stylusLoader(),
-      fontLoader(),
       moduleCssLoader(),
     ],
     stdin: {
       contents: `export * from '@blog/template';`,
-      resolveDir: dirname(__dirname),
+      resolveDir: path.dirname(__dirname),
       sourcefile: 'template.ts',
       loader: 'ts',
     },
   }).catch((e) => {
-    debugger;
-    throw e;
+    const message = JSON.stringify(e, null, 2);
+    console.error(message);
+    throw JSON.stringify(e, null, 2);
   });
 
-  debugger;
-  let code = Buffer.from(result?.outputFiles?.[0].contents ?? '').toString();
+  fixFile(result.outputFiles!);
 
-  if (!code) {
-    throw new Error('Create template Error.');
+  const codeFile = (result.outputFiles!).find((item) => /\.js$/.test(item.path));
+  const code = Buffer.from(codeFile?.contents ?? '').toString();
+
+  if (!codeFile || !code) {
+    throw new Error('Create template render script Error.');
   }
-  
-  // 去除 pinyin 的依赖
-  code = code.replace('require("pinyin")', '{}');
 
   return runScript(code);
 }

@@ -1,11 +1,9 @@
 import * as path from 'path';
 import * as fs from 'fs-extra';
 
-import { outputDir } from '../config/project';
-
 export interface FileData {
   path: string;
-  content: Uint8Array | Buffer | string;
+  contents: Uint8Array | Buffer | string;
 }
 
 const data: FileData[] = [];
@@ -28,6 +26,7 @@ export function push(...files: FileData[]) {
 }
 
 export async function write() {
+  debugger;
   const dirMap: Record<string, boolean> = {};
 
   for (const file of data) {
@@ -38,6 +37,6 @@ export async function write() {
       dirMap[dirname] = true;
     }
 
-    await fs.writeFile(path.join(outputDir, file.path), file.content);
+    await fs.writeFile(file.path, file.contents);
   }
 }
