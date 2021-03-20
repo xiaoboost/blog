@@ -1,6 +1,8 @@
 import { build } from 'esbuild';
 import { dirname } from 'path';
 import { isDevelopment } from '../utils/env';
+import { resolveRoot } from '../utils/path';
+import { stylusLoader, fontLoader, moduleCssLoader } from '../utils/esbuild';
 
 import type * as Template from '@blog/template';
 
@@ -30,8 +32,8 @@ function runScript(script: string): typeof Template {
   return fake.exports as any;
 }
 
-export async function buildTemplate(finish: (template: typeof Template) => void) {
-  const { outputFiles } = await build({
+export async function buildTemplate(finish?: (template: typeof Template) => void) {
+  const result = await build({
     write: false,
     minify: false,
     sourcemap: false,
@@ -41,22 +43,41 @@ export async function buildTemplate(finish: (template: typeof Template) => void)
     platform: 'node',
     format: 'cjs',
     bundle: true,
+    outdir: resolveRoot('dist'),
     treeShaking: true,
+    publicPath: 'font',
     logLevel: 'warning',
     define: {
       ["process.env.NODE_ENV"]: isDevelopment
         ? '"development"'
         : '"production"',
     },
+    loader: {
+      '.eot': 'file',
+      '.otf': 'file',
+      '.svg': 'file',
+      '.ttf': 'file',
+      '.woff': 'file',
+      '.woff2': 'file',
+    },
+    plugins: [
+      stylusLoader(),
+      fontLoader(),
+      moduleCssLoader(),
+    ],
     stdin: {
       contents: `export * from '@blog/template';`,
       resolveDir: dirname(__dirname),
       sourcefile: 'template.ts',
       loader: 'ts',
     },
+  }).catch((e) => {
+    debugger;
+    throw e;
   });
 
-  let code = Buffer.from(outputFiles?.[0].contents ?? '').toString();
+  debugger;
+  let code = Buffer.from(result?.outputFiles?.[0].contents ?? '').toString();
 
   if (!code) {
     throw new Error('Create template Error.');
@@ -65,5 +86,5 @@ export async function buildTemplate(finish: (template: typeof Template) => void)
   // 去除 pinyin 的依赖
   code = code.replace('require("pinyin")', '{}');
 
-  finish(runScript(code));
+  return runScript(code);
 }

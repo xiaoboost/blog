@@ -105,18 +105,19 @@ importers:
       tslib: ^2.1.0
       typescript: ^4.2.3
   packages/templates:
-    dependencies:
-      tslib: 2.1.0
     devDependencies:
       '@blog/tsconfig': link:../tsconfig
       '@blog/utils': link:../utils
       '@types/blog': link:../typings
       '@types/react': 17.0.3
       '@types/react-dom': 17.0.2
+      highlight.js: 10.6.0
+      katex: 0.13.0
       moment: 2.29.1
       react: 17.0.1
       react-dom: 17.0.1_react@17.0.1
       rimraf: 3.0.2
+      tslib: 2.1.0
       typescript: 4.2.3
     specifiers:
       '@blog/tsconfig': workspace:*
@@ -124,6 +125,8 @@ importers:
       '@types/blog': workspace:*
       '@types/react': ^17.0.3
       '@types/react-dom': ^17.0.2
+      highlight.js: ^10.6.0
+      katex: ^0.13.0
       moment: ^2.29.1
       react: ^17.0.1
       react-dom: ^17.0.1
