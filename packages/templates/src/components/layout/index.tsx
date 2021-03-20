@@ -1,3 +1,5 @@
+import './index.styl';
+
 import React from 'react';
 
 import { PropsWithChildren } from 'react';
@@ -27,8 +29,9 @@ export interface LayoutProps {
   publicPath: string;
 }
 
+import faviconPath from '../../assets/image/favicon.ico';
+
 export function Layout(props: PropsWithChildren<LayoutProps>) {
-  const faviconPath = parseUrl(props.publicPath, 'image/favicon.ico');
   const styleFile = parseUrl(props.publicPath, props.styleFile);
   const scriptFile = parseUrl(props.publicPath, props.scriptFile);
 

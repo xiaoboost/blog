@@ -1,3 +1,5 @@
+import './index.styl';
+
 import React from 'react';
 
 import { parseUrl, stringifyClass } from '@blog/utils';

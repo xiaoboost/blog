@@ -7,6 +7,8 @@ export const postsDir = resolveRoot('node_modules/@blog/post/src');
 
 /** 网站资源公共路径 */
 export const publicPath = '/';
+/** 项目静态资源路径 */
+export const assetsPath = 'assets';
 /** 标签页路径 */
 export const tagsPath = 'tag';
 /** 归档页路径 */
