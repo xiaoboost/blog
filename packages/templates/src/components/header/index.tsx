@@ -1,24 +1,30 @@
 import React from 'react';
 
-import { site } from 'src/config/site';
-import { tagsPath, archivePath } from 'src/config/project';
-import { resolvePublic, normalize, stringifyClass } from 'src/utils/template';
+import { parseUrl, stringifyClass } from '@blog/utils';
 
 interface Props {
   /** 当前页面网址 */
   location: string;
+  /** 网页标题 */
+  title: string;
+  /** 网站根路径 */
+  publicPath: string;
+  // /** 标签页面路径 */
+  // tagPath: string;
+  // /** 归档页面路径 */
+  // archivePath: string;
 }
 
-export function Header({ location }: Props) {
-  const indexHref = normalize('/');
-  const aboutHref = normalize('/posts/about/');
-  const tagHref = resolvePublic(tagsPath, '/');
-  const archiveHref = resolvePublic(archivePath, '/');
+export function Header(props: Props) {
+  const indexHref = parseUrl(props.publicPath);
+  const aboutHref = parseUrl(props.publicPath, '/posts/about/');
+  // const tagHref = parseUrl(props.publicPath, props.tagPath);
+  // const archiveHref = parseUrl(props.publicPath, props.archivePath);
   const navs = [
     {
       name: '首页',
       href: indexHref,
-      highlight: location === '/' || location === '/index.html',
+      highlight: props.location === '/' || props.location === '/index.html',
     },
     // {
     //   name: '归档',
@@ -33,14 +39,17 @@ export function Header({ location }: Props) {
     {
       name: '关于',
       href: aboutHref,
-      highlight: location === '/posts/about/' || location === '/posts/about/index.html',
+      highlight: (
+        props.location === '/posts/about/' ||
+        props.location === '/posts/about/index.html'
+      ),
     },
   ];
 
   return <header className='main-header-wrapper'>
     <span className='main-header'>
       <a className='main-title' href={indexHref}>
-        {site.title}
+        {props.title}
       </a>
       <nav className='main-nav'>
         {navs.map((nav, i) => (

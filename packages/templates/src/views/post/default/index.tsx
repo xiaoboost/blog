@@ -1,25 +1,28 @@
 import React from 'react';
 import Moment from 'moment';
 
-import { PostData } from 'src/loader/post';
-import { Layout, LayoutProps } from 'src/template/components/layout';
+import { Layout, LayoutProps } from '../../../components/layout';
 
-interface Props {
-  site: LayoutProps;
-  post: PostData;
+export interface Props extends LayoutProps {
+  /** 文章本体 */
+  post: string;
+  /** 文章写作时间戳 */
+  time: number;
 }
 
-export function Template({ post, site }: Props) {
+export function Render(props: Props) {
   return (
-    <Layout {...site}>
+    <Layout {...props}>
       <section className='post-default'>
         <header className='post-header'>
-          <h1 className='post-header__title'>{post.title}</h1>
-          <time className='post-header__create'>{Moment(post.date).format('yyyy-MM-DD')}</time>
+          <h1 className='post-header__title'>{props.title}</h1>
+          <time className='post-header__create'>
+            {Moment(props.time).format('yyyy-MM-DD')}
+          </time>
         </header>
         <article
           className='post-article'
-          dangerouslySetInnerHTML={{ __html: post.html }}
+          dangerouslySetInnerHTML={{ __html: props.post }}
         />
       </section>
     </Layout>

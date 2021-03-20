@@ -5,12 +5,12 @@ export function mergeConfig(opt: BuildOptions = {}) {
   opt.format = opt.format ?? 'cjs';
   opt.target = opt.target ?? 'es6';
   opt.color = opt.color ?? true;
-  opt.platform = opt.platform ?? 'browser';
+  opt.platform = opt.platform ?? 'node';
   opt.external = (opt.external ?? []).concat(["esbuild"]);
   opt.mainFields = (opt.mainFields ?? []).concat(["source", "module", "main"]);
 
   opt.bundle = true;
-  opt.logLevel = 'info';
+  opt.logLevel = 'warning';
   opt.treeShaking = true;
   
   if (!opt.outdir && !opt.outfile) {
