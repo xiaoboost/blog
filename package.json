@@ -9,10 +9,15 @@
     "url": "https://github.com/xiaoboost/blog"
   },
   "scripts": {
-    "clear": "rimraf ./dist",
+    "clear:builder": "rimraf ./builder",
+    "dev:builder": "tsc -w -p ./tsconfig.build.json",
     "build:builder": "pnpm run clear && tsc -p ./tsconfig.build.json",
-    "lint": "pnpm run -r lint --parallel --filter .",
-    "lint:fix": "pnpm run -r lint:fix --parallel --filter ."
+    "clear:website": "rimraf ./dist",
+    "dev:website": "node ./builder/index.js --development",
+    "build:website": "node ./builder/index.js --production",
+    "prepare": "pnpm run build:builder",
+    "lint": "eslint --quiet --no-error-on-unmatched-pattern --config ./.eslintrc.js {build,template}/**/*.{ts,tsx,js,jsx}",
+    "lint:fix": "eslint --fix --quiet --no-error-on-unmatched-pattern --config ./.eslintrc.js {build,template}/**/*.{ts,tsx,js,jsx}"
   },
   "dependencies": {
     "esbuild": "^0.9.5",

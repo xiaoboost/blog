@@ -1,20 +1,16 @@
 const path = require('path');
-const fs = require('fs');
 const workspace = process.cwd();
-const isRoot = fs.existsSync(path.join(workspace, 'pnpm-lock.yaml'));
-const rootWorkspace = isRoot ? workspace : path.join(workspace, '../../');
-const projectConfig = path.join(rootWorkspace, 'tsconfig.test.json');
-const relativeRoot = path.relative(rootWorkspace, workspace);
-
+const projectConfig = path.join(workspace, 'tsconfig.json');
 const ignorePaths = [
   'dev/*',
   'dist/*',
+  'builder/*',
   'draft/*',
   'coverage/*',
   '.vscode/*',
   '.eslintrc.js',
   '**/*.js',
-].map((name) => path.join(relativeRoot, name).replace(/\\+/g, '/'));
+];
 
 module.exports = {
   parser: '@typescript-eslint/parser',
