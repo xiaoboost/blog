@@ -8,7 +8,7 @@ import { Header } from '../header';
 import { Footer } from '../footer';
 import { Article } from '../article';
 
-import { parseUrl } from '@blog/utils';
+import { parseUrl } from '@build/utils';
 
 export interface LayoutProps {
   /** 网页标题 */

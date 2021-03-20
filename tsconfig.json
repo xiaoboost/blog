@@ -24,7 +24,12 @@
     "skipLibCheck": true,
     "suppressImplicitAnyIndexErrors": true,
     "allowJs": true,
-    "lib": ["ESNext"]
+    "lib": ["ESNext"],
+    "baseUrl": ".",
+    "paths": {
+      "@build/*": ["./build/*"],
+      "@template/*": ["./template/*"]
+    }
   },
   "include": ["build", "template", "typings"],
   "exclude": ["node_modules", "dist", "builder"]

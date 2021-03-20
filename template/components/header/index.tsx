@@ -2,7 +2,7 @@ import './index.styl';
 
 import React from 'react';
 
-import { parseUrl, stringifyClass } from '@blog/utils';
+import { parseUrl, stringifyClass } from '@build/utils';
 
 interface Props {
   /** 当前页面网址 */
