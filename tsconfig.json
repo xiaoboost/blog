@@ -3,7 +3,7 @@
     "outDir": "dist",
     "sourceMap": true,
     "strict": true,
-    "declaration": true,
+    "declaration": false,
     "moduleResolution": "node",
     "target": "ESNext",
     "module": "CommonJS",
@@ -24,6 +24,8 @@
     "skipLibCheck": true,
     "suppressImplicitAnyIndexErrors": true,
     "allowJs": true,
-    "lib": ["ESNext", "DOM"]
-  }
+    "lib": ["ESNext"]
+  },
+  "include": ["build", "template", "typings"],
+  "exclude": ["node_modules", "dist"]
 }
