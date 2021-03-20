@@ -10,14 +10,14 @@
   },
   "scripts": {
     "clear:builder": "rimraf ./builder",
-    "dev:builder": "tsc -w -p ./tsconfig.build.json",
-    "build:builder": "pnpm run clear:builder && tsc -p ./tsconfig.build.json",
+    "dev:builder": "ts-node ./build/build.ts --development",
+    "build:builder": "pnpm run clear:builder && ts-node ./build/build.ts --production",
     "clear:website": "rimraf ./dist",
     "dev:website": "node ./builder/index.js --development",
     "build:website": "pnpm run clear:website && node ./builder/index.js --production",
     "prepare": "pnpm run build:builder",
-    "lint": "eslint --quiet --no-error-on-unmatched-pattern --config ./.eslintrc.js {build,template}/**/*.{ts,tsx,js,jsx}",
-    "lint:fix": "eslint --fix --quiet --no-error-on-unmatched-pattern --config ./.eslintrc.js {build,template}/**/*.{ts,tsx,js,jsx}"
+    "lint": "eslint --quiet --no-error-on-unmatched-pattern --config ./.eslintrc.js {build,template,typings}/**/*.{ts,tsx,js,jsx}",
+    "lint:fix": "eslint --fix --quiet --no-error-on-unmatched-pattern --config ./.eslintrc.js {build,template,typings}/**/*.{ts,tsx,js,jsx}"
   },
   "dependencies": {
     "chalk": "^4.1.0",
@@ -63,6 +63,7 @@
     "eslint": "^7.22.0",
     "eslint-plugin-react": "^7.22.0",
     "rimraf": "^3.0.2",
+    "ts-node": "^9.1.1",
     "tslib": "^2.1.0",
     "typescript": "^4.2.3"
   }

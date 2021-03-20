@@ -4,14 +4,14 @@ import { stylusLoader, moduleCssLoader } from '../plugins';
 import { runScript, resolveRoot } from '../utils';
 import { mergeConfig, fileExts } from './utils';
 
-// import type * as TemplateRender from '@template';
+import type * as TemplateRender from '@template';
 
 import * as files from './files';
 import * as path from 'path';
 
 import md5 from 'md5';
 
-export type Template = any; // typeof TemplateRender;
+export type Template = typeof TemplateRender;
 
 function fixFile(outputFiles: OutputFile[]) {
   for (const file of outputFiles) {

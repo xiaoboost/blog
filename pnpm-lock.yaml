@@ -41,6 +41,7 @@ devDependencies:
   eslint: 7.22.0
   eslint-plugin-react: 7.22.0_eslint@7.22.0
   rimraf: 3.0.2
+  ts-node: 9.1.1_typescript@4.2.3
   tslib: 2.1.0
   typescript: 4.2.3
 lockfileVersion: 5.2
@@ -547,6 +548,11 @@ packages:
     resolution:
       integrity: sha1-SzXClE8GKov82mZBB2A1D+nd/CE=
       tarball: are-we-there-yet/download/are-we-there-yet-1.1.5.tgz
+  /arg/4.1.3:
+    dev: true
+    resolution:
+      integrity: sha1-Jp/HrVuOQstjyJbVZmAXJhwUQIk=
+      tarball: arg/download/arg-4.1.3.tgz
   /argparse/1.0.10:
     dependencies:
       sprintf-js: 1.0.3
@@ -639,6 +645,11 @@ packages:
     resolution:
       integrity: sha1-NFThpGLujVmeI23zNs2epPiv4Qc=
       tarball: braces/download/braces-3.0.2.tgz
+  /buffer-from/1.1.1:
+    dev: true
+    resolution:
+      integrity: sha1-MnE7wCj3XAL9txDXx7zsHyxgcO8=
+      tarball: buffer-from/download/buffer-from-1.1.1.tgz
   /cache-content-type/1.0.1:
     dependencies:
       mime-types: 2.1.29
@@ -810,6 +821,11 @@ packages:
     resolution:
       integrity: sha1-tf1UIgqivFq1eqtxQMlAdUUDwac=
       tarball: core-util-is/download/core-util-is-1.0.2.tgz
+  /create-require/1.1.1:
+    dev: true
+    resolution:
+      integrity: sha1-wdfo8eX2z8n/ZfnNNS03NIdWwzM=
+      tarball: create-require/download/create-require-1.1.1.tgz
   /cross-spawn/7.0.3:
     dependencies:
       path-key: 3.1.1
@@ -944,6 +960,13 @@ packages:
     resolution:
       integrity: sha1-+hN8S9aY7fVc1c0CrFWfkaTEups=
       tarball: detect-libc/download/detect-libc-1.0.3.tgz
+  /diff/4.0.2:
+    dev: true
+    engines:
+      node: '>=0.3.1'
+    resolution:
+      integrity: sha1-YPOuy4nV+uUgwRqhnvwruYKq3n0=
+      tarball: diff/download/diff-4.0.2.tgz?cache=0&sync_timestamp=1604902500697&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fdiff%2Fdownload%2Fdiff-4.0.2.tgz
   /dir-glob/3.0.1:
     dependencies:
       path-type: 4.0.0
@@ -1885,6 +1908,11 @@ packages:
     resolution:
       integrity: sha1-bW/mVw69lqr5D8rR2vo7JWbbOpQ=
       tarball: lru-cache/download/lru-cache-6.0.0.tgz
+  /make-error/1.3.6:
+    dev: true
+    resolution:
+      integrity: sha1-LrLjfqm2fEiR9oShOUeZr0hM96I=
+      tarball: make-error/download/make-error-1.3.6.tgz
   /markdown-it-attrs/4.0.0_markdown-it@12.0.4:
     dependencies:
       markdown-it: 12.0.4
@@ -2691,13 +2719,20 @@ packages:
     resolution:
       integrity: sha1-GQhmvs51U+H48mei7oLGBrVQmho=
       tarball: source-map-resolve/download/source-map-resolve-0.5.3.tgz
+  /source-map-support/0.5.19:
+    dependencies:
+      buffer-from: 1.1.1
+      source-map: 0.6.1
+    dev: true
+    resolution:
+      integrity: sha1-qYti+G3K9PZzmWSMCFKRq56P7WE=
+      tarball: source-map-support/download/source-map-support-0.5.19.tgz
   /source-map-url/0.4.1:
     dev: false
     resolution:
       integrity: sha1-CvZmBadFpaL5HPG7+KevvCg97FY=
       tarball: source-map-url/download/source-map-url-0.4.1.tgz
   /source-map/0.6.1:
-    dev: false
     engines:
       node: '>=0.10.0'
     resolution:
@@ -2896,6 +2931,24 @@ packages:
     resolution:
       integrity: sha1-fhvjRw8ed5SLxD2Uo8j013UrpVM=
       tarball: toidentifier/download/toidentifier-1.0.0.tgz
+  /ts-node/9.1.1_typescript@4.2.3:
+    dependencies:
+      arg: 4.1.3
+      create-require: 1.1.1
+      diff: 4.0.2
+      make-error: 1.3.6
+      source-map-support: 0.5.19
+      typescript: 4.2.3
+      yn: 3.1.1
+    dev: true
+    engines:
+      node: '>=10.0.0'
+    hasBin: true
+    peerDependencies:
+      typescript: '>=2.7'
+    resolution:
+      integrity: sha1-UamkUKPpWUAb2l8ASnLVS5NtN20=
+      tarball: ts-node/download/ts-node-9.1.1.tgz
   /tslib/1.14.1:
     dev: true
     resolution:
@@ -3084,6 +3137,13 @@ packages:
     resolution:
       integrity: sha1-9Xa2M0FUeYnB3nuiiHYJI7J/6E8=
       tarball: ylru/download/ylru-1.2.1.tgz
+  /yn/3.1.1:
+    dev: true
+    engines:
+      node: '>=6'
+    resolution:
+      integrity: sha1-HodAGgnXZ8HV6rJqbkwYUYLS61A=
+      tarball: yn/download/yn-3.1.1.tgz
 specifiers:
   '@types/fs-extra': ^9.0.8
   '@types/highlight.js': ^9.12.4
@@ -3125,6 +3185,7 @@ specifiers:
   react-dom: ^17.0.1
   rimraf: ^3.0.2
   stylus: ^0.54.8
+  ts-node: ^9.1.1
   tslib: ^2.1.0
   typescript: ^4.2.3
   yaml: ^1.10.2

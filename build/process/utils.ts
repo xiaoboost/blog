@@ -2,7 +2,7 @@ import { BuildOptions } from 'esbuild';
 import { parseUrl, isDevelopment } from '../utils';
 import { publicPath, assetsPath } from '../config/project';
 
-import packageData from '../../package.json';
+import { dependencies } from '../../package.json';
 
 /** 静态文件后缀 */
 export const fileExts = ['.eot', '.otf', '.svg', '.ttf', '.woff', '.woff2', '.ico'];
@@ -17,7 +17,7 @@ export function mergeConfig(opt: BuildOptions): BuildOptions {
     minify: !isDevelopment,
     treeShaking: true,
     logLevel: 'warning',
-    external: Object.keys(packageData.dependencies),
+    external: Object.keys(dependencies),
     mainFields: ["source", "module", "main"],
     publicPath: parseUrl(publicPath, assetsPath),
     define: {
