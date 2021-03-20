@@ -4,16 +4,16 @@ import { Layout, LayoutProps } from 'src/template/components/layout';
 
 interface Props extends LayoutProps {
   years: Array<{
-  year: string;
-  url: string;
-  number: number;
+    year: string;
+    url: string;
+    number: number;
   }>;
 }
 
 export function Template(props: Props) {
   return (
-  <Layout {...props}>
+    <Layout {...props}>
     year
-  </Layout>
+    </Layout>
   )
 }

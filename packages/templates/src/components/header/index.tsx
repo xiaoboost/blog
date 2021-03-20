@@ -15,46 +15,46 @@ export function Header({ location }: Props) {
   const tagHref = resolvePublic(tagsPath, '/');
   const archiveHref = resolvePublic(archivePath, '/');
   const navs = [
-  {
-    name: '首页',
-    href: indexHref,
-    highlight: location === '/' || location === '/index.html',
-  },
-  // {
-  //   name: '归档',
-  //   href: archiveHref,
-  //   highlight: location.indexOf(archiveHref) === 0,
-  // },
-  // {
-  //   name: '标签',
-  //   href: tagHref,
-  //   highlight: location.indexOf(tagHref) === 0,
-  // },
-  {
-    name: '关于',
-    href: aboutHref,
-    highlight: location === '/posts/about/' || location === '/posts/about/index.html',
-  },
+    {
+      name: '首页',
+      href: indexHref,
+      highlight: location === '/' || location === '/index.html',
+    },
+    // {
+    //   name: '归档',
+    //   href: archiveHref,
+    //   highlight: location.indexOf(archiveHref) === 0,
+    // },
+    // {
+    //   name: '标签',
+    //   href: tagHref,
+    //   highlight: location.indexOf(tagHref) === 0,
+    // },
+    {
+      name: '关于',
+      href: aboutHref,
+      highlight: location === '/posts/about/' || location === '/posts/about/index.html',
+    },
   ];
 
   return <header className='main-header-wrapper'>
-  <span className='main-header'>
-    <a className='main-title' href={indexHref}>
-    {site.title}
-    </a>
-    <nav className='main-nav'>
-    {navs.map((nav, i) => (
-      <a
-      key={i}
-      href={nav.href}
-      className={stringifyClass('main-nav__item', {
-        'main-nav__item-highlight': nav.highlight,
-      })}>
-      {nav.name}
-      {nav.highlight ? <span className='main-nav__item-bar' /> : ''}
+    <span className='main-header'>
+      <a className='main-title' href={indexHref}>
+        {site.title}
       </a>
-    ))}
-    </nav>
-  </span>
+      <nav className='main-nav'>
+        {navs.map((nav, i) => (
+          <a
+            key={i}
+            href={nav.href}
+            className={stringifyClass('main-nav__item', {
+              'main-nav__item-highlight': nav.highlight,
+            })}>
+            {nav.name}
+            {nav.highlight ? <span className='main-nav__item-bar' /> : ''}
+          </a>
+        ))}
+      </nav>
+    </span>
   </header>;
 }

@@ -2,7 +2,7 @@
   "name": "@blog/cli",
   "version": "1.0.0",
   "description": "blog build cli tool",
-  "module": "dist/index.js",
+  "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
     "dist",
@@ -14,7 +14,7 @@
   },
   "scripts": {
     "clear": "rimraf ./dist",
-    "dev": "tsc -w -p . --module=commonjs --sourceMap",
+    "dev": "tsc -w -p .",
     "build": "pnpm run clear && tsc -p .",
     "prepare": "pnpm run build",
     "lint": "eslint --quiet --no-error-on-unmatched-pattern --config ../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}",
@@ -22,7 +22,9 @@
   },
   "dependencies": {
     "@blog/template": "workspace:*",
-    "esbuild": "^0.9.5"
+    "@types/fs-extra": "^9.0.8",
+    "esbuild": "^0.9.5",
+    "fs-extra": "^9.1.0"
   },
   "devDependencies": {
     "@blog/tsconfig": "workspace:*",

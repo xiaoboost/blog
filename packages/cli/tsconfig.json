@@ -3,6 +3,8 @@
   "include": ["src", "typings"],
   "exclude": ["node_modules", "dist"],
   "compilerOptions": {
-    "outDir": "dist"
+    "outDir": "dist",
+    "sourceMap": true,
+    "module": "CommonJS"
   }
 }

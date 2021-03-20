@@ -42,6 +42,6 @@ export function toPinyin(str: string) {
     .toLowerCase()
     .replace(/[^-a-z]/g, '')
     .replace(/([a-zA-Z0-9]+)/g, '-$1-')
-    .replace(/[ \-]+/g, '-')
+    .replace(/[ -]+/g, '-')
     .replace(/(^-|-$)/g, '');
-};
+}
