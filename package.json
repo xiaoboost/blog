@@ -11,10 +11,10 @@
   "scripts": {
     "clear:builder": "rimraf ./builder",
     "dev:builder": "tsc -w -p ./tsconfig.build.json",
-    "build:builder": "pnpm run clear && tsc -p ./tsconfig.build.json",
+    "build:builder": "pnpm run clear:builder && tsc -p ./tsconfig.build.json",
     "clear:website": "rimraf ./dist",
     "dev:website": "node ./builder/index.js --development",
-    "build:website": "node ./builder/index.js --production",
+    "build:website": "pnpm run clear:website && node ./builder/index.js --production",
     "prepare": "pnpm run build:builder",
     "lint": "eslint --quiet --no-error-on-unmatched-pattern --config ./.eslintrc.js {build,template}/**/*.{ts,tsx,js,jsx}",
     "lint:fix": "eslint --fix --quiet --no-error-on-unmatched-pattern --config ./.eslintrc.js {build,template}/**/*.{ts,tsx,js,jsx}"
