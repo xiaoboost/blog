@@ -1,7 +1,0 @@
-{
-  "name": "@types/blog",
-  "description": "blog's common typings",
-  "version": "1.0.0",
-  "main": "",
-  "types": "index.d.ts"
-}
