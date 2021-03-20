@@ -1,9 +1,12 @@
 import * as path from 'path';
 import * as fs from 'fs-extra';
 
+import { AnyObject } from '@blog/utils';
+
 export interface FileData {
   path: string;
   contents: Uint8Array | Buffer | string;
+  meta?: AnyObject;
 }
 
 const data: FileData[] = [];

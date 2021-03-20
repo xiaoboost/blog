@@ -2,7 +2,8 @@ import { build, OutputFile } from 'esbuild';
 import { isDevelopment } from '../utils/env';
 import { resolveRoot } from '../utils/path';
 import { outputDir, publicPath, assetsPath } from '../config/project';
-import { stylusLoader, moduleCssLoader } from '../utils/esbuild';
+import { stylusLoader, moduleCssLoader } from '../plugins';
+import { runScript } from '@blog/utils';
 
 import type * as TemplateRender from '@blog/template';
 
@@ -15,34 +16,6 @@ export type Template = typeof TemplateRender;
 
 /** 静态文件后缀 */
 const fileExts = ['.eot', '.otf', '.svg', '.ttf', '.woff', '.woff2', '.ico'];
-
-function runScript(script: string) {
-  // 去除 pinyin 的依赖
-  const code = script.replace('require("pinyin")', '{}');
-
-  interface FakeModule {
-    exports: {
-      default: any;
-    }
-  }
-
-  const fake: FakeModule = {
-    exports: {},
-  } as any;
-
-  try {
-    (new Function(`
-      return function box(module, exports, require) {
-        ${code}
-      }
-    `))()(fake, fake.exports, require);
-  }
-  catch (e) {
-    throw new Error(e);
-  }
-  
-  return (fake.exports.default ? fake.exports.default : fake.exports) as Template;
-}
 
 function fixFile(outputFiles: OutputFile[]) {
   for (const file of outputFiles) {

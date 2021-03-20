@@ -9,7 +9,7 @@ export function serve(dir: string, port: number, fileSys: typeof fs) {
   const app = new Koa();
 
   app.listen(port);
-    
+
   app.use(async (ctx, next) => {
     if (ctx.method !== 'GET' && ctx.method !== 'HEAD') {
       ctx.status = 405;
@@ -22,7 +22,7 @@ export function serve(dir: string, port: number, fileSys: typeof fs) {
     const filePath = ctx.path[ctx.path.length - 1] === '/'
       ? join(dir, ctx.path, 'index.html')
       : join(dir, ctx.path);
-    
+
     const stat = await fileSys.stat(filePath).catch(() => void 0);
 
     if (!stat) {
