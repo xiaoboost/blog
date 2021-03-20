@@ -4,12 +4,14 @@ import { resolveRoot } from '../utils/path';
 import { outputDir, publicPath, assetsPath } from '../config/project';
 import { stylusLoader, moduleCssLoader } from '../utils/esbuild';
 
-import type * as Template from '@blog/template';
+import type * as TemplateRender from '@blog/template';
 
 import * as files from './files';
 import * as path from 'path';
 
 import md5 from 'md5';
+
+export type Template = typeof TemplateRender;
 
 /** 静态文件后缀 */
 const fileExts = ['.eot', '.otf', '.svg', '.ttf', '.woff', '.woff2', '.ico'];
@@ -39,7 +41,7 @@ function runScript(script: string) {
     throw new Error(e);
   }
   
-  return (fake.exports.default ? fake.exports.default : fake.exports) as typeof Template;
+  return (fake.exports.default ? fake.exports.default : fake.exports) as Template;
 }
 
 function fixFile(outputFiles: OutputFile[]) {
@@ -62,7 +64,7 @@ function fixFile(outputFiles: OutputFile[]) {
   }
 }
 
-export async function buildTemplate(finish?: (template: typeof Template) => void) {
+export async function buildTemplate(finish?: (template: Template) => void) {
   const result = await build({
     write: false,
     minify: !isDevelopment,

@@ -26,7 +26,6 @@ export function push(...files: FileData[]) {
 }
 
 export async function write() {
-  debugger;
   const dirMap: Record<string, boolean> = {};
 
   for (const file of data) {
@@ -39,4 +38,8 @@ export async function write() {
 
     await fs.writeFile(file.path, file.contents);
   }
+}
+
+export function find(cb: (file: FileData) => boolean) {
+  return data.find(cb);
 }

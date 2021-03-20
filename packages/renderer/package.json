@@ -1,7 +1,7 @@
 {
-  "name": "@blog/template",
+  "name": "@blog/renderer",
   "version": "1.0.0",
-  "description": "blog website template",
+  "description": "blog website page renderer",
   "source": "src/index.ts",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -14,22 +14,28 @@
     "clear": "rimraf ./dist",
     "dev": "tsc -w -p .",
     "build": "pnpm run clear && tsc -p .",
+    "prepare": "pnpm run build",
     "lint": "eslint --quiet --no-error-on-unmatched-pattern --config ../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}",
     "lint:fix": "eslint --fix --quiet --no-error-on-unmatched-pattern --config ../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}"
   },
   "devDependencies": {
+    "@types/markdown-it": "12.0.1",
+    "@types/highlight.js": "^9.12.4",
     "@blog/tsconfig": "workspace:*",
     "@blog/utils": "workspace:*",
     "@types/blog": "workspace:*",
-    "@types/react": "^17.0.3",
-    "@types/react-dom": "^17.0.2",
     "highlight.js": "^10.6.0",
     "katex": "^0.13.0",
-    "moment": "^2.29.1",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1",
     "rimraf": "^3.0.2",
     "tslib": "^2.1.0",
+    "markdown-it": "^12.0.4",
+    "markdown-it-attrs": "^4.0.0",
+    "markdown-it-container": "^3.0.0",
+    "markdown-it-footnote": "^3.0.2",
+    "markdown-it-katex": "^2.0.3",
+    "markdown-it-mark": "^3.0.1",
+    "markdown-it-sub": "^1.0.0",
+    "markdown-it-sup": "^1.0.0",
     "typescript": "^4.2.3"
   }
 }
