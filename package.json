@@ -20,6 +20,7 @@
     "lint:fix": "eslint --fix --quiet --no-error-on-unmatched-pattern --config ./.eslintrc.js {build,template}/**/*.{ts,tsx,js,jsx}"
   },
   "dependencies": {
+    "chalk": "^4.1.0",
     "esbuild": "^0.9.5",
     "fast-glob": "^3.2.5",
     "fs-extra": "^9.1.0",
@@ -41,7 +42,8 @@
     "pinyin": "^2.9.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
-    "stylus": "^0.54.8"
+    "stylus": "^0.54.8",
+    "yaml": "^1.10.2"
   },
   "devDependencies": {
     "@types/fs-extra": "^9.0.8",
@@ -57,13 +59,11 @@
     "@types/stylus": "^0.48.33",
     "@typescript-eslint/eslint-plugin": "^4.18.0",
     "@typescript-eslint/parser": "^4.18.0",
-    "chalk": "^4.1.0",
     "chokidar": "^3.5.1",
     "eslint": "^7.22.0",
     "eslint-plugin-react": "^7.22.0",
     "rimraf": "^3.0.2",
     "tslib": "^2.1.0",
-    "typescript": "^4.2.3",
-    "yaml": "^1.10.2"
+    "typescript": "^4.2.3"
   }
 }
