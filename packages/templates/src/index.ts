@@ -1,3 +1,5 @@
+import './styles/index.styl';
+
 import { ReactNode, createElement } from 'react';
 import { renderToString } from 'react-dom/server';
 
@@ -15,6 +17,5 @@ function fixHtml<T extends AnyObject>(
   };
 }
 
-debugger;
 export const Index = fixHtml(IndexRender);
 export const DefaultPost = fixHtml(DefaultPostRender);

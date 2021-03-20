@@ -13,10 +13,10 @@ font-face(family, url, style, weight) {
 
 font-url(filename, style = null) {
   if style is a 'string' {
-  return "/font/" + filename + "/" + filename + "-" + style;
+    return "../assets/font/" + filename + "/" + filename + "-" + style;
   }
   else {
-  return "/font/" + filename + "/" + filename;
+    return "../assets/font/" + filename + "/" + filename;
   }
 }
 
