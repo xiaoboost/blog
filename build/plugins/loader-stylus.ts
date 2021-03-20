@@ -7,7 +7,6 @@ import path from 'path';
 import { promises as fs } from 'fs';
 import { resolveFile } from './utils';
 
-
 export function stylusLoader(): Plugin {
   return {
     name: 'stylus-loader',

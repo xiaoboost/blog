@@ -1,9 +1,8 @@
 import { build, OutputFile } from 'esbuild';
-import { isDevelopment } from '../utils/env';
-import { resolveRoot } from '../utils/path';
-import { outputDir, publicPath, assetsPath } from '../config/project';
+import { outputDir, assetsPath } from '../config/project';
 import { stylusLoader, moduleCssLoader } from '../plugins';
-import { runScript, parseUrl } from '../utils';
+import { runScript, resolveRoot } from '../utils';
+import { mergeConfig, fileExts } from './utils';
 
 // import type * as TemplateRender from '@template';
 
@@ -13,9 +12,6 @@ import * as path from 'path';
 import md5 from 'md5';
 
 export type Template = any; // typeof TemplateRender;
-
-/** 静态文件后缀 */
-const fileExts = ['.eot', '.otf', '.svg', '.ttf', '.woff', '.woff2', '.ico'];
 
 function fixFile(outputFiles: OutputFile[]) {
   for (const file of outputFiles) {
@@ -38,35 +34,15 @@ function fixFile(outputFiles: OutputFile[]) {
 }
 
 export async function buildTemplate(finish?: (template: Template) => void) {
-  const result = await build({
-    write: false,
-    minify: !isDevelopment,
-    sourcemap: false,
+  const result = await build(mergeConfig({
     entryPoints: ['./template/index.ts'],
-    external: ['pinyin', 'esbuild', 'react', 'react-dom'],
-    mainFields: ["source", "module", "main"],
     watch: false,
-    platform: 'node',
-    format: 'cjs',
-    bundle: true,
     outdir: resolveRoot('dist'),
-    treeShaking: true,
-    publicPath: parseUrl(publicPath, assetsPath),
-    logLevel: 'warning',
-    define: {
-      ["process.env.NODE_ENV"]: isDevelopment
-        ? '"development"'
-        : '"production"',
-    },
-    loader: Object.fromEntries(
-      fileExts
-        .map((ext) => [ext, 'file'])
-    ),
     plugins: [
       stylusLoader(),
       moduleCssLoader(),
     ],
-  }).catch((e) => {
+  })).catch((e) => {
     const message = JSON.stringify(e, null, 2);
     console.error(message);
     throw JSON.stringify(e, null, 2);
