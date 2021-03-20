@@ -6,35 +6,46 @@ import { Header } from '../header';
 import { Footer } from '../footer';
 import { Article } from '../article';
 
-import { site } from 'src/config/site';
-
-import { resolvePublic, normalize } from 'src/utils/template';
+import { parseUrl } from '@blog/utils';
 
 export interface LayoutProps {
+  /** 网页标题 */
   title: string;
+  /** 网页作者 */
   author?: string;
+  /** 网页描述 */
   description?: string;
+  /** 网页内容关键字 */
   keywords?: string[];
+  /** 样式文件路径 */
   styleFile: string;
+  /** 脚本文件路径 */
   scriptFile: string;
+  /** 当前页面网址 */
   location: string;
+  /** 网站根路径 */
+  publicPath: string;
 }
 
 export function Layout(props: PropsWithChildren<LayoutProps>) {
-  const faviconPath = resolvePublic('image/favicon.ico');
-  const styleFile = resolvePublic(props.styleFile);
-  const scriptFile = resolvePublic(props.scriptFile);
-  const location = normalize(props.location);
+  const faviconPath = parseUrl(props.publicPath, 'image/favicon.ico');
+  const styleFile = parseUrl(props.publicPath, props.styleFile);
+  const scriptFile = parseUrl(props.publicPath, props.scriptFile);
 
   return (
     <html lang='zh-cmn-Hans-CN'>
       <head>
         <title>{props.title}</title>
         <meta name='charset' content='utf-8' />
-        <meta name='author' content={props.author || site.author} />
-        <meta name='description' content={props.description || site.description} />
-        {(props.keywords || []).length > 0 ? <meta name='keywords' content={props.keywords?.join(',')} /> : ''}
-        <meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1' />
+        {props.author && <meta name='author' content={props.author} />}
+        {props.description && <meta name='description' content={props.description} />}
+        {(props.keywords ?? []).length > 0 && (
+          <meta name='keywords' content={props.keywords?.join(',')} />
+        )}
+        <meta
+          name='viewport'
+          content='width=device-width,initial-scale=1,maximum-scale=1'
+        />
         <meta name='renderer' content='webkit' />
         <meta name='force-rendering' content='webkit' />
         <meta httpEquiv='X-UA-Compatible' content='IE=edge,chrome=1' />
@@ -42,7 +53,7 @@ export function Layout(props: PropsWithChildren<LayoutProps>) {
         <link rel='stylesheet' type='text/css' href={styleFile} />
       </head>
       <body>
-        <Header location={location} />
+        <Header {...props} />
         <Article>
           {props.children}
         </Article>

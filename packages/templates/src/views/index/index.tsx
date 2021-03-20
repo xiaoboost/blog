@@ -4,6 +4,8 @@ import Moment from 'moment';
 import { Tags } from '../../components/icons';
 import { Layout, LayoutProps } from '../../components/layout';
 
+import { parseUrl } from '@blog/utils';
+
 interface PostProps {
   title: string;
   url: string;
@@ -16,7 +18,7 @@ function Post(post: PostProps) {
   return <section className='posts-list__item'>
     <header className='posts-list__item-header'>
       <span>
-        <a href={normalize(post.url)}>{post.title}</a>
+        <a href={parseUrl(post.url)}>{post.title}</a>
       </span>
       <time>{Moment(post.create).format('yyyy-MM-DD')}</time>
     </header>
@@ -31,12 +33,12 @@ function Post(post: PostProps) {
   </section>;
 }
 
-interface PaginationPorps {
+interface PaginationProps {
   next: string | null;
   pre: string | null;
 }
 
-function Pagination(props: PaginationPorps) {
+function Pagination(props: PaginationProps) {
   if (!props.next && !props.pre) {
     return <></>;
   }
@@ -46,11 +48,11 @@ function Pagination(props: PaginationPorps) {
   </div>;
 }
 
-interface Props extends LayoutProps, PaginationPorps {
+export interface Props extends LayoutProps, PaginationProps {
   posts: PostProps[];
 }
 
-export function Template(props: Props) {
+export function Render(props: Props) {
   return (
     <Layout {...props}>
       <div className='posts-list'>

@@ -1,12 +1,19 @@
-export function Index() {
-  return '';
-}
+import { ReactNode, createElement } from 'react';
+import { renderToString } from 'react-dom/server';
 
-function fixHtml<T extends string | Buffer>(content: T): T {
+import { AnyObject } from '@blog/utils';
+
+import { Render as IndexRender } from './views/index';
+import { Render as DefaultPostRender } from './views/post/default';
+
+function fixHtml<T extends AnyObject>(
+  render: (param: T) => ReactNode,
+): (param: T) => string {
   const prefix = '<!DOCTYPE html>';
-  // const isStr = isString(content);
-  // const data = isStr ? content : content.toString();
-  // const fixed = data.indexOf(prefix) === 0 ? data : prefix + data;
-
-  // return (isStr ? fixed : Buffer.from(fixed)) as T;
+  return (param: T) => {
+    return prefix + renderToString(createElement(render as any, param));
+  };
 }
+
+export const Index = fixHtml(IndexRender);
+export const DefaultPost = fixHtml(DefaultPostRender);
