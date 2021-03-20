@@ -12,8 +12,9 @@
   ],
   "scripts": {
     "clear": "rimraf ./dist",
-    "dev": "tsc -w -p . --module=commonjs --sourceMap",
+    "dev": "tsc -w -p .",
     "build": "pnpm run clear && tsc -p .",
+    "prepare": "pnpm run build",
     "lint": "eslint --quiet --no-error-on-unmatched-pattern --config ../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}",
     "lint:fix": "eslint --fix --quiet --no-error-on-unmatched-pattern --config ../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}"
   },
