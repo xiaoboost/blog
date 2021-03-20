@@ -15,5 +15,6 @@ function fixHtml<T extends AnyObject>(
   };
 }
 
+debugger;
 export const Index = fixHtml(IndexRender);
 export const DefaultPost = fixHtml(DefaultPostRender);

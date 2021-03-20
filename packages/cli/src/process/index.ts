@@ -1,7 +1,10 @@
 import { cname } from './cname';
-import { transform } from './template';
+import { buildTemplate } from './template';
 
 export async function build() {
   await cname();
-  await transform();
+  await buildTemplate((param) => {
+    debugger;
+    console.log(param);
+  });
 }
