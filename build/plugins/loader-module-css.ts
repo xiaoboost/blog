@@ -1,5 +1,5 @@
 import { Plugin } from 'esbuild';
-import { resolveRoot } from '../utils/path';
+import { resolveRoot } from '../utils';
 
 import path from 'path';
 

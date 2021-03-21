@@ -7,5 +7,7 @@ build(mergeConfig({
   outfile: resolveRoot('builder/index.js'),
   write: true,
   logLevel: 'info',
+  watch: isDevelopment,
   sourcemap: isDevelopment,
+  publicPath: undefined,
 }));

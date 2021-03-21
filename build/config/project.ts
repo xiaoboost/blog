@@ -1,9 +1,7 @@
-import { resolveRoot } from '../utils/path';
+import { resolveRoot } from '../utils';
 
 /** 项目输出文件路径 */
 export const outputDir = resolveRoot('dist');
-/** 文章路径 */
-export const postsDir = resolveRoot('posts');
 
 /** 网站资源公共路径 */
 export const publicPath = '/';

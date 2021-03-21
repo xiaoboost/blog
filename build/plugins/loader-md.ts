@@ -5,7 +5,6 @@ import path from 'path';
 import { parse } from 'yaml';
 import { promises as fs } from 'fs';
 import { resolveFile } from './utils';
-import { Template } from '../process/template';
 
 /** 文章原始元数据 */
 interface PostMeta {
@@ -17,10 +16,10 @@ interface PostMeta {
   content: string;
   /** 文章简介 */
   description?: string;
+  /** 文章链接 */
+  pathname?: string;
   /** 是否可以被列表检索 */
   public?: boolean;
-  /** 指定网页标题 */
-  htmlTitle?: string;
   /** 文章标签 */
   tags?: string[];
   /** 文章最后更新时间 */
@@ -35,31 +34,28 @@ interface PostMeta {
 
 /** 文章元数据 */
 export interface PostData {
+  /** 文章标题 */
   title: string;
+  /** 文章创建时间 */
   create: number;
+  /** 文章最后更新时间 */
   update: number;
+  /** 文章标签 */
   tags: string[];
-  html: string;
-  htmlTitle: string;
+  /** 是否可以被列表检索 */
   public: boolean;
+  /** 文章原文 */
   content: string;
+  /** 文章简介 */
   description: string;
-}
-
-/**
- * 从 esbuild 来的文件源码
- * 
- * 这里解析成 .ts 文件输出
- * 但是还需要对应到 render 之后的网页原文
- * 这个 .ts 文件重包含全部的静态引用文件
- * 
- * md 解析后的内容形成字符串
- * 
- * 那么 esbuild 打包之后形成的文件，再运行一次，这样文件就全都塞到 files 里面去了
- */
-
-export interface Options {
-  template: Template;
+  /** 渲染后的网页源码 */
+  html: string;
+  /** 网页链接 */
+  pathname: string;
+  /** 样式文件列表 */
+  styles: string[];
+  /** 脚本文件列表 */
+  scripts: string[];
 }
 
 async function readMeta(fileName: string) {
@@ -97,18 +93,20 @@ async function readMeta(fileName: string) {
       ? new Date(meta.update).getTime()
       : (await fs.stat(fileName)).mtimeMs,
     tags: meta.tags ?? [],
-    html: '',
     content: (mdContent ?? '').trim(),
-    htmlTitle: meta.htmlTitle ?? '',
     public: meta.public ?? true,
+    pathname: meta.pathname ?? '',
     description: meta.description
       ?? mdContent.trim().slice(0, 200).replace(/[\n\r]/g, ''),
+    html: '',
+    styles: [],
+    scripts: [],
   };
 
   return post;
 }
 
-export function mdLoader(opt: Options): Plugin {
+export function mdLoader(): Plugin {
   return {
     name: 'md-loader',
     setup(build) {
@@ -123,7 +121,7 @@ export function mdLoader(opt: Options): Plugin {
         const post = await readMeta(args.path);
 
         return {
-          contents: '',
+          contents: `export default ${JSON.stringify(post)};`,
           resolveDir: path.dirname(args.path),
           loader: 'ts',
         };

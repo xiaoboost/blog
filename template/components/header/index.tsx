@@ -6,9 +6,9 @@ import { parseUrl, stringifyClass } from '@build/utils';
 
 interface Props {
   /** 当前页面网址 */
-  location: string;
+  pathname: string;
   /** 网页标题 */
-  title: string;
+  siteTitle: string;
   /** 网站根路径 */
   publicPath: string;
   // /** 标签页面路径 */
@@ -18,6 +18,7 @@ interface Props {
 }
 
 export function Header(props: Props) {
+  const location = parseUrl(props.publicPath, props.pathname);
   const indexHref = parseUrl(props.publicPath);
   const aboutHref = parseUrl(props.publicPath, '/posts/about/');
   // const tagHref = parseUrl(props.publicPath, props.tagPath);
@@ -26,7 +27,7 @@ export function Header(props: Props) {
     {
       name: '首页',
       href: indexHref,
-      highlight: props.location === '/' || props.location === '/index.html',
+      highlight: location === '/' || location === '/index.html',
     },
     // {
     //   name: '归档',
@@ -42,8 +43,8 @@ export function Header(props: Props) {
       name: '关于',
       href: aboutHref,
       highlight: (
-        props.location === '/posts/about/' ||
-        props.location === '/posts/about/index.html'
+        location === '/posts/about/' ||
+        location === '/posts/about/index.html'
       ),
     },
   ];
@@ -51,7 +52,7 @@ export function Header(props: Props) {
   return <header className='main-header-wrapper'>
     <span className='main-header'>
       <a className='main-title' href={indexHref}>
-        {props.title}
+        {props.siteTitle}
       </a>
       <nav className='main-nav'>
         {navs.map((nav, i) => (

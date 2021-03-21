@@ -1,12 +1,16 @@
 import Koa from 'koa';
+import Chalk from 'chalk';
 
-import type { promises as fs } from 'fs';
+import * as fs from 'fs';
+import * as mfs from 'memfs';
 
 import { join } from 'path';
 import { getType } from 'mime';
+import { isDevelopment } from '../utils';
 
-export function serve(dir: string, port: number, fileSys: typeof fs) {
+export function serve(dir: string, port: number) {
   const app = new Koa();
+  const vfs = isDevelopment ? mfs.fs.promises : fs.promises;
 
   app.listen(port);
 
@@ -23,7 +27,7 @@ export function serve(dir: string, port: number, fileSys: typeof fs) {
       ? join(dir, ctx.path, 'index.html')
       : join(dir, ctx.path);
 
-    const stat = await fileSys.stat(filePath).catch(() => void 0);
+    const stat = await vfs.stat(filePath).catch(() => void 0);
 
     if (!stat) {
       ctx.status = 404;
@@ -38,11 +42,16 @@ export function serve(dir: string, port: number, fileSys: typeof fs) {
     ctx.set('Accept-Ranges', 'bytes');
     ctx.set('Cache-Control', 'max-age=0');
 
-    ctx.length = stat.size;
-    ctx.body = await fileSys.readFile(filePath);
+    ctx.length = Number(stat.size);
+    ctx.body = await vfs.readFile(filePath);
 
     next();
   });
+
+  console.log(
+    Chalk.bgGreen(' Done ') +
+    Chalk.blueBright(` Website is ready at localhost:${port}`)
+  );
 
   return app;
 }

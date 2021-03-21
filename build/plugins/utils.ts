@@ -1,6 +1,6 @@
 import path from 'path';
 
-import { resolveRoot } from '../utils/path';
+import { resolveRoot } from '../utils';
 
 export const resolveFile = (dir: string, file: string) => path.resolve(
   process.cwd(),

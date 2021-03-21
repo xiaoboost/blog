@@ -1,15 +1,17 @@
 import { cname } from './cname';
 import { write } from './files';
-import { buildTemplate, Template } from './template';
+import { buildPost } from './post';
+import { buildTemplate } from './template';
+import { serve } from '../server';
+import { devPort, outputDir } from '../config/project';
 
 export async function build() {
-  let template: Template;
-
   await cname();
 
-  template = await buildTemplate((param) => {
-    template = param;
-  });
-
+  const template = await buildTemplate();
+  
+  await buildPost(template);
   await write();
+  
+  serve(outputDir, devPort);
 }

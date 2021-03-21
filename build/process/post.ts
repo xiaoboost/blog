@@ -1,11 +1,29 @@
 import Glob from 'fast-glob';
 import path from 'path';
 
-import { resolveRoot } from '../utils';
-import { build, StdinOptions } from 'esbuild';
+import { resolveRoot, runScript } from '../utils';
+import { build, StdinOptions, BuildResult } from 'esbuild';
+import { mdLoader, PostData } from '../plugins';
+import { outputDir } from '../config/project';
+import { mergeConfig } from './utils';
 
-export async function createPostIndex(): Promise<StdinOptions> {
-  const files = await Glob(resolveRoot('posts/**/*.md'));
+import * as files from './files';
+import * as renderer from './renderer';
+
+import type { Template } from './template';
+
+interface ExternalFile {
+  styles: string[];
+  scripts: string[];
+}
+
+export const externals: ExternalFile = {
+  styles: [],
+  scripts: [],
+};
+
+async function createPostIndex(): Promise<StdinOptions> {
+  const files = await Glob('./posts/**/*.md');
 
   let importStr = '';
   let exportStr = '';
@@ -17,8 +35,46 @@ export async function createPostIndex(): Promise<StdinOptions> {
 
   return {
     contents: `${importStr}\nexport default [\n${exportStr}];\n`,
-    resolveDir: resolveRoot('posts'),
+    resolveDir: resolveRoot(),
     sourcefile: 'index.ts',
     loader: 'ts',
   };
+}
+
+function createSite(result: BuildResult, template: Template) {
+  const codeFile = (result.outputFiles ?? []).find((item) => /\.js$/.test(item.path));
+  const code = Buffer.from(codeFile?.contents ?? '').toString();
+
+  if (!code) {
+    throw new Error('Create template render script Error.');
+  }
+
+  const origins = runScript<PostData[]>(code).map((post) => ({
+    ...post,
+    ...externals,
+  }));
+  const posts = renderer.posts(origins, template);
+
+  files.push(...posts.map((post) => ({
+    path: path.join(outputDir, post.pathname, 'index.html'),
+    contents: post.html,
+  })));
+}
+
+export async function buildPost(template: Template) {
+  const create = (result: BuildResult) => createSite(result, template);
+  const result = await build(mergeConfig({
+    watch: false,
+    outdir: resolveRoot('dist'),
+    stdin: await createPostIndex(),
+    plugins: [
+      mdLoader(),
+    ],
+  })).catch((e) => {
+    const message = JSON.stringify(e, null, 2);
+    console.error(message);
+    throw JSON.stringify(e, null, 2);
+  });
+
+  create(result);
 }
