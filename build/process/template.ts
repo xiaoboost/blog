@@ -1,7 +1,7 @@
 import { build, OutputFile } from 'esbuild';
 import { outputDir, assetsPath } from '../config/project';
 import { stylusLoader, moduleCssLoader } from '../plugins';
-import { runScript, resolveRoot, isDevelopment } from '../utils';
+import { runScript, resolveRoot, isDevelopment, isWatch } from '../utils';
 import { mergeConfig, fileExts } from './utils';
 import { externals } from './post';
 
@@ -34,7 +34,24 @@ function fixFile(outputFiles: OutputFile[]) {
   }
 }
 
-export async function buildTemplate(finish?: (template: Template) => void) {
+function getTemplate(outputFiles: OutputFile[]) {
+  const codeFile = (outputFiles!).find((item) => /index\.js$/.test(item.path));
+  const code = Buffer.from(codeFile?.contents ?? '').toString();
+
+  externals.styles = (outputFiles)
+    .filter((file) => /\.css$/.test(file.path))
+    .map((file) => path.relative(outputDir, file.path));
+
+  externals.scripts = [];
+
+  if (!codeFile || !code) {
+    throw new Error('Create template render script Error.');
+  }
+
+  return runScript(code);
+}
+
+export async function buildTemplate() {
   const result = await build(mergeConfig({
     entryPoints: ['./template/index.ts'],
     watch: false,
@@ -51,18 +68,5 @@ export async function buildTemplate(finish?: (template: Template) => void) {
 
   fixFile(result.outputFiles!);
 
-  const codeFile = (result.outputFiles!).find((item) => /index\.js$/.test(item.path));
-  const code = Buffer.from(codeFile?.contents ?? '').toString();
-
-  externals.styles = (result.outputFiles ?? [])
-    .filter((file) => /\.css$/.test(file.path))
-    .map((file) => path.relative(outputDir, file.path));
-
-  externals.scripts = [];
-
-  if (!codeFile || !code) {
-    throw new Error('Create template render script Error.');
-  }
-
-  return runScript(code);
+  return getTemplate(result.outputFiles ?? []);
 }

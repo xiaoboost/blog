@@ -13,7 +13,7 @@
     "dev:builder": "ts-node ./build/build.ts --development",
     "build:builder": "pnpm run clear:builder && ts-node ./build/build.ts --production",
     "clear:website": "rimraf ./dist",
-    "dev:website": "node ./builder/index.js --development --server",
+    "dev:website": "node ./builder/index.js --development --server --watch",
     "build:website": "pnpm run clear:website && node ./builder/index.js --production",
     "prepare": "pnpm run build:builder",
     "lint": "eslint --quiet --no-error-on-unmatched-pattern --config ./.eslintrc.js {build,template,typings}/**/*.{ts,tsx,js,jsx}",
@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "chalk": "^4.1.0",
+    "chokidar": "^3.5.1",
     "esbuild": "^0.9.5",
     "fast-glob": "^3.2.5",
     "highlight.js": "^10.6.0",
@@ -42,6 +43,7 @@
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "stylus": "^0.54.8",
+    "typescript": "^4.2.3",
     "yaml": "^1.10.2"
   },
   "devDependencies": {
@@ -57,12 +59,10 @@
     "@types/stylus": "^0.48.33",
     "@typescript-eslint/eslint-plugin": "^4.18.0",
     "@typescript-eslint/parser": "^4.18.0",
-    "chokidar": "^3.5.1",
     "eslint": "^7.22.0",
     "eslint-plugin-react": "^7.22.0",
     "rimraf": "^3.0.2",
     "ts-node": "^9.1.1",
-    "tslib": "^2.1.0",
-    "typescript": "^4.2.3"
+    "tslib": "^2.1.0"
   }
 }

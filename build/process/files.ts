@@ -3,6 +3,8 @@ import * as fs from 'fs';
 import * as mfs from 'memfs';
 
 import { isDevelopment } from '../utils';
+import { site } from '../config/website';
+import { outputDir } from '../config/project';
 
 export interface FileData {
   path: string;
@@ -10,6 +12,10 @@ export interface FileData {
 }
 
 const data: FileData[] = [];
+const cname: FileData = {
+  path: path.join(outputDir, 'CNAME'),
+  contents: site.cname,
+};
 
 export async function mkdirp(target: string, map: Record<string, boolean>) {
   const vfs = isDevelopment ? mfs.fs.promises : fs.promises;
@@ -62,7 +68,7 @@ export async function write() {
   const dirMap: Record<string, boolean> = {};
   const vfs = isDevelopment ? mfs.fs.promises : fs.promises;
 
-  for (const file of data) {
+  for (const file of data.concat(cname)) {
     const dirname = path.dirname(file.path);
 
     if (!dirMap[dirname]) {
