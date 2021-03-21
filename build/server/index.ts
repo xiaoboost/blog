@@ -1,8 +1,8 @@
 import Koa from 'koa';
-import Chalk from 'chalk';
 
 import * as fs from 'fs';
 import * as mfs from 'memfs';
+import * as print from '../process/print';
 
 import { join } from 'path';
 import { getType } from 'mime';
@@ -47,11 +47,6 @@ export function serve(dir: string, port: number) {
 
     next();
   });
-
-  console.log(
-    Chalk.bgGreen(' Done ') +
-    Chalk.blueBright(` Website is already set at http://localhost:${port}/.`)
-  );
 
   return app;
 }

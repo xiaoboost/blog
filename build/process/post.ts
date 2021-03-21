@@ -1,7 +1,7 @@
 import Glob from 'fast-glob';
 import path from 'path';
 
-import { resolveRoot, runScript } from '../utils';
+import { resolveRoot, runScript, isWatch } from '../utils';
 import { build, StdinOptions, BuildResult } from 'esbuild';
 import { mdLoader, PostData } from '../plugins';
 import { outputDir } from '../config/project';
@@ -75,8 +75,9 @@ export async function buildPost(template: Template) {
   })).catch((e) => {
     const message = JSON.stringify(e, null, 2);
     console.error(message);
-    throw JSON.stringify(e, null, 2);
   });
 
-  create(result);
+  if (result) {
+    create(result);
+  }
 }
