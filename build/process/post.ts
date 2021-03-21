@@ -12,7 +12,7 @@ import * as renderer from './renderer';
 
 import type { Template } from './template';
 
-interface ExternalFile {
+export interface ExternalFile {
   styles: string[];
   scripts: string[];
 }
@@ -59,6 +59,8 @@ function createSite(result: BuildResult, template: Template) {
     path: path.join(outputDir, post.pathname, 'index.html'),
     contents: post.html,
   })));
+
+  files.push(...renderer.index(posts, externals, template));
 }
 
 export async function buildPost(template: Template) {

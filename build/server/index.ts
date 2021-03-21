@@ -50,7 +50,7 @@ export function serve(dir: string, port: number) {
 
   console.log(
     Chalk.bgGreen(' Done ') +
-    Chalk.blueBright(` Website is ready at localhost:${port}`)
+    Chalk.blueBright(` Website is already set at http://localhost:${port}/.`)
   );
 
   return app;
