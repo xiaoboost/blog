@@ -2,16 +2,56 @@ import type { PostData } from '../plugins/loader-md';
 import type { Template } from './template';
 
 import { Markdown } from '../markdown';
-import { toPinyin } from '../utils';
+import { toPinyin, slice } from '../utils';
 
-import { publicPath } from '../config/project';
+import { publicPath, outputDir } from '../config/project';
 import { pageConfig, site } from '../config/website';
+
+import type { FileData } from '../process/files';
+import type { ExternalFile } from '../process/post';
 
 import path from 'path';
 
 /** 渲染列表页 */
-export function index(posts: PostData[], template: Template) {
-  // ..
+export function index(
+  input: PostData[],
+  ext: ExternalFile,
+  template: Template,
+): FileData[] {
+  const posts = input.filter((post) => post.public);
+  const pagePosts = slice(posts, pageConfig.index);
+  const getPathname = (index: number) => {
+    if (index < 0) {
+      return null;
+    }
+
+    if (index > pagePosts.length - 1) {
+      return null;
+    }
+
+    return index === 0
+      ? 'index.html'
+      : path.normalize(`index/${index}/index.html`);
+  };
+
+  return pagePosts.map((page, index) => {
+    const pathname = getPathname(index)!;
+    const pageTitle = index === 0 ? site.title : `${site.title} | 第 ${index + 1} 页`;
+
+    return {
+      path: path.join(outputDir, pathname!),
+      contents: template.Index({
+        ...ext,
+        posts: page,
+        pageTitle,
+        pathname,
+        publicPath,
+        siteTitle: site.title,
+        next: getPathname(index + 1),
+        pre: getPathname(index - 1),
+      }),
+    };
+  });
 }
 
 /** 渲染文章页 */

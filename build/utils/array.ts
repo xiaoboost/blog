@@ -1,5 +1,4 @@
 import { isFunc, isUndef, isDef, isArray } from './assert';
-import { AnyObject } from './types';
 
 /** 索引类型 */
 type Index = string | number;
@@ -141,4 +140,14 @@ export function exclude<T extends Index>(arr: T[], rest: T[]): T[] {
   }
 
   return rest.filter((key) => !map[key]);
+}
+
+export function slice<T>(arr: T[], length: number): T[][] {
+  const result: T[][] = [];
+
+  while (result.length * length < arr.length) {
+    result.push(arr.slice(result.length * length, (result.length + 1) * length))
+  }
+
+  return result;
 }

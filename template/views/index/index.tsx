@@ -10,7 +10,7 @@ import { parseUrl } from '@build/utils';
 
 interface PostProps {
   title: string;
-  url: string;
+  pathname: string;
   tags: string[];
   create: number;
   description: string;
@@ -20,7 +20,7 @@ function Post(post: PostProps) {
   return <section className='posts-list__item'>
     <header className='posts-list__item-header'>
       <span>
-        <a href={parseUrl(post.url)}>{post.title}</a>
+        <a href={parseUrl(post.pathname)}>{post.title}</a>
       </span>
       <time>{Moment(post.create).format('yyyy-MM-DD')}</time>
     </header>

@@ -4,15 +4,13 @@ import React from 'react';
 
 import { PropsWithChildren } from 'react';
 
-import { Header } from '../header';
+import { Header, HeaderProps } from '../header';
 import { Footer } from '../footer';
 import { Article } from '../article';
 
 import { parseUrl } from '@build/utils';
 
-export interface LayoutProps {
-  /** 文章标题 */
-  articleTitle: string;
+export interface LayoutProps extends HeaderProps {
   /** 网站标题 */
   siteTitle: string;
   /** 网页标题 */

@@ -11,7 +11,7 @@ export interface FileData {
 
 const data: FileData[] = [];
 
-async function mkdirp(target: string, map: Record<string, boolean>) {
+export async function mkdirp(target: string, map: Record<string, boolean>) {
   const vfs = isDevelopment ? mfs.fs.promises : fs.promises;
 
   // 待创建的路径

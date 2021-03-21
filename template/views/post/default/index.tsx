@@ -10,6 +10,8 @@ export interface Props extends LayoutProps {
   post: string;
   /** 文章写作时间戳 */
   create: number;
+  /** 文章标题 */
+  articleTitle: string;
 }
 
 export function Render(props: Props) {

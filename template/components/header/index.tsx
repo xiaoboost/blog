@@ -4,7 +4,7 @@ import React from 'react';
 
 import { parseUrl, stringifyClass } from '@build/utils';
 
-interface Props {
+export interface HeaderProps {
   /** 当前页面网址 */
   pathname: string;
   /** 网页标题 */
@@ -17,7 +17,7 @@ interface Props {
   // archivePath: string;
 }
 
-export function Header(props: Props) {
+export function Header(props: HeaderProps) {
   const location = parseUrl(props.publicPath, props.pathname);
   const indexHref = parseUrl(props.publicPath);
   const aboutHref = parseUrl(props.publicPath, '/posts/about/');

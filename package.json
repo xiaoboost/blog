@@ -13,7 +13,7 @@
     "dev:builder": "ts-node ./build/build.ts --development",
     "build:builder": "pnpm run clear:builder && ts-node ./build/build.ts --production",
     "clear:website": "rimraf ./dist",
-    "dev:website": "node ./builder/index.js --development",
+    "dev:website": "node ./builder/index.js --development --server",
     "build:website": "pnpm run clear:website && node ./builder/index.js --production",
     "prepare": "pnpm run build:builder",
     "lint": "eslint --quiet --no-error-on-unmatched-pattern --config ./.eslintrc.js {build,template,typings}/**/*.{ts,tsx,js,jsx}",
