@@ -1,8 +1,8 @@
 ---
 title: 关于我
-date: 2020/05/01
+create: 2020/05/01
 public: false
-url: about
+pathname: posts/about
 disabled: toc
 ---
 

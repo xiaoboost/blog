@@ -1,5 +1,5 @@
 import { Plugin } from 'esbuild';
-import { resolveRoot } from '../utils/path';
+import { resolveRoot } from '../utils';
 
 import stylus from 'stylus';
 import path from 'path';

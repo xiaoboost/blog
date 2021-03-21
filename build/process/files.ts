@@ -1,15 +1,45 @@
 import * as path from 'path';
-import * as fs from 'fs-extra';
+import * as fs from 'fs';
+import * as mfs from 'memfs';
 
-import { AnyObject } from '../utils';
+import { isDevelopment } from '../utils';
 
 export interface FileData {
   path: string;
   contents: Uint8Array | Buffer | string;
-  meta?: AnyObject;
 }
 
 const data: FileData[] = [];
+
+async function mkdirp(target: string, map: Record<string, boolean>) {
+  const vfs = isDevelopment ? mfs.fs.promises : fs.promises;
+
+  // 待创建的路径
+  const dirs: string[] = [];
+  const exist = (target: string) => {
+    return vfs.stat(target)
+      .then((data: any) => Boolean(data))
+      .catch(() => false);
+  };
+
+  let dir = target;
+
+  while (!(await exist(dir))) {
+    dirs.push(dir);
+    dir = path.dirname(dir);
+  }
+
+  while (dirs.length > 0) {
+    const dir = dirs.pop()!;
+
+    if (map[dir]) {
+      return;
+    }
+
+    map[dir] = true;
+    await vfs.mkdir(dir);
+  }
+}
 
 export function clear() {
   data.length = 0;
@@ -30,16 +60,16 @@ export function push(...files: FileData[]) {
 
 export async function write() {
   const dirMap: Record<string, boolean> = {};
+  const vfs = isDevelopment ? mfs.fs.promises : fs.promises;
 
   for (const file of data) {
     const dirname = path.dirname(file.path);
 
     if (!dirMap[dirname]) {
-      await fs.mkdirp(dirname);
-      dirMap[dirname] = true;
+      await mkdirp(dirname, dirMap);
     }
 
-    await fs.writeFile(file.path, file.contents);
+    await vfs.writeFile(file.path, file.contents);
   }
 }
 

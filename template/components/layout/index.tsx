@@ -11,34 +11,35 @@ import { Article } from '../article';
 import { parseUrl } from '@build/utils';
 
 export interface LayoutProps {
+  /** 文章标题 */
+  articleTitle: string;
+  /** 网站标题 */
+  siteTitle: string;
   /** 网页标题 */
-  title: string;
+  pageTitle: string;
   /** 网页作者 */
   author?: string;
   /** 网页描述 */
   description?: string;
   /** 网页内容关键字 */
   keywords?: string[];
-  /** 样式文件路径 */
-  styleFile: string;
-  /** 脚本文件路径 */
-  scriptFile: string;
   /** 当前页面网址 */
-  location: string;
+  pathname: string;
   /** 网站根路径 */
   publicPath: string;
+  /** 样式文件列表 */
+  styles: string[];
+  /** 脚本文件列表 */
+  scripts: string[];
 }
 
 import faviconPath from '../../assets/image/favicon.ico';
 
 export function Layout(props: PropsWithChildren<LayoutProps>) {
-  const styleFile = parseUrl(props.publicPath, props.styleFile);
-  const scriptFile = parseUrl(props.publicPath, props.scriptFile);
-
   return (
     <html lang='zh-cmn-Hans-CN'>
       <head>
-        <title>{props.title}</title>
+        <title>{props.pageTitle}</title>
         <meta name='charset' content='utf-8' />
         {props.author && <meta name='author' content={props.author} />}
         {props.description && <meta name='description' content={props.description} />}
@@ -53,7 +54,14 @@ export function Layout(props: PropsWithChildren<LayoutProps>) {
         <meta name='force-rendering' content='webkit' />
         <meta httpEquiv='X-UA-Compatible' content='IE=edge,chrome=1' />
         <link rel='short icon' href={faviconPath} />
-        <link rel='stylesheet' type='text/css' href={styleFile} />
+        {props.styles.map((pathname, i) => (
+          <link
+            key={i}
+            rel='stylesheet'
+            type='text/css'
+            href={parseUrl(props.publicPath, pathname)}
+          />
+        ))}
       </head>
       <body>
         <Header {...props} />
@@ -61,7 +69,13 @@ export function Layout(props: PropsWithChildren<LayoutProps>) {
           {props.children}
         </Article>
         <Footer />
-        <script type='text/javascript' src={scriptFile} />
+        {props.scripts.map((pathname, i) => (
+          <script
+            key={i}
+            type='text/javascript'
+            src={parseUrl(props.publicPath, pathname)}
+          />
+        ))}
       </body>
     </html>
   );
