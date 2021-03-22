@@ -6,7 +6,7 @@ description: TypeScript 官网不知道啥时候上线了静态代码提示功�
 
 所谓“静态代码提示”，就是指在没有语言服务的情况下，只是纯文本的也能展示出代码的各种类型提示的功能。
 
-```ts
+```ts platform=browser
 interface Point {
   x: number;
   y: number;

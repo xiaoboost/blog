@@ -9,7 +9,8 @@ interface CodeFile {
   snapshot: ts.IScriptSnapshot;
 }
 
-export type ScriptKind = 'ts' | 'tsx';
+export type ScriptKind = 'ts' | 'tsx' | 'js' | 'jsx';
+export type Platform = 'browser' | 'node';
 
 /** 临时文件 */
 const fileName = (ext: ScriptKind) => path.join(process.cwd(), `_template.${ext}`);
