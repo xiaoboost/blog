@@ -3,7 +3,7 @@ import oniguruma from 'vscode-oniguruma';
 
 import { promises as fs } from 'fs';
 import { resolveRoot } from '@build/utils';
-import { setFile, getQuickInfoAtPosition, ScriptKind } from './host';
+import { setFile, getQuickInfoAtPosition, ScriptKind, Platform } from './host';
 
 let tsGrammar: vsctm.IGrammar;
 let tsxGrammar: vsctm.IGrammar;
@@ -93,7 +93,11 @@ function getInfo(text: string, offset: number, scopes: string[]) {
   return info;
 }
 
-export async function tokenize(code: string, lang: ScriptKind = 'ts') {
+export async function tokenize(
+  code: string,
+  lang: ScriptKind = 'ts',
+  platform: Platform = 'browser',
+) {
   if (!tsGrammar || !tsxGrammar) {
     await getGrammar();
   }

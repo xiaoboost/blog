@@ -1,11 +1,13 @@
 import { highlight, highlightAuto } from 'highlight.js';
-import { renderTsCode } from './typescript';
+import { renderTsCode, Platform, ScriptKind } from './typescript';
 
 const langLabel = {
   html: 'HTML',
   js: 'JavaScript',
+  jsx: 'JavaScript React',
   javascript: 'JavaScript',
   ts: 'TypeScript',
+  tsx: 'TypeScript React',
   typescript: 'TypeScript',
   c: 'C',
   'c++': 'C++',
@@ -74,15 +76,48 @@ function splitLabel(number: number, width: number, rightSpace = true) {
   return rightSpace ? label : label.trim();
 }
 
-export function CodeRenderer(input: string, lang: string) {
+function parseAttr(input: string) {
+  const attrs: Record<string, string | boolean> = {};
+
+  for (const str of input.split(/[ ,]+/)) {
+    const [key, val] = str.split('=');
+    attrs[key] = val ?? true;
+  }
+
+  return attrs;
+}
+
+function toScriptKind(input: string): ScriptKind | false {
+  const val = input.toLowerCase();
+
+  if (['ts', 'js', 'tsx', 'jsx'].includes(input)) {
+    return input as ScriptKind;
+  }
+  else if (val === 'javascript') {
+    return 'js';
+  }
+  else if (val === 'typescript') {
+    return 'ts';
+  }
+  else {
+    return false;
+  }
+}
+
+export function CodeRenderer(input: string, lang: string, attribute = '') {
   /** 代码语言 */
   const lan = lang ? lang.toLowerCase() : '';
   /** 代码语言标记 */
   const label = langLabel[lan];
+  /** 代码框属性 */
+  const attrs = parseAttr(attribute);
+  /** 是否是脚本语言 */
+  const scriptKind = toScriptKind(lang);
 
+  debugger;
   // ts 语言另外做处理
-  if (label === 'TypeScript') {
-    renderTsCode(input);
+  if (scriptKind) {
+    renderTsCode(input, scriptKind, attrs.platform as Platform);
   }
 
   /** 经处理的代码和高亮行 */
