@@ -11,11 +11,14 @@ export async function renderTsCode(
 ) {
   const linesTokens = await tokenize(
     code,
-    lang === 'ts' ? 'ts' : 'tsx',
+    lang,
     platform === 'node' ? 'node' : 'browser',
   );
 
   debugger;
 
-  return code;
+  /** 行代码 */
+  const codeLines: string[] = [];
+
+  return codeLines;
 }

@@ -8,22 +8,12 @@ import { setFile, getQuickInfoAtPosition, ScriptKind, Platform } from './host';
 let tsGrammar: vsctm.IGrammar;
 let tsxGrammar: vsctm.IGrammar;
 
-const noInfoChar: Record<string, boolean> = [
-  '{',
-  '}',
-  ':',
-  '(',
-  ')',
-  ';',
-  ',',
-  '+',
-  '-',
-  '*',
-  '/',
-  '.',
-  '\'',
-  '"',
-].reduce((ans, item) => (ans[item] = true, ans), {});
+// TODO: 这里应该是所有关键字 + 运算符
+const noInfoChar: Record<string, boolean> = (
+  Array
+    .from('{}:();,+-*/.\'"=[]%`')
+    .reduce((ans, item) => (ans[item] = true, ans), {})
+);
 
 interface Token extends vsctm.IToken {
   /** 距离整个代码开头的偏移 */
@@ -132,6 +122,5 @@ export async function tokenize(
     ruleStack = lineTokens.ruleStack;
   }
 
-  debugger;
   return linesToken;
 }
