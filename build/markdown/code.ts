@@ -52,13 +52,13 @@ function getMinSpaceWidth(str: string) {
 
 function getHighlightCode(code: string) {
   const hlLabel = /\/\*\*\* +hl +\*\*\*\//g;
-  const highlightLine: Record<number, boolean> = {};
+  const highlightLines: Record<number, boolean> = {};
   const lines = code.trim().split(/[\n\r]/).map((line, index) => {
     const match = line.match(hlLabel);
 
     if (match) {
       line = line.replace(hlLabel, '');
-      highlightLine[index] = true;
+      highlightLines[index] = true;
     }
 
     return line.trimRight();
@@ -66,7 +66,7 @@ function getHighlightCode(code: string) {
 
   return {
     code: lines.join('\n'),
-    lines: highlightLine,
+    highlightLines,
   };
 }
 
@@ -104,7 +104,7 @@ function toScriptKind(input: string): ScriptKind | false {
   }
 }
 
-export function CodeRenderer(input: string, lang: string, attribute = '') {
+export async function CodeRenderer(input: string, lang: string, attribute = '') {
   /** 代码语言 */
   const lan = lang ? lang.toLowerCase() : '';
   /** 代码语言标记 */
@@ -113,34 +113,28 @@ export function CodeRenderer(input: string, lang: string, attribute = '') {
   const attrs = parseAttr(attribute);
   /** 是否是脚本语言 */
   const scriptKind = toScriptKind(lang);
+  /** 空格宽度 */
+  const tabWidth = getMinSpaceWidth(input);
+  /** 代码与高亮行 */
+  const { code, highlightLines } = getHighlightCode(input);
+  /** 行代码 */
+  const codeLines = scriptKind
+    ? await renderTsCode(input, scriptKind, attrs.platform as Platform)
+    : (lan ? highlight(lan, code) : highlightAuto(code)).value.trim().split('\n');
 
   debugger;
-  // ts 语言另外做处理
-  if (scriptKind) {
-    renderTsCode(input, scriptKind, attrs.platform as Platform);
-  }
-
-  /** 经处理的代码和高亮行 */
-  const { code, lines } = getHighlightCode(input);
-  /** 渲染代码 */
-  const text = lan ? highlight(lan, code) : highlightAuto(code);
-  /** 按行切割代码 */
-  const codeLines = text.value.trim().split('\n');
-  /** 空格宽度 */
-  const splitWidth = getMinSpaceWidth(code);
-
   let lastSpaceWidth = 0;
 
   /** 按照行编译代码 */
   const content = codeLines.map((line, index) => {
     // TODO: 还需要修改
     const space = getLineSpaceWidth(line);
-    const number = space / splitWidth;
-    const spaceWithSplit = splitLabel(number, splitWidth);
+    const number = space / tabWidth;
+    const spaceWithSplit = splitLabel(number, tabWidth);
     const newLine = line.replace(/^ +/, spaceWithSplit);
-    const className = lines[index] ? ` class="code-block__highlight-line"` : '';
+    const className = highlightLines[index] ? ` class="code-block__highlight-line"` : '';
     const lineCode = (line === '')
-      ? `<li${className}>${splitLabel(lastSpaceWidth, splitWidth, false)}</li>`
+      ? `<li${className}>${splitLabel(lastSpaceWidth, tabWidth, false)}</li>`
       : `<li${className}>${newLine}</li>`;
 
     if (number > 0) {
@@ -151,7 +145,7 @@ export function CodeRenderer(input: string, lang: string, attribute = '') {
   });
   /** 代码行号 */
   const list = new Array(codeLines.length).fill(0).map((_, i) => {
-    return lines[i]
+    return highlightLines[i]
       ? `<li class="code-block__highlight-line">${i + 1}</li>`
       : `<li>${i + 1}</li>`;
   });
