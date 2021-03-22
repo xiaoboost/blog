@@ -1,4 +1,5 @@
 dependencies:
+  axios: 0.21.1
   chalk: 4.1.0
   chokidar: 3.5.1
   esbuild: 0.9.5
@@ -23,6 +24,8 @@ dependencies:
   react-dom: 17.0.1_react@17.0.1
   stylus: 0.54.8
   typescript: 4.2.3
+  vscode-oniguruma: 1.5.0
+  vscode-textmate: 5.2.0
   yaml: 1.10.2
 devDependencies:
   '@types/highlight.js': 9.12.4
@@ -603,6 +606,13 @@ packages:
     resolution:
       integrity: sha1-bZUX654DDSQ2ZmZR6GvZ9vE1M8k=
       tarball: atob/download/atob-2.1.2.tgz
+  /axios/0.21.1:
+    dependencies:
+      follow-redirects: 1.13.3
+    dev: false
+    resolution:
+      integrity: sha1-IlY0gZYvTWvemnbVFu8OXTwJsrg=
+      tarball: axios/download/axios-0.21.1.tgz?cache=0&sync_timestamp=1608623177223&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Faxios%2Fdownload%2Faxios-0.21.1.tgz
   /balanced-match/1.0.0:
     resolution:
       integrity: sha1-ibTRmasr7kneFk6gK4nORi1xt2c=
@@ -1288,6 +1298,13 @@ packages:
     resolution:
       integrity: sha1-xLSJ6ACW2d8d/JfHmHGup8YXxGk=
       tarball: flatted/download/flatted-3.1.1.tgz
+  /follow-redirects/1.13.3:
+    dev: false
+    engines:
+      node: '>=4.0'
+    resolution:
+      integrity: sha1-5VmK1QF0wbxOhyMB6CrCzZf5Amc=
+      tarball: follow-redirects/download/follow-redirects-1.13.3.tgz
   /fresh/0.5.2:
     dev: false
     engines:
@@ -3023,6 +3040,16 @@ packages:
     resolution:
       integrity: sha1-IpnwLG3tMNSllhsLn3RSShj2NPw=
       tarball: vary/download/vary-1.1.2.tgz
+  /vscode-oniguruma/1.5.0:
+    dev: false
+    resolution:
+      integrity: sha1-0iNYaO/pM8V5b9xofPzWREByWbE=
+      tarball: vscode-oniguruma/download/vscode-oniguruma-1.5.0.tgz
+  /vscode-textmate/5.2.0:
+    dev: false
+    resolution:
+      integrity: sha1-AfAXYKOR6CIv5PM/vMvRrXGu104=
+      tarball: vscode-textmate/download/vscode-textmate-5.2.0.tgz
   /which-boxed-primitive/1.0.2:
     dependencies:
       is-bigint: 1.0.1
@@ -3108,6 +3135,7 @@ specifiers:
   '@types/stylus': ^0.48.33
   '@typescript-eslint/eslint-plugin': ^4.18.0
   '@typescript-eslint/parser': ^4.18.0
+  axios: ^0.21.1
   chalk: ^4.1.0
   chokidar: ^3.5.1
   esbuild: ^0.9.5
@@ -3137,4 +3165,6 @@ specifiers:
   ts-node: ^9.1.1
   tslib: ^2.1.0
   typescript: ^4.2.3
+  vscode-oniguruma: ^1.5.0
+  vscode-textmate: ^5.2.0
   yaml: ^1.10.2

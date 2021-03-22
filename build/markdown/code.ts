@@ -1,4 +1,5 @@
 import { highlight, highlightAuto } from 'highlight.js';
+import { renderTsCode } from './typescript';
 
 const langLabel = {
   html: 'HTML',
@@ -78,6 +79,12 @@ export function CodeRenderer(input: string, lang: string) {
   const lan = lang ? lang.toLowerCase() : '';
   /** 代码语言标记 */
   const label = langLabel[lan];
+
+  // ts 语言另外做处理
+  if (label === 'TypeScript') {
+    renderTsCode(input);
+  }
+
   /** 经处理的代码和高亮行 */
   const { code, lines } = getHighlightCode(input);
   /** 渲染代码 */
@@ -91,6 +98,7 @@ export function CodeRenderer(input: string, lang: string) {
 
   /** 按照行编译代码 */
   const content = codeLines.map((line, index) => {
+    // TODO: 还需要修改
     const space = getLineSpaceWidth(line);
     const number = space / splitWidth;
     const spaceWithSplit = splitLabel(number, splitWidth);

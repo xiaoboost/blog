@@ -1,14 +1,30 @@
-import * as ts from 'typescript';
+import ts from 'typescript';
+import path from 'path';
 
+/** 代码文件 */
 interface CodeFile {
   name: string;
   code: string;
   version: number;
+  snapshot: ts.IScriptSnapshot;
 }
 
-const files: CodeFile[] = [];
+export type ScriptKind = 'ts' | 'tsx';
+
+/** 临时文件 */
+const fileName = (ext: ScriptKind) => path.join(process.cwd(), `_template.${ext}`);
+const files: Record<string, CodeFile> = {};
 
 let projectVersion = 0;
+let current: CodeFile;
+
+function getScriptSnapshot(code: string): ts.IScriptSnapshot {
+  return {
+    getText: (start, end) => code.substring(start, end),
+    getLength: () => code.length,
+    getChangeRange: () => void 0,
+  }
+}
 
 const serverHost: ts.LanguageServiceHost = {
   getCompilationSettings() {
@@ -24,17 +40,42 @@ const serverHost: ts.LanguageServiceHost = {
     };
   },
   getScriptFileNames() {
-    return files.map((file) => file.name);
+    return (current ? [current.name] : []).concat(Object.keys(files));
   },
   getProjectVersion() {
     return String(projectVersion);
   },
   getScriptVersion(fileName) {
-    return String(files.find((file) => file.name === fileName)?.version ?? '0');
+    if (current && fileName === current.name) {
+      return String(current.version);
+    }
+    else if (files[fileName]) {
+      return String(files[fileName].version);
+    }
+    else {
+      return '0';
+    }
   },
-  getScriptSnapshot() {
-    // TODO:
-    return {} as any;
+  getScriptSnapshot(fileName) {
+    if (current && fileName === current.name) {
+      return current.snapshot;
+    }
+    else if (files[fileName]) {
+      return files[fileName].snapshot;
+    }
+    else {
+      const fileText = ts.sys.readFile(fileName) ?? '';
+      const file: CodeFile = {
+        name: fileName,
+        code: fileText,
+        version: 1,
+        snapshot: getScriptSnapshot(fileText),
+      };
+
+      files[fileName] = file;
+
+      return file.snapshot;
+    }
   },
   getDefaultLibFileName(opt) {
     return ts.getDefaultLibFileName(opt);
@@ -43,50 +84,61 @@ const serverHost: ts.LanguageServiceHost = {
     return process.cwd();
   },
   readFile(fileName) {
-    // ..
+    debugger;
+    return '';
   },
   fileExists(fileName) {
-    // ..
+    debugger;
+    return false;
   },
   directoryExists(dirName) {
-    // ..
+    // 不包含任何库
+    if (dirName.endsWith('node_modules/@types')) {
+      return false;
+    }
+
+    return ts.sys.directoryExists(dirName);
   },
   getDirectories(dirName) {
-    // ..
+    return [];
   },
   readDirectory() {
-    // ..
+    return [];
   },
   getNewLine() {
     return '\n';
   },
 };
 
-export function updateScript(file: CodeFile) {
-  projectVersion++;
+export const tsServer = ts.createLanguageService(serverHost);
 
-  const oldFile = files.find((item) => item.name === file.name);
+export function setFile(code: string, kind: ScriptKind = 'ts') {
+  const name = fileName(kind);
 
-  if (oldFile) {
-    if (oldFile.code !== file.code) {
-      oldFile.code === file.code;
-      oldFile.version++;
+  if (current) {
+    if (code === current.code && name === current.name) {
+      return name;
     }
   }
-  else {
-    files.push(file);
-  }
-}
-
-export function removeScript(fileName: string) {
+  
   projectVersion++;
 
-  const index = files.findIndex((item) => item.name === fileName);
-
-  if (index > -1) {
-    files.splice(index, 1);
+  current = {
+    code,
+    name,
+    snapshot: getScriptSnapshot(code),
+    version: (current?.version ?? 0) + 1,
   }
+
+  return name;
 }
 
-/** 语言服务器 */
-export const tsServer = ts.createLanguageService(serverHost);
+export function getQuickInfoAtPosition(offset: number) {
+  const infos = tsServer.getQuickInfoAtPosition(current.name, offset);
+
+  if (!infos || !infos.displayParts) {
+    return '';
+  }
+
+  return ts.displayPartsToString(infos.displayParts);
+}

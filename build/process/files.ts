@@ -2,7 +2,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import * as mfs from 'memfs';
 
-import { isDevelopment } from '../utils';
+import { isDevelopment, mkdirp } from '../utils';
 import { site } from '../config/website';
 import { outputDir } from '../config/project';
 
@@ -16,36 +16,6 @@ const cname: FileData = {
   path: path.join(outputDir, 'CNAME'),
   contents: site.cname,
 };
-
-export async function mkdirp(target: string, map: Record<string, boolean>) {
-  const vfs = isDevelopment ? mfs.fs.promises : fs.promises;
-
-  // 待创建的路径
-  const dirs: string[] = [];
-  const exist = (target: string) => {
-    return vfs.stat(target)
-      .then((data: any) => Boolean(data))
-      .catch(() => false);
-  };
-
-  let dir = target;
-
-  while (!(await exist(dir))) {
-    dirs.push(dir);
-    dir = path.dirname(dir);
-  }
-
-  while (dirs.length > 0) {
-    const dir = dirs.pop()!;
-
-    if (map[dir]) {
-      return;
-    }
-
-    map[dir] = true;
-    await vfs.mkdir(dir);
-  }
-}
 
 export function clear() {
   data.length = 0;
@@ -72,7 +42,7 @@ export async function write() {
     const dirname = path.dirname(file.path);
 
     if (!dirMap[dirname]) {
-      await mkdirp(dirname, dirMap);
+      await mkdirp(dirname, dirMap, vfs);
     }
 
     await vfs.writeFile(file.path, file.contents);
