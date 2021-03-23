@@ -3,15 +3,16 @@ import oniguruma from 'vscode-oniguruma';
 
 import { promises as fs } from 'fs';
 import { resolveRoot } from '@build/utils';
-import { setFile, getQuickInfoAtPosition, ScriptKind, Platform } from './host';
+import { getTsServer, ScriptKind, Platform, TsServer } from './host';
 
 let tsGrammar: vsctm.IGrammar;
 let tsxGrammar: vsctm.IGrammar;
 
-// TODO: 这里应该是所有关键字 + 运算符
 const noInfoChar: Record<string, boolean> = (
   Array
-    .from('{}:();,+-*/.\'"=[]%`')
+    .from('{}:();,+-*/.\'"=[]%`<>|^&~!')
+    .concat(['=>', '**', '>>', '<<', '>>>', '&&', '||'])
+    .concat(['==', '===', '!=', '!==', '>=', '<=', '++', '--'])
     .reduce((ans, item) => (ans[item] = true, ans), {})
 );
 
@@ -21,7 +22,7 @@ interface Token extends vsctm.IToken {
   /** 原始字符串 */
   text: string;
   /** 渲染后的标签类名 */
-  class: string;
+  class?: string;
   /** 代码提示 */
   info?: string;
 }
@@ -64,17 +65,26 @@ async function getGrammar() {
 }
 
 function renderToken(text: string, scopes: string[]) {
-  return '';
+  const tags = scopes.filter((name) => (
+    !name.startsWith('meta') &&
+    !name.startsWith('source.ts')
+  ));
+
+  if (tags.length === 0) {
+    return;
+  }
+
+  return tags.join('-');
 }
 
-function getInfo(text: string, offset: number, scopes: string[]) {
+function getInfo(server: TsServer, text: string, offset: number, scopes: string[]) {
   const innerText = text.trim();
 
   if (innerText.length === 0 || noInfoChar[innerText]) {
     return;
   }
 
-  const info = getQuickInfoAtPosition(offset);
+  const info = server.getQuickInfoAtPosition(offset);
 
   if (!info) {
     return;
@@ -83,20 +93,19 @@ function getInfo(text: string, offset: number, scopes: string[]) {
   return info;
 }
 
-export async function tokenize(
+export const ready = getGrammar();
+
+export function tokenize(
   code: string,
   lang: ScriptKind = 'ts',
   platform: Platform = 'browser',
 ) {
-  if (!tsGrammar || !tsxGrammar) {
-    await getGrammar();
-  }
-
-  setFile(code, lang);
-
-  const grammar = lang === 'ts' ? tsGrammar : tsxGrammar;
+  const server = getTsServer(lang, platform)
+  const grammar = /^(j|t)s$/.test(lang) ? tsGrammar : tsxGrammar;
   const lines = code.split(/[\n\r]/);
   const linesToken: Token[][] = [];
+
+  server.setFile(code);
 
   let ruleStack = vsctm.INITIAL;
   let offset = 0;
@@ -113,7 +122,7 @@ export async function tokenize(
         ...token,
         offset: indexOffset,
         class: renderToken(text, token.scopes),
-        info: getInfo(text, indexOffset, token.scopes),
+        info: getInfo(server, text, indexOffset, token.scopes),
         text,
       };
     }));

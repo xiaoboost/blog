@@ -90,21 +90,18 @@ function parseAttr(input: string) {
 function toScriptKind(input: string): ScriptKind | false {
   const val = input.toLowerCase();
 
-  if (['ts', 'js', 'tsx', 'jsx'].includes(input)) {
-    return input as ScriptKind;
-  }
-  else if (val === 'javascript') {
-    return 'js';
-  }
-  else if (val === 'typescript') {
+  if (val === 'ts' || val === 'typescript') {
     return 'ts';
+  }
+  else if (val === 'tsx') {
+    return 'tsx';
   }
   else {
     return false;
   }
 }
 
-export async function CodeRenderer(input: string, lang: string, attribute = '') {
+export function CodeRenderer(input: string, lang: string, attribute = '') {
   /** 代码语言 */
   const lan = lang ? lang.toLowerCase() : '';
   /** 代码语言标记 */
@@ -119,7 +116,7 @@ export async function CodeRenderer(input: string, lang: string, attribute = '') 
   const { code, highlightLines } = getHighlightCode(input);
   /** 行代码 */
   const codeLines = scriptKind
-    ? await renderTsCode(input, scriptKind, attrs.platform as Platform)
+    ? renderTsCode(input, scriptKind, attrs.platform as Platform)
     : (lan ? highlight(lan, code) : highlightAuto(code)).value.trim().split('\n');
 
   debugger;
@@ -144,15 +141,15 @@ export async function CodeRenderer(input: string, lang: string, attribute = '') 
     return lineCode;
   });
   /** 代码行号 */
-  const list = new Array(codeLines.length).fill(0).map((_, i) => {
-    return highlightLines[i]
+  const list = new Array(codeLines.length).fill(0).map((_, i) => (
+    highlightLines[i]
       ? `<li class="code-block__highlight-line">${i + 1}</li>`
-      : `<li>${i + 1}</li>`;
-  });
+      : `<li>${i + 1}</li>`
+  ));
 
   return (
     `<pre class="code-block code-block__lang-${lan}">` +
-      (label ? `<label class="code-block__label">${langLabel[lan]}</label>` : '') +
+      (label ? `<label class="code-block__label">${label}</label>` : '') +
       '<code class="code-block__list">' +
       `<ul class="code-block__gutter">${list.join('')}</ul>` +
       '<span class="code-block__wrapper">' +

@@ -2,7 +2,6 @@ import Koa from 'koa';
 
 import * as fs from 'fs';
 import * as mfs from 'memfs';
-import * as print from '../process/print';
 
 import { join } from 'path';
 import { getType } from 'mime';
