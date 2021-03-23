@@ -1,7 +1,7 @@
 import { build, OutputFile } from 'esbuild';
 import { outputDir, assetsPath } from '../config/project';
 import { stylusLoader, moduleCssLoader } from '../plugins';
-import { runScript, resolveRoot, isDevelopment, isWatch } from '../utils';
+import { runScript, resolveRoot, isDevelopment } from '../utils';
 import { mergeConfig, fileExts } from './utils';
 import { externals } from './post';
 

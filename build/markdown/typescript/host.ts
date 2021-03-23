@@ -1,6 +1,16 @@
 import ts from 'typescript';
 import path from 'path';
 
+import { resolveRoot } from '@build/utils';
+
+export type ScriptKind = 'ts' | 'tsx';
+export type Platform = 'browser' | 'node' | 'none';
+
+/** 语言服务器缓存 */
+const serverCache: Record<string, TsServer> = {};
+/** 公共静态文件缓存 */
+const cache: Record<string, CodeFile> = {};
+
 /** 代码文件 */
 interface CodeFile {
   name: string;
@@ -9,137 +19,160 @@ interface CodeFile {
   snapshot: ts.IScriptSnapshot;
 }
 
-export type ScriptKind = 'ts' | 'tsx' | 'js' | 'jsx';
-export type Platform = 'browser' | 'node';
+/** 语言服务器 */
+export class TsServer {
+  /** script 类型 */
+  private readonly scriptKind: ScriptKind;
+  /** 平台类型 */
+  private readonly platform: Platform;
+  /** 语言服务器 */
+  private readonly server: ts.LanguageService;
+  /** 包含的静态文件 */
+  private readonly files: Record<string, boolean> = {};
+  /** 当前文件 */
+  private current!: CodeFile;
+  /** 当前项目版本 */
+  private version = 0;
 
-/** 临时文件 */
-const fileName = (ext: ScriptKind) => path.join(process.cwd(), `_template.${ext}`);
-const files: Record<string, CodeFile> = {};
-
-let projectVersion = 0;
-let current: CodeFile;
-
-function getScriptSnapshot(code: string): ts.IScriptSnapshot {
-  return {
-    getText: (start, end) => code.substring(start, end),
-    getLength: () => code.length,
-    getChangeRange: () => void 0,
+  constructor(scriptKind: ScriptKind, platform: Platform = 'none') {
+    this.scriptKind = scriptKind;
+    this.platform = platform;
+    this.setFile('');
+    this.server = ts.createLanguageService(this.createLanguageServiceHost());
   }
-}
 
-const serverHost: ts.LanguageServiceHost = {
-  getCompilationSettings() {
+  private getScriptSnapshot(code: string): ts.IScriptSnapshot {
     return {
-      strict: true,
-      allowJs: true,
-      allowSyntheticDefaultImports: true,
-      allowNonTsExtensions: true,
-      target: ts.ScriptTarget.ESNext,
-      moduleResolution: ts.ModuleResolutionKind.NodeJs,
-      module: ts.ModuleKind.ESNext,
-      lib: ['ESNext'],
+      getText: (start, end) => code.substring(start, end),
+      getLength: () => code.length,
+      getChangeRange: () => void 0,
+    }
+  }
+
+  private getCurrentName() {
+    return path.join(process.cwd(), `_template.${this.scriptKind}`);
+  }
+
+  private getAllFileNames() {
+    if (this.current) {
+      this.files[this.current.name] = true;
+    }
+
+    this.files[resolveRoot('node_modules/typescript/lib/lib.esnext.d.ts')] = true;
+
+    if (this.scriptKind === 'tsx') {
+      this.files[resolveRoot('node_modules/@types/react/index.d.ts')] = true;
+    }
+
+    if (this.platform === 'node') {
+      this.files[resolveRoot('node_modules/@types/node/index.d.ts')] = true;
+    }
+    else if (this.platform === 'browser') {
+      this.files[resolveRoot('node_modules/typescript/lib/lib.dom.d.ts')] = true;
+    }
+
+    return Object.keys(this.files);
+  }
+
+  private createLanguageServiceHost(): ts.LanguageServiceHost {
+    return {
+      getCompilationSettings(): ts.CompilerOptions {
+        return {
+          strict: false,
+          allowJs: true,
+          jsx: ts.JsxEmit.React,
+          allowSyntheticDefaultImports: true,
+          allowNonTsExtensions: true,
+          target: ts.ScriptTarget.Latest,
+          moduleResolution: ts.ModuleResolutionKind.NodeJs,
+          module: ts.ModuleKind.ESNext,
+          lib: [],
+          types: [],
+        };
+      },
+      getScriptFileNames: () => {
+        return this.getAllFileNames();
+      },
+      getProjectVersion: () => {
+        return String(this.version);
+      },
+      getScriptVersion: (filePath) => {
+        if (this.current && filePath === this.current.name) {
+          return String(this.current.version);
+        }
+        else if (cache[filePath]) {
+          return String(cache[filePath].version);
+        }
+        else {
+          return '0';
+        }
+      },
+      getScriptSnapshot: (filePath) => {
+        if (this.current && filePath === this.current.name) {
+          return this.current.snapshot;
+        }
+        else if (cache[filePath]) {
+          this.files[filePath] = true;
+          return cache[filePath].snapshot;
+        }
+        else {
+          const fileText = ts.sys.readFile(filePath) ?? '';
+          const file: CodeFile = {
+            name: filePath,
+            code: fileText,
+            version: 1,
+            snapshot: this.getScriptSnapshot(fileText),
+          };
+
+          this.files[filePath] = true;
+          cache[filePath] = file;
+
+          return file.snapshot;
+        }
+      },
+      getNewLine: () => '\n',
+      getCurrentDirectory: () => resolveRoot(),
+      useCaseSensitiveFileNames: () => true,
+      getDefaultLibFileName: ts.getDefaultLibFilePath,
+    }
+  }
+
+  setFile(code: string) {
+    const name = this.getCurrentName();
+    
+    if (this.current && code === this.current.code) {
+      return;
+    }
+
+    this.version++;
+    this.current = {
+      name,
+      code,
+      snapshot: this.getScriptSnapshot(code),
+      version: (this.current?.version ?? 0) + 1,
     };
-  },
-  getScriptFileNames() {
-    return (current ? [current.name] : []).concat(Object.keys(files));
-  },
-  getProjectVersion() {
-    return String(projectVersion);
-  },
-  getScriptVersion(fileName) {
-    if (current && fileName === current.name) {
-      return String(current.version);
-    }
-    else if (files[fileName]) {
-      return String(files[fileName].version);
-    }
-    else {
-      return '0';
-    }
-  },
-  getScriptSnapshot(fileName) {
-    if (current && fileName === current.name) {
-      return current.snapshot;
-    }
-    else if (files[fileName]) {
-      return files[fileName].snapshot;
-    }
-    else {
-      const fileText = ts.sys.readFile(fileName) ?? '';
-      const file: CodeFile = {
-        name: fileName,
-        code: fileText,
-        version: 1,
-        snapshot: getScriptSnapshot(fileText),
-      };
-
-      files[fileName] = file;
-
-      return file.snapshot;
-    }
-  },
-  getDefaultLibFileName(opt) {
-    return ts.getDefaultLibFileName(opt);
-  },
-  getCurrentDirectory() {
-    return process.cwd();
-  },
-  readFile(fileName) {
-    debugger;
-    return '';
-  },
-  fileExists(fileName) {
-    debugger;
-    return false;
-  },
-  directoryExists(dirName) {
-    // 不包含任何库
-    if (dirName.endsWith('node_modules/@types')) {
-      return false;
-    }
-
-    return ts.sys.directoryExists(dirName);
-  },
-  getDirectories(dirName) {
-    return [];
-  },
-  readDirectory() {
-    return [];
-  },
-  getNewLine() {
-    return '\n';
-  },
-};
-
-export const tsServer = ts.createLanguageService(serverHost);
-
-export function setFile(code: string, kind: ScriptKind = 'ts') {
-  const name = fileName(kind);
-
-  if (current) {
-    if (code === current.code && name === current.name) {
-      return name;
-    }
   }
+
+  getQuickInfoAtPosition(offset: number) {
+    const infos = this.server.getQuickInfoAtPosition(this.current.name, offset);
   
-  projectVersion++;
-
-  current = {
-    code,
-    name,
-    snapshot: getScriptSnapshot(code),
-    version: (current?.version ?? 0) + 1,
+    if (!infos || !infos.displayParts) {
+      return '';
+    }
+  
+    return ts.displayPartsToString(infos.displayParts);
   }
-
-  return name;
 }
 
-export function getQuickInfoAtPosition(offset: number) {
-  const infos = tsServer.getQuickInfoAtPosition(current.name, offset);
+export function getTsServer(kind: ScriptKind, platform: Platform) {
+  const key = `${kind}-${platform}`;
 
-  if (!infos || !infos.displayParts) {
-    return '';
+  if (serverCache[key]) {
+    return serverCache[key];
   }
-
-  return ts.displayPartsToString(infos.displayParts);
+  else {
+    const server = new TsServer(kind, platform);
+    serverCache[key] = server;
+    return server;
+  }
 }
