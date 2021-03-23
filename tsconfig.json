@@ -5,7 +5,7 @@
     "strict": true,
     "declaration": true,
     "moduleResolution": "node",
-    "target": "ESNext",
+    "target": "ES2016",
     "module": "CommonJS",
     "jsx": "react",
     "allowSyntheticDefaultImports": true,
