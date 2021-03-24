@@ -16,9 +16,23 @@ export function renderTsCode(
   );
 
   debugger;
+  return linesTokens.map((line) => {
+    let code = '';
 
-  /** 行代码 */
-  const codeLines: string[] = [];
+    for (const token of line) {
+      code += '<span';
 
-  return codeLines;
+      if (token.class) {
+        code += ` class="${token.class}"`
+      }
+
+      if (token.info) {
+        code += ` ls-info="${token.info}"`;
+      }
+
+      code += `>${token.text}</span>`;
+    }
+
+    return code;
+  });
 }

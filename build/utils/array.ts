@@ -131,6 +131,17 @@ export function toArray<T>(item?: T | T[]): T[] {
   }
 }
 
+/** 转换位 map */
+export function toBoolMap<T extends Index>(arr: T[]): Record<T, boolean> {
+  const map: Record<Index, boolean> = {};
+
+  for (let i = 0; i < arr.length; i++) {
+    map[arr[i]] = true;
+  }
+
+  return map;
+}
+
 /** 在`rest`数组中，且不在`arr`数组中的 */
 export function exclude<T extends Index>(arr: T[], rest: T[]): T[] {
   const map: Record<Index, boolean> = {};

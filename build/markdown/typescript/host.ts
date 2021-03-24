@@ -1,7 +1,7 @@
 import ts from 'typescript';
 import path from 'path';
 
-import { resolveRoot } from '@build/utils';
+import { resolveRoot, toBoolMap } from '@build/utils';
 
 export type ScriptKind = 'ts' | 'tsx';
 export type Platform = 'browser' | 'node' | 'none';
@@ -17,6 +17,27 @@ interface CodeFile {
   code: string;
   version: number;
   snapshot: ts.IScriptSnapshot;
+}
+
+/** 展示数据 */
+type DisplaySymbol = string | [string, string];
+
+/** 不需要样式的数据类型 */
+const infoNoStyleKinds = toBoolMap(['space', 'text', 'punctuation']);
+
+function displayPartsToString(tokens: ts.SymbolDisplayPart[]) {
+  const result: DisplaySymbol[] = [];
+
+  for (const token of tokens) {
+    if (infoNoStyleKinds[token.kind]) {
+      result.push(token.text);
+    }
+    else {
+      result.push([token.kind, token.text]);
+    }
+  }
+
+  return JSON.stringify(result);
 }
 
 /** 语言服务器 */
@@ -159,8 +180,8 @@ export class TsServer {
     if (!infos || !infos.displayParts) {
       return '';
     }
-  
-    return ts.displayPartsToString(infos.displayParts);
+
+    return displayPartsToString(infos.displayParts);
   }
 }
 
