@@ -64,27 +64,27 @@ async function getGrammar() {
   ];
 }
 
-function renderToken(text: string, scopes: string[]) {
-  const tags = scopes.filter((name) => (
-    !name.startsWith('meta') &&
-    !name.startsWith('source.ts')
-  ));
+function getClass(token: Token) {
+  const valText = token.text.trim();
 
-  if (tags.length === 0) {
-    return;
+  if (valText.length === 0) {
+    return '';
   }
 
-  return tags.join('-');
+  return token.scopes
+    .filter((name) => name !== 'source.ts')
+    .map((tag) => `ls-${tag.replace(/\./g, '-')}`)
+    .join(' ');
 }
 
-function getInfo(server: TsServer, text: string, offset: number, scopes: string[]) {
-  const innerText = text.trim();
+function getInfo(server: TsServer, token: Token) {
+  const innerText = token.text.trim();
 
   if (innerText.length === 0 || noInfoChar[innerText]) {
     return;
   }
 
-  const info = server.getQuickInfoAtPosition(offset);
+  const info = server.getQuickInfoAtPosition(token.offset);
 
   if (!info) {
     return;
@@ -117,14 +117,18 @@ export function tokenize(
     linesToken.push(lineTokens.tokens.map((token) => {
       const text = line.substring(token.startIndex, token.endIndex);
       const indexOffset = token.startIndex + offset;
-
-      return {
+      const tokenData: Token = {
         ...token,
         offset: indexOffset,
-        class: renderToken(text, token.scopes),
-        info: getInfo(server, text, indexOffset, token.scopes),
+        class: '',
+        info: '',
         text,
       };
+
+      tokenData.class = getClass(tokenData);
+      tokenData.info = getInfo(server, tokenData);
+
+      return tokenData;
     }));
 
     offset += line.length + 1;
