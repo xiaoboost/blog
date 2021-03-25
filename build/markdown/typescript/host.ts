@@ -1,10 +1,11 @@
 import ts from 'typescript';
 import path from 'path';
 
-import { resolveRoot, toBoolMap } from '@build/utils';
+import { resolveRoot, toBoolMap, isString } from '@build/utils';
 
 export type ScriptKind = 'ts' | 'tsx';
 export type Platform = 'browser' | 'node' | 'none';
+export type DisplaySymbol = string | [string, string];
 
 /** 语言服务器缓存 */
 const serverCache: Record<string, TsServer> = {};
@@ -19,9 +20,6 @@ interface CodeFile {
   snapshot: ts.IScriptSnapshot;
 }
 
-/** 展示数据 */
-type DisplaySymbol = string | [string, string];
-
 /** 不需要样式的数据类型 */
 const infoNoStyleKinds = toBoolMap(['space', 'text', 'punctuation']);
 
@@ -30,14 +28,21 @@ function displayPartsToString(tokens: ts.SymbolDisplayPart[]) {
 
   for (const token of tokens) {
     if (infoNoStyleKinds[token.kind]) {
-      result.push(token.text);
+      const lastText = result[result.length - 1];
+
+      if (isString(lastText)) {
+        result.splice(result.length - 1, 1, lastText + token.text);
+      }
+      else {
+        result.push(token.text);
+      }
     }
     else {
       result.push([token.kind, token.text]);
     }
   }
 
-  return JSON.stringify(result);
+  return JSON.stringify(result).replace(/"/g, '\'');
 }
 
 /** 语言服务器 */

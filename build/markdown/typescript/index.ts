@@ -1,7 +1,7 @@
 import { tokenize, ready } from './tokenize';
-import { ScriptKind, Platform } from './host';
+import { ScriptKind, Platform, DisplaySymbol } from './host';
 
-export { ScriptKind, Platform, ready };
+export { ScriptKind, Platform, ready, DisplaySymbol };
 
 // TODO: 还需要代码缓存缓存
 export function renderTsCode(
