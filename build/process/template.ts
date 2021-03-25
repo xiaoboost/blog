@@ -23,13 +23,33 @@ function fixFile(outputFiles: OutputFile[]) {
       file.path = path.join(outputDir, assetsPath, fileName);
       files.push(file);
     }
-    else if (fileName.includes('index.css')) {
+    else if (/index\.css$/.test(file.path)) {
       const name = isDevelopment
         ? `/css/style.css`
         : `/css/style.${md5(file.contents)}.css`;
 
       file.path = path.join(outputDir, name);
       files.push(file);
+
+      const relativePath = name.slice(1);
+
+      if (!externals.styles.includes(relativePath)) {
+        externals.styles.push(relativePath);
+      }
+    }
+    else if (/plugins[/\\]+script\.js$/.test(file.path)) {
+      const name = isDevelopment
+        ? `/js/script.js`
+        : `/js/script.${md5(file.contents)}.js`;
+
+      file.path = path.join(outputDir, name);
+      files.push(file);
+
+      const relativePath = name.slice(1);
+
+      if (!externals.scripts.includes(relativePath)) {
+        externals.scripts.push(relativePath);
+      }
     }
   }
 }
@@ -37,12 +57,6 @@ function fixFile(outputFiles: OutputFile[]) {
 function getTemplate(outputFiles: OutputFile[]) {
   const codeFile = (outputFiles!).find((item) => /index\.js$/.test(item.path));
   const code = Buffer.from(codeFile?.contents ?? '').toString();
-
-  externals.styles = (outputFiles)
-    .filter((file) => /\.css$/.test(file.path))
-    .map((file) => path.relative(outputDir, file.path));
-
-  externals.scripts = [];
 
   if (!codeFile || !code) {
     throw new Error('Create template render script Error.');
@@ -53,7 +67,7 @@ function getTemplate(outputFiles: OutputFile[]) {
 
 export async function buildTemplate() {
   const result = await build(mergeConfig({
-    entryPoints: ['./template/index.ts'],
+    entryPoints: ['./template/index.ts', './template/plugins/script.ts'],
     watch: false,
     outdir: resolveRoot('dist'),
     plugins: [

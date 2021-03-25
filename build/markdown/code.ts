@@ -116,10 +116,9 @@ export function CodeRenderer(input: string, lang: string, attribute = '') {
   const { code, highlightLines } = getHighlightCode(input);
   /** 行代码 */
   const codeLines = scriptKind
-    ? renderTsCode(input, scriptKind, attrs.platform as Platform)
+    ? renderTsCode(code, scriptKind, attrs.platform as Platform)
     : (lan ? highlight(lan, code) : highlightAuto(code)).value.trim().split('\n');
 
-  debugger;
   let lastSpaceWidth = 0;
 
   /** 按照行编译代码 */

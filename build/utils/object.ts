@@ -168,3 +168,13 @@ export function shadowCopy<T extends AnyObject, U extends keyof T>(
 
   return data;
 }
+
+/** 编译 JSON 字符串 */
+export function parseJSON(str: string) {
+  try {
+    return JSON.parse(str);
+  }
+  catch (e) {
+    return;
+  }
+}
