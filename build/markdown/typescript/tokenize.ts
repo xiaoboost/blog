@@ -8,14 +8,6 @@ import { getTsServer, ScriptKind, Platform, TsServer } from './host';
 let tsGrammar: vsctm.IGrammar;
 let tsxGrammar: vsctm.IGrammar;
 
-const noInfoChar: Record<string, boolean> = (
-  Array
-    .from('{}:();,+-*/.\'"=[]%`<>|^&~!')
-    .concat(['=>', '**', '>>', '<<', '>>>', '&&', '||'])
-    .concat(['==', '===', '!=', '!==', '>=', '<=', '++', '--'])
-    .reduce((ans, item) => (ans[item] = true, ans), {})
-);
-
 interface Token extends vsctm.IToken {
   /** 距离整个代码开头的偏移 */
   offset: number;
@@ -64,21 +56,76 @@ async function getGrammar() {
   ];
 }
 
+/**
+ * 分割行首 token
+ * 行首的 token 如果有空格，则需要把空格和后面的内容分隔开
+ */
+function lineStartTokenSplit(token: Token) {
+  if (
+    token.startIndex !== 0 ||
+    !/^ +/.test(token.text) ||
+    /^ +$/.test(token.text)
+  ) {
+    return [token];
+  }
+
+  const space = /^ +/.exec(token.text)!;
+  const spaceToken: Token = {
+    startIndex: 0,
+    endIndex: space.length,
+    offset: token.offset,
+    scopes: [],
+    text: space[0],
+  };
+
+  return [
+    spaceToken,
+    {
+      startIndex: space.length,
+      endIndex: token.endIndex,
+      offset: token.offset + space.length,
+      scopes: token.scopes,
+      text: token.text.substring(space.length),
+    },
+  ];
+}
+
 function getClass(token: Token) {
   const valText = token.text.trim();
 
   if (valText.length === 0) {
-    return '';
+    return;
   }
 
-  return token.scopes
-    .filter((name) => name !== 'source.ts')
-    .map((tag) => `ls-${tag.replace(/\./g, '-')}`)
-    .join(' ');
+  const tokenMap = {
+    comment: 'hljs-comment',
+    'storage.type': 'hljs-keyword',
+    'string.quoted': 'hljs-string',
+    'entity.name': 'hljs-variable',
+  };
+  const tokenName = token.scopes.join(' ');
+  const tokenKey = Object.keys(tokenMap).find((key) => tokenName.includes(key));
+
+  // if (tokenName.includes('entity.name')) {
+  //   debugger;
+  // }
+
+  if (!tokenKey) {
+    return;
+  }
+
+  return tokenKey ? tokenMap[tokenKey] : undefined;
 }
 
 function getInfo(server: TsServer, token: Token) {
   const innerText = token.text.trim();
+  const noInfoChar: Record<string, boolean> = (
+    Array
+      .from('{}:();,+-*/.\'"=[]%`<>|^&~!')
+      .concat(['=>', '**', '>>', '<<', '>>>', '&&', '||'])
+      .concat(['==', '===', '!=', '!==', '>=', '<=', '++', '--'])
+      .reduce((ans, item) => (ans[item] = true, ans), {})
+  );
 
   if (innerText.length === 0 || noInfoChar[innerText]) {
     return;
@@ -114,22 +161,20 @@ export function tokenize(
     const line = lines[i];
     const lineTokens = grammar.tokenizeLine(line, ruleStack);
 
-    linesToken.push(lineTokens.tokens.map((token) => {
-      const text = line.substring(token.startIndex, token.endIndex);
-      const indexOffset = token.startIndex + offset;
-      const tokenData: Token = {
-        ...token,
-        offset: indexOffset,
-        class: '',
-        info: '',
-        text,
-      };
-
-      tokenData.class = getClass(tokenData);
-      tokenData.info = getInfo(server, tokenData);
-
-      return tokenData;
-    }));
+    linesToken.push(
+      lineTokens.tokens
+        .map((token) => lineStartTokenSplit({
+          ...token,
+          offset: token.startIndex + offset,
+          text: line.substring(token.startIndex, token.endIndex),
+        }))
+        .reduce((ans, token) => ans.concat(token), [])
+        .map((token) => ({
+          ...token,
+          class: getClass(token),
+          info: getInfo(server, token),
+        }))
+    );
 
     offset += line.length + 1;
     ruleStack = lineTokens.ruleStack;

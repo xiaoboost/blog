@@ -19,11 +19,48 @@ const langLabel = {
   json: 'JSON',
 };
 
+/** 代码有多少前置空格 */
 function getLineSpaceWidth(str: string) {
   const result = /^ +/.exec(str);
   return result ? result[0].length : 0;
 }
 
+/** 代码添加分割线 */
+function addSplitLabel(line: string, tabWidth: number) {
+  const splitCode = '<span class="code-block__split"></span>';
+
+  let code = line;
+  let index = 0;
+  let realIndex = 0;
+
+  if (line.trim().length === 0) {
+    return splitCode;
+  }
+
+  while (realIndex < code.length) {
+    if (code[realIndex] !== ' ') {
+      break;
+    }
+
+    if (index % tabWidth !== 0) {
+      index++;
+      realIndex++;
+      continue;
+    }
+
+    const before = code.substring(0, realIndex);
+    const after = code.substring(realIndex);
+
+    code = before + splitCode + after;
+
+    index++;
+    realIndex = realIndex + splitCode.length + 1;
+  }
+
+  return code
+}
+
+/** 获取当前代码 tab 宽度 */
 function getMinSpaceWidth(str: string) {
   const result = str.trim().split('\n').reduce((ans, line) => {
     const space = getLineSpaceWidth(line);
@@ -50,6 +87,7 @@ function getMinSpaceWidth(str: string) {
   return widths[0];
 }
 
+/** 获取高亮代码行记录 */
 function getHighlightCode(code: string) {
   const hlLabel = /\/\*\*\* +hl +\*\*\*\//g;
   const highlightLines: Record<number, boolean> = {};
@@ -68,12 +106,6 @@ function getHighlightCode(code: string) {
     code: lines.join('\n'),
     highlightLines,
   };
-}
-
-function splitLabel(number: number, width: number, rightSpace = true) {
-  const space = ' '.repeat(width);
-  const label = `<span class="code-block__split"></span>${space}`.repeat(number);
-  return rightSpace ? label : label.trim();
 }
 
 function parseAttr(input: string) {
@@ -119,23 +151,13 @@ export function CodeRenderer(input: string, lang: string, attribute = '') {
     ? renderTsCode(code, scriptKind, attrs.platform as Platform)
     : (lan ? highlight(lan, code) : highlightAuto(code)).value.trim().split('\n');
 
-  let lastSpaceWidth = 0;
-
   /** 按照行编译代码 */
   const content = codeLines.map((line, index) => {
-    // TODO: 还需要修改
-    const space = getLineSpaceWidth(line);
-    const number = space / tabWidth;
-    const spaceWithSplit = splitLabel(number, tabWidth);
-    const newLine = line.replace(/^ +/, spaceWithSplit);
+    const hasLeftSpace = getLineSpaceWidth(line) > 0;
     const className = highlightLines[index] ? ` class="code-block__highlight-line"` : '';
-    const lineCode = (line === '')
-      ? `<li${className}>${splitLabel(lastSpaceWidth, tabWidth, false)}</li>`
-      : `<li${className}>${newLine}</li>`;
-
-    if (number > 0) {
-      lastSpaceWidth = number;
-    }
+    const lineCode = hasLeftSpace
+      ? `<li${className}>${addSplitLabel(line, tabWidth)}</li>`
+      : `<li${className}>${line}</li>`;
 
     return lineCode;
   });

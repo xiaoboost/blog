@@ -15,22 +15,26 @@ export function renderTsCode(
     platform === 'node' ? 'node' : 'browser',
   );
 
-  debugger;
   return linesTokens.map((line) => {
     let code = '';
 
     for (const token of line) {
-      code += '<span';
+      if (token.class || token.info) {
+        code += '<span';
 
-      if (token.class) {
-        code += ` class="${token.class}"`
+        if (token.class) {
+          code += ` class="${token.class}"`
+        }
+  
+        if (token.info) {
+          code += ` ls-info="${token.info}"`;
+        }
+  
+        code += `>${token.text}</span>`;
       }
-
-      if (token.info) {
-        code += ` ls-info="${token.info}"`;
+      else {
+        code += token.text;
       }
-
-      code += `>${token.text}</span>`;
     }
 
     return code;

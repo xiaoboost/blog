@@ -16,7 +16,7 @@ function createInfoDom(infos: DisplaySymbol[]): HTMLElement {
 
 Array.from(document.querySelectorAll<HTMLElement>('pre span[ls-info]')).forEach((el) => {
   const infoStr = el.getAttribute('ls-info') ?? '';
-  const infoData = parseJSON(infoStr.replace(/'/g, '"'));
+  const infoData = parseJSON(decodeURI(infoStr));
 
   el.setAttribute('ls-info', '');
 
