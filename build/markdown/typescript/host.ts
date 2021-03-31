@@ -21,7 +21,7 @@ interface CodeFile {
 }
 
 /** 不需要样式的数据类型 */
-const infoNoStyleKinds = toBoolMap(['space', 'text', 'punctuation']);
+const infoNoStyleKinds = toBoolMap(['space', 'text', 'lineBreak', 'punctuation']);
 
 function displayPartsToString(tokens: ts.SymbolDisplayPart[]) {
   const result: DisplaySymbol[] = [];
@@ -42,7 +42,7 @@ function displayPartsToString(tokens: ts.SymbolDisplayPart[]) {
     }
   }
 
-  return JSON.stringify(result).replace(/"/g, '\'');
+  return encodeURI(JSON.stringify(result));
 }
 
 /** 语言服务器 */
