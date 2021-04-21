@@ -2,7 +2,7 @@ import vsctm from 'vscode-textmate';
 import oniguruma from 'vscode-oniguruma';
 
 import { promises as fs } from 'fs';
-import { resolveRoot } from '@build/utils';
+import { resolveRoot, stringifyClass, isString } from '@build/utils';
 import { getTsServer, ScriptKind, Platform, TsServer } from './host';
 
 let tsGrammar: vsctm.IGrammar;
@@ -56,6 +56,16 @@ async function getGrammar() {
   ];
 }
 
+/** 不需要获取语法提示的字符 */
+const noInfoChar: Record<string, boolean> = (
+  Array
+    .from('{}:();,+-*/.\'"=[]%`<>|^&~!')
+    .concat(['=>', '**', '>>', '<<', '>>>', '&&', '||'])
+    .concat(['==', '===', '!=', '!==', '>=', '<=', '++', '--'])
+    .concat(['new'])
+    .reduce((ans, item) => (ans[item] = true, ans), {})
+);
+
 /**
  * 分割行首 token
  * 行首的 token 如果有空格，则需要把空格和后面的内容分隔开
@@ -97,35 +107,57 @@ function getClass(token: Token) {
     return;
   }
 
-  const tokenMap = {
-    comment: 'hljs-comment',
-    'storage.type': 'hljs-keyword',
-    'string.quoted': 'hljs-string',
-    'entity.name': 'hljs-variable',
+  /** token 和 className 的映射表 */
+  const tokenClassName: Record<string, string | Record<string, string>> = {
+    'comment': 'lsp-comment',
+    'support.type.primitive': 'lsp-primitive-type',
+    'storage.type': 'lsp-keyword',
+    'string.quoted': 'lsp-string',
+    'constant.numeric': 'lsp-number',
+    'interface': {
+      'base': 'lsp-interface',
+      'name': 'lsp-interface__name',
+      'property': 'lsp-interface__property',
+    },
+    'variable': {
+      'constant': 'lsp-constant',
+      'readwrite': 'lsp-variable',
+    },
+    'punctuation': {
+      'accessor': 'lsp-accessor',
+    },
+    'class': {
+    },
+    'function': {
+      'function-call': 'lsp-function_call',
+    },
   };
+
   const tokenName = token.scopes.join(' ');
-  const tokenKey = Object.keys(tokenMap).find((key) => tokenName.includes(key));
+  const scopeKey = Object.keys(tokenClassName).find((key) => tokenName.includes(key));
+  const classScope = tokenClassName[scopeKey ?? ''];
 
-  // if (tokenName.includes('entity.name')) {
-  //   debugger;
-  // }
-
-  if (!tokenKey) {
-    return;
+  if (tokenName.includes('operator')) {
+    const matcher = /keyword\.operator\.([^.]+?)\./.exec(tokenName);
+    const operatorName = matcher ? `lsp-operator__${matcher[1]}` : '';
+    return stringifyClass('lsp-operator', operatorName);
   }
-
-  return tokenKey ? tokenMap[tokenKey] : undefined;
+  else if (!classScope) {
+    return undefined;
+  }
+  else if (isString(classScope)) {
+    return classScope;
+  }
+  else {
+    const classNameKey = Object.keys(classScope).find((key) => tokenName.includes(key));
+    const className = stringifyClass(classScope.base, classScope[classNameKey ?? '']);
+  
+    return className.length > 0 ? className : undefined;
+  }
 }
 
 function getInfo(server: TsServer, token: Token) {
   const innerText = token.text.trim();
-  const noInfoChar: Record<string, boolean> = (
-    Array
-      .from('{}:();,+-*/.\'"=[]%`<>|^&~!')
-      .concat(['=>', '**', '>>', '<<', '>>>', '&&', '||'])
-      .concat(['==', '===', '!=', '!==', '>=', '<=', '++', '--'])
-      .reduce((ans, item) => (ans[item] = true, ans), {})
-  );
 
   if (innerText.length === 0 || noInfoChar[innerText]) {
     return;
