@@ -1,5 +1,6 @@
 import { highlight, highlightAuto } from 'highlight.js';
 import { renderTsCode, Platform, ScriptKind } from './typescript';
+import { stringifyClass } from '@build/utils';
 
 const langLabel = {
   html: 'HTML',
@@ -167,6 +168,10 @@ export function CodeRenderer(input: string, lang: string, attribute = '') {
       ? `<li class="code-block__highlight-line">${i + 1}</li>`
       : `<li>${i + 1}</li>`
   ));
+  /** 代码 class 名称 */
+  const codeClassName = stringifyClass('code-block__code', {
+    'code-block__lsp': Boolean(scriptKind),
+  });
 
   return (
     `<pre class="code-block code-block__lang-${lan}">` +
@@ -174,7 +179,7 @@ export function CodeRenderer(input: string, lang: string, attribute = '') {
       '<code class="code-block__list">' +
       `<ul class="code-block__gutter">${list.join('')}</ul>` +
       '<span class="code-block__wrapper">' +
-        `<ul class="code-block__code">${content.join('')}</ul>` +
+        `<ul class="${codeClassName}">${content.join('')}</ul>` +
       '</span>' +
       '</code>' +
     '</pre>'
