@@ -163,6 +163,13 @@ function getInfo(server: TsServer, token: Token) {
     return;
   }
 
+  const tokenScope = token.scopes.join(' ');
+
+  // 跳过 import 语句
+  if (tokenScope.includes('meta.import.ts') && tokenScope.includes('string.quoted')) {
+    return;
+  }
+
   const info = server.getQuickInfoAtPosition(token.offset);
 
   if (!info) {
