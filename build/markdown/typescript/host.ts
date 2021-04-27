@@ -156,6 +156,22 @@ export class TsServer {
           return file.snapshot;
         }
       },
+      resolveModuleNames: (
+        moduleNames,
+        containingFile,
+        reusedNames,
+        redirectedReference,
+        options,
+      ): (ts.ResolvedModule | undefined)[] => {
+        return moduleNames.map((name) => {
+          return ts.resolveModuleName(
+            name,
+            containingFile,
+            options,
+            ts.sys,
+          ).resolvedModule;
+        });
+      },
       getNewLine: () => '\n',
       getCurrentDirectory: () => resolveRoot(),
       useCaseSensitiveFileNames: () => true,
