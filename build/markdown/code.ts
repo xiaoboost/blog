@@ -150,7 +150,11 @@ export function CodeRenderer(input: string, lang: string, attribute = '') {
   /** 行代码 */
   const codeLines = scriptKind
     ? renderTsCode(code, scriptKind, attrs.platform as Platform)
-    : (lan ? highlight(lan, code) : highlightAuto(code)).value.trim().split('\n');
+    : (
+      lan
+        ? highlight(code, { language: lan })
+        : highlightAuto(code)
+    ).value.trim().split('\n');
 
   /** 按照行编译代码 */
   const content = codeLines.map((line, index) => {
