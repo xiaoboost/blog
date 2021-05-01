@@ -48,8 +48,8 @@ jobs:
       - name: Install Dependencies
         run: pnpm install
 
-      - name: Build
-        run: npm run build
+      - name: Build Blog
+        run: pnpm run build:website
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v2
