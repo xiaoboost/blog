@@ -1,45 +1,163 @@
 @import 'variable';
 
-TextBlack = #383A42;
+Black = #383A42;
+Blue = #4078F2;
+LighterBlue = #87CEFA;
+Green = #50A155;
+Red = #E4564F;
+LightBrown = #C18401;
+Brown = #986801;
+Violet = #A626A4;
+LightViolet = #DA70D6;
 
 .code-block__lsp {
   &:hover [ls-info] {
     border-color: #747474;
   }
-  
+
   [ls-info] {
     border-bottom: 1px dotted transparent;
     transition-timing-function: ease;
     transition: border-color .3s;
   }
 
-  .lsp-comment {
+  [class*="lsp-keyword"],
+  [class*="lsp-storage-type"] {
+    color: Violet;
+  }
+
+  [class*="lsp-keyword-operator"] {
+    color: #0184BC;
+  }
+
+  [class*="lsp-string-quoted"] {
+    color: Green;
+  }
+
+  [class*="lsp-comment"] {
     color: #A0A1A7;
     font-style: italic;
   }
 
-  .lsp-keyword {
-    color: #A626A4;
-  }
-
-  .lsp-string {
-    color: #50A155;
-  }
-
-  .lsp-variable, .lsp-interface__property {
-    color: TextBlack;
-  }
-
-  .lsp-constant, .lsp-number {
-    color: #986801;
-  }
-
-  .lsp-operator, .lsp-primitive-type {
+  [class*="lsp-support-type"] {
     color: #0184BC;
   }
 
-  .lsp-interface__name {
-    color: #C18401;
+  .lsp-constant-numeric-decimal {
+    color: Brown;
+  }
+
+  // import 语句
+  .lsp-meta-import {
+    &.lsp-constant-language-import-export-all,
+    &.lsp-variable-other-readwrite-alias {
+      color:Red
+    }
+  }
+
+  // interface 语句
+  .lsp-meta-interface {
+    &.lsp-storage-modifier {
+      color: Violet;
+    }
+    &.lsp-entity-name-type-interface,
+    &.lsp-entity-other-inherited-class,
+    &.lsp-entity-name-type {
+      color: LightBrown;
+    }
+    &.lsp-entity-name-type-module {
+      color:Red
+    }
+    &.lsp-meta-definition-method.lsp-entity-name-function {
+      color: Blue;
+    }
+    &.lsp-punctuation-definition-parameters-begin,
+    &.lsp-punctuation-definition-parameters-end {
+      color: LightViolet;
+    }
+  }
+
+  // function 语句
+  .lsp-meta-function {
+    &.lsp-meta-definition-function.lsp-entity-name-function {
+      color: Blue;
+    }
+    &.lsp-entity-name-type-module {
+      color:Red
+    }
+    &.lsp-entity-name-type {
+      color: LightBrown;
+    }
+    // &.lsp-meta-type-function-return {
+    //   color: Violet;
+    // }
+  }
+  
+  // 对象字面量
+  .lsp-meta-objectliteral {
+    &.lsp-meta-object-literal-key,
+    &.lsp-variable-other-property,
+    &.lsp-variable-other-object-property {
+      color: Red;
+    }
+  }
+
+  // 数组字面量
+  .lsp-meta-array-literal {
+    &.lsp-meta-brace-square {
+      color: LighterBlue;
+    }
+  }
+
+  // 变量/常量声明
+  .lsp-meta-var-expr {
+    &.lsp-meta-type-annotation {
+      &.lsp-entity-name-type {
+        color: Brown;
+      }
+    }
+    &.lsp-variable-other-constant {
+      color: LightBrown;
+    }
+  }
+
+  // 模板字符串
+  .lsp-string-template {
+    color: Green;
+
+    &.lsp-punctuation-definition-template-expression-begin,
+    &.lsp-punctuation-definition-template-expression-end {
+      color: #CA1243;
+    }
+  }
+
+  // 正则表达式
+  .lsp-string-regexp {
+    color: #0184C4;
+  }
+
+  .lsp-constant-language-boolean-false,
+  .lsp-constant-language-boolean-true {
+    color: Brown;
+  }
+  
+  .lsp-meta-function-call {
+    color: Blue;
+
+    &.lsp-variable-other-object {
+      color: Black;
+    }
+  }
+
+  .lsp-support-variable-property-dom,
+  .lsp-support-variable-property,
+  .lsp-variable-other-property {
+    color: Red;
+  }
+
+  .lsp-support-class-console,
+  .lsp-support-constant-math {
+    color: Brown !important;
   }
 }
 
@@ -69,10 +187,11 @@ TextBlack = #383A42;
   }
 
   .numericLiteral, .localName {
-    color: #986801;
+    color: Brown;
   }
 
-  .stringLiteral {
+  .stringLiteral,
+  .aliasName {
     color: #50A14F;
   }
 
@@ -89,7 +208,7 @@ TextBlack = #383A42;
     color: #4078F2;
   }
 
-  .propertyName {
+  .propertyName, .enumName, .enumMemberName {
     color: #E45649;
   }
 }
