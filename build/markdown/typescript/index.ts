@@ -6,6 +6,7 @@ export { ScriptKind, Platform, ready, DisplaySymbol };
 
 const blockPairs = [
   ['{', '}'],
+  ['${', '}'],
   ['(', ')'],
   ['[', ']'],
   ['<', '>'],
@@ -40,13 +41,12 @@ export function renderTsCode(
     
     let currentBlockCount = blockCount;
 
-    debugger;
     for (const token of line) {
       const textTrim = token.text.trim();
 
-      if (textTrim === 'throw') {
-        debugger;
-      }
+      // if (textTrim === 'throw') {
+      //   debugger;
+      // }
 
       if (isBlockStart(textTrim)) {
         currentBlockCount++;
