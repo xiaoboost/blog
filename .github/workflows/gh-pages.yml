@@ -18,7 +18,7 @@ jobs:
         node:
           - '14'
         platform:
-          - windows-latest
+          - ubuntu-18.04
 
     name: '${{ matrix.platform }} / Node.js v${{ matrix.node }}'
     runs-on: ${{ matrix.platform }}
