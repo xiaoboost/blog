@@ -10,12 +10,13 @@
 - [ ] 归档页面
 - [x] 代码行高亮
 - [ ] 代码折叠
-- [ ] ts 代码提示
+- [x] ts 代码提示
 - [ ] 深色模式
 
 ## 技术支持
 - [react](https://github.com/facebook/react)
 - [katex](https://github.com/Khan/KaTeX)
+- [esbuild](https://github.com/evanw/esbuild)
 - [typescript](https://github.com/microsoft/TypeScript)
 - [markdown-it](https://github.com/markdown-it/markdown-it)
 
