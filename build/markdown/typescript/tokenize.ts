@@ -2,7 +2,7 @@ import vsctm from 'vscode-textmate';
 import oniguruma from 'vscode-oniguruma';
 
 import { promises as fs } from 'fs';
-import { resolveRoot, stringifyClass, isString } from '@build/utils';
+import { resolveRoot } from '@build/utils';
 import { getTsServer, ScriptKind, Platform, TsServer } from './host';
 
 let tsGrammar: vsctm.IGrammar;
@@ -62,7 +62,7 @@ const noInfoChar: Record<string, boolean> = (
     .from('{}:();,+-*/.\'"=[]%`<>|^&~!')
     .concat(['=>', '**', '>>', '<<', '>>>', '&&', '||'])
     .concat(['==', '===', '!=', '!==', '>=', '<=', '++', '--'])
-    .concat(['new'])
+    .concat(['new', 'function'])
     .reduce((ans, item) => (ans[item] = true, ans), {})
 );
 
@@ -107,53 +107,10 @@ function getClass(token: Token) {
     return;
   }
 
-  /** token 和 className 的映射表 */
-  const tokenClassName: Record<string, string | Record<string, string>> = {
-    'comment': 'lsp-comment',
-    'support.type.primitive': 'lsp-primitive-type',
-    'storage.type': 'lsp-keyword',
-    'string.quoted': 'lsp-string',
-    'constant.numeric': 'lsp-number',
-    'interface': {
-      'base': 'lsp-interface',
-      'name': 'lsp-interface__name',
-      'property': 'lsp-interface__property',
-    },
-    'variable': {
-      'constant': 'lsp-constant',
-      'readwrite': 'lsp-variable',
-    },
-    'punctuation': {
-      'accessor': 'lsp-accessor',
-    },
-    'class': {
-    },
-    'function': {
-      'function-call': 'lsp-function_call',
-    },
-  };
-
-  const tokenName = token.scopes.join(' ');
-  const scopeKey = Object.keys(tokenClassName).find((key) => tokenName.includes(key));
-  const classScope = tokenClassName[scopeKey ?? ''];
-
-  if (tokenName.includes('operator')) {
-    const matcher = /keyword\.operator\.([^.]+?)\./.exec(tokenName);
-    const operatorName = matcher ? `lsp-operator__${matcher[1]}` : '';
-    return stringifyClass('lsp-operator', operatorName);
-  }
-  else if (!classScope) {
-    return undefined;
-  }
-  else if (isString(classScope)) {
-    return classScope;
-  }
-  else {
-    const classNameKey = Object.keys(classScope).find((key) => tokenName.includes(key));
-    const className = stringifyClass(classScope.base, classScope[classNameKey ?? '']);
-  
-    return className.length > 0 ? className : undefined;
-  }
+  return token.scopes
+    .filter((item) => item !== 'source.ts')
+    .map((item) => `lsp-${item.replace(/\.ts/, '').replace(/\./g, '-')}`)
+    .join(' ');
 }
 
 function getInfo(server: TsServer, token: Token) {

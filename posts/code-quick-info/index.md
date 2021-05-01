@@ -229,13 +229,13 @@ function getScriptSnapshot(code: string): ts.IScriptSnapshot {
 ```ts
 import * as ts from 'typescript';
 
-function resolveModuleNames: (
+function resolveModuleNames (
   moduleNames: string[],
   containingFile: string,
   reusedNames?: string[],
   redirectedReference?: ts.ResolvedProjectReference,
   options?: ts.CompilerOptions,
-): (ts.ResolvedModule | undefined)[] => {
+): (ts.ResolvedModule | undefined)[] {
   return moduleNames.map((name) => {
     return ts.resolveModuleName(
       name,
@@ -328,11 +328,10 @@ async function getGrammar() {
     fs.readFile(resolveRoot('node_modules/vscode-oniguruma/release/onig.wasm')),
   ]);
 
-  const vscodeOnigurumaLib: Promise<vsctm.IOnigLib> = oniguruma.loadWASM(wasmBin.buffer)
-    .then(() => ({
-      createOnigScanner: (source: string[]) => new oniguruma.OnigScanner(source),
-      createOnigString: (str: string) => new oniguruma.OnigString(str),
-    }) as any);
+  const vscodeOnigurumaLib = oniguruma.loadWASM(wasmBin.buffer).then(() => ({
+    createOnigScanner: (source: string[]) => new oniguruma.OnigScanner(source),
+    createOnigString: (str: string) => new oniguruma.OnigString(str),
+  }));
 
   const registry = new vsctm.Registry({
     onigLib: vscodeOnigurumaLib,
@@ -341,16 +340,12 @@ async function getGrammar() {
         return Promise.resolve(vsctm.parseRawGrammar(ts));
       }
       else {
-        throw new Error(`Unknown scopeName: ${scopeName}.`)
+        throw new Error(`Unknown scopeName: ${scopeName}.`);
       }
     },
   });
 
   tsGrammar = (await registry.loadGrammar('source.ts'))!;
-
-  return [
-    tsGrammar,
-  ];
 }
 
 export function tokenize(code: string) {
@@ -360,7 +355,7 @@ export function tokenize(code: string) {
   let ruleStack = vsctm.INITIAL;
 
   for (let i = 0; i < lines.length; i++) {
-    linesToken.push(grammar.tokenizeLine(lines[i], ruleStack));
+    linesToken.push(tsGrammar.tokenizeLine(lines[i], ruleStack));
     ruleStack = lineTokens.ruleStack;
   }
 
