@@ -11,30 +11,49 @@ on:
       - master
 
 jobs:
-  build-deploy:
-    runs-on: ubuntu-18.04
+  deploy:
+    strategy:
+      fail-fast: false
+      matrix:
+        node:
+          - '14'
+        platform:
+          - windows-latest
+
+    name: '${{ matrix.platform }} / Node.js v${{ matrix.node }}'
+    runs-on: ${{ matrix.platform }}
+
     steps:
-    - name: Checkout
-      uses: actions/checkout@master
-      with:
-        ref: master
+      - name: Configure Git
+        run: |
+          git config --global core.autocrlf false
+          git config --global user.name "xyz"
+          git config --global user.email "x@y.z"
 
-    - name: Setup Node
-      uses: actions/setup-node@v1
-      with:
-        node-version: '13.x'
+      - name: Checkout Commit
+        uses: actions/checkout@master
+        with:
+          ref: master
 
-    - name: Install Dependencies
-      run: |
-        rm ./.npmrc
-        npm install
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node }}
 
-    - name: Build
-      run: npm run build
+      - name: Install pnpm
+        run: |
+          npm install --g pnpm
+          pnpm --version
 
-    - name: Deploy
-      uses: peaceiris/actions-gh-pages@v2
-      env:
-        ACTIONS_DEPLOY_KEY: ${{ secrets.ACTIONS_DEPLOY_KEY }}
-        PUBLISH_BRANCH: gh-pages
-        PUBLISH_DIR: ./dist
+      - name: Install Dependencies
+        run: pnpm install
+
+      - name: Build
+        run: npm run build
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v2
+        env:
+          ACTIONS_DEPLOY_KEY: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+          PUBLISH_BRANCH: gh-pages
+          PUBLISH_DIR: ./dist
