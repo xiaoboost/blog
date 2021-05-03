@@ -91,11 +91,11 @@ function lineStartTokenSplit(token: Token) {
   return [
     spaceToken,
     {
-      startIndex: space.length,
+      startIndex: spaceToken.text.length,
       endIndex: token.endIndex,
-      offset: token.offset + space.length,
+      offset: token.offset + spaceToken.text.length,
       scopes: token.scopes,
-      text: token.text.substring(space.length),
+      text: token.text.substring(spaceToken.text.length),
     },
   ];
 }
