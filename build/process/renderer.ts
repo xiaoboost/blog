@@ -46,6 +46,7 @@ export function index(
         pageTitle,
         pathname,
         publicPath,
+        plugins: ['goto-top'],
         siteTitle: site.title,
         next: getPathname(index + 1),
         pre: getPathname(index - 1),
@@ -82,6 +83,7 @@ export function posts(input: PostData[], template: Template) {
       styles: post.styles,
       scripts: post.scripts,
       pathname: post.pathname,
+      plugins: post.plugins,
       publicPath,
     });
 

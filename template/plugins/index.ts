@@ -1,1 +1,5 @@
-export * from './goto-top/template';
+import './ts-info';
+import './ketax';
+import './highlight';
+
+export * from './goto-top';
