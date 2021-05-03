@@ -31,3 +31,23 @@ a {
 code, pre {
   font-family: font-mono;
 }
+
+::-webkit-scrollbar {
+  background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar-thumb {
+  opacity: .7;
+  background-color: #666;
+  transition: opacity ease-in-out 200ms;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  opacity: 1;
+}
+
+setScrollbarWidth('', 6px);
