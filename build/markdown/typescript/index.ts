@@ -38,7 +38,7 @@ export function renderTsCode(
 
   const lineCodes = linesTokens.map((line) => {
     let code = '';
-    
+
     let currentBlockCount = blockCount;
 
     for (const token of line) {
@@ -61,11 +61,11 @@ export function renderTsCode(
         if (token.class) {
           code += ` class="${token.class}"`
         }
-  
+
         if (token.info) {
           code += ` ls-info="${token.info}"`;
         }
-  
+
         code += `>${token.text}</span>`;
       }
       else {
@@ -90,7 +90,7 @@ export function renderTsCode(
         const splitNumber = Math.min(blockCount, tabNumber);
         const splitCode = Array(blockCount).fill(`${splitTag}${tabString}`).join('');
         const splitString = Array(splitNumber).fill(tabString).join('');
-  
+
         // debugger;
         code = code.replace(new RegExp(`^${splitString}`), splitCode);
       }
