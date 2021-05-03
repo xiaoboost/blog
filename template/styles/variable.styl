@@ -41,13 +41,13 @@ pc = 'only screen and (min-width: ' + width-main + ')';
 phone = 'only screen and (max-width: ' + width-main + ')';
 
 // media 模板函数
-setMediaTemplte(pc, phone, templte) {
+setMediaTemplte(pcParam, phoneParam, templte) {
   @media pc {
-    templte(pc);
+    templte(pcParam);
   }
 
   @media phone {
-    templte(phone);
+    templte(phoneParam);
   }
 }
 

@@ -29,6 +29,8 @@ export interface LayoutProps extends HeaderProps {
   styles: string[];
   /** 脚本文件列表 */
   scripts: string[];
+  /** 插件列表 */
+  plugins: string[];
 }
 
 import faviconPath from '../../assets/image/favicon.ico';
@@ -63,7 +65,7 @@ export function Layout(props: PropsWithChildren<LayoutProps>) {
       </head>
       <body>
         <Header {...props} />
-        <Article>
+        <Article plugins={props.plugins}>
           {props.children}
         </Article>
         <Footer />

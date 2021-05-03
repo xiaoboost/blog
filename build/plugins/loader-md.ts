@@ -52,11 +52,16 @@ export interface PostData {
   html: string;
   /** 网页链接 */
   pathname: string;
+  /** 文章启用的插件 */
+  plugins: string[];
   /** 样式文件列表 */
   styles: string[];
   /** 脚本文件列表 */
   scripts: string[];
 }
+
+/** 默认插件 */
+const defaultPlugins: string[] = ['goto-top'];
 
 async function readMeta(fileName: string) {
   const content = await fs.readFile(fileName, 'utf-8');
@@ -96,12 +101,29 @@ async function readMeta(fileName: string) {
     content: (mdContent ?? '').trim(),
     public: meta.public ?? true,
     pathname: meta.pathname ?? '',
+    plugins: [],
     description: meta.description
       ?? mdContent.trim().slice(0, 200).replace(/[\n\r]/g, ''),
     html: '',
     styles: [],
     scripts: [],
   };
+
+  // 默认全部加载
+  if (
+    (!meta.plugins || meta.plugins.length === 0) &&
+    (!meta.disabled || meta.disabled.length === 0)
+  ) {
+    post.plugins = defaultPlugins;
+  }
+  // 输入插件列表，则以此为准
+  else if (meta.plugins && meta.plugins.length > 0) {
+    post.plugins = meta.plugins;
+  }
+  // 禁用插件列表，则取反
+  else if (meta.disabled && meta.disabled.length > 0) {
+    post.plugins = defaultPlugins.filter((item) => !meta.disabled!.includes(item));
+  }
 
   return post;
 }

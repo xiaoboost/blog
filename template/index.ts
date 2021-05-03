@@ -1,4 +1,5 @@
 import './styles/index.styl';
+import './plugins';
 
 import { ReactNode, createElement } from 'react';
 import { renderToString } from 'react-dom/server';
