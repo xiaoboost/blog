@@ -181,7 +181,7 @@ export class TsServer {
 
   setFile(code: string) {
     const name = this.getCurrentName();
-    
+
     if (this.current && code === this.current.code) {
       return;
     }
@@ -197,7 +197,7 @@ export class TsServer {
 
   getQuickInfoAtPosition(offset: number) {
     const infos = this.server.getQuickInfoAtPosition(this.current.name, offset);
-  
+
     if (!infos || !infos.displayParts) {
       return '';
     }

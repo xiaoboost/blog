@@ -20,21 +20,21 @@ export async function mkdirp(
       .then((data: any) => Boolean(data))
       .catch(() => false);
   };
-  
+
   let dir = target;
-  
+
   while (!(await exist(dir))) {
     dirs.push(dir);
     dir = path.dirname(dir);
   }
-  
+
   while (dirs.length > 0) {
     const dir = dirs.pop()!;
-  
+
     if (map[dir]) {
       return;
     }
-  
+
     map[dir] = true;
     await vfs.mkdir(dir);
   }
