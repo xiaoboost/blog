@@ -31,9 +31,7 @@ jobs:
           git config --global user.email "x@y.z"
 
       - name: Checkout Commit
-        uses: actions/checkout@master
-        with:
-          ref: master
+        uses: actions/checkout@v1
 
       - name: Setup Node
         uses: actions/setup-node@v1
