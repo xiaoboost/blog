@@ -3,9 +3,10 @@ import MarkdownIt from 'markdown-it';
 import MarkdownSub from 'markdown-it-sub';
 import MarkdownSup from 'markdown-it-sup';
 import MarkdownMark from 'markdown-it-mark';
-import MarkdownKatex from 'markdown-it-katex';
 import MarkdownAttrs from 'markdown-it-attrs';
 import MarkdownFootnote from 'markdown-it-footnote';
+
+import { MarkdownKatex } from './katex';
 
 import { TitleRender } from './title';
 import { CodeRenderer } from './code';
