@@ -20,23 +20,23 @@ import { DisplaySymbol } from '@build/markdown/typescript';
   for (const el of Array.from(elHasInfo)) {
     const infoStr = el.getAttribute('ls-info') ?? '';
     const infoData = parseJSON(decodeURI(infoStr));
-  
+
     el.setAttribute('ls-info', '');
-  
+
     if (!infoData) {
       return;
     }
-  
+
     const infoEle = createInfoDom(infoData);
-  
+
     el.addEventListener('mouseenter', () => {
       const offset = el.getBoundingClientRect();
-  
+
       document.body.appendChild(infoEle);
       infoEle.style.left = `${offset.left}px`;
       infoEle.style.top = `${offset.top}px`;
     });
-  
+
     el.addEventListener('mouseleave', () => {
       document.body.removeChild(infoEle);
     });

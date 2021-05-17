@@ -4,7 +4,7 @@ import React from 'react';
 
 import { PropsWithChildren } from 'react';
 
-import { GotoTop, pluginName } from '../../plugins/goto-top';
+import { GotoTop, pluginName } from '@template/plugins/goto-top';
 
 export interface Props {
   plugins: string[];
