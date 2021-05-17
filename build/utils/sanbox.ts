@@ -3,10 +3,7 @@ interface SanBoxParams {
   params: any[];
 }
 
-export function runScript<T = any>(script: string, params?: SanBoxParams): T {
-  // 去除 pinyin 的依赖
-  const code = script.replace('require("pinyin")', '{}');
-
+export function runScript<T = any>(code: string, params?: SanBoxParams): T {
   interface FakeModule {
     exports: {
       default: any;

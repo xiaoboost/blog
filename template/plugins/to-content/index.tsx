@@ -3,6 +3,8 @@ import './index.styl';
 import React from 'react';
 import type Token from 'markdown-it/lib/token';
 
+import { Markdown } from '@build/markdown';
+import { elementId } from './constant';
 import { stringifyClass, toPinyin } from '@build/utils/string';
 
 export const pluginName = 'toc';
@@ -12,7 +14,7 @@ export interface Props {
 }
 
 interface NavTitle {
-  title: string;
+  content: string;
   hash: string;
   level: number;
   parent?: NavTitle;
@@ -21,7 +23,7 @@ interface NavTitle {
 
 function createTitles(tokens: Token[], deep = 2) {
   const root: NavTitle = {
-    title: 'root',
+    content: 'root',
     hash: '',
     level: 0,
     children: [],
@@ -49,12 +51,12 @@ function createTitles(tokens: Token[], deep = 2) {
       continue;
     }
 
-    const title = token.content;
-    const hash = toPinyin(title);
+    const content = Markdown.renderInline(token.content);
+    const hash = toPinyin(token.content);
 
     if (level > current.level) {
       const now: NavTitle = {
-        title,
+        content,
         hash,
         level,
         parent: current,
@@ -69,7 +71,7 @@ function createTitles(tokens: Token[], deep = 2) {
     }
     else if (level === current.level) {
       const now: NavTitle = {
-        title,
+        content,
         hash,
         level: current.level,
         parent: current.parent,
@@ -90,7 +92,7 @@ function createTitles(tokens: Token[], deep = 2) {
       }
 
       const now: NavTitle = {
-        title,
+        content,
         level,
         hash,
         parent,
@@ -112,7 +114,11 @@ function NavTitle({ titles }: NavProps) {
   return <ul className="menu-list">
     {titles.map((title, i) => (
       <li key={i} className={stringifyClass('menu-item', `menu-level-${title.level}`)}>
-        <a href={`#${title.hash}`} className="menu-item__title">{title.title}</a>
+        <a
+          href={`#${title.hash}`}
+          className="menu-item__title"
+          dangerouslySetInnerHTML={{ __html: title.content }}
+        />
         {title.children && <NavTitle titles={title.children} />}
       </li>
     ))}
@@ -122,7 +128,8 @@ function NavTitle({ titles }: NavProps) {
 export function ToContent({ tokens }: Props) {
   const titles = createTitles(tokens);
 
-  return <aside className="article-menu">
+  return <aside id={elementId}>
+    <header className='menu-list-header'>目录</header>
     <NavTitle titles={titles} />
   </aside>;
 }

@@ -61,7 +61,7 @@ export interface PostData {
 }
 
 /** 默认插件 */
-const defaultPlugins: string[] = ['goto-top'];
+const defaultPlugins: string[] = ['goto-top', 'toc'];
 
 async function readMeta(fileName: string) {
   const content = await fs.readFile(fileName, 'utf-8');

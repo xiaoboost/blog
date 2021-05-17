@@ -1,6 +1,6 @@
 # 博客生成器
 
-自己的博客，使用`React`构建。  
+自己的博客，使用`React`构建。
 
 [Dreaming Cat's](http://www.dreamingcat.me)
 
