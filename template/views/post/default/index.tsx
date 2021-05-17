@@ -32,8 +32,8 @@ export function Render(props: Props) {
           className='post-article'
           dangerouslySetInnerHTML={{ __html: props.post }}
         />
-        {props.plugins.includes(pluginName) && <ToContent tokens={props.tokens} />}
       </section>
+      {props.plugins.includes(pluginName) && <ToContent tokens={props.tokens} />}
     </Layout>
   )
 }

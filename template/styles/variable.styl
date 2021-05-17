@@ -10,6 +10,7 @@ GreenLight = #eaff8f;
 Gray = #DDD;
 GrayLight = #f0f2f7;
 
+White = #fff;
 WhiteBg = #F6F6F6;
 
 Red = #D41324;
@@ -33,12 +34,18 @@ font-mono = Menlo, Monaco, Consolas, Courier New, monospace;
 // 标题字体
 font-title= "Dancing Script";
 
+// 网站宽度
+main-width = 900px;
 // 文章宽度
-width-main = 800px;
+article-width = 650px;
+// 文章右边界宽度
+article-margin-right = 20px;
+// 默认字体大小
+font-default-size = 14px;
 
 // 根据宽度设定范围
-pc = 'only screen and (min-width: ' + width-main + ')';
-phone = 'only screen and (max-width: ' + width-main + ')';
+pc = 'only screen and (min-width: ' + main-width + ')';
+phone = 'only screen and (max-width: ' + main-width + ')';
 
 // media 模板函数
 setMediaTemplte(pcParam, phoneParam, templte) {
@@ -67,8 +74,13 @@ setScrollbarWidth(selector, width) {
   }
 }
 
-// 默认字体大小
-font-default-size = 14px;
+// 卡片样式
+card(width) {
+  color: Black;
+  background-color: White;
+  box-shadow: 0 1px 3px Shadow;
+  width: width;
+}
 
 // 标题选择器封装
 h-interation(selector = '') {

@@ -4,9 +4,8 @@ Indent = 24px;
 SmallIndent = 14px;
 
 .post-default {
-  color: Black;
-  background-color: #fff;
-  box-shadow: 0 1px 3px Shadow;
+  card(article-width);
+  margin-right: article-margin-right;
 
   .post-header {
     display: flex;
@@ -38,9 +37,9 @@ SmallIndent = 14px;
     setMediaTemplte(Indent, SmallIndent, @(indent) {
       padding: 16px indent;
     });
-    
+
     font-size: 14px;
-    
+
     > *:first-child {
       margin-top: 0 !important;
     }
