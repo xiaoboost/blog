@@ -84,6 +84,7 @@ export function posts(input: PostData[], template: Template) {
       scripts: post.scripts,
       pathname: post.pathname,
       plugins: post.plugins,
+      tokens,
       publicPath,
     });
 

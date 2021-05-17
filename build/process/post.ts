@@ -1,7 +1,7 @@
 import Glob from 'fast-glob';
 import path from 'path';
 
-import { resolveRoot, runScript, isWatch } from '../utils';
+import { resolveRoot, runScript } from '../utils';
 import { build, StdinOptions, BuildResult } from 'esbuild';
 import { mdLoader, PostData } from '../plugins';
 import { outputDir } from '../config/project';
