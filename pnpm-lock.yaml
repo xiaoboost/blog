@@ -7,16 +7,16 @@ specifiers:
   '@types/markdown-it': 12.0.1
   '@types/md5': ^2.3.0
   '@types/mime': ^2.0.3
-  '@types/node': ^15.3.0
+  '@types/node': ^15.3.1
   '@types/pinyin': ^2.8.2
-  '@types/react': ^17.0.5
+  '@types/react': ^17.0.6
   '@types/react-dom': ^17.0.5
   '@types/stylus': ^0.48.34
   '@typescript-eslint/eslint-plugin': ^4.24.0
   '@typescript-eslint/parser': ^4.24.0
   chalk: ^4.1.1
   chokidar: ^3.5.1
-  esbuild: ^0.11.23
+  esbuild: ^0.12.1
   eslint: ^7.26.0
   eslint-plugin-react: ^7.23.2
   fast-glob: ^3.2.5
@@ -49,7 +49,7 @@ specifiers:
 dependencies:
   chalk: registry.nlark.com/chalk/4.1.1
   chokidar: 3.5.1
-  esbuild: registry.nlark.com/esbuild/0.11.23
+  esbuild: registry.nlark.com/esbuild/0.12.1
   fast-glob: 3.2.5
   highlight.js: 10.7.2
   katex: registry.nlark.com/katex/0.13.11
@@ -81,9 +81,9 @@ devDependencies:
   '@types/markdown-it': 12.0.1
   '@types/md5': 2.3.0
   '@types/mime': 2.0.3
-  '@types/node': registry.nlark.com/@types/node/15.3.0
+  '@types/node': registry.nlark.com/@types/node/15.3.1
   '@types/pinyin': 2.8.2
-  '@types/react': registry.nlark.com/@types/react/17.0.5
+  '@types/react': registry.nlark.com/@types/react/17.0.6
   '@types/react-dom': registry.nlark.com/@types/react-dom/17.0.5
   '@types/stylus': registry.nlark.com/@types/stylus/0.48.34
   '@typescript-eslint/eslint-plugin': registry.nlark.com/@typescript-eslint/eslint-plugin/4.24.0_59c9e933fd1a489015de5df6809ac2f2
@@ -2317,10 +2317,10 @@ packages:
     version: 0.11.0
     dev: true
 
-  registry.nlark.com/@types/node/15.3.0:
-    resolution: {integrity: sha1-1v7X1rxoVDBto96hr5+HSwB4PiY=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/@types/node/download/@types/node-15.3.0.tgz?cache=0&sync_timestamp=1621019587972&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40types%2Fnode%2Fdownload%2F%40types%2Fnode-15.3.0.tgz}
+  registry.nlark.com/@types/node/15.3.1:
+    resolution: {integrity: sha1-I6Brh+7bUkAWYW6IaxFrj9yxgK8=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/@types/node/download/@types/node-15.3.1.tgz}
     name: '@types/node'
-    version: 15.3.0
+    version: 15.3.1
     dev: true
 
   registry.nlark.com/@types/prop-types/15.7.3:
@@ -2341,6 +2341,16 @@ packages:
     resolution: {integrity: sha1-PYh1cMRIkBH3Wj/I+WW/h9CaG+o=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/@types/react/download/@types/react-17.0.5.tgz}
     name: '@types/react'
     version: 17.0.5
+    dependencies:
+      '@types/prop-types': registry.nlark.com/@types/prop-types/15.7.3
+      '@types/scheduler': registry.nlark.com/@types/scheduler/0.16.1
+      csstype: registry.nlark.com/csstype/3.0.8
+    dev: true
+
+  registry.nlark.com/@types/react/17.0.6:
+    resolution: {integrity: sha1-DsVkVmMCxWK/SX1zIZeXpeApcBM=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/@types/react/download/@types/react-17.0.6.tgz}
+    name: '@types/react'
+    version: 17.0.6
     dependencies:
       '@types/prop-types': registry.nlark.com/@types/prop-types/15.7.3
       '@types/scheduler': registry.nlark.com/@types/scheduler/0.16.1
@@ -2553,15 +2563,15 @@ packages:
       supports-color: 7.2.0
 
   registry.nlark.com/csstype/3.0.8:
-    resolution: {integrity: sha1-0iZqeScp+yJ80hb7Vy9Dco4a00A=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/csstype/download/csstype-3.0.8.tgz?cache=0&sync_timestamp=1618818778879&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fcsstype%2Fdownload%2Fcsstype-3.0.8.tgz}
+    resolution: {integrity: sha1-0iZqeScp+yJ80hb7Vy9Dco4a00A=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/csstype/download/csstype-3.0.8.tgz?cache=0&sync_timestamp=1618819496400&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fcsstype%2Fdownload%2Fcsstype-3.0.8.tgz}
     name: csstype
     version: 3.0.8
     dev: true
 
-  registry.nlark.com/esbuild/0.11.23:
-    resolution: {integrity: sha1-xCU09jLhZRIGcdZNtniDY0MztLg=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/esbuild/download/esbuild-0.11.23.tgz}
+  registry.nlark.com/esbuild/0.12.1:
+    resolution: {integrity: sha1-9lLVs7lDLbtC/CwDTd1iNgKW4D0=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/esbuild/download/esbuild-0.12.1.tgz}
     name: esbuild
-    version: 0.11.23
+    version: 0.12.1
     hasBin: true
     requiresBuild: true
     dev: false
