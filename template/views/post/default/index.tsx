@@ -19,9 +19,14 @@ export interface Props extends LayoutProps {
 }
 
 export function Render(props: Props) {
+  const hasToContent = props.plugins.includes(pluginName);
+
   return (
     <Layout {...props}>
-      <section className='post-default'>
+      <section
+        className='post-default'
+        style={hasToContent ? undefined : { width: '100%' }}
+      >
         <header className='post-header'>
           <h1 className='post-header__title'>{props.articleTitle}</h1>
           <time className='post-header__create'>
@@ -33,7 +38,7 @@ export function Render(props: Props) {
           dangerouslySetInnerHTML={{ __html: props.post }}
         />
       </section>
-      {props.plugins.includes(pluginName) && <ToContent tokens={props.tokens} />}
+      {hasToContent && <ToContent tokens={props.tokens} />}
     </Layout>
   )
 }

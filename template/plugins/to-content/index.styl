@@ -5,11 +5,15 @@
     display: none;
   }
 
-  card(main-width - article-width - article-margin-right);
+  card(main-width - article-width - aside-margin-left);
 
+  position: absolute;
+  margin-left: article-width + aside-margin-left;
   box-sizing: border-box;
   padding: 0 14px;
   font-size: 14px;
+  flex-grow: 0;
+  flex-shrink: 0;
 
   .menu-list-header {
     padding: 8px 0;
@@ -17,12 +21,20 @@
   }
 
   .menu-list {
-    font-size: 12px;
     list-style: none;
     padding: 0;
 
     .menu-list {
+      font-size: 12px;
       padding-left: 12px;
     }
+  }
+
+  a {
+    color: Black;
+  }
+
+  code {
+    font-size: 0.9em;
   }
 }
