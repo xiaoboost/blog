@@ -106,7 +106,9 @@ interface LanguageServiceHost extends ts.GetEffectiveTypeRootsHost {
   getDirectories?(directoryName: string): string[];
   getCustomTransformers?(): ts.CustomTransformers | undefined;
   isKnownTypesPackageName?(name: string): boolean;
-  installPackage?(options: ts.InstallPackageOptions): Promise<ts.ApplyCodeActionCommandResult>;
+  installPackage?(
+    options: ts.InstallPackageOptions,
+  ): Promise<ts.ApplyCodeActionCommandResult>;
   writeFile?(fileName: string, content: string): void;
 }
 ```
@@ -188,13 +190,16 @@ interface IScriptSnapshot {
   /** Gets the length of this script snapshot. */
   getLength(): number;
   /**
-   * Gets the TextChangeRange that describe how the text changed between this text and
-   * an older version.  This information is used by the incremental parser to determine
-   * what sections of the script need to be re-parsed.  'undefined' can be returned if the
-   * change range cannot be determined.  However, in that case, incremental parsing will
+   * Gets the TextChangeRange that describe how the text changed between
+   * this text and an older version.  This information is used by the
+   * incremental parser to determine what sections of the script need
+   * to be re-parsed.  'undefined' can be returned if the change range
+   * cannot be determined.  However, in that case, incremental parsing will
    * not happen and the entire document will be re - parsed.
    */
-  getChangeRange(oldSnapshot: ts.IScriptSnapshot): ts.TextChangeRange | undefined;
+  getChangeRange(
+    oldSnapshot: ts.IScriptSnapshot,
+  ): ts.TextChangeRange | undefined;
   /** Releases all resources held by this script snapshot */
   dispose?(): void;
 }
@@ -321,20 +326,25 @@ import oniguruma from 'vscode-oniguruma';
 let tsGrammar: vsctm.IGrammar;
 
 const tmLanguage = '这里放上文中提到的配置文件路径' as string;
+const onigPath = 'node_modules/vscode-oniguruma/release/onig.wasm';
 
 async function getGrammar() {
   const [ts, wasmBin] = await Promise.all([
-    fs.readFile(resolveRoot('tmLanguage'), 'utf-8'),
-    fs.readFile(resolveRoot('node_modules/vscode-oniguruma/release/onig.wasm')),
+    fs.readFile(resolveRoot(tmLanguage), 'utf-8'),
+    fs.readFile(resolveRoot(onigPath)),
   ]);
 
-  const vscodeOnigurumaLib = oniguruma.loadWASM(wasmBin.buffer).then(() => ({
-    createOnigScanner: (source: string[]) => new oniguruma.OnigScanner(source),
-    createOnigString: (str: string) => new oniguruma.OnigString(str),
+  const vscodeOnigLib = oniguruma.loadWASM(wasmBin.buffer).then(() => ({
+    createOnigScanner: (source: string[]) => {
+      return new oniguruma.OnigScanner(source);
+    },
+    createOnigString: (str: string) => {
+      return new oniguruma.OnigString(str);
+    },
   }));
 
   const registry = new vsctm.Registry({
-    onigLib: vscodeOnigurumaLib,
+    onigLib: vscodeOnigLib,
     loadGrammar: (scopeName) => {
       if (scopeName === 'source.ts') {
         return Promise.resolve(vsctm.parseRawGrammar(ts));
