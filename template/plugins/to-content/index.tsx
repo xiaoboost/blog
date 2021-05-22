@@ -4,7 +4,7 @@ import React from 'react';
 import type Token from 'markdown-it/lib/token';
 
 import { Markdown } from '@build/markdown';
-import { elementId } from './constant';
+import { elementId, levelLimit } from './constant';
 import { stringifyClass, toPinyin } from '@build/utils/string';
 
 export const pluginName = 'toc';
@@ -126,11 +126,12 @@ function NavTitle({ titles }: NavProps) {
 }
 
 export function ToContent({ tokens }: Props) {
-  const titles = createTitles(tokens);
+  const titles = createTitles(tokens, levelLimit);
 
   return <aside id={elementId}>
-    <div></div>
     <header className='menu-list-header'>目录</header>
-    <NavTitle titles={titles} />
+    <article className='menu-list-article'>
+      <NavTitle titles={titles} />
+    </article>
   </aside>;
 }

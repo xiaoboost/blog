@@ -21,20 +21,47 @@
   }
 
   .menu-list {
-    list-style: none;
     padding: 0;
 
     .menu-list {
-      font-size: 12px;
-      padding-left: 12px;
+      padding-left: 16px;
+      margin-bottom: 8px;
+    }
+  }
+
+  .menu-list-article {
+    margin-left: 16px;
+  }
+
+  .menu-item {
+    margin-top: 4px;
+
+    &.menu-level-1 {
+      margin-top: 0;
+    }
+  }
+
+  .menu-item-highlight {
+    > a {
+      color: BlueLight;
     }
   }
 
   a {
+    transition: color .1s linear;
     color: Black;
+    text-decoration: none;
   }
 
   code {
-    font-size: 0.9em;
+    margin: 0 0.2em;
+    padding: 0.1em;
+    font-size: 0.85em;
+    border-radius: 4px;
+    background-color: #fef9ed;
+
+    &:first-child {
+      margin-left: -0.2em;
+    }
   }
 }
