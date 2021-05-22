@@ -38,10 +38,23 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
 
-      - name: Install pnpm
+      - name: Install Pnpm
         run: |
           npm install --g pnpm
           pnpm --version
+
+      - name: Get Cache Directory
+        id: pnpm-cache-dir
+        run: echo "::set-output name=dir::$(pnpm config get cache)"
+
+      - name: Restore Cache Data
+        uses: actions/cache@v2
+        id: pnpm-cache
+        with:
+          path: ${{ steps.pnpm-cache-dir.outputs.dir }}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
       - name: Install Dependencies
         run: pnpm install
