@@ -2,7 +2,8 @@ import type { PostData } from '../plugins/loader-md';
 import type { Template } from './template';
 
 import { Markdown } from '../markdown';
-import { toPinyin, slice } from '../utils';
+import { toPinyin } from '../utils';
+import { cut } from '@xiao-ai/utils';
 
 import { publicPath, outputDir } from '../config/project';
 import { pageConfig, site } from '../config/website';
@@ -19,7 +20,7 @@ export function index(
   template: Template,
 ): FileData[] {
   const posts = input.filter((post) => post.public);
-  const pagePosts = slice(posts, pageConfig.index);
+  const pagePosts = cut(posts, pageConfig.index);
   const getPathname = (index: number) => {
     if (index < 0) {
       return null;

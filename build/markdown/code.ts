@@ -1,5 +1,5 @@
 import { highlight } from 'highlight.js';
-import { stringifyClass } from '@build/utils';
+import { stringifyClass } from '@xiao-ai/utils';
 import { renderTsCode, Platform, ScriptKind } from './typescript';
 import { highlightLineClassName, lspClassName } from './constant';
 

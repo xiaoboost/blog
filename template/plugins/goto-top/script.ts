@@ -1,4 +1,4 @@
-import { supportsPassive } from '../../utils/env';
+import { supportsPassive } from '@xiao-ai/utils/dist/esm/web';
 import { fadeIn, fadeOut } from '../../utils/fade';
 import { elementId, scrollTopLimit, fadeTime } from './constant';
 
