@@ -1,5 +1,4 @@
-import { parseJSON } from '@build/utils/object';
-import { isString } from '@build/utils/assert';
+import { isString } from '@xiao-ai/utils';
 import { DisplaySymbol } from '@build/markdown/typescript';
 
 (() => {
@@ -19,7 +18,7 @@ import { DisplaySymbol } from '@build/markdown/typescript';
 
   for (const el of Array.from(elHasInfo)) {
     const infoStr = el.getAttribute('ls-info') ?? '';
-    const infoData = parseJSON(decodeURI(infoStr));
+    const infoData = JSON.parse(decodeURI(infoStr));
 
     el.setAttribute('ls-info', '');
 

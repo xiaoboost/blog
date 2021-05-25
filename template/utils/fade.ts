@@ -1,4 +1,4 @@
-import { delay } from './time';
+import { delay } from '@xiao-ai/utils';
 
 export async function fadeIn(el: HTMLElement, time: number) {
   // 已经显示，则推出

@@ -1,6 +1,10 @@
 import { elementId, marginTop, highlightClassName, levelLimit } from './constant';
-import { supportsPassive } from '../../utils/env';
-import { add, remove } from '../../utils/class-name';
+
+import {
+  supportsPassive,
+  addClassName,
+  removeClassName,
+} from '@xiao-ai/utils/dist/esm/web';
 
 const enum Status {
   Init,
@@ -51,10 +55,10 @@ interface TitlePosition {
 
     menuItems.forEach((el) => {
       if (el === highLightItem) {
-        add(highLightItem, highlightClassName);
+        addClassName(highLightItem, highlightClassName);
       }
       else {
-        remove(el, highlightClassName);
+        removeClassName(el, highlightClassName);
       }
     });
   };

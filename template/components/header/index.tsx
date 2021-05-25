@@ -2,7 +2,8 @@ import './index.styl';
 
 import React from 'react';
 
-import { parseUrl, stringifyClass } from '@build/utils';
+import { parseUrl } from '@build/utils';
+import { stringifyClass } from '@xiao-ai/utils';
 
 export interface HeaderProps {
   /** 当前页面网址 */
