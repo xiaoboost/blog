@@ -1,5 +1,5 @@
-import { supportsPassive } from '@xiao-ai/utils/dist/esm/web';
-import { fadeIn, fadeOut } from '../../utils/fade';
+import { supportsPassive } from '@xiao-ai/utils/web';
+import { fadeIn, fadeOut } from 'template/utils/fade';
 import { elementId, scrollTopLimit, fadeTime } from './constant';
 
 (() => {

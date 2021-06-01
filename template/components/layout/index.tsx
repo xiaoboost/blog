@@ -8,7 +8,7 @@ import { Header, HeaderProps } from '../header';
 import { Footer } from '../footer';
 import { Article } from '../article';
 
-import { parseUrl } from '@build/utils';
+import { parseUrl } from 'build/utils';
 
 export interface LayoutProps extends HeaderProps {
   /** 网站标题 */

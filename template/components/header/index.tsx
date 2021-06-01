@@ -2,7 +2,7 @@ import './index.styl';
 
 import React from 'react';
 
-import { parseUrl } from '@build/utils';
+import { parseUrl } from 'build/utils';
 import { stringifyClass } from '@xiao-ai/utils';
 
 export interface HeaderProps {

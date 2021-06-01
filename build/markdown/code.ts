@@ -1,4 +1,5 @@
-import { highlight } from 'highlight.js';
+import highlight from 'highlight.js';
+
 import { stringifyClass } from '@xiao-ai/utils';
 import { renderTsCode, Platform, ScriptKind } from './typescript';
 import { highlightLineClassName, lspClassName } from './constant';
@@ -55,7 +56,7 @@ function toScriptKind(input: string): ScriptKind | false {
 }
 
 function renderCode(code: string, language: string, tabWidth: number) {
-  const rendered = highlight(code, { language });
+  const rendered = highlight.highlight(code, { language });
   const lines = rendered.value.trim().split('\n');
   return lines.map((line) => {
     return getLineSpaceWidth(line) > 0 ? addSplitLabel(line, tabWidth) : line;

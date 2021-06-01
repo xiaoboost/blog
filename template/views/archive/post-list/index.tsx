@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Layout, LayoutProps } from 'src/template/components/layout';
+import { Layout, LayoutProps } from 'template/components/layout';
 
 interface Props extends LayoutProps {
   posts: Array<{

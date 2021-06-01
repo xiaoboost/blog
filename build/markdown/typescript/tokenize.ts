@@ -2,7 +2,7 @@ import vsctm from 'vscode-textmate';
 import oniguruma from 'vscode-oniguruma';
 
 import { promises as fs } from 'fs';
-import { resolveRoot } from '@build/utils';
+import { resolveRoot } from 'build/utils';
 import { getTsServer, ScriptKind, Platform, TsServer } from './host';
 
 let tsGrammar: vsctm.IGrammar;

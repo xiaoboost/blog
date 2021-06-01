@@ -6,7 +6,7 @@ import Moment from 'moment';
 import { Tags } from '../../components/icons';
 import { Layout, LayoutProps } from '../../components/layout';
 
-import { parseUrl } from '@build/utils';
+import { parseUrl } from 'build/utils';
 
 interface PostProps {
   title: string;
