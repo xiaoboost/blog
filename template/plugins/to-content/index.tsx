@@ -3,9 +3,9 @@ import './index.styl';
 import React from 'react';
 import type Token from 'markdown-it/lib/token';
 
-import { Markdown } from '@build/markdown';
+import { Markdown } from 'build/markdown';
+import { toPinyin } from 'build/utils/string';
 import { elementId, levelLimit } from './constant';
-import { toPinyin } from '@build/utils/string';
 import { stringifyClass } from '@xiao-ai/utils';
 
 export const pluginName = 'toc';

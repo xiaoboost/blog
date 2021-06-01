@@ -1,7 +1,7 @@
 import ts from 'typescript';
 import path from 'path';
 
-import { resolveRoot } from '@build/utils';
+import { resolveRoot } from 'build/utils';
 import { toBoolMap, isString } from '@xiao-ai/utils';
 
 export type ScriptKind = 'ts' | 'tsx';

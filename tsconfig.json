@@ -27,10 +27,7 @@
     "lib": ["ESNext"],
     "baseUrl": ".",
     "paths": {
-      "@build/*": ["./build/*"],
-      "@template/*": ["./template/*"],
-      "@build": ["./build/index.ts"],
-      "@template": ["./template/index.ts"]
+      "@xiao-ai/utils/*": ["./node_modules/@xiao-ai/utils/dist/esm/*"]
     }
   },
   "include": ["build", "template", "typings"],

@@ -4,7 +4,8 @@ import {
   supportsPassive,
   addClassName,
   removeClassName,
-} from '@xiao-ai/utils/dist/esm/web';
+  local,
+} from '@xiao-ai/utils/web';
 
 const enum Status {
   Init,

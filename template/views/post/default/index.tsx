@@ -4,8 +4,8 @@ import React from 'react';
 import Moment from 'moment';
 import type Token from 'markdown-it/lib/token';
 
-import { Layout, LayoutProps } from '@template/components/layout';
-import { ToContent, pluginName } from '@template/plugins/to-content';
+import { Layout, LayoutProps } from 'template/components/layout';
+import { ToContent, pluginName } from 'template/plugins/to-content';
 
 export interface Props extends LayoutProps {
   /** 文章本体 */

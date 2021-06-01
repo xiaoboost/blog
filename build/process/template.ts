@@ -5,7 +5,7 @@ import { runScript, resolveRoot, isDevelopment } from '../utils';
 import { mergeConfig, fileExts } from './utils';
 import { externals } from './post';
 
-import type * as TemplateRender from '@template';
+import type * as TemplateRender from 'template';
 
 import * as files from './files';
 import * as path from 'path';

@@ -4,7 +4,7 @@ import './plugins';
 import { ReactNode, createElement } from 'react';
 import { renderToString } from 'react-dom/server';
 
-import { AnyObject } from '../build/utils';
+import { AnyObject } from '@xiao-ai/utils';
 
 import { Render as IndexRender } from './views/index';
 import { Render as DefaultPostRender } from './views/post/default';
