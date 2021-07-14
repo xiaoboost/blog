@@ -1,5 +1,5 @@
 {
-  "name": "@blog/posts",
+  "name": "@blog/component-code-block-normal",
   "description": "blog's posts",
   "version": "1.0.0",
   "author": "xiaoboost",
@@ -19,6 +19,9 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/xiaoboost/blog"
+  },
+  "dependencies": {
+    "highlight.js": "^11.1.0"
   },
   "devDependencies": {
     "@blog/tsconfig": "workspace:*",
