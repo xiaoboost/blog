@@ -1,5 +1,5 @@
 {
-  "name": "@blog/posts",
+  "name": "@blog/component-katex",
   "description": "blog's posts",
   "version": "1.0.0",
   "author": "xiaoboost",
@@ -20,9 +20,13 @@
     "type": "git",
     "url": "https://github.com/xiaoboost/blog"
   },
+  "dependencies": {
+    "katex": "^0.13.11"
+  },
   "devDependencies": {
     "@blog/tsconfig": "workspace:*",
     "@types/blog": "workspace:*",
+    "@types/katex": "^0.11.1",
     "eslint": "^7.30.0",
     "tslib": "^2.3.0",
     "typescript": "^4.3.5"

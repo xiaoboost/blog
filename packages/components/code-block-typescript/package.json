@@ -1,5 +1,5 @@
 {
-  "name": "@blog/posts",
+  "name": "@blog/component-code-block-typescript",
   "description": "blog's posts",
   "version": "1.0.0",
   "author": "xiaoboost",
@@ -25,6 +25,8 @@
     "@types/blog": "workspace:*",
     "eslint": "^7.30.0",
     "tslib": "^2.3.0",
-    "typescript": "^4.3.5"
+    "typescript": "^4.3.5",
+    "vscode-oniguruma": "^1.5.1",
+    "vscode-textmate": "^5.4.0"
   }
 }
