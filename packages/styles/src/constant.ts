@@ -1,0 +1,63 @@
+// 主要颜色定义
+export const Blue = '#20A0FF';
+export const DarkBlue = '#1D8CE0';
+export const LightBlue = '#58B7FF';
+export const ExtraLightBlue = '#BBDEFB';
+export const Green = '#13CE66';
+export const DarkGreen = '#009688';
+export const Yellow = '#F7BA2A';
+export const Red = '#FF4949';
+export const Black = '#1F2D3D';
+export const LightBlack = '#324057';
+export const ExtraLightBlack = '#475669';
+export const Silver = '#8492A6';
+export const LightSilver = '#99A9BF';
+export const ExtraLightSilver = '#C0CCDA';
+export const Gray = '#D3DCE6';
+export const GrayTransparent = 'rgba(0, 0, 0, 0.2)';
+export const LightGray = '#E5E9F2';
+export const ExtraLightGray = '#EFF2F7';
+export const DarkWhite = '#F9FAFC';
+export const White = '#FFFFFF';
+export const Shadow = '#A1A1A1';
+
+function getFontFamily(names: string[]) {
+  return names.join(', ');
+}
+
+/**
+ * 默认字体
+ *  - 无衬线中英文
+ */
+export const FontDefault = getFontFamily([
+  'Lato',
+  '-apple-system',
+  'BlinkMacSystemFont',
+  'PingFang SC',
+  '思源黑体',
+  'Source Han Sans SC',
+  'Noto Sans CJK SC',
+  'WenQuanYi Micro Hei',
+  'Microsoft YaHei',
+  'sans-serif'
+]);
+
+/**
+ * 衬线字体
+ *  - 主要是用在标题等醒目位置
+ */
+export const FontSerif = getFontFamily([
+  '思源宋体',
+  'STSong',
+  '宋体',
+  'serif',
+]);
+
+/**
+ * 文本文字
+ *  - 主要用于各种说明文本
+ */
+export const FontText = "'Times New Roman', 'Microsoft YaHei'";
+
+/** 默认字体大小 */
+export const FontDefaultSize = '16px';

@@ -1,0 +1,33 @@
+{
+  "name": "@blog/template",
+  "description": "blog's template",
+  "version": "1.0.0",
+  "author": "xiaoboost",
+  "license": "MIT",
+  "source": "src/index.ts",
+  "module": "src/index.ts",
+  "types": "src/index.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "package.json"
+  ],
+  "scripts": {
+    "lint": "eslint --quiet --no-error-on-unmatched-pattern --config ../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}",
+    "lint:fix": "eslint --fix --quiet --no-error-on-unmatched-pattern --config ../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xiaoboost/circuit-simulator.git"
+  },
+  "dependencies": {
+    "@blog/styles": "workspace:*"
+  },
+  "devDependencies": {
+    "@blog/tsconfig": "workspace:*",
+    "@types/blog": "workspace:*",
+    "eslint": "^7.30.0",
+    "tslib": "^2.3.0",
+    "typescript": "^4.3.5"
+  }
+}
