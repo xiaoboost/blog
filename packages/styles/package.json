@@ -22,11 +22,7 @@
   },
   "dependencies": {
     "jss": "^10.7.1",
-    "jss-plugin-camel-case": "^10.7.1",
-    "jss-plugin-default-unit": "^10.7.1",
-    "jss-plugin-expand": "^10.7.1",
-    "jss-plugin-extend": "^10.7.1",
-    "jss-plugin-nested": "^10.7.1"
+    "jss-preset-default": "^10.7.1"
   },
   "devDependencies": {
     "@blog/tsconfig": "workspace:*",
