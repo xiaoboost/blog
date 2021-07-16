@@ -9,6 +9,8 @@ import { AnyObject } from '@xiao-ai/utils';
 import { Render as IndexRender } from './views/index';
 import { Render as PostRender } from './views/post';
 
+export { styleCode } from './styles';
+
 function fixHtml<T extends AnyObject>(
   render: (param: T) => ReactNode,
 ): (param: T) => string {

@@ -20,11 +20,3 @@ export function createGlobalStyles(styles: JssStyle) {
 
   return rules.toString();
 }
-
-export function createMediaStyles() {
-  // ..
-}
-
-export function createScrollbarWidth() {
-  // ..
-}
