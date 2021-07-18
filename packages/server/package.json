@@ -1,18 +1,20 @@
 {
-  "name": "@blog/template",
-  "description": "blog's template",
+  "name": "@blog/server",
+  "description": "blog's server",
   "version": "1.0.0",
   "author": "xiaoboost",
   "license": "MIT",
   "source": "src/index.ts",
-  "module": "src/index.ts",
-  "types": "src/index.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "files": [
     "dist",
     "README.md",
     "package.json"
   ],
   "scripts": {
+    "dev": "tsc -p . -w",
+    "build": "tsc -p .",
     "lint": "eslint --quiet --no-error-on-unmatched-pattern --config ../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}",
     "lint:fix": "eslint --fix --quiet --no-error-on-unmatched-pattern --config ../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}"
   },
@@ -21,12 +23,17 @@
     "url": "https://github.com/xiaoboost/blog"
   },
   "dependencies": {
-    "@blog/styles": "workspace:*",
-    "@xiao-ai/utils": "^1.4.2"
+    "@blog/utils": "workspace:*",
+    "koa": "^2.13.1",
+    "mime": "^2.5.2"
   },
   "devDependencies": {
     "@blog/tsconfig": "workspace:*",
     "@types/blog": "workspace:*",
+    "@types/koa": "^2.13.4",
+    "@types/md5": "^2.3.1",
+    "@types/mime": "^2.0.3",
+    "@types/node": "^16.3.2",
     "eslint": "^7.30.0",
     "tslib": "^2.3.0",
     "typescript": "^4.3.5"
