@@ -1,3 +1,3 @@
-# blog/template
+# blog/esbuild-loader-jss
 
-网站模板
+提供给 esbuild 的`.jss.ts`文件的加载器，此加载器将会把此文件的默认导出当作 css 字符串。

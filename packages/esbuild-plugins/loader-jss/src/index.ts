@@ -10,6 +10,7 @@ export function JssLoader(): Plugin {
     setup(process) {
       const namespace = 'jss-style';
       const jssSuffix = 'jss-style-suffix';
+      const originMatcher = new RegExp(`\\.${namespace}\\.(t|j)s$`);
       const suffixMatcher = new RegExp(`\\.${jssSuffix}$`);
 
       process.onResolve({ filter: suffixMatcher }, (args) => ({
@@ -54,7 +55,7 @@ export function JssLoader(): Plugin {
         };
       });
 
-      process.onLoad({ filter: /\.jss\.(t|j)s$/ }, (args) => {
+      process.onLoad({ filter: originMatcher }, (args) => {
         const fullPath = `${args.path}.${jssSuffix}`.replace(/[\\/]/g, '\\\\');
         return {
           loader: 'ts',
