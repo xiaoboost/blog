@@ -163,12 +163,33 @@ importers:
       typescript: ^4.3.5
     dependencies:
       '@blog/utils': link:../../utils
+      esbuild: registry.nlark.com/esbuild/0.12.15
     devDependencies:
       '@blog/tsconfig': link:../../tsconfig
       '@types/blog': link:../../typings
-      esbuild: registry.nlark.com/esbuild/0.12.15
       eslint: registry.nlark.com/eslint/7.30.0
       jss: registry.nlark.com/jss/10.7.1
+      tslib: registry.nlark.com/tslib/2.3.0
+      typescript: registry.nlark.com/typescript/4.3.5
+
+  packages/esbuild-plugins/loader-script:
+    specifiers:
+      '@blog/esbuild-loader-jss': workspace:*
+      '@blog/tsconfig': workspace:*
+      '@blog/utils': workspace:*
+      '@types/blog': workspace:*
+      esbuild: ^0.12.15
+      eslint: ^7.30.0
+      tslib: ^2.3.0
+      typescript: ^4.3.5
+    dependencies:
+      '@blog/esbuild-loader-jss': link:../loader-jss
+      '@blog/utils': link:../../utils
+      esbuild: registry.nlark.com/esbuild/0.12.15
+    devDependencies:
+      '@blog/tsconfig': link:../../tsconfig
+      '@types/blog': link:../../typings
+      eslint: registry.nlark.com/eslint/7.30.0
       tslib: registry.nlark.com/tslib/2.3.0
       typescript: registry.nlark.com/typescript/4.3.5
 
@@ -238,6 +259,7 @@ importers:
     specifiers:
       '@blog/styles': workspace:*
       '@blog/tsconfig': workspace:*
+      '@blog/utils': workspace:*
       '@types/blog': workspace:*
       '@xiao-ai/utils': ^1.4.2
       eslint: ^7.30.0
@@ -245,6 +267,7 @@ importers:
       typescript: ^4.3.5
     dependencies:
       '@blog/styles': link:../styles
+      '@blog/utils': link:../utils
       '@xiao-ai/utils': registry.nlark.com/@xiao-ai/utils/1.4.2
     devDependencies:
       '@blog/tsconfig': link:../tsconfig
@@ -270,11 +293,13 @@ importers:
       '@types/pinyin': ^2.8.3
       '@xiao-ai/utils': ^1.4.2
       eslint: ^7.30.0
+      memfs: ^3.2.2
       pinyin: ^2.10.2
       tslib: ^2.3.0
       typescript: ^4.3.5
     dependencies:
       '@xiao-ai/utils': registry.nlark.com/@xiao-ai/utils/1.4.2
+      memfs: 3.2.2
       pinyin: 2.10.2
     devDependencies:
       '@blog/tsconfig': link:../tsconfig
@@ -782,7 +807,6 @@ packages:
 
   /fs-monkey/1.0.3:
     resolution: {integrity: sha1-rjrJLVO7Mo7+DpodlUH2rY1I4tM=, tarball: fs-monkey/download/fs-monkey-1.0.3.tgz}
-    dev: true
 
   /fs.realpath/1.0.0:
     resolution: {integrity: sha1-FQStJSMVjKpA20onh8sBQRmU6k8=, tarball: fs.realpath/download/fs.realpath-1.0.0.tgz}
@@ -1216,7 +1240,6 @@ packages:
     engines: {node: '>= 4.0.0'}
     dependencies:
       fs-monkey: 1.0.3
-    dev: true
 
   /merge2/1.4.1:
     resolution: {integrity: sha1-Q2iJL4hekHRVpv19xVwMnUBJkK4=, tarball: merge2/download/merge2-1.4.1.tgz}
@@ -2922,7 +2945,6 @@ packages:
     version: 0.12.15
     hasBin: true
     requiresBuild: true
-    dev: true
 
   registry.nlark.com/eslint-plugin-react/7.24.0_eslint@7.30.0:
     resolution: {integrity: sha1-6t7fo1Gm82tJCqF/T6mxToQrnrQ=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/eslint-plugin-react/download/eslint-plugin-react-7.24.0.tgz}
