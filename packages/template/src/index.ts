@@ -1,24 +1,24 @@
-import './styles/index.styl';
-import './plugins';
+import './styles/index.jss';
+// import './plugins';
 
-import { ReactNode, createElement } from 'react';
-import { renderToString } from 'react-dom/server';
+// import { ReactNode, createElement } from 'react';
+// import { renderToString } from 'react-dom/server';
 
-import { AnyObject } from '@xiao-ai/utils';
+// import { AnyObject } from '@xiao-ai/utils';
 
-import { Render as IndexRender } from './views/index';
-import { Render as PostRender } from './views/post';
+// import { Render as IndexRender } from './views/index';
+// import { Render as PostRender } from './views/post';
 
-export { styleCode } from './styles';
+// function fixHtml<T extends AnyObject>(
+//   render: (param: T) => ReactNode,
+// ): (param: T) => string {
+//   const prefix = '<!DOCTYPE html>';
+//   return (param: T) => {
+//     return prefix + renderToString(createElement(render as any, param));
+//   };
+// }
 
-function fixHtml<T extends AnyObject>(
-  render: (param: T) => ReactNode,
-): (param: T) => string {
-  const prefix = '<!DOCTYPE html>';
-  return (param: T) => {
-    return prefix + renderToString(createElement(render as any, param));
-  };
-}
+// export const Index = fixHtml(IndexRender);
+// export const DefaultPost = fixHtml(PostRender);
 
-export const Index = fixHtml(IndexRender);
-export const DefaultPost = fixHtml(PostRender);
+console.log('Hello');
