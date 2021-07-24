@@ -3,19 +3,42 @@ import { isProduction } from '@blog/utils';
 import { JssLoader } from '@blog/esbuild-loader-jss';
 import { promises as fs } from 'fs';
 
+import md5 from 'md5';
 import * as path from 'path';
 
 const outputFiles: OutputFile[] = [];
 
-export function ScriptLoader(outputDir: string, name: string) {
+export interface Options {
+  name: string;
+}
+
+export interface FileNameOption {
+  name: string;
+  hash: string;
+  ext: string;
+}
+
+function getNameCreator(name: string) {
+  return (option: FileNameOption) => {
+    return name
+      .replace(/\[name\]/g, option.name)
+      .replace(/\[hash\]/g, option.hash)
+      .replace(/\[ext\]/g, option.ext);
+  };
+}
+
+export function ScriptLoader({ name }: Options) {
+  const getName = getNameCreator(name);
+  const namespace = 'script';
+  const scriptSuffix = 'script-suffix';
+  const suffixMatcher = new RegExp(`\\.${scriptSuffix}$`);
+
   return {
     name: 'loader-script',
     setup(process: PluginBuild) {
-      const namespace = 'script';
-      const scriptSuffix = 'script-suffix';
-      const originMatcher = new RegExp(`\\.${namespace}\\.(t|j)s$`);
-      const suffixMatcher = new RegExp(`\\.${scriptSuffix}$`);
+      const options = { ...process.initialOptions };
 
+      debugger;
       outputFiles.length = 0;
 
       process.onResolve({ filter: suffixMatcher }, (args) => ({
@@ -32,7 +55,8 @@ export function ScriptLoader(outputDir: string, name: string) {
           write: false,
           format: 'iife',
           logLevel: 'silent',
-          outdir: outputDir,
+          outdir: options.outdir,
+          publicPath: '/assets/',
           stdin: {
             contents: content,
             resolveDir: path.dirname(args.pluginData),
@@ -46,24 +70,26 @@ export function ScriptLoader(outputDir: string, name: string) {
           return e;
         });
 
+        debugger;
         for (const file of (buildResult?.outputFiles ?? []) as OutputFile[]) {
-          if (path.extname(file.path) === '.css') {
-            file.path = path.format({
-              dir: path.join(outputDir, 'css'),
-              name: name,
-              ext: '.css',
-            });
-          }
-          else if (path.extname(file.path) === '.js') {
-            file.path = path.format({
-              dir: path.join(outputDir, 'script'),
-              name: name,
-              ext: '.js',
-            });
-          }
-          else {
-            file.path = path.join(outputDir, 'assets', path.basename(file.path));
-          }
+          // if (path.extname(file.path) === '.css') {
+          //   file.path = path.format({
+          //     dir: path.join(outputDir, 'css'),
+          //     name: name,
+          //     ext: hash ? `.${md5(file.contents)}.css` : '.css',
+          //   });
+          // }
+          // else if (path.extname(file.path) === '.js') {
+          //   file.path = path.format({
+          //     dir: path.join(outputDir, 'script'),
+          //     name: name,
+          //     ext: hash ? `.${md5(file.contents)}.js` : '.js',
+          //   });
+          // }
+          // else {
+          //   // TODO:
+          //   file.path = path.join(outputDir, 'assets', path.basename(file.path));
+          // }
 
           outputFiles.push(file);
         }
@@ -75,11 +101,12 @@ export function ScriptLoader(outputDir: string, name: string) {
         };
       });
 
-      process.onLoad({ filter: originMatcher }, (args) => {
+      process.onLoad({ filter: /\.script\.(t|j)s$/ }, (args) => {
         const fullPath = `${args.path}.${scriptSuffix}`.replace(/[\\/]/g, '\\\\');
+
         return {
           loader: 'ts',
-          contents: `import '${fullPath}';`,
+          contents: '',
         };
       });
     },
@@ -87,5 +114,5 @@ export function ScriptLoader(outputDir: string, name: string) {
 }
 
 ScriptLoader.output = () => {
-  return outputFiles;
+  return outputFiles.slice();
 };

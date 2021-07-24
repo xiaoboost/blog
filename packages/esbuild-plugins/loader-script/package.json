@@ -13,7 +13,7 @@
     "package.json"
   ],
   "scripts": {
-    "dev": "tsc -p . -w",
+    "watch": "tsc -p . -w",
     "build": "tsc -p .",
     "lint": "eslint --quiet --no-error-on-unmatched-pattern --config ../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}",
     "lint:fix": "eslint --fix --quiet --no-error-on-unmatched-pattern --config ../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}"
@@ -31,6 +31,7 @@
     "@blog/tsconfig": "workspace:*",
     "@types/blog": "workspace:*",
     "eslint": "^7.30.0",
+    "jss": "^10.7.1",
     "tslib": "^2.3.0",
     "typescript": "^4.3.5"
   }
