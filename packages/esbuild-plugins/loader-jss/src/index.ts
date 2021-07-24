@@ -10,8 +10,9 @@ export function JssLoader(): Plugin {
     setup(process) {
       const namespace = 'jss-style';
       const jssSuffix = 'jss-style-suffix';
-      const originMatcher = new RegExp(`\\.${namespace}\\.(t|j)s$`);
       const suffixMatcher = new RegExp(`\\.${jssSuffix}$`);
+      /** 文件缓存 */
+      const fileData: Record<string, string> = {};
 
       process.onResolve({ filter: suffixMatcher }, (args) => ({
         path: args.path,
@@ -20,7 +21,15 @@ export function JssLoader(): Plugin {
       }));
 
       process.onLoad({ filter: /.*/, namespace }, async (args) => {
-        const content = await fs.readFile(args.pluginData, 'utf-8');
+        return {
+          loader: 'css',
+          contents: fileData[args.pluginData] ?? '',
+        };
+      });
+
+      process.onLoad({ filter: /\.jss\.(t|j)s$/ }, async (args) => {
+        const cssPath = `${args.path}.${jssSuffix}`.replace(/[\\/]/g, '\\\\');
+        const content = await fs.readFile(args.path, 'utf-8');
         const buildResult = await build({
           bundle: true,
           minify: false,
@@ -30,8 +39,8 @@ export function JssLoader(): Plugin {
           logLevel: 'silent',
           stdin: {
             contents: content,
-            resolveDir: dirname(args.pluginData),
-            sourcefile: basename(args.pluginData),
+            resolveDir: dirname(args.path),
+            sourcefile: basename(args.path),
             loader: 'ts',
           },
         }).catch((e) => {
@@ -47,19 +56,19 @@ export function JssLoader(): Plugin {
         }
 
         const jssCode = buildResult?.outputFiles[0].text;
-        const cssCode = runScript(jssCode ?? '', require);
+        const jssObject = runScript(jssCode ?? '', require);
+        const cssCode = jssObject.toString();
 
-        return {
-          loader: 'css',
-          contents: cssCode,
-        };
-      });
+        fileData[args.path] = cssCode;
 
-      process.onLoad({ filter: originMatcher }, (args) => {
-        const fullPath = `${args.path}.${jssSuffix}`.replace(/[\\/]/g, '\\\\');
         return {
           loader: 'ts',
-          contents: `import '${fullPath}';`,
+          contents: `
+            import '${cssPath}';
+            export default {
+              classes: ${JSON.stringify(jssObject.classes)},
+            };
+          `,
         };
       });
     },
