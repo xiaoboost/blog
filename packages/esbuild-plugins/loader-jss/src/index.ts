@@ -5,12 +5,15 @@ import { promises as fs } from 'fs';
 import { dirname, basename } from 'path';
 
 export function JssLoader(): Plugin {
+  const namespace = 'jss-style';
+  const jssSuffix = 'jss-style-suffix';
+  const suffixMatcher = new RegExp(`\\.${jssSuffix}$`);
+
   return {
     name: 'loader-jss',
     setup(process) {
-      const namespace = 'jss-style';
-      const jssSuffix = 'jss-style-suffix';
-      const suffixMatcher = new RegExp(`\\.${jssSuffix}$`);
+      /** 构建选项 */
+      const { initialOptions: options } = process;
       /** 文件缓存 */
       const fileData: Record<string, string> = {};
 
@@ -23,6 +26,7 @@ export function JssLoader(): Plugin {
       process.onLoad({ filter: /.*/, namespace }, async (args) => {
         return {
           loader: 'css',
+          resolveDir: dirname(args.path),
           contents: fileData[args.pluginData] ?? '',
         };
       });
@@ -35,6 +39,11 @@ export function JssLoader(): Plugin {
           minify: false,
           write: false,
           format: 'cjs',
+          assetNames: options.assetNames,
+          outdir: options.outdir,
+          publicPath: options.publicPath,
+          define: options.define,
+          loader: options.loader,
           external: ['jss', 'jss-preset-default'],
           logLevel: 'silent',
           stdin: {
