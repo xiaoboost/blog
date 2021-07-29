@@ -24,12 +24,15 @@
   },
   "dependencies": {
     "@blog/esbuild-loader-jss": "workspace:*",
-    "@blog/utils": "workspace:*",
-    "esbuild": "^0.12.15"
+    "esbuild": "^0.12.15",
+    "fs-extra": "^10.0.0",
+    "md5": "^2.3.0"
   },
   "devDependencies": {
     "@blog/tsconfig": "workspace:*",
     "@types/blog": "workspace:*",
+    "@types/fs-extra": "^9.0.12",
+    "@types/md5": "^2.3.1",
     "eslint": "^7.30.0",
     "jss": "^10.7.1",
     "tslib": "^2.3.0",
