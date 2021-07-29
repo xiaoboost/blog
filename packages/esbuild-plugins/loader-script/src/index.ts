@@ -1,68 +1,56 @@
 import { build, PluginBuild, OutputFile } from 'esbuild';
-import { isProduction } from '@blog/utils';
 import { JssLoader } from '@blog/esbuild-loader-jss';
-import { promises as fs } from 'fs';
 
 import md5 from 'md5';
-import * as path from 'path';
 
-const outputFiles: OutputFile[] = [];
+import * as path from 'path';
+import * as fs from 'fs-extra';
 
 export interface Options {
   name: string;
+  outDir?: string;
+  assetDir?: string;
+  scriptDir?: string;
+  styleDir?: string;
 }
 
-export interface FileNameOption {
-  name: string;
-  hash: string;
-  ext: string;
-}
-
-function getNameCreator(name: string) {
-  return (option: FileNameOption) => {
-    return name
-      .replace(/\[name\]/g, option.name)
-      .replace(/\[hash\]/g, option.hash)
-      .replace(/\[ext\]/g, option.ext);
+function getNameCreator(origin: string) {
+  return function getName(name: string, hash?: string) {
+    return origin
+      .replace(/\[name\]/g, name)
+      .replace(/\[hash\]/g, hash ?? '');
   };
 }
 
-export function ScriptLoader({ name }: Options) {
-  const getName = getNameCreator(name);
-  const namespace = 'script';
-  const scriptSuffix = 'script-suffix';
-  const suffixMatcher = new RegExp(`\\.${scriptSuffix}$`);
-
+export function ScriptLoader(loaderOpt: Options) {
   return {
     name: 'loader-script',
     setup(process: PluginBuild) {
-      const options = { ...process.initialOptions };
+      const { initialOptions: options } = process;
+      const getName = getNameCreator(options.assetNames ?? '[name].[ext]');
+      const outputDir = loaderOpt.outDir
+        ? path.join(options.outdir ?? '/', loaderOpt.outDir)
+        : options.outdir;
 
-      debugger;
-      outputFiles.length = 0;
-
-      process.onResolve({ filter: suffixMatcher }, (args) => ({
-        path: args.path,
-        pluginData: args.path.replace(suffixMatcher, ''),
-        namespace,
-      }));
-
-      process.onLoad({ filter: /.*/, namespace }, async (args) => {
-        const content = await fs.readFile(args.pluginData, 'utf-8');
+      process.onLoad({ filter: /\.script\.(t|j)s$/ }, async (args) => {
+        const content = await fs.readFile(args.path, 'utf-8');
         const buildResult = await build({
           bundle: true,
-          minify: isProduction,
           write: false,
           format: 'iife',
           logLevel: 'silent',
-          outdir: options.outdir,
-          publicPath: '/assets/',
+          minify: options.minify,
+          outdir: outputDir,
+          loader: options.loader,
+          assetNames: options.assetNames,
+          publicPath: options.publicPath,
           stdin: {
             contents: content,
-            resolveDir: path.dirname(args.pluginData),
-            sourcefile: path.basename(args.pluginData),
+            resolveDir: path.dirname(args.path),
+            sourcefile: path.basename(args.path),
             loader: 'ts',
           },
+          define: options.define,
           plugins: [
             JssLoader(),
           ],
@@ -70,49 +58,56 @@ export function ScriptLoader({ name }: Options) {
           return e;
         });
 
-        debugger;
-        for (const file of (buildResult?.outputFiles ?? []) as OutputFile[]) {
-          // if (path.extname(file.path) === '.css') {
-          //   file.path = path.format({
-          //     dir: path.join(outputDir, 'css'),
-          //     name: name,
-          //     ext: hash ? `.${md5(file.contents)}.css` : '.css',
-          //   });
-          // }
-          // else if (path.extname(file.path) === '.js') {
-          //   file.path = path.format({
-          //     dir: path.join(outputDir, 'script'),
-          //     name: name,
-          //     ext: hash ? `.${md5(file.contents)}.js` : '.js',
-          //   });
-          // }
-          // else {
-          //   // TODO:
-          //   file.path = path.join(outputDir, 'assets', path.basename(file.path));
-          // }
+        let code = 'export default [';
 
-          outputFiles.push(file);
+        for (const file of (buildResult?.outputFiles ?? []) as OutputFile[]) {
+          let filePath = '';
+
+          const relativePath = path.relative(outputDir ?? '/', path.dirname(file.path));
+
+          if (path.extname(file.path) === '.css') {
+            const hash = md5(file.contents);
+            filePath = path.format({
+              ext: '.css',
+              dir: path.join('/', loaderOpt.styleDir ?? '/', relativePath),
+              name: getName(loaderOpt.name, hash),
+            });
+          }
+          else if (path.extname(file.path) === '.js') {
+            // 跳过空脚本
+            if (file.text.trim() === '(()=>{})();') {
+              continue;
+            }
+
+            const hash = md5(file.contents);
+            filePath = path.format({
+              ext: '.js',
+              dir: path.join('/', loaderOpt.scriptDir ?? '/', relativePath),
+              name: getName(loaderOpt.name, hash),
+            });
+          }
+          // TODO:
+          else {
+            // file.path = path.join(outDir, staticDir, webAssetsDir, path.basename(file.path));
+          }
+
+          filePath = filePath.replace(/[\\/]+/g, '\\\\');
+
+          code += (
+            '{\n' +
+            `path: \`${filePath}\`,\n` +
+            `contents: Buffer.from([${file.contents.join(',')}]),\n` +
+            '},\n'
+          );
         }
 
-        return {
-          errors: buildResult?.errors ?? [],
-          loader: 'file',
-          contents: '',
-        };
-      });
-
-      process.onLoad({ filter: /\.script\.(t|j)s$/ }, (args) => {
-        const fullPath = `${args.path}.${scriptSuffix}`.replace(/[\\/]/g, '\\\\');
+        code += '];';
 
         return {
           loader: 'ts',
-          contents: '',
+          contents: code,
         };
       });
     },
   };
 }
-
-ScriptLoader.output = () => {
-  return outputFiles.slice();
-};
