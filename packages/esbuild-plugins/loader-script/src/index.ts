@@ -1,4 +1,4 @@
-import { build, PluginBuild, OutputFile } from 'esbuild';
+import { build, PluginBuild, OutputFile, BuildOptions } from 'esbuild';
 import { JssLoader } from '@blog/esbuild-loader-jss';
 
 import md5 from 'md5';
@@ -8,10 +8,20 @@ import * as fs from 'fs-extra';
 
 export interface Options {
   name: string;
+  minify?: boolean;
   outDir?: string;
-  assetDir?: string;
   scriptDir?: string;
   styleDir?: string;
+}
+
+function normalizeOption(opt: Options, buildOpt: BuildOptions): Required<Options> {
+  return {
+    name: opt.name,
+    minify: opt.minify ?? buildOpt.minify ?? false,
+    outDir: opt.outDir ?? 'static',
+    scriptDir: opt.scriptDir ?? 'scripts',
+    styleDir: opt.styleDir ?? 'styles',
+  };
 }
 
 function getNameCreator(origin: string) {
@@ -22,11 +32,12 @@ function getNameCreator(origin: string) {
   };
 }
 
-export function ScriptLoader(loaderOpt: Options) {
+export function ScriptLoader(opt: Options) {
   return {
     name: 'loader-script',
     setup(process: PluginBuild) {
       const { initialOptions: options } = process;
+      const loaderOpt = normalizeOption(opt, options);
       const getName = getNameCreator(options.assetNames ?? '[name].[ext]');
       const outputDir = loaderOpt.outDir
         ? path.join(options.outdir ?? '/', loaderOpt.outDir)
@@ -39,7 +50,7 @@ export function ScriptLoader(loaderOpt: Options) {
           write: false,
           format: 'iife',
           logLevel: 'silent',
-          minify: options.minify,
+          minify: loaderOpt.minify,
           outdir: outputDir,
           loader: options.loader,
           assetNames: options.assetNames,
@@ -62,41 +73,42 @@ export function ScriptLoader(loaderOpt: Options) {
 
         for (const file of (buildResult?.outputFiles ?? []) as OutputFile[]) {
           let filePath = '';
+          let codeContent = '';
 
           const relativePath = path.relative(outputDir ?? '/', path.dirname(file.path));
 
           if (path.extname(file.path) === '.css') {
             const hash = md5(file.contents);
+            codeContent = JSON.stringify(file.text);
             filePath = path.format({
               ext: '.css',
-              dir: path.join('/', loaderOpt.styleDir ?? '/', relativePath),
+              dir: path.join('/', loaderOpt.styleDir, relativePath),
               name: getName(loaderOpt.name, hash),
             });
           }
           else if (path.extname(file.path) === '.js') {
             // 跳过空脚本
-            if (file.text.trim() === '(()=>{})();') {
+            if (/^\(\(\) ?=> ?{\n?}\)\(\);$/.test(file.text.trim())) {
               continue;
             }
 
             const hash = md5(file.contents);
+            codeContent = JSON.stringify(file.text);
             filePath = path.format({
               ext: '.js',
-              dir: path.join('/', loaderOpt.scriptDir ?? '/', relativePath),
+              dir: path.join('/', loaderOpt.scriptDir, relativePath),
               name: getName(loaderOpt.name, hash),
             });
           }
-          // TODO:
           else {
-            // file.path = path.join(outDir, staticDir, webAssetsDir, path.basename(file.path));
+            filePath = path.relative(outputDir ?? '/', file.path);
+            codeContent = `Buffer.from([${file.contents.join(',')}])`;
           }
-
-          filePath = filePath.replace(/[\\/]+/g, '\\\\');
 
           code += (
             '{\n' +
-            `path: \`${filePath}\`,\n` +
-            `contents: Buffer.from([${file.contents.join(',')}]),\n` +
+            `  path: \`${filePath.replace(/[\\/]+/g, '\\\\')}\`,\n` +
+            `  contents: ${codeContent},\n` +
             '},\n'
           );
         }
