@@ -149,6 +149,8 @@ importers:
     dependencies:
       '@blog/styles': link:../../styles
       katex: registry.nlark.com/katex/0.13.11
+      react: registry.nlark.com/react/17.0.2
+      tslib: registry.nlark.com/tslib/2.3.0
     devDependencies:
       '@blog/esbuild-loader-script': link:../../esbuild-plugins/loader-script
       '@blog/tsconfig': link:../../tsconfig
@@ -157,8 +159,6 @@ importers:
       '@types/react': registry.nlark.com/@types/react/17.0.14
       esbuild: registry.nlark.com/esbuild/0.12.15
       eslint: registry.nlark.com/eslint/7.30.0
-      react: registry.nlark.com/react/17.0.2
-      tslib: registry.nlark.com/tslib/2.3.0
       typescript: registry.nlark.com/typescript/4.3.5
 
   packages/esbuild-plugins/loader-jss:
@@ -1222,7 +1222,6 @@ packages:
     hasBin: true
     dependencies:
       js-tokens: registry.nlark.com/js-tokens/4.0.0
-    dev: true
 
   /lru-cache/6.0.0:
     resolution: {integrity: sha1-bW/mVw69lqr5D8rR2vo7JWbbOpQ=, tarball: lru-cache/download/lru-cache-6.0.0.tgz}
@@ -2562,7 +2561,7 @@ packages:
     dev: true
 
   registry.nlark.com/@types/node/16.4.1:
-    resolution: {integrity: sha1-n60XGltwFhPuim9OzjyIsQNLGwM=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/@types/node/download/@types/node-16.4.1.tgz}
+    resolution: {integrity: sha1-n60XGltwFhPuim9OzjyIsQNLGwM=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/@types/node/download/@types/node-16.4.1.tgz?cache=0&sync_timestamp=1627564414425&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40types%2Fnode%2Fdownload%2F%40types%2Fnode-16.4.1.tgz}
     name: '@types/node'
     version: 16.4.1
     dev: true
@@ -3359,7 +3358,6 @@ packages:
     resolution: {integrity: sha1-GSA/tZmR35jjoocFDUZHzerzJJk=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/js-tokens/download/js-tokens-4.0.0.tgz}
     name: js-tokens
     version: 4.0.0
-    dev: true
 
   registry.nlark.com/jss-plugin-camel-case/10.7.1:
     resolution: {integrity: sha1-5/cJfPl+ne7Fmc7zJ14hNFIxi5M=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/jss-plugin-camel-case/download/jss-plugin-camel-case-10.7.1.tgz}
@@ -3653,7 +3651,6 @@ packages:
     dependencies:
       loose-envify: 1.4.0
       object-assign: 4.1.1
-    dev: true
 
   registry.nlark.com/regenerator-runtime/0.13.9:
     resolution: {integrity: sha1-iSV0Kpj/2QgUmI11Zq0wyjsmO1I=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/regenerator-runtime/download/regenerator-runtime-0.13.9.tgz}
@@ -3789,7 +3786,6 @@ packages:
     resolution: {integrity: sha1-gDuM2rPhK6WBpMpByIObuw2ssJ4=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/tslib/download/tslib-2.3.0.tgz}
     name: tslib
     version: 2.3.0
-    dev: true
 
   registry.nlark.com/type-fest/0.20.2:
     resolution: {integrity: sha1-G/IH9LKPkVg2ZstfvTJ4hzAc1fQ=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/type-fest/download/type-fest-0.20.2.tgz?cache=0&sync_timestamp=1625746236778&other_urls=https%3A%2F%2Fregistry.nlark.com%2Ftype-fest%2Fdownload%2Ftype-fest-0.20.2.tgz}
