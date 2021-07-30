@@ -3,8 +3,8 @@ const { build } = require('esbuild');
 const { ScriptLoader } = require('@blog/esbuild-loader-script');
 
 build({
-  entryPoints: [path.join(__dirname, './src/index.tsx')],
-  outdir: path.join(__dirname, './dist'),
+  entryPoints: [path.join(__dirname, './src/main.script.ts')],
+  outfile: path.join(__dirname, './dist/assets.js'),
   bundle: true,
   minify: true,
   write: true,
@@ -24,6 +24,5 @@ build({
     }),
   ],
 }).catch((e) => {
-  debugger;
-  console.log(e);
+  console.error(e);
 });

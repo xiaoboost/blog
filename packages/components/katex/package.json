@@ -13,9 +13,9 @@
     "package.json"
   ],
   "scripts": {
-    "build:code": "node build.js",
-    "build:type": "tsc -p . --emitDeclarationOnly",
-    "build": "pnpm run build:code && pnpm run build:type",
+    "build:assets": "node build.js",
+    "build:template": "tsc -p .",
+    "build": "pnpm run build:assets && pnpm run build:template",
     "lint": "eslint --quiet --no-error-on-unmatched-pattern --config ../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}",
     "lint:fix": "eslint --fix --quiet --no-error-on-unmatched-pattern --config ../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}"
   },
@@ -25,7 +25,9 @@
   },
   "dependencies": {
     "@blog/styles": "workspace:*",
-    "katex": "^0.13.11"
+    "katex": "^0.13.11",
+    "react": "^17.0.2",
+    "tslib": "^2.3.0"
   },
   "devDependencies": {
     "@blog/esbuild-loader-script": "workspace:*",
@@ -35,8 +37,6 @@
     "@types/react": "^17.0.14",
     "esbuild": "^0.12.15",
     "eslint": "^7.30.0",
-    "react": "^17.0.2",
-    "tslib": "^2.3.0",
     "typescript": "^4.3.5"
   }
 }

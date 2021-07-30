@@ -9,7 +9,6 @@ import * as fs from 'fs-extra';
 export interface Options {
   name: string;
   minify?: boolean;
-  outDir?: string;
   scriptDir?: string;
   styleDir?: string;
 }
@@ -18,7 +17,6 @@ function normalizeOption(opt: Options, buildOpt: BuildOptions): Required<Options
   return {
     name: opt.name,
     minify: opt.minify ?? buildOpt.minify ?? false,
-    outDir: opt.outDir ?? 'static',
     scriptDir: opt.scriptDir ?? 'scripts',
     styleDir: opt.styleDir ?? 'styles',
   };
@@ -35,15 +33,17 @@ function getNameCreator(origin: string) {
 export function ScriptLoader(opt: Options) {
   return {
     name: 'loader-script',
-    setup(process: PluginBuild) {
-      const { initialOptions: options } = process;
+    setup(esbuild: PluginBuild) {
+      const outputDir = process.cwd();
+      const { initialOptions: options } = esbuild;
       const loaderOpt = normalizeOption(opt, options);
-      const getName = getNameCreator(options.assetNames ?? '[name].[ext]');
-      const outputDir = loaderOpt.outDir
-        ? path.join(options.outdir ?? '/', loaderOpt.outDir)
-        : options.outdir;
+      const getName = getNameCreator(
+        options.assetNames
+          ? path.basename(options.assetNames)
+          : '[name]'
+      );
 
-      process.onLoad({ filter: /\.script\.(t|j)s$/ }, async (args) => {
+      esbuild.onLoad({ filter: /\.script\.(t|j)s$/ }, async (args) => {
         const content = await fs.readFile(args.path, 'utf-8');
         const buildResult = await build({
           bundle: true,
@@ -75,14 +75,14 @@ export function ScriptLoader(opt: Options) {
           let filePath = '';
           let codeContent = '';
 
-          const relativePath = path.relative(outputDir ?? '/', path.dirname(file.path));
+          const relativePath = path.relative(outputDir, path.dirname(file.path));
 
           if (path.extname(file.path) === '.css') {
             const hash = md5(file.contents);
             codeContent = JSON.stringify(file.text);
             filePath = path.format({
               ext: '.css',
-              dir: path.join('/', loaderOpt.styleDir, relativePath),
+              dir: path.join(loaderOpt.styleDir, relativePath),
               name: getName(loaderOpt.name, hash),
             });
           }
@@ -96,12 +96,12 @@ export function ScriptLoader(opt: Options) {
             codeContent = JSON.stringify(file.text);
             filePath = path.format({
               ext: '.js',
-              dir: path.join('/', loaderOpt.scriptDir, relativePath),
+              dir: path.join(loaderOpt.scriptDir, relativePath),
               name: getName(loaderOpt.name, hash),
             });
           }
           else {
-            filePath = path.relative(outputDir ?? '/', file.path);
+            filePath = path.relative(outputDir, file.path);
             codeContent = `Buffer.from([${file.contents.join(',')}])`;
           }
 
