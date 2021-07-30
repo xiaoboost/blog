@@ -1,3 +1,3 @@
-# blog/component-code-block-normal
+# @blog/component-code-block-normal
 
 普通代码块
