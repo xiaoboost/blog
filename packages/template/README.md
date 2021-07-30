@@ -1,3 +1,3 @@
-# blog/template
+# @blog/template
 
 网站模板
