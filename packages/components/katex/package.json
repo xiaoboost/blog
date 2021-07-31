@@ -13,7 +13,7 @@
     "package.json"
   ],
   "scripts": {
-    "build:assets": "node build.js",
+    "build:assets": "node build.js --production",
     "build:template": "tsc -p .",
     "build": "pnpm run build:assets && pnpm run build:template",
     "lint": "eslint --quiet --no-error-on-unmatched-pattern --config ../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}",
