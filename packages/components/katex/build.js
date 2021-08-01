@@ -2,6 +2,7 @@ const path = require('path');
 const { build } = require('esbuild');
 const { ScriptLoader } = require('@blog/esbuild-loader-script');
 const isProduction = process.argv.includes('--production');
+const isWatch = process.argv.includes('--watch');
 
 build({
   entryPoints: [path.join(__dirname, './src/main.script.ts')],
@@ -9,7 +10,8 @@ build({
   bundle: true,
   minify: true,
   write: true,
-  watch: false,
+  watch: isWatch,
+  mainFields: ['source', 'module', 'main'],
   assetNames: isProduction
     ? '/assets/[name].[hash]'
     : '/assets/[name]',
@@ -21,11 +23,14 @@ build({
     '.woff2': 'file',
   },
   external: ['react', 'katex'],
+  define: {
+    'process.env.NODE_ENV': isProduction ? `'production'` : `'development'`,
+  },
   plugins: [
     ScriptLoader({
       name: 'katex',
-    }),
+    }).plugin,
   ],
 }).catch((e) => {
-  console.error(e);
+  console.error(e.message);
 });

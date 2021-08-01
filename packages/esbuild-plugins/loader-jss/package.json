@@ -23,6 +23,7 @@
     "url": "https://github.com/xiaoboost/blog"
   },
   "dependencies": {
+    "@blog/esbuild-recorder-file": "workspace:*",
     "@blog/utils": "workspace:*",
     "esbuild": "^0.12.15"
   },

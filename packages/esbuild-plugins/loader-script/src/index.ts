@@ -1,5 +1,7 @@
 import { build, PluginBuild, OutputFile, BuildOptions } from 'esbuild';
 import { JssLoader } from '@blog/esbuild-loader-jss';
+import { FileRecorder } from '@blog/esbuild-recorder-file';
+import { unique } from '@xiao-ai/utils';
 
 import md5 from 'md5';
 
@@ -31,95 +33,111 @@ function getNameCreator(origin: string) {
 }
 
 export function ScriptLoader(opt: Options) {
+  const fileRecorder = FileRecorder();
+  const jssLoader = JssLoader();
+
+  function getFiles() {
+    return unique(fileRecorder.getFiles().concat(jssLoader.getFiles()));
+  }
+
   return {
-    name: 'loader-script',
-    setup(esbuild: PluginBuild) {
-      const outputDir = process.cwd();
-      const { initialOptions: options } = esbuild;
-      const loaderOpt = normalizeOption(opt, options);
-      const getName = getNameCreator(
-        options.assetNames
-          ? path.basename(options.assetNames)
-          : '[name]'
-      );
+    getFiles,
+    plugin: {
+      name: 'loader-script',
+      setup(esbuild: PluginBuild) {
+        const outputDir = process.cwd();
+        const { initialOptions: options } = esbuild;
+        const loaderOpt = normalizeOption(opt, options);
+        const getName = getNameCreator(
+          options.assetNames
+            ? path.basename(options.assetNames)
+            : '[name]'
+        );
 
-      esbuild.onLoad({ filter: /\.script\.(t|j)s$/ }, async (args) => {
-        const content = await fs.readFile(args.path, 'utf-8');
-        const buildResult = await build({
-          bundle: true,
-          write: false,
-          format: 'iife',
-          logLevel: 'silent',
-          minify: loaderOpt.minify,
-          outdir: outputDir,
-          loader: options.loader,
-          assetNames: options.assetNames,
-          publicPath: options.publicPath,
-          stdin: {
-            contents: content,
-            resolveDir: path.dirname(args.path),
-            sourcefile: path.basename(args.path),
-            loader: 'ts',
-          },
-          define: options.define,
-          plugins: [
-            JssLoader(),
-          ],
-        }).catch((e) => {
-          return e;
-        });
+        esbuild.onLoad({ filter: /\.script\.(t|j)s$/ }, async (args) => {
+          const content = await fs.readFile(args.path, 'utf-8');
+          const buildResult = await build({
+            bundle: true,
+            write: false,
+            format: 'iife',
+            logLevel: 'silent',
+            minify: loaderOpt.minify,
+            outdir: outputDir,
+            loader: options.loader,
+            mainFields: options.mainFields,
+            assetNames: options.assetNames,
+            publicPath: options.publicPath,
+            stdin: {
+              contents: content,
+              resolveDir: path.dirname(args.path),
+              sourcefile: path.basename(args.path),
+              loader: 'ts',
+            },
+            define: options.define,
+            plugins: [
+              jssLoader.plugin,
+              fileRecorder.plugin,
+            ],
+          }).catch((e) => {
+            return e;
+          });
 
-        let code = 'export default [';
+          console.log('rebuild');
+          console.log(getFiles());
 
-        for (const file of (buildResult?.outputFiles ?? []) as OutputFile[]) {
-          let filePath = '';
-          let codeContent = '';
+          let code = 'export default [';
 
-          const relativePath = path.relative(outputDir, path.dirname(file.path));
+          for (const file of (buildResult?.outputFiles ?? []) as OutputFile[]) {
+            let filePath = '';
+            let codeContent = '';
 
-          if (path.extname(file.path) === '.css') {
-            const hash = md5(file.contents);
-            codeContent = JSON.stringify(file.text);
-            filePath = path.format({
-              ext: '.css',
-              dir: path.join(loaderOpt.styleDir, relativePath),
-              name: getName(loaderOpt.name, hash),
-            });
-          }
-          else if (path.extname(file.path) === '.js') {
-            // 跳过空脚本
-            if (/^\(\(\) ?=> ?{\n?}\)\(\);$/.test(file.text.trim())) {
-              continue;
+            const relativePath = path.relative(outputDir, path.dirname(file.path));
+
+            if (path.extname(file.path) === '.css') {
+              const hash = md5(file.contents);
+              codeContent = JSON.stringify(file.text);
+              filePath = path.format({
+                ext: '.css',
+                dir: path.join(loaderOpt.styleDir, relativePath),
+                name: getName(loaderOpt.name, hash),
+              });
+            }
+            else if (path.extname(file.path) === '.js') {
+              // 跳过空脚本
+              if (/^\(\(\) ?=> ?{\n?}\)\(\);$/.test(file.text.trim())) {
+                continue;
+              }
+
+              const hash = md5(file.contents);
+              codeContent = JSON.stringify(file.text);
+              filePath = path.format({
+                ext: '.js',
+                dir: path.join(loaderOpt.scriptDir, relativePath),
+                name: getName(loaderOpt.name, hash),
+              });
+            }
+            else {
+              filePath = path.relative(outputDir, file.path);
+              codeContent = `Buffer.from([${file.contents.join(',')}])`;
             }
 
-            const hash = md5(file.contents);
-            codeContent = JSON.stringify(file.text);
-            filePath = path.format({
-              ext: '.js',
-              dir: path.join(loaderOpt.scriptDir, relativePath),
-              name: getName(loaderOpt.name, hash),
-            });
-          }
-          else {
-            filePath = path.relative(outputDir, file.path);
-            codeContent = `Buffer.from([${file.contents.join(',')}])`;
+            code += (
+              '{\n' +
+              `  path: \`${filePath.replace(/[\\/]+/g, '\\\\')}\`,\n` +
+              `  contents: ${codeContent},\n` +
+              '},\n'
+            );
           }
 
-          code += (
-            '{\n' +
-            `  path: \`${filePath.replace(/[\\/]+/g, '\\\\')}\`,\n` +
-            `  contents: ${codeContent},\n` +
-            '},\n'
-          );
-        }
+          code += '];';
 
-        code += '];';
-
-        return {
-          loader: 'ts',
-          contents: code,
-        };
-      });
+          return {
+            loader: 'ts',
+            contents: code,
+            watchFiles: getFiles(),
+          };
+        });
+      },
     },
   };
 }

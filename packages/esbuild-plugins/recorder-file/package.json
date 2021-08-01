@@ -1,22 +1,20 @@
 {
-  "name": "@blog/component-katex",
-  "description": "blog's posts",
+  "name": "@blog/esbuild-recorder-file",
+  "description": "blog's all file recorder for esbuild",
   "version": "1.0.0",
   "author": "xiaoboost",
   "license": "MIT",
   "source": "src/index.ts",
-  "module": "src/index.ts",
-  "types": "src/index.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "files": [
     "dist",
     "README.md",
     "package.json"
   ],
   "scripts": {
-    "build:template": "tsc -p .",
-    "build:assets": "node build.js --production",
-    "build:assets:watch": "node build.js --watch",
-    "build": "pnpm run build:assets && pnpm run build:template",
+    "watch": "tsc -p . -w",
+    "build": "tsc -p .",
     "lint": "eslint --quiet --no-error-on-unmatched-pattern --config ../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}",
     "lint:fix": "eslint --fix --quiet --no-error-on-unmatched-pattern --config ../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}"
   },
@@ -25,19 +23,14 @@
     "url": "https://github.com/xiaoboost/blog"
   },
   "dependencies": {
-    "@blog/styles": "workspace:*",
-    "katex": "^0.13.11",
-    "react": "^17.0.2",
-    "tslib": "^2.3.0"
+    "@blog/esbuild-loader-jss": "workspace:*",
+    "esbuild": "^0.12.15"
   },
   "devDependencies": {
-    "@blog/esbuild-loader-script": "workspace:*",
     "@blog/tsconfig": "workspace:*",
     "@types/blog": "workspace:*",
-    "@types/katex": "^0.11.1",
-    "@types/react": "^17.0.14",
-    "esbuild": "^0.12.15",
     "eslint": "^7.30.0",
+    "tslib": "^2.3.0",
     "typescript": "^4.3.5"
   }
 }
