@@ -1,7 +1,7 @@
 import React from 'react';
 import Katex from 'katex';
 
-export const assets: Record<string, string> = require('./assets').default;
+export const assets: Record<string, string> = require((0, eval)(`"./assets"`)).default;
 
 export function KatexBlock(math: string) {
   return <div>block</div>;
