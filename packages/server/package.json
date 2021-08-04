@@ -13,7 +13,7 @@
     "package.json"
   ],
   "scripts": {
-    "dev": "tsc -p . -w",
+    "watch": "tsc -p . -w",
     "build": "tsc -p .",
     "lint": "eslint --quiet --no-error-on-unmatched-pattern --config ../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}",
     "lint:fix": "eslint --fix --quiet --no-error-on-unmatched-pattern --config ../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}"
@@ -24,8 +24,10 @@
   },
   "dependencies": {
     "@blog/utils": "workspace:*",
+    "chalk": "^4.1.1",
     "chokidar": "^3.5.2",
     "koa": "^2.13.1",
+    "memfs": "^3.2.2",
     "mime": "^2.5.2"
   },
   "devDependencies": {
