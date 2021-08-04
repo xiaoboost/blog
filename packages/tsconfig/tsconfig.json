@@ -9,6 +9,7 @@
     "target": "ESNext",
     "module": "CommonJS",
     "jsx": "react",
+    "preserveWatchOutput": true,
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,

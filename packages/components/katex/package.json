@@ -13,10 +13,13 @@
     "package.json"
   ],
   "scripts": {
-    "build:template": "tsc -p .",
-    "build:assets": "node build.js --production",
-    "build:assets:watch": "node build.js --watch",
-    "build": "pnpm run build:assets && pnpm run build:template",
+    "build:type": "tsc -p . --emitDeclarationOnly",
+    "build:template": "node scripts/template.js",
+    "build:template:watch": "pnpm run build:template -- --development",
+    "build:assets": "node scripts/assets.js",
+    "build:assets:watch": "pnpm run build:assets -- --development",
+    "build": "pnpm run build:type && pnpm run build:assets && pnpm run build:template",
+    "watch": "concurrently -p {name} -n \"type,assets,template\" \"pnpm run build:type\" \"pnpm run build:assets:watch\" \"pnpm run build:template:watch\"",
     "lint": "eslint --quiet --no-error-on-unmatched-pattern --config ../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}",
     "lint:fix": "eslint --fix --quiet --no-error-on-unmatched-pattern --config ../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}"
   },
@@ -32,10 +35,13 @@
   },
   "devDependencies": {
     "@blog/esbuild-loader-script": "workspace:*",
+    "@blog/server": "workspace:*",
     "@blog/tsconfig": "workspace:*",
+    "@blog/utils": "workspace:*",
     "@types/blog": "workspace:*",
     "@types/katex": "^0.11.1",
     "@types/react": "^17.0.14",
+    "concurrently": "^6.2.0",
     "esbuild": "^0.12.15",
     "eslint": "^7.30.0",
     "typescript": "^4.3.5"

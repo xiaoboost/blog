@@ -82,9 +82,6 @@ export function ScriptLoader(opt: Options) {
             return e;
           });
 
-          console.log('rebuild');
-          console.log(getFiles());
-
           let code = 'export default [';
 
           for (const file of (buildResult?.outputFiles ?? []) as OutputFile[]) {
@@ -98,7 +95,7 @@ export function ScriptLoader(opt: Options) {
               codeContent = JSON.stringify(file.text);
               filePath = path.format({
                 ext: '.css',
-                dir: path.join(loaderOpt.styleDir, relativePath),
+                dir: path.join('/', loaderOpt.styleDir, relativePath),
                 name: getName(loaderOpt.name, hash),
               });
             }
@@ -112,12 +109,12 @@ export function ScriptLoader(opt: Options) {
               codeContent = JSON.stringify(file.text);
               filePath = path.format({
                 ext: '.js',
-                dir: path.join(loaderOpt.scriptDir, relativePath),
+                dir: path.join('/', loaderOpt.scriptDir, relativePath),
                 name: getName(loaderOpt.name, hash),
               });
             }
             else {
-              filePath = path.relative(outputDir, file.path);
+              filePath = path.join('/', path.relative(outputDir, file.path));
               codeContent = `Buffer.from([${file.contents.join(',')}])`;
             }
 
