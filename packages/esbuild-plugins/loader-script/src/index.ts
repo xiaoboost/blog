@@ -82,6 +82,8 @@ export function ScriptLoader(opt: Options) {
             return e;
           });
 
+          fileRecorder.pushFile(args.path);
+
           let code = 'export default [';
 
           for (const file of (buildResult?.outputFiles ?? []) as OutputFile[]) {

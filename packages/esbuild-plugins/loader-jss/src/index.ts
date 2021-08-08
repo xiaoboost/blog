@@ -68,6 +68,8 @@ export function JssLoader() {
             return e;
           });
 
+          recorder.pushFile(args.path);
+
           if (buildResult?.errors && buildResult.errors.length > 0) {
             return {
               errors: buildResult?.errors ?? [],

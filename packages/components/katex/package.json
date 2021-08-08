@@ -4,9 +4,8 @@
   "version": "1.0.0",
   "author": "xiaoboost",
   "license": "MIT",
-  "source": "src/index.ts",
-  "module": "src/index.ts",
-  "types": "src/index.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "files": [
     "dist",
     "README.md",
@@ -14,12 +13,10 @@
   ],
   "scripts": {
     "build:type": "tsc -p . --emitDeclarationOnly",
-    "build:template": "node scripts/template.js",
-    "build:template:watch": "pnpm run build:template -- --development",
-    "build:assets": "node scripts/assets.js",
-    "build:assets:watch": "pnpm run build:assets -- --development",
-    "build": "pnpm run build:type && pnpm run build:assets && pnpm run build:template",
-    "watch": "concurrently -p {name} -n \"type,assets,template\" \"pnpm run build:type\" \"pnpm run build:assets:watch\" \"pnpm run build:template:watch\"",
+    "build:bundle": "node build.js",
+    "watch:bundle": "pnpm run build:bundle -- --development",
+    "build": "pnpm run build:type && pnpm run build:bundle",
+    "watch": "concurrently -p {name} -n \"type,bundle\" \"pnpm run build:type\" \"pnpm run watch:bundle\"",
     "lint": "eslint --quiet --no-error-on-unmatched-pattern --config ../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}",
     "lint:fix": "eslint --fix --quiet --no-error-on-unmatched-pattern --config ../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}"
   },

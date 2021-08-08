@@ -10,6 +10,9 @@ export function FileRecorder() {
     getFiles() {
       return Object.keys(files);
     },
+    pushFile(file: string) {
+      files[file] = true;
+    },
     plugin: {
       name: 'record-file',
       setup(esbuild: PluginBuild) {
