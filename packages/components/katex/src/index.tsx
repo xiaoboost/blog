@@ -1,10 +1,10 @@
 import React from 'react';
 import Katex from 'katex';
 
-export const assets: Record<string, string> = require((0, eval)(`"./assets"`)).default;
+export const assets: any = require("./index.script").default;
 
 export function KatexBlock(math: string) {
-  return <div>block</div>;
+  return <div>block1</div>;
 }
 
 export function KatexInline(math: string) {
