@@ -2,6 +2,7 @@ import jss from 'jss';
 import preset from 'jss-preset-default';
 
 import { Styles, StyleSheet } from 'jss';
+import { hyphenate } from '@xiao-ai/utils';
 
 export { jss };
 export * from 'jss';
@@ -12,7 +13,9 @@ export function createStyles<
   C extends string = string,
 >(styles: Styles<C>): Pick<StyleSheet<C>, 'classes' | 'toString'> {
   return jss.createStyleSheet(styles, {
-    link: true,
+    link: false,
+    index: 0,
+    generateId: (rule) => hyphenate(rule.key),
   });
 }
 
