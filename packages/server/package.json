@@ -28,7 +28,6 @@
     "koa": "^2.13.1",
     "memfs": "^3.2.2",
     "mime": "^2.5.2",
-    "react": "^17.0.2",
     "react-dom": "^17.0.2"
   },
   "devDependencies": {
@@ -38,7 +37,6 @@
     "@types/md5": "^2.3.1",
     "@types/mime": "^2.0.3",
     "@types/node": "^16.3.2",
-    "@types/react": "^17.0.14",
     "@types/react-dom": "^17.0.9",
     "eslint": "^7.30.0",
     "tslib": "^2.3.0",

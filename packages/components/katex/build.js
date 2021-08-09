@@ -23,8 +23,8 @@ function watch(result) {
     return;
   }
 
-  const runResult = runScript(jsCode);
-  load(runResult.KatexBlock(), runResult.assets);
+  const runResult = runScript(jsCode, require);
+  load(runResult.devApp(), runResult.assets);
 }
 
 function build() {
