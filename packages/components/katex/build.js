@@ -54,7 +54,7 @@ function build() {
     .then((data) => {
       if (isDevelopment) {
         watch(data);
-        serve('/', 9966);
+        serve('/', 8080);
       }
     })
     .catch((e) => {
