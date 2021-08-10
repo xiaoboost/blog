@@ -8,7 +8,7 @@ import { Header, HeaderProps } from '../header';
 import { Footer } from '../footer';
 import { Article } from '../article';
 
-import { parseUrl } from 'build/utils';
+import { parseUrl } from '@blog/utils';
 
 export interface LayoutProps extends HeaderProps {
   /** 网站标题 */
@@ -29,8 +29,6 @@ export interface LayoutProps extends HeaderProps {
   styles: string[];
   /** 脚本文件列表 */
   scripts: string[];
-  /** 插件列表 */
-  plugins: string[];
 }
 
 import faviconPath from '../../assets/image/favicon.ico';
@@ -65,7 +63,7 @@ export function Layout(props: PropsWithChildren<LayoutProps>) {
       </head>
       <body>
         <Header {...props} />
-        <Article plugins={props.plugins}>
+        <Article>
           {props.children}
         </Article>
         <Footer />
