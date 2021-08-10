@@ -24,7 +24,7 @@
   "dependencies": {
     "@blog/esbuild-loader-jss": "workspace:*",
     "@blog/esbuild-recorder-file": "workspace:*",
-    "@xiao-ai/utils": "^1.4.2",
+    "@xiao-ai/utils": "^1.4.3",
     "esbuild": "^0.12.15",
     "fs-extra": "^10.0.0",
     "md5": "^2.3.0"

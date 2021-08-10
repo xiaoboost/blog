@@ -23,7 +23,7 @@
     "url": "https://github.com/xiaoboost/blog"
   },
   "dependencies": {
-    "@xiao-ai/utils": "^1.4.2",
+    "@xiao-ai/utils": "^1.4.3",
     "jss": "^10.7.1",
     "jss-preset-default": "^10.7.1"
   },
