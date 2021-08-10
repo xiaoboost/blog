@@ -1,6 +1,6 @@
 {
-  "name": "@blog/template",
-  "description": "blog's template",
+  "name": "@blog/template-layout",
+  "description": "blog's template main layout",
   "version": "1.0.0",
   "author": "xiaoboost",
   "license": "MIT",

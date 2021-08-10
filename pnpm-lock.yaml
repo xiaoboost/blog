@@ -53,7 +53,7 @@ importers:
   packages/builder:
     specifiers:
       '@blog/esbuild-loader-jss': workspace:*
-      '@blog/template': workspace:*
+      '@blog/template-layout': workspace:*
       '@blog/tsconfig': workspace:*
       '@types/blog': workspace:*
       '@types/koa': ^2.13.4
@@ -74,7 +74,7 @@ importers:
       tslib: ^2.3.0
       typescript: ^4.3.5
     dependencies:
-      '@blog/template': link:../template
+      '@blog/template-layout': link:../templates/layout
       '@xiao-ai/utils': registry.nlark.com/@xiao-ai/utils/1.4.2
     devDependencies:
       '@blog/esbuild-loader-jss': link:../esbuild-plugins/loader-jss
@@ -314,7 +314,7 @@ importers:
       tslib: registry.nlark.com/tslib/2.3.0
       typescript: registry.nlark.com/typescript/4.3.5
 
-  packages/template:
+  packages/templates/layout:
     specifiers:
       '@blog/styles': workspace:*
       '@blog/tsconfig': workspace:*
@@ -325,12 +325,12 @@ importers:
       tslib: ^2.3.0
       typescript: ^4.3.5
     dependencies:
-      '@blog/styles': link:../styles
-      '@blog/utils': link:../utils
+      '@blog/styles': link:../../styles
+      '@blog/utils': link:../../utils
       '@xiao-ai/utils': registry.nlark.com/@xiao-ai/utils/1.4.2
     devDependencies:
-      '@blog/tsconfig': link:../tsconfig
-      '@types/blog': link:../typings
+      '@blog/tsconfig': link:../../tsconfig
+      '@types/blog': link:../../typings
       eslint: registry.nlark.com/eslint/7.30.0
       tslib: registry.nlark.com/tslib/2.3.0
       typescript: registry.nlark.com/typescript/4.3.5
