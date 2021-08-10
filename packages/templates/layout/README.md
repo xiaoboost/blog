@@ -1,3 +1,3 @@
-# @blog/template
+# @blog/template-layout
 
-网站模板
+网站模板主布局

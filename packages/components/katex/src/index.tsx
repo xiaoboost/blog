@@ -45,7 +45,6 @@ export function MathInline({ value, options }: Props) {
 export function devApp() {
   return <div>
     <div>
-      块级公式：
       <MathBlock value={`
         \\left\\{\\begin{matrix}
         x_2=cos\\theta(x_1+y_1\\cdot tan\\theta)\\\\

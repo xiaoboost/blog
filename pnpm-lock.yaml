@@ -60,7 +60,7 @@ importers:
       '@types/md5': ^2.3.1
       '@types/mime': ^2.0.3
       '@types/node': ^16.3.1
-      '@xiao-ai/utils': ^1.4.2
+      '@xiao-ai/utils': ^1.4.3
       chalk: ^4.1.1
       chokidar: ^3.5.2
       esbuild: ^0.12.15
@@ -75,7 +75,7 @@ importers:
       typescript: ^4.3.5
     dependencies:
       '@blog/template-layout': link:../templates/layout
-      '@xiao-ai/utils': registry.nlark.com/@xiao-ai/utils/1.4.2
+      '@xiao-ai/utils': registry.nlark.com/@xiao-ai/utils/1.4.3
     devDependencies:
       '@blog/esbuild-loader-jss': link:../esbuild-plugins/loader-jss
       '@blog/tsconfig': link:../tsconfig
@@ -198,7 +198,7 @@ importers:
       '@types/blog': workspace:*
       '@types/fs-extra': ^9.0.12
       '@types/md5': ^2.3.1
-      '@xiao-ai/utils': ^1.4.2
+      '@xiao-ai/utils': ^1.4.3
       esbuild: ^0.12.15
       eslint: ^7.30.0
       fs-extra: ^10.0.0
@@ -209,7 +209,7 @@ importers:
     dependencies:
       '@blog/esbuild-loader-jss': link:../loader-jss
       '@blog/esbuild-recorder-file': link:../recorder-file
-      '@xiao-ai/utils': registry.nlark.com/@xiao-ai/utils/1.4.2
+      '@xiao-ai/utils': registry.nlark.com/@xiao-ai/utils/1.4.3
       esbuild: registry.nlark.com/esbuild/0.12.15
       fs-extra: registry.nlark.com/fs-extra/10.0.0
       md5: 2.3.0
@@ -297,14 +297,14 @@ importers:
     specifiers:
       '@blog/tsconfig': workspace:*
       '@types/blog': workspace:*
-      '@xiao-ai/utils': ^1.4.2
+      '@xiao-ai/utils': ^1.4.3
       eslint: ^7.30.0
       jss: ^10.7.1
       jss-preset-default: ^10.7.1
       tslib: ^2.3.0
       typescript: ^4.3.5
     dependencies:
-      '@xiao-ai/utils': registry.nlark.com/@xiao-ai/utils/1.4.2
+      '@xiao-ai/utils': registry.nlark.com/@xiao-ai/utils/1.4.3
       jss: registry.nlark.com/jss/10.7.1
       jss-preset-default: registry.nlark.com/jss-preset-default/10.7.1
     devDependencies:
@@ -316,30 +316,36 @@ importers:
 
   packages/templates/layout:
     specifiers:
+      '@blog/server': workspace:*
       '@blog/styles': workspace:*
       '@blog/tsconfig': workspace:*
       '@blog/utils': workspace:*
       '@types/blog': workspace:*
-      '@xiao-ai/utils': ^1.4.2
+      '@types/react': ^17.0.14
+      '@xiao-ai/utils': ^1.4.3
       eslint: ^7.30.0
+      react: ^17.0.2
       tslib: ^2.3.0
       typescript: ^4.3.5
     dependencies:
       '@blog/styles': link:../../styles
       '@blog/utils': link:../../utils
-      '@xiao-ai/utils': registry.nlark.com/@xiao-ai/utils/1.4.2
+      '@xiao-ai/utils': registry.nlark.com/@xiao-ai/utils/1.4.3
+      react: registry.nlark.com/react/17.0.2
+      tslib: registry.nlark.com/tslib/2.3.0
     devDependencies:
+      '@blog/server': link:../../server
       '@blog/tsconfig': link:../../tsconfig
       '@types/blog': link:../../typings
+      '@types/react': registry.nlark.com/@types/react/17.0.14
       eslint: registry.nlark.com/eslint/7.30.0
-      tslib: registry.nlark.com/tslib/2.3.0
       typescript: registry.nlark.com/typescript/4.3.5
 
   packages/tsconfig:
     specifiers:
-      '@xiao-ai/utils': ^1.4.2
+      '@xiao-ai/utils': ^1.4.3
     devDependencies:
-      '@xiao-ai/utils': registry.nlark.com/@xiao-ai/utils/1.4.2
+      '@xiao-ai/utils': registry.nlark.com/@xiao-ai/utils/1.4.3
 
   packages/typings:
     specifiers: {}
@@ -350,7 +356,7 @@ importers:
       '@types/blog': workspace:*
       '@types/node': ^16.3.2
       '@types/pinyin': ^2.8.3
-      '@xiao-ai/utils': ^1.4.2
+      '@xiao-ai/utils': ^1.4.3
       esbuild: ^0.12.15
       eslint: ^7.30.0
       memfs: ^3.2.2
@@ -358,7 +364,7 @@ importers:
       tslib: ^2.3.0
       typescript: ^4.3.5
     dependencies:
-      '@xiao-ai/utils': registry.nlark.com/@xiao-ai/utils/1.4.2
+      '@xiao-ai/utils': registry.nlark.com/@xiao-ai/utils/1.4.3
       memfs: 3.2.2
       pinyin: 2.10.2
     devDependencies:
@@ -2792,10 +2798,10 @@ packages:
       eslint-visitor-keys: registry.nlark.com/eslint-visitor-keys/2.1.0
     dev: true
 
-  registry.nlark.com/@xiao-ai/utils/1.4.2:
-    resolution: {integrity: sha1-uo6leVQ3ssXBBARWH8iehOx6IcE=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/@xiao-ai/utils/download/@xiao-ai/utils-1.4.2.tgz}
+  registry.nlark.com/@xiao-ai/utils/1.4.3:
+    resolution: {integrity: sha1-gpXU0OTPPZLuCd02ECxq/YeJH60=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/@xiao-ai/utils/download/@xiao-ai/utils-1.4.3.tgz}
     name: '@xiao-ai/utils'
-    version: 1.4.2
+    version: 1.4.3
 
   registry.nlark.com/acorn-jsx/5.3.2_acorn@7.4.1:
     resolution: {integrity: sha1-ftW7VZCLOy8bxVxq8WU7rafweTc=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/acorn-jsx/download/acorn-jsx-5.3.2.tgz}
@@ -3696,7 +3702,7 @@ packages:
     dev: true
 
   registry.nlark.com/react/17.0.2:
-    resolution: {integrity: sha1-0LXMUW0p6z7uOD91tihkz7aAADc=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/react/download/react-17.0.2.tgz}
+    resolution: {integrity: sha1-0LXMUW0p6z7uOD91tihkz7aAADc=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/react/download/react-17.0.2.tgz?cache=0&sync_timestamp=1628526228139&other_urls=https%3A%2F%2Fregistry.nlark.com%2Freact%2Fdownload%2Freact-17.0.2.tgz}
     name: react
     version: 17.0.2
     engines: {node: '>=0.10.0'}
