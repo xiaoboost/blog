@@ -92,7 +92,15 @@ export function JssLoader() {
 
           const errors: PartialMessage[] = [];
           const jssCode = buildResult?.outputFiles[0].text;
-          const jssObject = runScript(jssCode ?? '', require);
+
+          let jssObject: any = {};
+
+          try {
+            jssObject = runScript(jssCode ?? '', require);
+          }
+          catch (e) {
+            console.warn(e);
+          }
 
           let cssCode = '';
 
