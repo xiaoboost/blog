@@ -1,22 +1,23 @@
 {
-  "name": "@blog/component-katex",
-  "description": "blog's katex component",
+  "name": "@blog/builder-template",
+  "description": "blog's builder of template",
   "version": "1.0.0",
   "author": "xiaoboost",
   "license": "MIT",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "source": "src/index.ts",
+  "module": "src/index.ts",
+  "types": "src/index.ts",
+  "bin": {
+    "build-template": "./bin/index.js"
+  },
   "files": [
     "dist",
     "README.md",
     "package.json"
   ],
   "scripts": {
-    "build:type": "tsc -p . --emitDeclarationOnly",
-    "build:bundle": "build-template ./src/index.tsx",
-    "watch:bundle": "pnpm run build:bundle -- --development",
-    "build": "pnpm run build:type && pnpm run build:bundle",
-    "watch": "pnpm run build:type && pnpm run watch:bundle",
+    "build": "tsc -p .",
+    "watch": "pnpm run build -- -w",
     "lint": "eslint --quiet --no-error-on-unmatched-pattern --config ../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}",
     "lint:fix": "eslint --fix --quiet --no-error-on-unmatched-pattern --config ../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}"
   },
@@ -25,18 +26,17 @@
     "url": "https://github.com/xiaoboost/blog"
   },
   "dependencies": {
-    "@blog/styles": "workspace:*",
-    "katex": "^0.13.11",
-    "react": "^17.0.2",
+    "@blog/server": "workspace:*",
+    "@blog/utils": "workspace:*",
+    "@xiao-ai/utils": "^1.4.3",
     "tslib": "^2.3.0"
   },
   "devDependencies": {
-    "@blog/builder-template": "workspace:*",
+    "@blog/esbuild-loader-script": "workspace:*",
     "@blog/tsconfig": "workspace:*",
-    "@blog/utils": "workspace:*",
     "@types/blog": "workspace:*",
-    "@types/katex": "^0.11.1",
-    "@types/react": "^17.0.14",
+    "@types/node": "^16.3.1",
+    "esbuild": "^0.12.15",
     "eslint": "^7.30.0",
     "typescript": "^4.3.5"
   }
