@@ -1,5 +1,6 @@
 packages:
   - packages/*
+  - packages/builder/*
   - packages/templates/*
   - packages/components/*
   - packages/esbuild-plugins/*
