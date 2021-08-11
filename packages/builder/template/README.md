@@ -5,5 +5,5 @@
 ## 使用
 
 ```bash
-build-template ./src/index.tsx --development
+build-template --input=src/index.tsx --name=katex --development
 ```

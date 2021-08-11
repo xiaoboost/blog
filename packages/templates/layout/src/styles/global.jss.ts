@@ -1,6 +1,6 @@
-import { createStyles, FontMono, WhiteBg, BlackLight } from '@blog/styles';
+import { createStyles, FontSerif, FontMono, WhiteBg, BlackLight } from '@blog/styles';
 
-export const globalStyles = createStyles({
+export default createStyles({
   '@global': {
     '*': {
       userSelect: 'inherit',
@@ -8,6 +8,11 @@ export const globalStyles = createStyles({
     },
     a: {
       textDecoration: 'none',
+    },
+    [Array(5).fill(0).map((_, i) => `h${i + 1}`).join(',')]: {
+      fontFamily: FontSerif,
+      fontWeight: 'normal',
+      position: 'relative',
     },
     'code, pre': {
       fontFamily: FontMono,

@@ -5,9 +5,11 @@ import { isFunc } from '@xiao-ai/utils';
 import { load, serve } from '@blog/server';
 import { build as esbuild, BuildResult } from 'esbuild';
 import { ScriptLoader } from '@blog/esbuild-loader-script';
-import { mergeBuild, isDevelopment, runScript } from '@blog/utils';
+import { mergeBuild, isDevelopment, runScript, getCliOption } from '@blog/utils';
 
 const root = process.cwd();
+const input = getCliOption('input');
+const name = getCliOption('name');
 const packageData = JSON.parse(fs.readFileSync(resolve('package.json'), 'utf-8'));
 
 function resolve(...paths: string[]) {
@@ -38,15 +40,6 @@ function watch(result: BuildResult | null | undefined) {
   }
 }
 
-function getInput() {
-  if (!process.argv[2]) {
-    console.warn('必须要输入入口文件路径');
-    process.exit(1);
-  }
-
-  return resolve(process.argv[2]);
-}
-
 function getOutput() {
   if (!packageData.main) {
     console.warn('package.json 文件的必须要有 main 字段');
@@ -57,11 +50,10 @@ function getOutput() {
 }
 
 export function build() {
-  const inputFile = getInput();
   const outFile = getOutput();
 
   esbuild(mergeBuild({
-    entryPoints: [inputFile],
+    entryPoints: [input],
     outfile: outFile,
     minify: false,
     logLevel: 'info',
@@ -81,10 +73,7 @@ export function build() {
     external: Object.keys(packageData.dependencies)
       .concat(Object.keys(packageData.devDependencies)),
     plugins: [
-      ScriptLoader({
-        name: 'katex',
-        minify: !isDevelopment,
-      }).plugin,
+      ScriptLoader({ name, minify: !isDevelopment }).plugin,
     ],
   }))
     .then((data) => {

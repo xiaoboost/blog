@@ -1,5 +1,6 @@
 import type { BuildOptions } from 'esbuild';
 import { isDevelopment } from './env';
+import { isDef } from '@xiao-ai/utils';
 
 export function mergeBuild(opt: BuildOptions): BuildOptions {
   const base: BuildOptions = {
@@ -25,4 +26,16 @@ export function mergeBuild(opt: BuildOptions): BuildOptions {
   };
 
   return base;
+}
+
+export function getCliOption(name: string) {
+  const args = process.argv;
+  const matcher = new RegExp(`--${name}=([\\d\\D]+)`);
+  const option = args.map((input) => matcher.exec(input)).find(isDef);
+
+  if (!option) {
+    throw new Error(`没有找到指令'${name}'。`);
+  }
+
+  return option[1];
 }

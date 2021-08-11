@@ -1,11 +1,23 @@
-import { PluginBuild, build } from 'esbuild';
 import { runScript } from '@blog/utils';
+import { StyleSheet } from 'jss';
+import { isObject } from '@xiao-ai/utils';
 import { FileRecorder } from '@blog/esbuild-recorder-file';
+import { PluginBuild, build, PartialMessage } from 'esbuild';
 
 import { promises as fs } from 'fs';
-import { dirname, basename } from 'path';
+import { dirname, basename, normalize } from 'path';
+
+function isJssObject(obj: unknown): obj is StyleSheet {
+  return (
+    isObject(obj) &&
+    'attached' in obj &&
+    'classes' in obj &&
+    'rules' in obj
+  );
+}
 
 export function JssLoader() {
+  const pluginName = 'loader-jss';
   const namespace = 'jss-style';
   const jssSuffix = 'jss-style-suffix';
   const suffixMatcher = new RegExp(`\\.${jssSuffix}$`);
@@ -27,7 +39,7 @@ export function JssLoader() {
 
         process.onResolve({ filter: suffixMatcher }, (args) => ({
           path: args.path,
-          pluginData: args.path.replace(suffixMatcher, ''),
+          pluginData: normalize(args.path.replace(suffixMatcher, '')),
           namespace,
         }));
 
@@ -35,7 +47,7 @@ export function JssLoader() {
           return {
             loader: 'css',
             resolveDir: dirname(args.path),
-            contents: fileData[args.pluginData] ?? '',
+            contents: fileData[normalize(args.pluginData)] ?? '',
           };
         });
 
@@ -78,13 +90,26 @@ export function JssLoader() {
             };
           }
 
+          const errors: PartialMessage[] = [];
           const jssCode = buildResult?.outputFiles[0].text;
           const jssObject = runScript(jssCode ?? '', require);
-          const cssCode = jssObject.toString();
 
-          fileData[args.path] = cssCode;
+          let cssCode = '';
+
+          if (isJssObject(jssObject)) {
+            cssCode = jssObject.toString();
+          }
+          else {
+            errors.push({
+              pluginName: pluginName,
+              text: 'default 导出应该是个 jss 实例',
+            });
+          }
+
+          fileData[normalize(args.path)] = cssCode;
 
           return {
+            errors,
             loader: 'ts',
             watchFiles: getFiles(),
             contents: `
