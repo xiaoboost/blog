@@ -1,6 +1,14 @@
-import { createStyles, FontSerif, FontMono, WhiteBg, BlackLight } from '@blog/styles';
+import {
+  createStyles,
+  setScrollbarWidth,
+  addGlobalRule,
+  FontSerif,
+  FontMono,
+  WhiteBg,
+  BlackLight,
+} from '@blog/styles';
 
-export default createStyles({
+const global = createStyles({
   '@global': {
     '*': {
       userSelect: 'inherit',
@@ -34,3 +42,9 @@ export default createStyles({
     },
   },
 });
+
+const scrollbar = setScrollbarWidth(6);
+
+addGlobalRule(global, scrollbar);
+
+export default global;
