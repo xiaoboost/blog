@@ -25,6 +25,7 @@
   "dependencies": {
     "@blog/esbuild-recorder-file": "workspace:*",
     "@blog/utils": "workspace:*",
+    "@xiao-ai/utils": "^1.4.3",
     "esbuild": "^0.12.15"
   },
   "devDependencies": {

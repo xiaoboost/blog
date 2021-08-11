@@ -172,6 +172,7 @@ importers:
       '@blog/tsconfig': workspace:*
       '@blog/utils': workspace:*
       '@types/blog': workspace:*
+      '@xiao-ai/utils': ^1.4.3
       esbuild: ^0.12.15
       eslint: ^7.30.0
       jss: ^10.7.1
@@ -181,6 +182,7 @@ importers:
     dependencies:
       '@blog/esbuild-recorder-file': link:../recorder-file
       '@blog/utils': link:../../utils
+      '@xiao-ai/utils': registry.nlark.com/@xiao-ai/utils/1.4.3
       esbuild: registry.nlark.com/esbuild/0.12.15
     devDependencies:
       '@blog/tsconfig': link:../../tsconfig
@@ -315,15 +317,13 @@ importers:
 
   packages/templates/layout:
     specifiers:
-      '@blog/esbuild-loader-script': workspace:*
-      '@blog/server': workspace:*
+      '@blog/builder-template': workspace:*
       '@blog/styles': workspace:*
       '@blog/tsconfig': workspace:*
       '@blog/utils': workspace:*
       '@types/blog': workspace:*
       '@types/react': ^17.0.14
       '@xiao-ai/utils': ^1.4.3
-      esbuild: ^0.12.15
       eslint: ^7.30.0
       react: ^17.0.2
       tslib: ^2.3.0
@@ -335,12 +335,10 @@ importers:
       react: registry.nlark.com/react/17.0.2
       tslib: registry.nlark.com/tslib/2.3.0
     devDependencies:
-      '@blog/esbuild-loader-script': link:../../esbuild-plugins/loader-script
-      '@blog/server': link:../../server
+      '@blog/builder-template': link:../../builder/template
       '@blog/tsconfig': link:../../tsconfig
       '@types/blog': link:../../typings
       '@types/react': registry.nlark.com/@types/react/17.0.14
-      esbuild: registry.nlark.com/esbuild/0.12.15
       eslint: registry.nlark.com/eslint/7.30.0
       typescript: registry.nlark.com/typescript/4.3.5
 

@@ -1,3 +1,6 @@
+import type { AssetData } from '@blog/utils';
+export const assets: AssetData[] = require('./index.script').default;
+
 // import './styles/index.jss';
 // import './plugins';
 
