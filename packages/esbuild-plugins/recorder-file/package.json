@@ -23,7 +23,6 @@
     "url": "https://github.com/xiaoboost/blog"
   },
   "dependencies": {
-    "@blog/esbuild-loader-jss": "workspace:*",
     "esbuild": "^0.12.15"
   },
   "devDependencies": {
