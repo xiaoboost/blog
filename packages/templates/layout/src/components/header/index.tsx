@@ -1,8 +1,7 @@
-import './index.styl';
-
 import React from 'react';
+import styles from './index.jss';
 
-import { parseUrl } from 'build/utils';
+import { parseUrl } from '@blog/utils';
 import { stringifyClass } from '@xiao-ai/utils';
 
 export interface HeaderProps {
@@ -50,21 +49,21 @@ export function Header(props: HeaderProps) {
     },
   ];
 
-  return <header className='main-header-wrapper'>
-    <span className='main-header'>
-      <a className='main-title' href={indexHref}>
+  return <header className={styles.classes.mainHeaderWrapper}>
+    <span className={styles.classes.mainHeader}>
+      <a className={styles.classes.mainTitle} href={indexHref}>
         {props.siteTitle}
       </a>
-      <nav className='main-nav'>
+      <nav className={styles.classes.mainNav}>
         {navs.map((nav, i) => (
           <a
             key={i}
             href={nav.href}
-            className={stringifyClass('main-nav__item', {
-              'main-nav__item-highlight': nav.highlight,
+            className={stringifyClass(styles.classes.mainNavItem, {
+              [styles.classes.mainNavItemHighlight]: nav.highlight,
             })}>
             {nav.name}
-            {nav.highlight ? <span className='main-nav__item-bar' /> : ''}
+            {nav.highlight ? <span className={styles.classes.mainNavItemBar} /> : ''}
           </a>
         ))}
       </nav>

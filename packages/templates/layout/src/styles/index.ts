@@ -4,3 +4,5 @@ import './global.jss';
 
 // 组件样式
 import '../components/article/index.jss';
+import '../components/footer/index.jss';
+import '../components/header/index.jss';
