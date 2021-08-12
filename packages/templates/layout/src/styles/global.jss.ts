@@ -1,10 +1,14 @@
 import {
   createStyles,
   setScrollbarWidth,
-  addGlobalRule,
+  mergeStyles,
   FontSerif,
   FontMono,
+  FontDefault,
+  FontDefaultSize,
+  CustomFont,
   WhiteBg,
+  Black,
   BlackLight,
 } from '@blog/styles';
 
@@ -25,6 +29,23 @@ const global = createStyles({
     'code, pre': {
       fontFamily: FontMono,
     },
+    em: {
+      fontFamily: `${CustomFont.EMLora}, ${FontDefault}`,
+    },
+    'html, body': {
+      width: '100%',
+      height: '100%',
+      margin: 0,
+      padding: 0,
+      color: Black,
+      fontFamily: FontDefault,
+      fontSize: FontDefaultSize,
+    },
+    body: {
+      display: 'flex',
+      flexDirection: 'column',
+      backgroundImage: `url("../assets/image/bg.svg")`,
+    },
     '::-webkit-scrollbar': {
       backgroundColor: WhiteBg,
     },
@@ -43,8 +64,4 @@ const global = createStyles({
   },
 });
 
-const scrollbar = setScrollbarWidth(6);
-
-addGlobalRule(global, scrollbar);
-
-export default global;
+export default mergeStyles(global, setScrollbarWidth(6));

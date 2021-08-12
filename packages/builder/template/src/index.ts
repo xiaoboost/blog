@@ -72,6 +72,9 @@ export function build() {
     assetNames: isDevelopment ? '/assets/[name]' : '/assets/[name].[hash]',
     external: Object.keys(packageData.dependencies)
       .concat(Object.keys(packageData.devDependencies)),
+    loader: {
+      '.svg': 'dataurl',
+    },
     plugins: [
       ScriptLoader({ name, minify: !isDevelopment }).plugin,
     ],

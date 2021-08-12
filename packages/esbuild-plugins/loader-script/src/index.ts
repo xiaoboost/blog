@@ -60,7 +60,7 @@ export function ScriptLoader(opt: Options) {
             bundle: true,
             write: false,
             format: 'iife',
-            logLevel: 'silent',
+            logLevel: 'warning',
             minify: loaderOpt.minify,
             outdir: outputDir,
             loader: options.loader,
