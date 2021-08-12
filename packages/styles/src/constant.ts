@@ -29,9 +29,19 @@ function getFontFamily(names: string[]) {
   return names.join(', ');
 }
 
+/** 自定义字体名称枚举 */
+export const CustomFont = {
+  /** 英文正文 */
+  Lato: `"Lato"`,
+  /** 网站大标题 */
+  Dancing: `"Dancing Script"`,
+  /** 斜体英文 */
+  EMLora: `"EM-Lora"`,
+};
+
 /** 默认字体 */
 export const FontDefault = getFontFamily([
-  'Lato',
+  CustomFont.Lato,
   '-apple-system',
   'BlinkMacSystemFont',
   'PingFang SC',
@@ -62,7 +72,7 @@ export const FontMono = getFontFamily([
 
 /** 标题字体 */
 export const FontTitle = getFontFamily([
-  'Dancing Script',
+  CustomFont.Dancing,
 ]);
 
 /** 网站宽度 */
@@ -73,3 +83,7 @@ export const articleWidth = '750px';
 export const asideMarginLeft = '20px';
 /** 默认字体大小 */
 export const FontDefaultSize = '14px';
+
+export const mediaPhone = `@media only screen and (max-width: ${mainWidth})`;
+
+export const mediaPc = `@media only screen and (min-width: ${mainWidth})`;

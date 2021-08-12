@@ -1,11 +1,11 @@
-import { runScript } from '@blog/utils';
 import { StyleSheet } from 'jss';
 import { isObject } from '@xiao-ai/utils';
+import { runScript, normalize } from '@blog/utils';
 import { FileRecorder } from '@blog/esbuild-recorder-file';
 import { PluginBuild, build, PartialMessage } from 'esbuild';
 
 import { promises as fs } from 'fs';
-import { dirname, basename, normalize } from 'path';
+import { dirname, basename } from 'path';
 
 function isJssObject(obj: unknown): obj is StyleSheet {
   return (
@@ -52,13 +52,14 @@ export function JssLoader() {
         });
 
         process.onLoad({ filter: /\.jss\.(t|j)s$/ }, async (args) => {
-          const cssPath = `${args.path}.${jssSuffix}`.replace(/[\\/]/g, '\\\\');
+          const cssPath = normalize(`${args.path}.${jssSuffix}`);
           const content = await fs.readFile(args.path, 'utf-8');
           const buildResult = await build({
             bundle: true,
             minify: false,
             write: false,
             format: 'cjs',
+            logLevel: 'warning',
             mainFields: options.mainFields,
             assetNames: options.assetNames,
             outdir: options.outdir,
@@ -66,7 +67,6 @@ export function JssLoader() {
             define: options.define,
             loader: options.loader,
             external: ['jss', 'jss-preset-default'],
-            logLevel: 'silent',
             stdin: {
               contents: content,
               resolveDir: dirname(args.path),
