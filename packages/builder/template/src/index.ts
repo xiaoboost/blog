@@ -5,11 +5,13 @@ import { isFunc } from '@xiao-ai/utils';
 import { load, serve } from '@blog/server';
 import { build as esbuild, BuildResult } from 'esbuild';
 import { ScriptLoader } from '@blog/esbuild-loader-script';
+import { FileLoader } from '@blog/esbuild-loader-file';
 import { mergeBuild, isDevelopment, runScript, getCliOption } from '@blog/utils';
 
 const root = process.cwd();
 const input = getCliOption('input');
 const name = getCliOption('name');
+const assetOptions = getCliOption('asset').split(',');
 const packageData = JSON.parse(fs.readFileSync(resolve('package.json'), 'utf-8'));
 
 function resolve(...paths: string[]) {
@@ -51,12 +53,22 @@ function getOutput() {
 
 export function build() {
   const outFile = getOutput();
+  const plugins = [
+    ScriptLoader({ name, minify: !isDevelopment }).plugin,
+  ];
+
+  if (assetOptions.length > 0) {
+    plugins.push(FileLoader({
+      files: assetOptions,
+    }));
+  }
 
   esbuild(mergeBuild({
     entryPoints: [input],
     outfile: outFile,
     minify: false,
     logLevel: 'info',
+    platform: 'node',
     write: !isDevelopment,
     sourcemap: isDevelopment,
     watch: !isDevelopment ? false : {
@@ -75,9 +87,7 @@ export function build() {
     loader: {
       '.svg': 'dataurl',
     },
-    plugins: [
-      ScriptLoader({ name, minify: !isDevelopment }).plugin,
-    ],
+    plugins,
   }))
     .then((data) => {
       if (isDevelopment) {

@@ -12,24 +12,9 @@ export interface FileData {
 export async function load(app: JSX.Element, assets: FileData[]) {
   const fs = mfs.fs.promises;
   const dirCache: Record<string, boolean> = {};
-  const styleFiles = assets.filter((file) => path.extname(file.path) === '.css');
-  const scriptFiles = assets.filter((file) => path.extname(file.path) === '.js');
-  const index = `
-  <html>
-    <head>
-      ${styleFiles.map((link) => `<link href="${link.path}" rel="stylesheet">`)}
-    </head>
-    <body>
-      <div id="app">
-        ${renderToString(app)}
-      </div>
-      ${scriptFiles.map((link) => `<script src="${link.path}" />`)}
-    </body>
-  </html>
-  `;
 
   await mkdirp('/', dirCache, fs);
-  await fs.writeFile('/index.html', index);
+  await fs.writeFile('/index.html', renderToString(app));
 
   for (const file of assets) {
     const fullPath = path.join('/', file.path);

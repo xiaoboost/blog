@@ -10,7 +10,7 @@ export interface HeaderProps {
   /** 网页标题 */
   siteTitle: string;
   /** 网站根路径 */
-  publicPath: string;
+  publicPath?: string;
   // /** 标签页面路径 */
   // tagPath: string;
   // /** 归档页面路径 */
@@ -18,9 +18,10 @@ export interface HeaderProps {
 }
 
 export function Header(props: HeaderProps) {
-  const location = parseUrl(props.publicPath, props.pathname);
-  const indexHref = parseUrl(props.publicPath);
-  const aboutHref = parseUrl(props.publicPath, '/posts/about/');
+  const publicPath = props.publicPath ?? '/';
+  const location = parseUrl(publicPath, props.pathname);
+  const indexHref = parseUrl(publicPath);
+  const aboutHref = parseUrl(publicPath, '/posts/about/');
   // const tagHref = parseUrl(props.publicPath, props.tagPath);
   // const archiveHref = parseUrl(props.publicPath, props.archivePath);
   const navs = [

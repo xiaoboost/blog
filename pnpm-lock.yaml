@@ -52,6 +52,7 @@ importers:
 
   packages/builder/template:
     specifiers:
+      '@blog/esbuild-loader-file': workspace:*
       '@blog/esbuild-loader-script': workspace:*
       '@blog/server': workspace:*
       '@blog/tsconfig': workspace:*
@@ -64,12 +65,13 @@ importers:
       tslib: ^2.3.0
       typescript: ^4.3.5
     dependencies:
+      '@blog/esbuild-loader-file': link:../../esbuild-plugins/loader-file
+      '@blog/esbuild-loader-script': link:../../esbuild-plugins/loader-script
       '@blog/server': link:../../server
       '@blog/utils': link:../../utils
       '@xiao-ai/utils': registry.nlark.com/@xiao-ai/utils/1.4.3
       tslib: registry.nlark.com/tslib/2.3.0
     devDependencies:
-      '@blog/esbuild-loader-script': link:../../esbuild-plugins/loader-script
       '@blog/tsconfig': link:../../tsconfig
       '@types/blog': link:../../typings
       '@types/node': registry.nlark.com/@types/node/16.4.1
@@ -164,6 +166,29 @@ importers:
       '@types/katex': registry.nlark.com/@types/katex/0.11.1
       '@types/react': registry.nlark.com/@types/react/17.0.14
       eslint: registry.nlark.com/eslint/7.30.0
+      typescript: registry.nlark.com/typescript/4.3.5
+
+  packages/esbuild-plugins/loader-file:
+    specifiers:
+      '@blog/tsconfig': workspace:*
+      '@blog/utils': workspace:*
+      '@types/blog': workspace:*
+      '@types/md5': ^2.3.1
+      esbuild: ^0.12.15
+      eslint: ^7.30.0
+      md5: ^2.3.0
+      tslib: ^2.3.0
+      typescript: ^4.3.5
+    dependencies:
+      '@blog/utils': link:../../utils
+      esbuild: registry.nlark.com/esbuild/0.12.15
+      md5: 2.3.0
+    devDependencies:
+      '@blog/tsconfig': link:../../tsconfig
+      '@types/blog': link:../../typings
+      '@types/md5': registry.nlark.com/@types/md5/2.3.1
+      eslint: registry.nlark.com/eslint/7.30.0
+      tslib: registry.nlark.com/tslib/2.3.0
       typescript: registry.nlark.com/typescript/4.3.5
 
   packages/esbuild-plugins/loader-jss:
@@ -318,6 +343,7 @@ importers:
   packages/templates/layout:
     specifiers:
       '@blog/builder-template': workspace:*
+      '@blog/esbuild-loader-file': workspace:*
       '@blog/styles': workspace:*
       '@blog/tsconfig': workspace:*
       '@blog/utils': workspace:*
@@ -336,6 +362,7 @@ importers:
       tslib: registry.nlark.com/tslib/2.3.0
     devDependencies:
       '@blog/builder-template': link:../../builder/template
+      '@blog/esbuild-loader-file': link:../../esbuild-plugins/loader-file
       '@blog/tsconfig': link:../../tsconfig
       '@types/blog': link:../../typings
       '@types/react': registry.nlark.com/@types/react/17.0.14

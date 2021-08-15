@@ -26,13 +26,14 @@
     "url": "https://github.com/xiaoboost/blog"
   },
   "dependencies": {
+    "@blog/esbuild-loader-file": "workspace:*",
+    "@blog/esbuild-loader-script": "workspace:*",
     "@blog/server": "workspace:*",
     "@blog/utils": "workspace:*",
     "@xiao-ai/utils": "^1.4.3",
     "tslib": "^2.3.0"
   },
   "devDependencies": {
-    "@blog/esbuild-loader-script": "workspace:*",
     "@blog/tsconfig": "workspace:*",
     "@types/blog": "workspace:*",
     "@types/node": "^16.3.1",

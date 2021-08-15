@@ -4,7 +4,4 @@ declare namespace NodeJS {
   }
 }
 
-declare module '*.ico' {
-  const path: string;
-  export default path;
-}
+declare module '*.ico';
