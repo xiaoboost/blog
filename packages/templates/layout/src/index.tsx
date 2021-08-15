@@ -1,4 +1,5 @@
 import React from 'react';
+import favicon from './assets/image/favicon.ico';
 
 import { PropsWithChildren } from 'react';
 
@@ -9,7 +10,10 @@ import { Article } from './components/article';
 import { parseUrl } from '@blog/utils';
 import { AssetData } from '@blog/utils';
 
-export const assets: AssetData[] = require('./index.script').default;
+export const assets: AssetData[] = [
+  ...require('./index.script').default,
+  favicon,
+];
 
 export interface LayoutProps extends HeaderProps {
   /** 网站标题 */
@@ -25,16 +29,18 @@ export interface LayoutProps extends HeaderProps {
   /** 当前页面网址 */
   pathname: string;
   /** 网站根路径 */
-  publicPath: string;
+  publicPath?: string;
   /** 样式文件列表 */
-  styles: string[];
+  styles?: string[];
   /** 脚本文件列表 */
-  scripts: string[];
+  scripts?: string[];
 }
 
-// import faviconPath from '../../assets/image/favicon.ico';
-
 export function Layout(props: PropsWithChildren<LayoutProps>) {
+  const styles = props.styles ?? [];
+  const scripts = props.scripts ?? [];
+  const publicPath = props.publicPath ?? '/';
+
   return (
     <html lang='zh-cmn-Hans-CN'>
       <head>
@@ -52,30 +58,46 @@ export function Layout(props: PropsWithChildren<LayoutProps>) {
         <meta name='renderer' content='webkit' />
         <meta name='force-rendering' content='webkit' />
         <meta httpEquiv='X-UA-Compatible' content='IE=edge,chrome=1' />
-        {/* <link rel='short icon' href={faviconPath} /> */}
-        {props.styles.map((pathname, i) => (
+        <link rel='short icon' href={favicon.path} />
+        {styles.map((pathname, i) => (
           <link
             key={i}
             rel='stylesheet'
             type='text/css'
-            href={parseUrl(props.publicPath, pathname)}
+            href={parseUrl(publicPath, pathname)}
           />
         ))}
       </head>
       <body>
-        {/* <Header {...props} /> */}
+        <Header {...props} />
         <Article>
           {props.children}
         </Article>
-        {/* <Footer /> */}
-        {props.scripts.map((pathname, i) => (
+        <Footer />
+        {scripts.map((pathname, i) => (
           <script
             key={i}
             type='text/javascript'
-            src={parseUrl(props.publicPath, pathname)}
+            src={parseUrl(publicPath, pathname)}
           />
         ))}
       </body>
     </html>
   );
+}
+
+export function devApp() {
+  const findAssets = (ext: string) => {
+    return assets.filter((item) => item.path.endsWith(ext)).map(({ path }) => path);
+  };
+
+  return <Layout
+    siteTitle='Site Title'
+    pageTitle='Page Title'
+    pathname='/index.html'
+    styles={findAssets('.css')}
+    scripts={findAssets('.js')}
+  >
+    网站内容
+  </Layout>;
 }
