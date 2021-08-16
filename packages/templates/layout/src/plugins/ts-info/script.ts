@@ -1,8 +1,8 @@
 import { isString } from '@xiao-ai/utils';
-import { DisplaySymbol } from 'build/markdown/typescript';
+// import { DisplaySymbol } from 'build/markdown/typescript';
 
 (() => {
-  function createInfoDom(infos: DisplaySymbol[]): HTMLElement {
+  function createInfoDom(infos: any[]): HTMLElement {
     const infoSpan = infos.map((info) => {
       return isString(info)
         ? info

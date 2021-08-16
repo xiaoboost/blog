@@ -11,7 +11,7 @@ import { mergeBuild, isDevelopment, runScript, getCliOption } from '@blog/utils'
 const root = process.cwd();
 const input = getCliOption('input');
 const name = getCliOption('name');
-const assetOptions = getCliOption('asset').split(',');
+const assetOptions = getCliOption('asset', false).split(',');
 const packageData = JSON.parse(fs.readFileSync(resolve('package.json'), 'utf-8'));
 
 function resolve(...paths: string[]) {
