@@ -3,12 +3,7 @@ import styles from './index.jss';
 
 import { PropsWithChildren } from 'react';
 import { EmptyObject } from '@xiao-ai/utils';
-
-// import { GotoTop, pluginName } from 'template/plugins/goto-top';
-
-// export interface Props {
-//   plugins: string[];
-// }
+import { GotoTop } from '../goto-top';
 
 export function Article({ children }: PropsWithChildren<EmptyObject>) {
   return (
@@ -16,7 +11,7 @@ export function Article({ children }: PropsWithChildren<EmptyObject>) {
       <div className={styles.classes.mainArticle}>
         {children}
       </div>
-      {/* <GotoTop /> */}
+      <GotoTop />
     </article>
   );
 }

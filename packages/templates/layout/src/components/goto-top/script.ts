@@ -1,19 +1,19 @@
 import { supportsPassive } from '@xiao-ai/utils/web';
-import { fadeIn, fadeOut } from 'template/utils/fade';
-import { elementId, scrollTopLimit, fadeTime } from './constant';
+import { fadeIn, fadeOut } from '@blog/animation';
+import { scrollTopLimit, fadeTime } from './constant';
 
-(() => {
-  const btn = document.body.querySelector<HTMLElement>(`#${elementId}`);
-  const body = btn?.parentElement;
+import styles from './index.jss';
 
-  if (!btn || !body) {
-    return;
-  }
+const btn = document.body.querySelector<HTMLElement>(styles.classes.gotoTop);
+const body = btn?.parentElement;
 
-  const options: AddEventListenerOptions | boolean = !supportsPassive ? false : {
-    passive: true,
-    capture: false,
-  };
+if (btn && body) {
+  const options: AddEventListenerOptions | boolean = !supportsPassive
+    ? false
+    : {
+        passive: true,
+        capture: false,
+      };
 
   let inScrollTop = false;
 
@@ -48,4 +48,4 @@ import { elementId, scrollTopLimit, fadeTime } from './constant';
       behavior: 'smooth',
     });
   });
-})();
+}

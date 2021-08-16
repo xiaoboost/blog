@@ -1,0 +1,45 @@
+{
+  "name": "@blog/template-post",
+  "description": "blog's template post layout",
+  "version": "1.0.0",
+  "author": "xiaoboost",
+  "license": "MIT",
+  "source": "src/index.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "package.json"
+  ],
+  "scripts": {
+    "build:type": "tsc -p . --emitDeclarationOnly",
+    "build:bundle": "build-template --input=src/index.tsx --name=layout --asset=.ico",
+    "watch:bundle": "pnpm run build:bundle -- --development",
+    "build": "pnpm run build:type && pnpm run build:bundle",
+    "watch": "pnpm run build:type && pnpm run watch:bundle",
+    "lint": "eslint --quiet --no-error-on-unmatched-pattern --config ../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}",
+    "lint:fix": "eslint --fix --quiet --no-error-on-unmatched-pattern --config ../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xiaoboost/blog"
+  },
+  "dependencies": {
+    "@blog/animation": "workspace:*",
+    "@blog/styles": "workspace:*",
+    "@blog/utils": "workspace:*",
+    "@xiao-ai/utils": "^1.4.3",
+    "react": "^17.0.2",
+    "tslib": "^2.3.0"
+  },
+  "devDependencies": {
+    "@blog/builder-template": "workspace:*",
+    "@blog/esbuild-loader-file": "workspace:*",
+    "@blog/tsconfig": "workspace:*",
+    "@types/blog": "workspace:*",
+    "@types/react": "^17.0.14",
+    "eslint": "^7.30.0",
+    "typescript": "^4.3.5"
+  }
+}
