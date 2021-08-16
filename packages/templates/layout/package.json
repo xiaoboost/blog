@@ -26,6 +26,7 @@
     "url": "https://github.com/xiaoboost/blog"
   },
   "dependencies": {
+    "@blog/animation": "workspace:*",
     "@blog/styles": "workspace:*",
     "@blog/utils": "workspace:*",
     "@xiao-ai/utils": "^1.4.3",
@@ -34,7 +35,6 @@
   },
   "devDependencies": {
     "@blog/builder-template": "workspace:*",
-    "@blog/esbuild-loader-file": "workspace:*",
     "@blog/tsconfig": "workspace:*",
     "@types/blog": "workspace:*",
     "@types/react": "^17.0.14",

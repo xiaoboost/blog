@@ -1,34 +1,32 @@
-import './index.styl';
-
 import React from 'react';
 import Moment from 'moment';
-import type Token from 'markdown-it/lib/token';
+// import type Token from 'markdown-it/lib/token';
 
-import { Layout, LayoutProps } from 'template/components/layout';
-import { ToContent, pluginName } from 'template/plugins/to-content';
+import { ToContent } from '../to-content';
+import { Layout, LayoutProps } from '@blog/template-layout';
 
 export interface Props extends LayoutProps {
+  /** 文章标题 */
+  postTitle: string;
   /** 文章本体 */
   post: string;
   /** 文章分词数据 */
-  tokens: Token[];
+  // tokens: Token[];
   /** 文章写作时间戳 */
   create: number;
-  /** 文章标题 */
-  articleTitle: string;
+  /** 是否开启目录 */
+  toc?: boolean;
 }
 
-export function Render(props: Props) {
-  const hasToContent = props.plugins.includes(pluginName);
-
+export function Post(props: Props) {
   return (
     <Layout {...props}>
       <section
         className='post-default'
-        style={hasToContent ? undefined : { width: '100%' }}
+        style={props ? undefined : { width: '100%' }}
       >
         <header className='post-header'>
-          <h1 className='post-header__title'>{props.articleTitle}</h1>
+          <h1 className='post-header__title'>{props.postTitle}</h1>
           <time className='post-header__create'>
             {Moment(props.create).format('yyyy-MM-DD')}
           </time>
@@ -38,7 +36,7 @@ export function Render(props: Props) {
           dangerouslySetInnerHTML={{ __html: props.post }}
         />
       </section>
-      {hasToContent && <ToContent tokens={props.tokens} />}
+      {props.toc && <ToContent />}
     </Layout>
   )
 }

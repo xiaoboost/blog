@@ -29,8 +29,6 @@ export function FileLoader(opt: Options) {
       const fileMatcher = new RegExp(`\\.(${fileExts})$`);
       const getName = getNameCreator(options.assetNames ?? '[name]');
 
-      console.log('options.assetNames', options.assetNames);
-
       esbuild.onResolve({ filter: fileMatcher }, (args) => {
         if (path.isAbsolute(args.path)) {
           return {

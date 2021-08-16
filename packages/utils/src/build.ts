@@ -28,14 +28,14 @@ export function mergeBuild(opt: BuildOptions): BuildOptions {
   return base;
 }
 
-export function getCliOption(name: string) {
+export function getCliOption(name: string, required = true) {
   const args = process.argv;
   const matcher = new RegExp(`--${name}=([\\d\\D]+)`);
   const option = args.map((input) => matcher.exec(input)).find(isDef);
 
-  if (!option) {
+  if (required && !option) {
     throw new Error(`没有找到指令'${name}'。`);
   }
 
-  return option[1];
+  return option?.[1] ?? '';
 }

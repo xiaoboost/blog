@@ -1,11 +1,5 @@
 import { elementId, marginTop, highlightClassName, levelLimit } from './constant';
-
-import {
-  supportsPassive,
-  addClassName,
-  removeClassName,
-  local,
-} from '@xiao-ai/utils/web';
+import { supportsPassive, addClassName, removeClassName } from '@xiao-ai/utils/web';
 
 const enum Status {
   Init,
@@ -18,14 +12,10 @@ interface TitlePosition {
   offsetTop: number;
 }
 
-(() => {
-  const menu = document.body.querySelector<HTMLElement>(`#${elementId}`);
-  const mainBody = menu?.parentElement;
+const menu = document.body.querySelector<HTMLElement>(`#${elementId}`);
+const mainBody = menu?.parentElement;
 
-  if (!menu || !mainBody) {
-    return;
-  }
-
+if (menu && mainBody) {
   const menuItems = Array.from(menu.querySelectorAll<HTMLLIElement>('.menu-item'));
   const bodyTop = mainBody.offsetTop - marginTop;
   const options: AddEventListenerOptions | boolean = !supportsPassive ? false : {
@@ -91,4 +81,4 @@ interface TitlePosition {
 
   window.addEventListener('scroll', scrollEvent, options);
   window.addEventListener('resize', recordTitlePosition, options);
-})();
+}
