@@ -274,14 +274,25 @@ importers:
   packages/posts:
     specifiers:
       '@blog/tsconfig': workspace:*
+      '@blog/utils': workspace:^1.0.0
       '@types/blog': workspace:*
+      '@types/node': ^16.6.1
       eslint: ^7.30.0
+      fast-glob: ^3.2.7
+      ts-node: ^10.1.0
       tslib: ^2.3.0
       typescript: ^4.3.5
+      yaml: ^1.10.2
+    dependencies:
+      '@blog/utils': link:../utils
+      fast-glob: registry.nlark.com/fast-glob/3.2.7
+      yaml: registry.nlark.com/yaml/1.10.2
     devDependencies:
       '@blog/tsconfig': link:../tsconfig
       '@types/blog': link:../typings
+      '@types/node': registry.nlark.com/@types/node/16.6.1
       eslint: registry.nlark.com/eslint/7.30.0
+      ts-node: registry.nlark.com/ts-node/10.1.0_1ce31f93b456bf092bdcfa22c36a8430
       tslib: registry.nlark.com/tslib/2.3.0
       typescript: registry.nlark.com/typescript/4.3.5
 
@@ -571,10 +582,6 @@ packages:
     dev: false
     optional: true
 
-  /arg/4.1.3:
-    resolution: {integrity: sha1-Jp/HrVuOQstjyJbVZmAXJhwUQIk=, tarball: arg/download/arg-4.1.3.tgz}
-    dev: true
-
   /argparse/1.0.10:
     resolution: {integrity: sha1-vNZ5HqWuCXJeF+WtmIE0zUCz2RE=, tarball: argparse/download/argparse-1.0.10.tgz}
     dependencies:
@@ -605,7 +612,6 @@ packages:
     engines: {node: '>=8'}
     dependencies:
       fill-range: 7.0.1
-    dev: true
 
   /cache-content-type/1.0.1:
     resolution: {integrity: sha1-A1zeKwjuISn0qDFeqPAKANuhRTw=, tarball: cache-content-type/download/cache-content-type-1.0.1.tgz}
@@ -904,7 +910,6 @@ packages:
     engines: {node: '>=8'}
     dependencies:
       to-regex-range: 5.0.1
-    dev: true
 
   /flat-cache/3.0.4:
     resolution: {integrity: sha1-YbAzgwKy/p+Vfcwy/CqH8cMEixE=, tarball: flat-cache/download/flat-cache-3.0.4.tgz}
@@ -1084,7 +1089,6 @@ packages:
   /is-extglob/2.1.1:
     resolution: {integrity: sha1-qIwCU1eR8C7TfHahueqXc8gz+MI=, tarball: is-extglob/download/is-extglob-2.1.1.tgz}
     engines: {node: '>=0.10.0'}
-    dev: true
 
   /is-fullwidth-code-point/1.0.0:
     resolution: {integrity: sha1-754xOG8DGn8NZDr4L95QxFfvAMs=, tarball: is-fullwidth-code-point/download/is-fullwidth-code-point-1.0.0.tgz}
@@ -1104,7 +1108,6 @@ packages:
     engines: {node: '>=0.10.0'}
     dependencies:
       is-extglob: 2.1.1
-    dev: true
 
   /is-hexadecimal/1.0.4:
     resolution: {integrity: sha1-zDXJdYjaS9Saju3WvECC1E3LI6c=, tarball: is-hexadecimal/download/is-hexadecimal-1.0.4.tgz}
@@ -1116,7 +1119,6 @@ packages:
   /is-number/7.0.0:
     resolution: {integrity: sha1-dTU0W4lnNNX4DE0GxQlVUnoU8Ss=, tarball: is-number/download/is-number-7.0.0.tgz}
     engines: {node: '>=0.12.0'}
-    dev: true
 
   /is-plain-obj/2.1.0:
     resolution: {integrity: sha1-ReQuN/zPH0Dajl927iFRWEDAkoc=, tarball: is-plain-obj/download/is-plain-obj-2.1.0.tgz}
@@ -1323,7 +1325,6 @@ packages:
   /merge2/1.4.1:
     resolution: {integrity: sha1-Q2iJL4hekHRVpv19xVwMnUBJkK4=, tarball: merge2/download/merge2-1.4.1.tgz}
     engines: {node: '>= 8'}
-    dev: true
 
   /micromatch/4.0.4:
     resolution: {integrity: sha1-iW1Rnf6dsl/OlM63pQCRm/iB6/k=, tarball: micromatch/download/micromatch-4.0.4.tgz}
@@ -1331,7 +1332,6 @@ packages:
     dependencies:
       braces: 3.0.2
       picomatch: registry.nlark.com/picomatch/2.3.0
-    dev: true
 
   /mime/2.5.2:
     resolution: {integrity: sha1-bj3GzCuVEGQ4MOXxnVy3U9pe6r4=, tarball: mime/download/mime-2.5.2.tgz}
@@ -1523,7 +1523,6 @@ packages:
 
   /queue-microtask/1.2.3:
     resolution: {integrity: sha1-SSkii7xyTfrEPg77BYyve2z7YkM=, tarball: queue-microtask/download/queue-microtask-1.2.3.tgz}
-    dev: true
 
   /readable-stream/2.3.7:
     resolution: {integrity: sha1-Hsoc9xGu+BTAT2IlKjamL2yyO1c=, tarball: readable-stream/download/readable-stream-2.3.7.tgz}
@@ -1609,7 +1608,6 @@ packages:
   /reusify/1.0.4:
     resolution: {integrity: sha1-kNo4Kx4SbvwCFG6QhFqI2xKSXXY=, tarball: reusify/download/reusify-1.0.4.tgz}
     engines: {iojs: '>=1.0.0', node: '>=0.10.0'}
-    dev: true
 
   /rimraf/3.0.2:
     resolution: {integrity: sha1-8aVAK6YiCtUswSgrrBrjqkn9Bho=, tarball: rimraf/download/rimraf-3.0.2.tgz}
@@ -1621,7 +1619,6 @@ packages:
     resolution: {integrity: sha1-ZtE2jae9+SHrnZW9GpIp5/IaQ+4=, tarball: run-parallel/download/run-parallel-1.2.0.tgz}
     dependencies:
       queue-microtask: 1.2.3
-    dev: true
 
   /safe-buffer/5.1.2:
     resolution: {integrity: sha1-mR7GnSluAxN0fVm9/St0XDX4go0=, tarball: safe-buffer/download/safe-buffer-5.1.2.tgz}
@@ -1810,7 +1807,6 @@ packages:
     engines: {node: '>=8.0'}
     dependencies:
       is-number: 7.0.0
-    dev: true
 
   /toidentifier/1.0.0:
     resolution: {integrity: sha1-fhvjRw8ed5SLxD2Uo8j013UrpVM=, tarball: toidentifier/download/toidentifier-1.0.0.tgz}
@@ -2315,14 +2311,12 @@ packages:
     dependencies:
       '@nodelib/fs.stat': registry.nlark.com/@nodelib/fs.stat/2.0.5
       run-parallel: 1.2.0
-    dev: true
 
   registry.nlark.com/@nodelib/fs.stat/2.0.5:
     resolution: {integrity: sha1-W9Jir5Tp0lvR5xsF3u1Eh2oiLos=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/@nodelib/fs.stat/download/@nodelib/fs.stat-2.0.5.tgz}
     name: '@nodelib/fs.stat'
     version: 2.0.5
     engines: {node: '>= 8'}
-    dev: true
 
   registry.nlark.com/@nodelib/fs.walk/1.2.8:
     resolution: {integrity: sha1-6Vc36LtnRt3t9pxVaVNJTxlv5po=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/@nodelib/fs.walk/download/@nodelib/fs.walk-1.2.8.tgz}
@@ -2332,7 +2326,6 @@ packages:
     dependencies:
       '@nodelib/fs.scandir': registry.nlark.com/@nodelib/fs.scandir/2.1.5
       fastq: registry.nlark.com/fastq/1.11.1
-    dev: true
 
   registry.nlark.com/@tsconfig/node10/1.0.7:
     resolution: {integrity: sha1-HrHeNsc0eKJHnMZh71rxwW2G1gY=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/@tsconfig/node10/download/@tsconfig/node10-1.0.7.tgz}
@@ -2556,6 +2549,12 @@ packages:
     resolution: {integrity: sha1-n60XGltwFhPuim9OzjyIsQNLGwM=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/@types/node/download/@types/node-16.4.1.tgz}
     name: '@types/node'
     version: 16.4.1
+    dev: true
+
+  registry.nlark.com/@types/node/16.6.1:
+    resolution: {integrity: sha1-ruYse5ZvVfxmx7bfodWNsqYW2mE=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/@types/node/download/@types/node-16.6.1.tgz}
+    name: '@types/node'
+    version: 16.6.1
     dev: true
 
   registry.nlark.com/@types/parse5/5.0.3:
@@ -2813,6 +2812,12 @@ packages:
     dependencies:
       color-convert: 2.0.1
 
+  registry.nlark.com/arg/4.1.3:
+    resolution: {integrity: sha1-Jp/HrVuOQstjyJbVZmAXJhwUQIk=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/arg/download/arg-4.1.3.tgz}
+    name: arg
+    version: 4.1.3
+    dev: true
+
   registry.nlark.com/babel-plugin-apply-mdx-type-prop/1.6.22_@babel+core@7.12.9:
     resolution: {integrity: sha1-0hbo/Q3pHePxR47zIx4FRGvIcFs=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/babel-plugin-apply-mdx-type-prop/download/babel-plugin-apply-mdx-type-prop-1.6.22.tgz}
     id: registry.nlark.com/babel-plugin-apply-mdx-type-prop/1.6.22
@@ -3056,7 +3061,6 @@ packages:
       glob-parent: registry.nlark.com/glob-parent/5.1.2
       merge2: 1.4.1
       micromatch: 4.0.4
-    dev: true
 
   registry.nlark.com/fastq/1.11.1:
     resolution: {integrity: sha1-XYF1quF9thlH+LFiz8f2MmTSKAc=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/fastq/download/fastq-1.11.1.tgz}
@@ -3064,7 +3068,6 @@ packages:
     version: 1.11.1
     dependencies:
       reusify: 1.0.4
-    dev: true
 
   registry.nlark.com/flatted/3.2.1:
     resolution: {integrity: sha1-u+8IDZX8pnCTYscwRKFjT3xufQU=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/flatted/download/flatted-3.2.1.tgz}
@@ -3090,7 +3093,6 @@ packages:
     engines: {node: '>= 6'}
     dependencies:
       is-glob: 4.0.1
-    dev: true
 
   registry.nlark.com/glob/7.1.7:
     resolution: {integrity: sha1-Oxk+kjPwHULQs/eClLvutBj5SpA=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/glob/download/glob-7.1.7.tgz}
@@ -3490,7 +3492,6 @@ packages:
     name: picomatch
     version: 2.3.0
     engines: {node: '>=8.6'}
-    dev: true
 
   registry.nlark.com/property-information/5.6.0:
     resolution: {integrity: sha1-YWdVRfsjAC8kXGVA7EYHfU2j7Wk=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/property-information/download/property-information-5.6.0.tgz}
@@ -3598,6 +3599,38 @@ packages:
     version: 1.0.5
     dev: true
 
+  registry.nlark.com/ts-node/10.1.0_1ce31f93b456bf092bdcfa22c36a8430:
+    resolution: {integrity: sha1-5lbYrTthEGk4qGf2nDmoum78lm4=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/ts-node/download/ts-node-10.1.0.tgz}
+    id: registry.nlark.com/ts-node/10.1.0
+    name: ts-node
+    version: 10.1.0
+    engines: {node: '>=12.0.0'}
+    hasBin: true
+    peerDependencies:
+      '@swc/core': '>=1.2.50'
+      '@swc/wasm': '>=1.2.50'
+      '@types/node': '*'
+      typescript: '>=2.7'
+    peerDependenciesMeta:
+      '@swc/core':
+        optional: true
+      '@swc/wasm':
+        optional: true
+    dependencies:
+      '@tsconfig/node10': registry.nlark.com/@tsconfig/node10/1.0.7
+      '@tsconfig/node12': registry.nlark.com/@tsconfig/node12/1.0.7
+      '@tsconfig/node14': registry.nlark.com/@tsconfig/node14/1.0.0
+      '@tsconfig/node16': registry.nlark.com/@tsconfig/node16/1.0.1
+      '@types/node': registry.nlark.com/@types/node/16.6.1
+      arg: registry.nlark.com/arg/4.1.3
+      create-require: 1.1.1
+      diff: 4.0.2
+      make-error: 1.3.6
+      source-map-support: 0.5.19
+      typescript: registry.nlark.com/typescript/4.3.5
+      yn: 3.1.1
+    dev: true
+
   registry.nlark.com/ts-node/10.1.0_typescript@4.3.5:
     resolution: {integrity: sha1-5lbYrTthEGk4qGf2nDmoum78lm4=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/ts-node/download/ts-node-10.1.0.tgz}
     id: registry.nlark.com/ts-node/10.1.0
@@ -3620,7 +3653,7 @@ packages:
       '@tsconfig/node12': registry.nlark.com/@tsconfig/node12/1.0.7
       '@tsconfig/node14': registry.nlark.com/@tsconfig/node14/1.0.0
       '@tsconfig/node16': registry.nlark.com/@tsconfig/node16/1.0.1
-      arg: 4.1.3
+      arg: registry.nlark.com/arg/4.1.3
       create-require: 1.1.1
       diff: 4.0.2
       make-error: 1.3.6
@@ -3769,4 +3802,3 @@ packages:
     name: yaml
     version: 1.10.2
     engines: {node: '>= 6'}
-    dev: true
