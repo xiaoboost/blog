@@ -14,3 +14,16 @@ export function toPinyin(str: string) {
     .replace(/[ -]+/g, '-')
     .replace(/(^-|-$)/g, '');
 }
+
+export interface NameOption {
+  name: string;
+  hash?: string;
+}
+
+export function getNameCreator(origin: string) {
+  return function getName(opt: NameOption) {
+    return origin
+      .replace(/\[name\]/g, opt.name)
+      .replace(/\[hash\]/g, opt.hash ?? '');
+  };
+}

@@ -12,8 +12,8 @@
     "package.json"
   ],
   "scripts": {
-    "watch": "tsc -p . -w",
     "build": "tsc -p .",
+    "watch": "pnpm run build -- -w",
     "lint": "eslint --quiet --no-error-on-unmatched-pattern --config ../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}",
     "lint:fix": "eslint --fix --quiet --no-error-on-unmatched-pattern --config ../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}"
   },
@@ -24,6 +24,7 @@
   "dependencies": {
     "@blog/esbuild-loader-jss": "workspace:*",
     "@blog/esbuild-recorder-file": "workspace:*",
+    "@blog/utils": "workspace:*",
     "@xiao-ai/utils": "^1.4.3",
     "esbuild": "^0.12.15",
     "fs-extra": "^10.0.0",

@@ -1,10 +1,9 @@
 {
-  "name": "@blog/server",
-  "description": "blog's server",
+  "name": "@blog/esbuild-loader-mdx",
+  "description": "blog's mdx file loader for esbuild",
   "version": "1.0.0",
   "author": "xiaoboost",
   "license": "MIT",
-  "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -15,6 +14,7 @@
   "scripts": {
     "build": "tsc -p .",
     "watch": "pnpm run build -- -w",
+    "build:type": "tsc -p . --emitDeclarationOnly",
     "lint": "eslint --quiet --no-error-on-unmatched-pattern --config ../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}",
     "lint:fix": "eslint --fix --quiet --no-error-on-unmatched-pattern --config ../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}"
   },
@@ -24,20 +24,21 @@
   },
   "dependencies": {
     "@blog/utils": "workspace:*",
-    "chalk": "^4.1.1",
-    "koa": "^2.13.1",
-    "memfs": "^3.2.2",
-    "mime": "^2.5.2",
-    "react-dom": "^17.0.2"
+    "@types/mdast": "^3.0.9",
+    "@xiao-ai/utils": "^1.4.3",
+    "fs-extra": "^10.0.0",
+    "remark": "^14.0.1",
+    "remark-mdx": "^2.0.0-next.9",
+    "remark-parse": "^10.0.0",
+    "remark-stringify": "^10.0.0",
+    "unified": "^10.1.0",
+    "yaml": "^1.10.2"
   },
   "devDependencies": {
     "@blog/tsconfig": "workspace:*",
     "@types/blog": "workspace:*",
-    "@types/koa": "^2.13.4",
-    "@types/md5": "^2.3.1",
-    "@types/mime": "^2.0.3",
-    "@types/node": "^16.3.2",
-    "@types/react-dom": "^17.0.9",
+    "@types/fs-extra": "^9.0.12",
+    "esbuild": "^0.12.15",
     "eslint": "^7.30.0",
     "tslib": "^2.3.0",
     "typescript": "^4.3.5"
