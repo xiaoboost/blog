@@ -51,7 +51,7 @@ export default createStyles({
     '& li': {
       padding: 0,
       margin: 0,
-      lineHeight: 1.3,
+      lineHeight: '1.3',
     },
 
     '& $codeBlockLabel': {

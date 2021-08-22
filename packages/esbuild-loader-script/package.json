@@ -26,7 +26,7 @@
     "@blog/esbuild-recorder-file": "workspace:*",
     "@blog/utils": "workspace:*",
     "@xiao-ai/utils": "^1.4.3",
-    "esbuild": "^0.12.15",
+    "esbuild": "^0.12.22",
     "fs-extra": "^10.0.0",
     "md5": "^2.3.0"
   },
@@ -35,9 +35,9 @@
     "@types/blog": "workspace:*",
     "@types/fs-extra": "^9.0.12",
     "@types/md5": "^2.3.1",
-    "eslint": "^7.30.0",
+    "eslint": "^7.32.0",
     "jss": "^10.7.1",
-    "tslib": "^2.3.0",
+    "tslib": "^2.3.1",
     "typescript": "^4.3.5"
   }
 }

@@ -28,7 +28,7 @@
     "@xiao-ai/utils": "^1.4.3",
     "fs-extra": "^10.0.0",
     "remark": "^14.0.1",
-    "remark-mdx": "^2.0.0-next.9",
+    "remark-mdx": "^1.6.22",
     "remark-parse": "^10.0.0",
     "remark-stringify": "^10.0.0",
     "unified": "^10.1.0",
@@ -38,9 +38,9 @@
     "@blog/tsconfig": "workspace:*",
     "@types/blog": "workspace:*",
     "@types/fs-extra": "^9.0.12",
-    "esbuild": "^0.12.15",
-    "eslint": "^7.30.0",
-    "tslib": "^2.3.0",
+    "esbuild": "^0.12.22",
+    "eslint": "^7.32.0",
+    "tslib": "^2.3.1",
     "typescript": "^4.3.5"
   }
 }
