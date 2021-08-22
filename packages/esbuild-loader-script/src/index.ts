@@ -2,6 +2,7 @@ import { build, PluginBuild, OutputFile, BuildOptions } from 'esbuild';
 import { JssLoader } from '@blog/esbuild-loader-jss';
 import { FileRecorder } from '@blog/esbuild-recorder-file';
 import { unique } from '@xiao-ai/utils';
+import { getNameCreator } from '@blog/utils';
 
 import md5 from 'md5';
 
@@ -21,14 +22,6 @@ function normalizeOption(opt: Options, buildOpt: BuildOptions): Required<Options
     minify: opt.minify ?? buildOpt.minify ?? false,
     scriptDir: opt.scriptDir ?? 'scripts',
     styleDir: opt.styleDir ?? 'styles',
-  };
-}
-
-function getNameCreator(origin: string) {
-  return function getName(name: string, hash?: string) {
-    return origin
-      .replace(/\[name\]/g, name)
-      .replace(/\[hash\]/g, hash ?? '');
   };
 }
 
@@ -98,7 +91,7 @@ export function ScriptLoader(opt: Options) {
               filePath = path.format({
                 ext: '.css',
                 dir: path.join('/', loaderOpt.styleDir, relativePath),
-                name: getName(loaderOpt.name, hash),
+                name: getName({ name: loaderOpt.name, hash }),
               });
             }
             else if (path.extname(file.path) === '.js') {
@@ -112,7 +105,7 @@ export function ScriptLoader(opt: Options) {
               filePath = path.format({
                 ext: '.js',
                 dir: path.join('/', loaderOpt.scriptDir, relativePath),
-                name: getName(loaderOpt.name, hash),
+                name: getName({ name: loaderOpt.name, hash }),
               });
             }
             else {
@@ -131,7 +124,7 @@ export function ScriptLoader(opt: Options) {
           code += '];';
 
           return {
-            loader: 'ts',
+            loader: 'js',
             contents: code,
             watchFiles: getFiles(),
           };

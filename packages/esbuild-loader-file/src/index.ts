@@ -1,5 +1,5 @@
 import { PluginBuild } from 'esbuild';
-import { normalize } from '@blog/utils';
+import { normalize, getNameCreator } from '@blog/utils';
 
 import md5 from 'md5';
 
@@ -8,14 +8,6 @@ import { promises as fs } from 'fs';
 
 export interface Options {
   files: string[];
-}
-
-function getNameCreator(origin: string) {
-  return function getName(name: string, hash?: string) {
-    return origin
-      .replace(/\[name\]/g, name)
-      .replace(/\[hash\]/g, hash ?? '');
-  };
 }
 
 export function FileLoader(opt: Options) {
@@ -47,14 +39,14 @@ export function FileLoader(opt: Options) {
       esbuild.onLoad({ filter: /.*/, namespace }, async (args) => {
         const content = await fs.readFile(args.path);
         const nameOpt = path.parse(args.path);
-        const assetName = getName(nameOpt.name, md5(content));
+        const assetName = getName({ name: nameOpt.name, hash: md5(content) });
         const assetPath = path.format({
           name: assetName,
           ext: nameOpt.ext,
         });
 
         return {
-          loader: 'ts',
+          loader: 'js',
           watchFiles: [args.path],
           contents: `
             export default {

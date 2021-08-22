@@ -118,7 +118,7 @@ export function JssLoader() {
 
           return {
             errors,
-            loader: 'ts',
+            loader: 'js',
             watchFiles: getFiles(),
             contents: `
               import '${cssPath}';

@@ -1,6 +1,6 @@
 {
   "name": "@blog/posts",
-  "description": "blog's posts",
+  "description": "blog's posts data",
   "version": "1.0.0",
   "author": "xiaoboost",
   "license": "MIT",
@@ -12,6 +12,8 @@
     "package.json"
   ],
   "scripts": {
+    "build": "node ./build.js",
+    "watch": "pnpm run build -- --development",
     "lint": "eslint --quiet --no-error-on-unmatched-pattern --config ../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}",
     "lint:fix": "eslint --fix --quiet --no-error-on-unmatched-pattern --config ../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}"
   },
@@ -21,15 +23,15 @@
   },
   "dependencies": {
     "@blog/utils": "workspace:*",
-    "fast-glob": "^3.2.7",
-    "yaml": "^1.10.2"
+    "fast-glob": "^3.2.7"
   },
   "devDependencies": {
+    "@blog/esbuild-loader-mdx": "workspace:*",
     "@blog/tsconfig": "workspace:*",
     "@types/blog": "workspace:*",
     "@types/node": "^16.6.1",
+    "esbuild": "^0.12.15",
     "eslint": "^7.30.0",
-    "ts-node": "^10.1.0",
     "tslib": "^2.3.0",
     "typescript": "^4.3.5"
   }

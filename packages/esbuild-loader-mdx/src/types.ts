@@ -1,3 +1,5 @@
+import type { Root } from 'mdast';
+
 /** 文章原始元数据 */
 export interface PostMeta {
   /** 文章标题 */
@@ -38,14 +40,48 @@ export interface PostData {
   content: string;
   /** 文章简介 */
   description: string;
-  /** 渲染后的网页源码 */
-  html: string;
   /** 网页链接 */
   pathname: string;
+  /** 语法树数据 */
+  ast: Root;
   /** 是否启用目录 */
   toc: boolean;
-  /** 样式文件列表 */
-  styles: string[];
-  /** 脚本文件列表 */
-  scripts: string[];
+}
+
+export type {
+  Root,
+  Paragraph,
+  Heading,
+  ThematicBreak,
+  Blockquote,
+  List,
+  ListItem,
+  Table,
+  TableRow,
+  TableCell,
+  HTML,
+  Code,
+  Text,
+  Definition,
+  FootnoteDefinition,
+  Emphasis,
+  Strong,
+  Delete,
+  InlineCode,
+  Link,
+  Image,
+  LinkReference,
+  ImageReference,
+  Footnote,
+  FootnoteReference,
+  Resource,
+  Association,
+  Reference,
+  Alternative,
+} from 'mdast';
+
+/** 解析器类型 */
+export interface Parser {
+  parse(code: string): Root;
+  stringify(node: any): string;
 }
