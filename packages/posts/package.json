@@ -27,9 +27,6 @@
   },
   "devDependencies": {
     "@blog/esbuild-loader-mdx": "workspace:*",
-    "@blog/tsconfig": "workspace:*",
-    "@types/blog": "workspace:*",
-    "@types/node": "^16.6.1",
     "esbuild": "^0.12.15",
     "eslint": "^7.30.0",
     "tslib": "^2.3.0",

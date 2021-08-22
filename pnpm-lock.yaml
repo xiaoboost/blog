@@ -87,28 +87,40 @@ importers:
   packages/builder-website:
     specifiers:
       '@blog/posts': workspace:*
+      '@blog/server': workspace:*
       '@blog/template-layout': workspace:*
       '@blog/template-post': workspace:*
       '@blog/template-view': workspace:*
       '@blog/tsconfig': workspace:*
+      '@blog/utils': workspace:*
       '@types/blog': workspace:*
       '@types/node': ^16.3.1
+      '@types/react': ^17.0.14
+      '@types/react-dom': ^17.0.9
       '@xiao-ai/utils': ^1.4.3
       chalk: ^4.1.1
       eslint: ^7.30.0
+      react: ^17.0.2
+      react-dom: ^17.0.2
       tslib: ^2.3.0
       typescript: ^4.3.5
     dependencies:
       '@blog/posts': link:../posts
+      '@blog/server': link:../server
       '@blog/template-layout': link:../template-layout
       '@blog/template-post': link:../template-post
       '@blog/template-view': link:../template-view
+      '@blog/utils': link:../utils
       '@xiao-ai/utils': registry.nlark.com/@xiao-ai/utils/1.4.3
+      react: registry.nlark.com/react/17.0.2
+      react-dom: registry.nlark.com/react-dom/17.0.2_react@17.0.2
       tslib: registry.nlark.com/tslib/2.3.1
     devDependencies:
       '@blog/tsconfig': link:../tsconfig
       '@types/blog': link:../typings
       '@types/node': registry.nlark.com/@types/node/16.6.1
+      '@types/react': registry.nlark.com/@types/react/17.0.18
+      '@types/react-dom': registry.nlark.com/@types/react-dom/17.0.9
       chalk: registry.nlark.com/chalk/4.1.2
       eslint: registry.nlark.com/eslint/7.32.0
       typescript: registry.nlark.com/typescript/4.3.5
@@ -321,10 +333,7 @@ importers:
   packages/posts:
     specifiers:
       '@blog/esbuild-loader-mdx': workspace:*
-      '@blog/tsconfig': workspace:*
       '@blog/utils': workspace:*
-      '@types/blog': workspace:*
-      '@types/node': ^16.6.1
       esbuild: ^0.12.15
       eslint: ^7.30.0
       fast-glob: ^3.2.7
@@ -335,9 +344,6 @@ importers:
       fast-glob: registry.nlark.com/fast-glob/3.2.7
     devDependencies:
       '@blog/esbuild-loader-mdx': link:../esbuild-loader-mdx
-      '@blog/tsconfig': link:../tsconfig
-      '@types/blog': link:../typings
-      '@types/node': registry.nlark.com/@types/node/16.6.1
       esbuild: registry.nlark.com/esbuild/0.12.20
       eslint: registry.nlark.com/eslint/7.32.0
       tslib: registry.nlark.com/tslib/2.3.1
@@ -433,6 +439,7 @@ importers:
   packages/template-post:
     specifiers:
       '@blog/builder-template': workspace:*
+      '@blog/posts': workspace:^1.0.0
       '@blog/styles': workspace:*
       '@blog/template-layout': workspace:*
       '@blog/tsconfig': workspace:*
@@ -458,6 +465,7 @@ importers:
       tslib: registry.nlark.com/tslib/2.3.1
     devDependencies:
       '@blog/builder-template': link:../builder-template
+      '@blog/posts': link:../posts
       '@blog/tsconfig': link:../tsconfig
       '@types/blog': link:../typings
       '@types/color': registry.nlark.com/@types/color/3.0.2

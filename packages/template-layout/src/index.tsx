@@ -15,6 +15,8 @@ export const assets: AssetData[] = [
   favicon,
 ];
 
+export const ModuleName = process.env.ModuleName as string;
+
 export interface LayoutProps extends HeaderProps {
   /** 网站标题 */
   siteTitle: string;

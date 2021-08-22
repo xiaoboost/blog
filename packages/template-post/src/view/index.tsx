@@ -1,39 +1,37 @@
 import React from 'react';
 import Moment from 'moment';
+import styles from './index.jss';
 
 import { ToContent } from '../to-content';
+import { PostData } from '@blog/posts';
 import { Layout, LayoutProps } from '@blog/template-layout';
 
 export interface Props extends LayoutProps {
-  /** 文章标题 */
-  postTitle: string;
-  /** 文章本体 */
-  post: string;
-  /** 文章写作时间戳 */
-  create: number;
-  /** 是否开启目录 */
-  toc?: boolean;
+  /** 文章数据 */
+  post: PostData;
 }
 
 export function Post(props: Props) {
+  const { post } = props;
+
   return (
     <Layout {...props}>
       <section
-        className='post-default'
+        className={styles.classes.postDefault}
         style={props ? undefined : { width: '100%' }}
       >
-        <header className='post-header'>
-          <h1 className='post-header__title'>{props.postTitle}</h1>
-          <time className='post-header__create'>
-            {Moment(props.create).format('yyyy-MM-DD')}
+        <header className={styles.classes.postHeader}>
+          <h1 className={styles.classes.postHeaderTitle}>{post.title}</h1>
+          <time className={styles.classes.postHeaderCreate}>
+            {Moment(post.create).format('yyyy-MM-DD')}
           </time>
         </header>
         <article
-          className='post-article'
-          dangerouslySetInnerHTML={{ __html: props.post }}
+          className={styles.classes.postArticle}
+          dangerouslySetInnerHTML={{ __html: '测试内容' }}
         />
       </section>
-      {props.toc && <ToContent />}
+      {post.toc && <ToContent />}
     </Layout>
   )
 }
