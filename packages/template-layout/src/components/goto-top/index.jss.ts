@@ -21,13 +21,13 @@ export default createStyles({
       height: 36,
       border: 0,
       cursor: 'pointer',
-      color: BlackLight,
-      backgroundColor: WhiteBg,
+      color: BlackLight.toString(),
+      backgroundColor: WhiteBg.toString(),
       transition: `background-color ${fadeTime}ms ease`,
-      boxShadow: `0 0px 5px ${BlackLight}`,
+      boxShadow: `0 0px 5px ${BlackLight.toString()}`,
 
       '&:hover': {
-        backgroundColor: Gray,
+        backgroundColor: Gray.toString(),
       },
     },
   },

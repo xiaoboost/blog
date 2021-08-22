@@ -14,8 +14,6 @@ import {
   createMediaStyles,
 } from '@blog/styles';
 
-import color from 'color';
-
 const indent = 24;
 const smallIndent = 14;
 
@@ -25,9 +23,9 @@ export default createStyles({
   postHeaderCreate: {},
   postArticle: {},
   postDefault: {
-    color: Black,
-    backgroundColor: White,
-    boxShadow: `0 1px 3px ${Shadow}`,
+    color: Black.toString(),
+    backgroundColor: White.toString(),
+    boxShadow: `0 1px 3px ${Shadow.toString()}`,
     width: articleWidth,
     flexGrow: 0,
     flexShrink: 0,
@@ -37,20 +35,20 @@ export default createStyles({
       height: 50,
       justifyContent: 'space-between',
       alignItems: 'center',
-      borderBottom: `1px solid ${GrayLight}`,
+      borderBottom: `1px solid ${GrayLight.toString()}`,
 
       ...createMediaStyles(indent, smallIndent, (width) => ({
         margin: `0 ${width}px`,
       })),
     },
     '& $postHeaderTitle': {
-      color: Black,
+      color: Black.toString(),
       fontSize: 28,
       margin: 0,
       padding: 0,
     },
     '& $postHeaderCreate': {
-      color: BlackLighter,
+      color: BlackLighter.toString(),
       fontSize: 12,
       fontWeight: 'normal',
       fontFamily: FontDefault,
@@ -76,8 +74,8 @@ export default createStyles({
         margin: '0 0.2em',
         padding: '0.2em',
         fontSize: '0.85em',
-        backgroundColor: YellowLighter,
-        borderBottom: `0.1em solid ${YellowLight}`,
+        backgroundColor: YellowLighter.toString(),
+        borderBottom: `0.1em solid ${YellowLight.toString()}`,
         borderTopLeftRadius: 4,
         borderTopRightRadius: 4,
       },
@@ -85,8 +83,8 @@ export default createStyles({
         margin: '0 3px',
         fontStyle: 'normal',
         textDecoration: 'none',
-        backgroundImage: `linear-gradient(to top, transparent, transparent 0px, ${BlackLighter} 0px, ${BlackLighter} 1px, transparent 1px)`,
-        textShadow: `-1px -1px 0 #fafafa, 1px -1px 0 ${WhiteBg}, -1px 1px 0 ${WhiteBg}, 1px 1px ${WhiteBg}`,
+        backgroundImage: `linear-gradient(to top, transparent, transparent 0px, ${BlackLighter.toString()} 0px, ${BlackLighter.toString()} 1px, transparent 1px)`,
+        textShadow: `-1px -1px 0 #fafafa, 1px -1px 0 ${WhiteBg.toString()}, -1px 1px 0 ${WhiteBg.toString()}, 1px 1px ${WhiteBg.toString()}`,
       },
       '& s': {
         textDecorationColor: 'rgba(32, 32, 32, 0.5)',
@@ -109,13 +107,13 @@ export default createStyles({
       },
       '& a': {
         cursor: 'pointer',
-        color: BlackLighter,
+        color: BlackLighter.toString(),
         textDecoration: 'none',
         transition: 'color .2s, background .4s',
 
         '&:hover, &:focus': {
           outline: 0,
-          color: Black,
+          color: Black.toString(),
         },
       },
       '& ul, & ol': {
@@ -127,8 +125,8 @@ export default createStyles({
         margin: '1em 0',
         lineHeight: 1.5,
         fontSize: '90%',
-        borderLeft: `0.3em solid ${color(BlackExtraLight).darken(0.05).hex()}`,
-        backgroundColor: WhiteBg,
+        borderLeft: `0.3em solid ${BlackExtraLight.darken(0.05).toString()}`,
+        backgroundColor: WhiteBg.toString(),
 
         '> *': {
           marginTop: 0,

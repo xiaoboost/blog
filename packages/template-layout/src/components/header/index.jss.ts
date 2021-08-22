@@ -10,10 +10,12 @@ import {
 } from '@blog/styles';
 
 export default createStyles({
+  mainTitle: {},
+  mainNavItemHighlight: {},
   mainHeaderWrapper: {
     width: '100%',
     height: 40,
-    backgroundColor: White,
+    backgroundColor: White.toString(),
     boxShadow: '0 1px 3px rgba(26,26,26,.1)',
     flex: '0 0 auto',
     display: 'flex',
@@ -25,23 +27,23 @@ export default createStyles({
     alignItems: 'center',
     width: mainWidth,
     padding: [0, 10],
-  },
-  mainTitle: {
-    display: 'flex',
-    fontSize: 24,
-    color: Black,
-    alignItems: 'center',
-    fontFamily: `${FontTitle}, ${FontDefault}`,
+
+    '& $mainTitle': {
+      display: 'flex',
+      fontSize: 24,
+      color: Black.toString(),
+      alignItems: 'center',
+      fontFamily: `${FontTitle}, ${FontDefault}`,
+    },
   },
   mainNav: {
     display: 'flex',
     alignItems: 'center',
     height: '100%',
   },
-  mainNavItemHighlight: {},
   mainNavItem: {
     marginLeft: 20,
-    color: BlackLighter,
+    color: BlackLighter.toString(),
     display: 'flex',
     alignItems: 'center',
     position: 'relative',
@@ -49,11 +51,11 @@ export default createStyles({
     transition: 'color .2s',
 
     '& $mainNavItemHighlight': {
-      color: Black,
+      color: Black.toString(),
     },
 
     '&:hover': {
-      color: BlackLight,
+      color: BlackLight.toString(),
     },
   },
   mainNavItemBar: {
@@ -62,6 +64,6 @@ export default createStyles({
     left: 0,
     height: 3,
     width: '100%',
-    background: Black,
+    background: Black.toString(),
   },
 });
