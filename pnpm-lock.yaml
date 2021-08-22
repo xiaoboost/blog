@@ -268,17 +268,27 @@ importers:
 
   packages/mdx-code-block-normal:
     specifiers:
+      '@blog/builder-template': workspace:*
+      '@blog/styles': workspace:*
       '@blog/tsconfig': workspace:*
+      '@blog/utils': workspace:*
       '@types/blog': workspace:*
+      '@types/react': ^17.0.14
       eslint: ^7.30.0
-      highlight.js: ^11.1.0
+      highlight.js: ^11.2.0
+      react: ^17.0.2
       tslib: ^2.3.0
       typescript: ^4.3.5
     dependencies:
+      '@blog/styles': link:../styles
+      '@blog/utils': link:../utils
       highlight.js: registry.nlark.com/highlight.js/11.2.0
+      react: registry.nlark.com/react/17.0.2
     devDependencies:
+      '@blog/builder-template': link:../builder-template
       '@blog/tsconfig': link:../tsconfig
       '@types/blog': link:../typings
+      '@types/react': registry.nlark.com/@types/react/17.0.18
       eslint: registry.nlark.com/eslint/7.32.0
       tslib: registry.nlark.com/tslib/2.3.1
       typescript: registry.nlark.com/typescript/4.3.5
@@ -390,7 +400,9 @@ importers:
     specifiers:
       '@blog/tsconfig': workspace:*
       '@types/blog': workspace:*
+      '@types/color': ^3.0.2
       '@xiao-ai/utils': ^1.4.3
+      color: ^4.0.1
       eslint: ^7.30.0
       jss: ^10.7.1
       jss-preset-default: ^10.7.1
@@ -398,11 +410,13 @@ importers:
       typescript: ^4.3.5
     dependencies:
       '@xiao-ai/utils': registry.nlark.com/@xiao-ai/utils/1.4.3
+      color: registry.nlark.com/color/4.0.1
       jss: registry.nlark.com/jss/10.7.1
       jss-preset-default: registry.nlark.com/jss-preset-default/10.7.1
     devDependencies:
       '@blog/tsconfig': link:../tsconfig
       '@types/blog': link:../typings
+      '@types/color': registry.nlark.com/@types/color/3.0.2
       eslint: registry.nlark.com/eslint/7.32.0
       tslib: registry.nlark.com/tslib/2.3.1
       typescript: registry.nlark.com/typescript/4.3.5
@@ -439,16 +453,14 @@ importers:
   packages/template-post:
     specifiers:
       '@blog/builder-template': workspace:*
-      '@blog/posts': workspace:^1.0.0
+      '@blog/posts': workspace:*
       '@blog/styles': workspace:*
       '@blog/template-layout': workspace:*
       '@blog/tsconfig': workspace:*
       '@blog/utils': workspace:*
       '@types/blog': workspace:*
-      '@types/color': ^3.0.2
       '@types/react': ^17.0.14
       '@xiao-ai/utils': ^1.4.3
-      color: ^4.0.1
       eslint: ^7.30.0
       moment: ^2.29.1
       react: ^17.0.2
@@ -459,7 +471,6 @@ importers:
       '@blog/template-layout': link:../template-layout
       '@blog/utils': link:../utils
       '@xiao-ai/utils': registry.nlark.com/@xiao-ai/utils/1.4.3
-      color: registry.nlark.com/color/4.0.1
       moment: 2.29.1
       react: registry.nlark.com/react/17.0.2
       tslib: registry.nlark.com/tslib/2.3.1
@@ -468,7 +479,6 @@ importers:
       '@blog/posts': link:../posts
       '@blog/tsconfig': link:../tsconfig
       '@types/blog': link:../typings
-      '@types/color': registry.nlark.com/@types/color/3.0.2
       '@types/react': registry.nlark.com/@types/react/17.0.18
       eslint: registry.nlark.com/eslint/7.32.0
       typescript: registry.nlark.com/typescript/4.3.5
