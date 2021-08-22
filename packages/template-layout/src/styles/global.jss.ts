@@ -37,7 +37,7 @@ const global = createStyles({
       height: '100%',
       margin: 0,
       padding: 0,
-      color: Black,
+      color: Black.toString(),
       fontFamily: FontDefault,
       fontSize: FontDefaultSize,
     },
@@ -47,14 +47,14 @@ const global = createStyles({
       backgroundImage: `url("../assets/image/bg.svg")`,
     },
     '::-webkit-scrollbar': {
-      backgroundColor: WhiteBg,
+      backgroundColor: WhiteBg.toString(),
     },
     '::-webkit-scrollbar-track': {
-      backgroundColor: WhiteBg,
+      backgroundColor: WhiteBg.toString(),
     },
     '::-webkit-scrollbar-thumb': {
       opacity: '0.7',
-      backgroundColor: BlackLight,
+      backgroundColor: BlackLight.toString(),
       transition: 'opacity ease-in-out 200ms',
 
       '&:hover': {

@@ -13,7 +13,7 @@ export default createStyles({
     fontFamily: FontDefault,
     fontWeight: 'normal',
     width: '100%',
-    color: BlackLighter,
+    color: BlackLighter.toString(),
     textAlign: 'center',
     fontSize: 12,
 
@@ -22,11 +22,11 @@ export default createStyles({
     })),
   },
   mainFooterHref: {
-    color: Black,
+    color: Black.toString(),
     transition: 'color .2s ease-out',
 
     '&:hover': {
-      color: RedLight,
+      color: RedLight.toString(),
       cursor: 'pointer',
     },
   },
