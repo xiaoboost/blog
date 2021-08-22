@@ -8,7 +8,7 @@
   "module": "src/index.ts",
   "types": "src/index.ts",
   "bin": {
-    "bundle-template": "./bin/index.js"
+    "build-website": "./bin/index.js"
   },
   "files": [
     "dist",
@@ -24,16 +24,18 @@
     "url": "https://github.com/xiaoboost/blog"
   },
   "dependencies": {
+    "@blog/posts": "workspace:*",
+    "@blog/template-layout": "workspace:*",
+    "@blog/template-post": "workspace:*",
+    "@blog/template-view": "workspace:*",
     "@xiao-ai/utils": "^1.4.3",
     "tslib": "^2.3.0"
   },
   "devDependencies": {
-    "@blog/esbuild-loader-script": "workspace:*",
     "@blog/tsconfig": "workspace:*",
     "@types/blog": "workspace:*",
     "@types/node": "^16.3.1",
     "chalk": "^4.1.1",
-    "esbuild": "^0.12.15",
     "eslint": "^7.30.0",
     "typescript": "^4.3.5"
   }

@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@blog/styles": "workspace:*",
-    "@blog/template-layout": "workspace:^1.0.0",
+    "@blog/template-layout": "workspace:*",
     "@blog/utils": "workspace:*",
     "@xiao-ai/utils": "^1.4.3",
     "color": "^4.0.1",

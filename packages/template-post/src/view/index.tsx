@@ -1,6 +1,5 @@
 import React from 'react';
 import Moment from 'moment';
-// import type Token from 'markdown-it/lib/token';
 
 import { ToContent } from '../to-content';
 import { Layout, LayoutProps } from '@blog/template-layout';
@@ -10,8 +9,6 @@ export interface Props extends LayoutProps {
   postTitle: string;
   /** 文章本体 */
   post: string;
-  /** 文章分词数据 */
-  // tokens: Token[];
   /** 文章写作时间戳 */
   create: number;
   /** 是否开启目录 */
