@@ -87,6 +87,9 @@ export function build() {
     loader: {
       '.svg': 'dataurl',
     },
+    define: {
+      'process.env.ModuleName': `"${name}"`,
+    },
     plugins,
   }))
     .then((data) => {

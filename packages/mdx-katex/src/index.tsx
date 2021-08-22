@@ -16,6 +16,8 @@ const baseOptions: Katex.KatexOptions = {
   output: 'html',
 };
 
+export const ModuleName = process.env.ModuleName as string;
+
 export function MathBlock({ value, options }: Props) {
   return <p
     className={styles.classes.mathBlock}

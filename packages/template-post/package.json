@@ -37,6 +37,7 @@
   },
   "devDependencies": {
     "@blog/builder-template": "workspace:*",
+    "@blog/posts": "workspace:*",
     "@blog/tsconfig": "workspace:*",
     "@types/blog": "workspace:*",
     "@types/color": "^3.0.2",

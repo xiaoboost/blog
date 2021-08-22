@@ -12,7 +12,7 @@ jss.setup(preset());
 
 export function createStyles<C extends string = string>(
   styles: Styles<C>
-): StyleSheet<C> {
+): Pick<StyleSheet<C>, 'toString' | 'classes'> {
   return jss.createStyleSheet(styles, {
     link: false,
     index: 0,
@@ -61,7 +61,7 @@ export function createFontFaceStyles(
   });
 }
 
-export function mergeStyles(...styles: StyleSheet[]): StyleSheet {
+export function mergeStyles(...styles: StyleSheet[]): Pick<StyleSheet, 'toString' | 'classes'> {
   const style = createStyles({});
 
   for (const data of styles) {

@@ -1,8 +1,11 @@
 const Glob = require('fast-glob');
 const path = require('path');
+const fs = require('fs');
 const { build: esbuild } = require('esbuild');
 const { isDevelopment } = require('@blog/utils');
 const { MdxLoader } = require('@blog/esbuild-loader-mdx');
+
+const outDir = path.join(__dirname, './dist');
 
 async function getInputCode() {
   const posts = await Glob(path.join(__dirname, 'data/**/*.md').replace(/\\/g, '/'));
@@ -24,7 +27,18 @@ async function getInputCode() {
   return code;
 }
 
+function writeTypeFile() {
+  return fs.promises.writeFile(path.join(outDir, 'index.d.ts'), `
+  import { PostData } from '@blog/esbuild-loader-mdx';
+  const posts: PostData[];
+  export default posts;
+  export * from '@blog/esbuild-loader-mdx';
+  `.trim());
+}
+
 async function build() {
+  await writeTypeFile();
+
   const inputCode = await getInputCode();
 
   esbuild({
@@ -37,7 +51,7 @@ async function build() {
     mainFields: ['source', 'source', 'main'],
     assetNames: '/assets/[name].[hash]',
     publicPath: '/',
-    outfile: path.join(__dirname, './dist/index.js'),
+    outfile: path.join(outDir, 'index.js'),
     stdin: {
       contents: inputCode,
       resolveDir: __dirname,
