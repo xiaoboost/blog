@@ -10,9 +10,9 @@ export * from 'jss';
 
 jss.setup(preset());
 
-export function createStyles<C extends string = string>(
-  styles: Styles<C>
-): Pick<StyleSheet<C>, 'toString' | 'classes'> {
+type JssStyle<C extends string | number = string> = Pick<StyleSheet<C>, 'toString' | 'classes'>;
+
+export function createStyles<C extends string = string>(styles: Styles<C>): JssStyle<C> {
   return jss.createStyleSheet(styles, {
     link: false,
     index: 0,
@@ -22,7 +22,7 @@ export function createStyles<C extends string = string>(
   });
 }
 
-export function setScrollbarWidth(width: number, selector = '@global') {
+export function setScrollbarWidth(width: number, selector = '@global'): JssStyle {
   const prefix = selector === '@global' ? '' : '&';
 
   return createStyles({
@@ -46,7 +46,7 @@ export function createFontFaceStyles(
   style: string,
   weight: string,
   url: string
-) {
+): JssStyle {
   return createStyles({
     '@font-face': {
       fontFamily: family,
@@ -61,7 +61,7 @@ export function createFontFaceStyles(
   });
 }
 
-export function mergeStyles(...styles: StyleSheet[]): Pick<StyleSheet, 'toString' | 'classes'> {
+export function mergeStyles(...styles: JssStyle[]): JssStyle {
   const style = createStyles({});
 
   for (const data of styles) {
