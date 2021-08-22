@@ -9,16 +9,14 @@
     "url": "https://github.com/xiaoboost/blog"
   },
   "scripts": {
-    "clear:builder": "rimraf ./builder",
-    "dev:builder": "ts-node ./build/build.ts --development",
-    "build:builder": "pnpm run clear:builder && ts-node ./build/build.ts --production",
-    "clear:website": "rimraf ./dist",
-    "dev:website": "node ./builder/index.js --development --server --watch",
-    "build:website": "pnpm run clear:website && node ./builder/index.js --production",
-    "lint": "eslint --quiet --no-error-on-unmatched-pattern --config ./.eslintrc.js {build,template,typings}/**/*.{ts,tsx,js,jsx}",
-    "lint:fix": "eslint --fix --quiet --no-error-on-unmatched-pattern --config ./.eslintrc.js {build,template,typings}/**/*.{ts,tsx,js,jsx}"
+    "build": "build-website",
+    "watch": "pnpm run build -- -development",
+    "build:dep": "pnpm run build --filter @blog/builder-website...",
+    "lint": "pnpm run -r lint --parallel --filter .",
+    "lint:fix": "pnpm run -r lint:fix --parallel --filter ."
   },
   "devDependencies": {
+    "@blog/builder-website": "workspace:*",
     "@mdx-js/mdx": "^1.6.22",
     "@mdx-js/react": "^1.6.22",
     "@types/react": "^17.0.14",

@@ -3,10 +3,9 @@ import './index.styl';
 import React from 'react';
 import Moment from 'moment';
 
-import { Tags } from '../../components/icons';
-import { Layout, LayoutProps } from '../../components/layout';
-
-import { parseUrl } from 'build/utils';
+// import { Tags } from '../../components/icons';
+import { Layout, LayoutProps } from '@blog/template-layout';
+import { parseUrl } from '@blog/utils';
 
 interface PostProps {
   title: string;
@@ -26,7 +25,7 @@ function Post(post: PostProps) {
     </header>
     <article className='posts-list__item-description'>{post.description}</article>
     {post.tags.length !== 0 && <footer className='posts-list__item-footer'>
-      <Tags />
+      {/* <Tags /> */}
       {post.tags.map((tag) => (
         <a key={tag}>{tag}</a>
       ))}
