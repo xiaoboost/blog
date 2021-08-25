@@ -250,6 +250,7 @@ importers:
       '@blog/utils': workspace:*
       '@types/blog': workspace:*
       '@types/react': ^17.0.19
+      '@xiao-ai/utils': ^1.4.3
       eslint: ^7.32.0
       highlight.js: ^11.2.0
       react: ^17.0.2
@@ -258,6 +259,7 @@ importers:
     dependencies:
       '@blog/styles': link:../styles
       '@blog/utils': link:../utils
+      '@xiao-ai/utils': registry.nlark.com/@xiao-ai/utils/1.4.3
       highlight.js: registry.nlark.com/highlight.js/11.2.0
       react: registry.nlark.com/react/17.0.2
     devDependencies:
@@ -2104,6 +2106,8 @@ packages:
       js-yaml: 3.14.1
       minimatch: 3.0.4
       strip-json-comments: registry.nlark.com/strip-json-comments/3.1.1
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   registry.nlark.com/@humanwhocodes/config-array/0.5.0:
@@ -2115,6 +2119,8 @@ packages:
       '@humanwhocodes/object-schema': registry.nlark.com/@humanwhocodes/object-schema/1.2.0
       debug: registry.nlark.com/debug/4.3.2
       minimatch: 3.0.4
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   registry.nlark.com/@humanwhocodes/object-schema/1.2.0:
@@ -2809,6 +2815,8 @@ packages:
       table: registry.nlark.com/table/6.7.1
       text-table: 0.2.0
       v8-compile-cache: 2.3.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   registry.nlark.com/espree/7.3.1:

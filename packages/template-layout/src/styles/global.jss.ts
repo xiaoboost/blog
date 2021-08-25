@@ -1,6 +1,6 @@
 import {
   createStyles,
-  setScrollbarWidth,
+  createScrollbarWidth,
   mergeStyles,
   FontSerif,
   FontMono,
@@ -64,4 +64,9 @@ const global = createStyles({
   },
 });
 
-export default mergeStyles(global, setScrollbarWidth(6));
+export default mergeStyles(
+  global,
+  createStyles({
+    '@global': createScrollbarWidth(6),
+  }),
+);

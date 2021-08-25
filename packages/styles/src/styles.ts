@@ -22,23 +22,19 @@ export function createStyles<C extends string = string>(styles: Styles<C>): JssS
   });
 }
 
-export function setScrollbarWidth(width: number, selector = '@global'): JssStyle {
-  const prefix = selector === '@global' ? '' : '&';
-
-  return createStyles({
-    [selector]: {
-      [`${prefix}::-webkit-scrollbar`]: {
-        width,
-        height: width,
-      },
-      [`${prefix}::-webkit-scrollbar-track`]: {
-        boxShadow: `inset 0 0 ${width / 2}px rgba(0, 0, 0, .3)`,
-      },
-      [`${prefix}::-webkit-scrollbar-thumb`]: {
-        boxShadow: `inset 0 0 ${width / 2}px rgba(0, 0, 0, .3)`,
-      },
+export function createScrollbarWidth(width: number, prefix = ''): Styles {
+  return {
+    [`${prefix}::-webkit-scrollbar`]: {
+      width,
+      height: width,
     },
-  });
+    [`${prefix}::-webkit-scrollbar-track`]: {
+      boxShadow: `inset 0 0 ${width / 2}px rgba(0, 0, 0, .3)`,
+    },
+    [`${prefix}::-webkit-scrollbar-thumb`]: {
+      boxShadow: `inset 0 0 ${width / 2}px rgba(0, 0, 0, .3)`,
+    },
+  };
 }
 
 export function createFontFaceStyles(
