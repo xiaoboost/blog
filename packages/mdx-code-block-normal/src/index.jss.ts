@@ -1,5 +1,6 @@
 import {
   createStyles,
+  createScrollbarWidth,
   BlackLight,
   WhiteBg,
   Gray,
@@ -23,12 +24,12 @@ export default createStyles({
   '@import': '\'highlight.js/styles/atom-one-light.css\'',
   codeBlockLabel: {},
   codeBlockList: {},
-  codeBlockWrapper: {},
+  codeBlockBox: {},
   codeBlockGutter: {},
   codeBlockCode: {},
   codeBlockSplit: {},
   codeBlockHighlightLine: {},
-  codeBlock: {
+  codeBlockWrapper: {
     textShadow: 'none',
     position: 'relative',
     fontSize: '0.9em',
@@ -38,8 +39,6 @@ export default createStyles({
     [mediaPhone]: {
       marginLeft: -1 * SmallIndent,
       marginRight: -1 * SmallIndent,
-
-      // TODO: setScrollbarWidth(),
     },
 
     '& ul': {
@@ -75,11 +74,13 @@ export default createStyles({
       backgroundColor: 'transparent',
     },
 
-    '& $codeBlockWrapper': {
+    '& $codeBlockBox': {
       flexShrink: 1,
       flexGrow: 1,
       overflowX: 'auto',
       display: 'inline-flex',
+
+      [mediaPhone]: createScrollbarWidth(4, '&'),
     },
 
     '& $codeBlockGutter': {
