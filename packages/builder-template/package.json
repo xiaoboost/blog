@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "@blog/esbuild-loader-file": "workspace:*",
+    "@blog/esbuild-loader-jss": "workspace:*",
     "@blog/esbuild-loader-script": "workspace:*",
     "@blog/server": "workspace:*",
     "@blog/utils": "workspace:*",

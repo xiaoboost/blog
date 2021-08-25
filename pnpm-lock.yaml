@@ -34,6 +34,7 @@ importers:
   packages/builder-template:
     specifiers:
       '@blog/esbuild-loader-file': workspace:*
+      '@blog/esbuild-loader-jss': workspace:*
       '@blog/esbuild-loader-script': workspace:*
       '@blog/server': workspace:*
       '@blog/tsconfig': workspace:*
@@ -47,6 +48,7 @@ importers:
       typescript: ^4.3.5
     dependencies:
       '@blog/esbuild-loader-file': link:../esbuild-loader-file
+      '@blog/esbuild-loader-jss': link:../esbuild-loader-jss
       '@blog/esbuild-loader-script': link:../esbuild-loader-script
       '@blog/server': link:../server
       '@blog/utils': link:../utils
