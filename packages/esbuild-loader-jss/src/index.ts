@@ -16,7 +16,11 @@ function isJssObject(obj: unknown): obj is StyleSheet {
   );
 }
 
-export function JssLoader() {
+export interface Options {
+  extractCss?: boolean;
+}
+
+export function JssLoader({ extractCss = true }: Options = {}) {
   const pluginName = 'loader-jss';
   const namespace = 'jss-style';
   const jssSuffix = 'jss-style-suffix';
@@ -37,19 +41,21 @@ export function JssLoader() {
         /** 文件缓存 */
         const fileData: Record<string, string> = {};
 
-        process.onResolve({ filter: suffixMatcher }, (args) => ({
-          path: args.path,
-          pluginData: normalize(args.path.replace(suffixMatcher, '')),
-          namespace,
-        }));
+        if (extractCss) {
+          process.onResolve({ filter: suffixMatcher }, (args) => ({
+            path: args.path,
+            pluginData: normalize(args.path.replace(suffixMatcher, '')),
+            namespace,
+          }));
 
-        process.onLoad({ filter: /.*/, namespace }, async (args) => {
-          return {
-            loader: 'css',
-            resolveDir: dirname(args.path),
-            contents: fileData[normalize(args.pluginData)] ?? '',
-          };
-        });
+          process.onLoad({ filter: /.*/, namespace }, async (args) => {
+            return {
+              loader: 'css',
+              resolveDir: dirname(args.path),
+              contents: fileData[normalize(args.pluginData)] ?? '',
+            };
+          });
+        }
 
         process.onLoad({ filter: /\.jss\.(t|j)s$/ }, async (args) => {
           const cssPath = normalize(`${args.path}.${jssSuffix}`);
@@ -59,10 +65,10 @@ export function JssLoader() {
             minify: false,
             write: false,
             format: 'cjs',
+            outdir: '/',
             logLevel: 'warning',
             mainFields: options.mainFields,
             assetNames: options.assetNames,
-            outdir: options.outdir,
             publicPath: options.publicPath,
             define: options.define,
             loader: options.loader,
@@ -85,7 +91,7 @@ export function JssLoader() {
           if (buildResult?.errors && buildResult.errors.length > 0) {
             return {
               errors: buildResult?.errors ?? [],
-              loader: 'ts',
+              loader: 'js',
               contents: '',
             };
           }
@@ -114,14 +120,16 @@ export function JssLoader() {
             });
           }
 
-          fileData[normalize(args.path)] = cssCode;
+          if (extractCss) {
+            fileData[normalize(args.path)] = cssCode;
+          }
 
           return {
             errors,
             loader: 'js',
             watchFiles: getFiles(),
             contents: `
-              import '${cssPath}';
+              ${extractCss ? `import '${cssPath}';` : ''}
               export default {
                 classes: ${JSON.stringify(jssObject.classes)},
               };

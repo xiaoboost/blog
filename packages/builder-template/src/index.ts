@@ -4,6 +4,7 @@ import fs from 'fs';
 import { isFunc } from '@xiao-ai/utils';
 import { load, serve } from '@blog/server';
 import { build as esbuild, BuildResult } from 'esbuild';
+import { JssLoader } from '@blog/esbuild-loader-jss';
 import { ScriptLoader } from '@blog/esbuild-loader-script';
 import { FileLoader } from '@blog/esbuild-loader-file';
 import { mergeBuild, isDevelopment, runScript, getCliOption } from '@blog/utils';
@@ -55,6 +56,7 @@ export function build() {
   const outFile = getOutput();
   const plugins = [
     ScriptLoader({ name, minify: !isDevelopment }).plugin,
+    JssLoader({ extractCss: false }).plugin,
   ];
 
   if (assetOptions.length > 0) {
@@ -88,7 +90,7 @@ export function build() {
       '.svg': 'dataurl',
     },
     define: {
-      'process.env.ModuleName': `"${name}"`,
+      'process.env.ModuleName': `"${packageData.name}"`,
     },
     plugins,
   }))
