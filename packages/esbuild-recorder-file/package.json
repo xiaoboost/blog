@@ -23,7 +23,7 @@
     "url": "https://github.com/xiaoboost/blog"
   },
   "dependencies": {
-    "esbuild": "^0.12.22"
+    "esbuild": "^0.12.23"
   },
   "devDependencies": {
     "@blog/tsconfig": "workspace:*",

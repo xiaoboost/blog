@@ -1,7 +1,6 @@
 import ts from 'typescript';
 import path from 'path';
 
-import { resolveRoot } from '@blog/utils';
 import { toBoolMap, isString } from '@xiao-ai/utils';
 
 export type ScriptKind = 'ts' | 'tsx';
@@ -12,6 +11,8 @@ export type DisplaySymbol = string | [string, string];
 const serverCache: Record<string, TsServer> = {};
 /** 公共静态文件缓存 */
 const cache: Record<string, CodeFile> = {};
+/** 读取绝对路径 */
+const resolve = (...paths: string[]) => path.join(__dirname, '..', ...paths);
 
 /** 代码文件 */
 interface CodeFile {
@@ -85,17 +86,17 @@ export class TsServer {
       this.files[this.current.name] = true;
     }
 
-    this.files[resolveRoot('node_modules/typescript/lib/lib.esnext.d.ts')] = true;
+    this.files[resolve('node_modules/typescript/lib/lib.esnext.d.ts')] = true;
 
     if (this.scriptKind === 'tsx') {
-      this.files[resolveRoot('node_modules/@types/react/index.d.ts')] = true;
+      this.files[resolve('node_modules/@types/react/index.d.ts')] = true;
     }
 
     if (this.platform === 'node') {
-      this.files[resolveRoot('node_modules/@types/node/index.d.ts')] = true;
+      this.files[resolve('node_modules/@types/node/index.d.ts')] = true;
     }
     else if (this.platform === 'browser') {
-      this.files[resolveRoot('node_modules/typescript/lib/lib.dom.d.ts')] = true;
+      this.files[resolve('node_modules/typescript/lib/lib.dom.d.ts')] = true;
     }
 
     return Object.keys(this.files);
@@ -174,7 +175,7 @@ export class TsServer {
         });
       },
       getNewLine: () => '\n',
-      getCurrentDirectory: () => resolveRoot(),
+      getCurrentDirectory: () => resolve(),
       useCaseSensitiveFileNames: () => true,
       getDefaultLibFileName: ts.getDefaultLibFilePath,
     }

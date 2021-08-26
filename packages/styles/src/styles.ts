@@ -10,7 +10,7 @@ export * from 'jss';
 
 jss.setup(preset());
 
-type JssStyle<C extends string | number = string> = Pick<StyleSheet<C>, 'toString' | 'classes'>;
+type JssStyle<C extends string | number = string> = Pick<StyleSheet<C>, 'classes'>;
 
 export function createStyles<C extends string = string>(styles: Styles<C>): JssStyle<C> {
   return jss.createStyleSheet(styles, {
