@@ -4,11 +4,18 @@ import highlight from 'highlight.js';
 
 import { AssetData } from '@blog/utils';
 import { stringifyClass } from '@xiao-ai/utils';
-import { getHighlightCode, getMinSpaceWidth, getLineSpaceWidth, addSplitLabel } from './utils';
+import {
+  getHighlightCode,
+  getMinSpaceWidth,
+  getLineSpaceWidth,
+  addSplitLabel,
+  getLangLabel,
+} from './utils';
 
 export const assets: AssetData[] = require("./index.script").default;
 export const ModuleName = process.env.ModuleName as string;
 export * from './utils';
+export { styles };
 
 export interface WrapperProps {
   /** 代码语言 */
@@ -25,7 +32,7 @@ export function CodeBlockWrapper(props: React.PropsWithChildren<WrapperProps>) {
 
   return (
     <pre className={classes.codeBlockWrapper}>
-      {lang ? <label className={classes.codeBlockLabel}>{lang}</label> : ''}
+      {lang ? <label className={classes.codeBlockLabel}>{getLangLabel(lang)}</label> : ''}
       <code className={classes.codeBlockList}>
         <ul className={classes.codeBlockGutter}>
           {Array(lineCount).fill(0).map((_, i) => (
