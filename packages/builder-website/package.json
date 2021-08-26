@@ -1,12 +1,11 @@
 {
   "name": "@blog/builder-website",
-  "description": "blog's builder of template",
+  "description": "blog's builder of website",
   "version": "1.0.0",
   "author": "xiaoboost",
   "license": "MIT",
-  "source": "src/index.ts",
-  "module": "src/index.ts",
-  "types": "src/index.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "bin": {
     "build-website": "./bin/index.js"
   },
@@ -26,6 +25,9 @@
     "url": "https://github.com/xiaoboost/blog"
   },
   "dependencies": {
+    "@blog/mdx-code-block-normal": "workspace:*",
+    "@blog/mdx-code-block-typescript": "workspace:*",
+    "@blog/mdx-katex": "workspace:*",
     "@blog/posts": "workspace:*",
     "@blog/server": "workspace:*",
     "@blog/template-layout": "workspace:*",
@@ -40,7 +42,7 @@
   "devDependencies": {
     "@blog/tsconfig": "workspace:*",
     "@types/blog": "workspace:*",
-    "@types/node": "^16.7.1",
+    "@types/node": "^16.7.2",
     "@types/react": "^17.0.19",
     "@types/react-dom": "^17.0.9",
     "chalk": "^4.1.2",

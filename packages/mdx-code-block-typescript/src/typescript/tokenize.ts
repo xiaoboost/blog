@@ -1,9 +1,11 @@
 import vsctm from 'vscode-textmate';
 import oniguruma from 'vscode-oniguruma';
 
-import { promises as fs } from 'fs';
-import { resolveRoot } from '@blog/utils';
 import { getTsServer, ScriptKind, Platform, TsServer } from './host';
+
+import tsPlist from '../../tmLanguage/ts.plist';
+import tsxPlist from '../../tmLanguage/tsx.plist';
+import wasmBin from '../../node_modules/vscode-oniguruma/release/onig.wasm';
 
 let tsGrammar: vsctm.IGrammar;
 let tsxGrammar: vsctm.IGrammar;
@@ -20,13 +22,7 @@ interface Token extends vsctm.IToken {
 }
 
 async function getGrammar() {
-  const [ts, tsx, wasmBin] = await Promise.all([
-    fs.readFile(resolveRoot('tmLanguage/ts.plist'), 'utf-8'),
-    fs.readFile(resolveRoot('tmLanguage/tsx.plist'), 'utf-8'),
-    fs.readFile(resolveRoot('node_modules/vscode-oniguruma/release/onig.wasm')),
-  ]);
-
-  const vscodeOnigurumaLib: Promise<vsctm.IOnigLib> = oniguruma.loadWASM(wasmBin.buffer)
+  const vscodeOnigurumaLib: Promise<vsctm.IOnigLib> = oniguruma.loadWASM(wasmBin.contents as Buffer)
     .then(() => ({
       createOnigScanner: (source: string[]) => new oniguruma.OnigScanner(source),
       createOnigString: (str: string) => new oniguruma.OnigString(str),
@@ -36,10 +32,10 @@ async function getGrammar() {
     onigLib: vscodeOnigurumaLib,
     loadGrammar: (scopeName) => {
       if (scopeName === 'source.ts') {
-        return Promise.resolve(vsctm.parseRawGrammar(ts));
+        return Promise.resolve(vsctm.parseRawGrammar(tsPlist.contents.toString('utf-8')));
       }
       else if (scopeName === 'source.tsx') {
-        return Promise.resolve(vsctm.parseRawGrammar(tsx));
+        return Promise.resolve(vsctm.parseRawGrammar(tsxPlist.contents.toString('utf-8')));
       }
       else {
         throw new Error(`Unknown scopeName: ${scopeName}.`)

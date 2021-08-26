@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "@blog/utils": "workspace:*",
-    "esbuild": "^0.12.22",
+    "esbuild": "^0.12.23",
     "md5": "^2.3.0"
   },
   "devDependencies": {

@@ -27,7 +27,7 @@
   },
   "devDependencies": {
     "@blog/esbuild-loader-mdx": "workspace:*",
-    "esbuild": "^0.12.22",
+    "esbuild": "^0.12.23",
     "eslint": "^7.32.0",
     "tslib": "^2.3.1",
     "typescript": "^4.3.5"

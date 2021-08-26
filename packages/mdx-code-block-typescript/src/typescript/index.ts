@@ -1,6 +1,6 @@
 import { tokenize, ready } from './tokenize';
 import { ScriptKind, Platform, DisplaySymbol } from './host';
-// import { splitTag, getLineSpaceWidth } from '../utils';
+import { splitTag, getLineSpaceWidth } from '@blog/mdx-code-block-normal';
 
 export { ScriptKind, Platform, ready, DisplaySymbol };
 

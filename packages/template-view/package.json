@@ -30,6 +30,7 @@
     "@blog/template-layout": "workspace:*",
     "@blog/utils": "workspace:*",
     "@xiao-ai/utils": "^1.4.3",
+    "moment": "^2.29.1",
     "react": "^17.0.2",
     "tslib": "^2.3.1"
   },
