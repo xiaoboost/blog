@@ -14,7 +14,7 @@
   ],
   "scripts": {
     "build:type": "tsc -p . --emitDeclarationOnly",
-    "build:bundle": "build-template --input=src/index.tsx --name=layout --asset=.ico",
+    "build:bundle": "build-template --input=src/index.tsx --name=layout --loader:binary=.ico",
     "watch:bundle": "pnpm run build:bundle -- --development",
     "build": "pnpm run build:type && pnpm run build:bundle",
     "watch": "pnpm run build:type && pnpm run watch:bundle",

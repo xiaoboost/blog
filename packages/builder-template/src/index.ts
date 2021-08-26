@@ -1,7 +1,7 @@
 import path from 'path';
 import fs from 'fs';
 
-import { isFunc } from '@xiao-ai/utils';
+import { isFunc, isArray } from '@xiao-ai/utils';
 import { load, serve } from '@blog/server';
 import { build as esbuild, BuildResult } from 'esbuild';
 import { JssLoader } from '@blog/esbuild-loader-jss';
@@ -9,11 +9,23 @@ import { ScriptLoader } from '@blog/esbuild-loader-script';
 import { FileLoader } from '@blog/esbuild-loader-file';
 import { mergeBuild, isDevelopment, runScript, getCliOption } from '@blog/utils';
 
+/** 选项数据结构 */
+interface Options {
+  name: string;
+  input: string;
+  loader?: Record<string, string | string[]>;
+}
+
 const root = process.cwd();
-const input = getCliOption('input');
-const name = getCliOption('name');
-const assetOptions = getCliOption('asset', false).split(',');
+const option = getCliOption<Options>();
 const packageData = JSON.parse(fs.readFileSync(resolve('package.json'), 'utf-8'));
+
+// 检查必填项
+['input', 'name'].forEach((key) => {
+  if (!option[key]) {
+    throw new Error(`没有找到指令'${key}'。`);
+  }
+});
 
 function resolve(...paths: string[]) {
   return path.join(root, ...paths);
@@ -55,18 +67,22 @@ function getOutput() {
 export function build() {
   const outFile = getOutput();
   const plugins = [
-    ScriptLoader({ name, minify: !isDevelopment }).plugin,
+    ScriptLoader({ name: option.name, minify: !isDevelopment }).plugin,
     JssLoader({ extractCss: false }).plugin,
   ];
 
-  if (assetOptions.length > 0) {
-    plugins.push(FileLoader({
-      files: assetOptions,
-    }));
+  if (option.loader) {
+    for (const loaderType of Object.keys(option.loader)) {
+      const value = option.loader[loaderType];
+      plugins.push(FileLoader({
+        exts: isArray(value) ? value : [value],
+        type: loaderType as "text" | "binary",
+      }));
+    }
   }
 
   esbuild(mergeBuild({
-    entryPoints: [input],
+    entryPoints: [option.input],
     outfile: outFile,
     minify: false,
     logLevel: 'info',

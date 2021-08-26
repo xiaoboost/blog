@@ -1,6 +1,6 @@
 import type { BuildOptions } from 'esbuild';
 import { isDevelopment } from './env';
-import { isDef } from '@xiao-ai/utils';
+import { isString, AnyObject } from '@xiao-ai/utils';
 
 export function mergeBuild(opt: BuildOptions): BuildOptions {
   const base: BuildOptions = {
@@ -28,14 +28,39 @@ export function mergeBuild(opt: BuildOptions): BuildOptions {
   return base;
 }
 
-export function getCliOption(name: string, required = true) {
-  const args = process.argv;
-  const matcher = new RegExp(`--${name}=([\\d\\D]+)`);
-  const option = args.map((input) => matcher.exec(input)).find(isDef);
+export function getCliOption<T = AnyObject>(): T {
+  const options: AnyObject = {};
+  const matcher = /--([a-zA-Z]+?)(:[^=]+?)?(=[^$]+?)?$/;
+  const args = process.argv.filter((arg) => arg.startsWith('--'));
 
-  if (required && !option) {
-    throw new Error(`没有找到指令'${name}'。`);
+  for (const arg of args) {
+    const matchResult = matcher.exec(arg);
+
+    if (!matchResult) {
+      continue;
+    }
+
+    const optName = matchResult[1];
+
+    let optValue: string[] | string | boolean = matchResult[3] ? matchResult[3].slice(1) : true;
+
+    if (isString(optValue) && optValue.includes(',')) {
+      optValue = optValue.split(',');
+    }
+
+    if (matchResult[2]) {
+      const subName = matchResult[2].slice(1);
+
+      if (!options[optName]) {
+        options[optName] = {};
+      }
+
+      options[optName][subName] = optValue;
+    }
+    else {
+      options[optName] = optValue;
+    }
   }
 
-  return option?.[1] ?? '';
+  return options as T;
 }
