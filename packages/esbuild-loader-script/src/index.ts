@@ -96,7 +96,7 @@ export function ScriptLoader(opt: Options) {
             }
             else if (path.extname(file.path) === '.js') {
               // 跳过空脚本
-              if (/^\(\(\) ?=> ?{\n?}\)\(\);$/.test(file.text.trim())) {
+              if (/^\(\(\)\s+?=>\s+?{\s+?}\)\(\);$/.test(file.text.trim())) {
                 continue;
               }
 
