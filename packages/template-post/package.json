@@ -4,7 +4,6 @@
   "version": "1.0.0",
   "author": "xiaoboost",
   "license": "MIT",
-  "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [

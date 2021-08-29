@@ -20,12 +20,14 @@ export const pageConfig = {
   archive: 30,
 };
 
-/** 项目输出文件路径 */
-export const outputDir = 'dist';
 /** 公共资源公共路径 */
 export const publicPath = '/';
 /** 静态资源路径 */
 export const assetNames = isDevelopment ? 'assets/[name]' : 'assets/[name].[hash]';
+/** 样式资源路径 */
+export const styleNames = isDevelopment ? 'styles/[name]' : 'styles/[name].[hash]';
+/** 脚本资源路径 */
+export const scriptNames = isDevelopment ? 'scripts/[name]' : 'scripts/[name].[hash]';
 /** 标签页路径 */
 export const tagsPath = 'tag';
 /** 归档页路径 */

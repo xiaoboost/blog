@@ -7,8 +7,7 @@ import { Header, HeaderProps } from './components/header';
 import { Footer } from './components/footer';
 import { Article } from './components/article';
 
-import { parseUrl } from '@blog/utils';
-import { AssetData } from '@blog/utils';
+import { AssetData, parseUrl } from '@blog/utils';
 
 export const assets: AssetData[] = [
   ...require('./index.script').default,

@@ -22,7 +22,7 @@ interface Token extends vsctm.IToken {
 }
 
 async function getGrammar() {
-  const vscodeOnigurumaLib: Promise<vsctm.IOnigLib> = oniguruma.loadWASM(wasmBin.contents as Buffer)
+  const vscodeOnigurumaLib: Promise<vsctm.IOnigLib> = oniguruma.loadWASM((wasmBin.contents as Buffer).buffer)
     .then(() => ({
       createOnigScanner: (source: string[]) => new oniguruma.OnigScanner(source),
       createOnigString: (str: string) => new oniguruma.OnigString(str),
@@ -32,10 +32,10 @@ async function getGrammar() {
     onigLib: vscodeOnigurumaLib,
     loadGrammar: (scopeName) => {
       if (scopeName === 'source.ts') {
-        return Promise.resolve(vsctm.parseRawGrammar(tsPlist.contents.toString('utf-8')));
+        return Promise.resolve(vsctm.parseRawGrammar(tsPlist.contents as string));
       }
       else if (scopeName === 'source.tsx') {
-        return Promise.resolve(vsctm.parseRawGrammar(tsxPlist.contents.toString('utf-8')));
+        return Promise.resolve(vsctm.parseRawGrammar(tsxPlist.contents as string));
       }
       else {
         throw new Error(`Unknown scopeName: ${scopeName}.`)

@@ -1,6 +1,6 @@
 {
   "extends": "@blog/tsconfig",
-  "include": ["src"],
+  "include": ["src", "bundler"],
   "exclude": ["node_modules", "dist"],
   "compilerOptions": {
     "outDir": "./dist"
