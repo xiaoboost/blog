@@ -11,7 +11,7 @@ export interface Props extends LayoutProps {
   post: PostData;
 }
 
-export function Post(props: Props) {
+export function Render(props: Props) {
   const { post } = props;
 
   return (

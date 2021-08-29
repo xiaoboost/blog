@@ -52,7 +52,7 @@ export interface PostData {
 /** 文章元数据 */
 export interface PostRendered extends Omit<PostData, 'content'> {
   /** 渲染函数 */
-  render: React.ReactNode;
+  render: React.FC;
 }
 
 export type {

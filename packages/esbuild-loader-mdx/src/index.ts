@@ -10,6 +10,17 @@ import * as yaml from 'yaml';
 
 export * from './types';
 
+const rendered = `
+import React from 'react';
+import {mdx} from '@mdx-js/react';
+`;
+
+const pragma = `
+/* @jsxRuntime classic */
+/* @jsx mdx */
+/* @jsxFrag mdx.Fragment */
+`;
+
 const parserThen: Promise<Parser> = Promise.all([
   eval('import(\'unified\')'),
   eval('import(\'remark-mdx\')'),
@@ -115,7 +126,8 @@ export function MdxLoader() {
         const renderCode = await mdx(content);
         return {
           loader: 'jsx',
-          contents: renderCode,
+          contents: `${rendered}${pragma}${renderCode}`,
+          resolveDir: path.dirname(args.path),
         };
       });
 
@@ -129,6 +141,7 @@ export function MdxLoader() {
         return {
           loader: 'js',
           watchFiles: [args.path],
+          resolveDir: path.dirname(args.path),
           contents: `
           import Render from '${mdxJsxPath}';
           export default {

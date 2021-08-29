@@ -51,7 +51,7 @@ export async function build() {
     write: false,
     outfile: 'index.js',
     platform: 'node',
-    external: ['pinyin', 'typescript'],
+    external: ['pinyin', 'typescript', 'react', '@mdx-js/react'],
   }))
     .catch((e) => {
       console.error(e.message);
