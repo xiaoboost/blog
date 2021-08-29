@@ -7,7 +7,7 @@ import { getNameCreator } from '@blog/utils';
 import md5 from 'md5';
 
 import * as path from 'path';
-import * as fs from 'fs-extra';
+import * as fs from 'fs';
 
 export interface Options {
   name: string;
@@ -48,7 +48,7 @@ export function ScriptLoader(opt: Options) {
         );
 
         esbuild.onLoad({ filter: /\.script\.(t|j)s$/ }, async (args) => {
-          const content = await fs.readFile(args.path, 'utf-8');
+          const content = await fs.promises.readFile(args.path, 'utf-8');
           const buildResult = await build({
             bundle: true,
             write: false,
@@ -96,7 +96,7 @@ export function ScriptLoader(opt: Options) {
             }
             else if (path.extname(file.path) === '.js') {
               // 跳过空脚本
-              if (/^\(\(\)\s+?=>\s+?{\s+?}\)\(\);$/.test(file.text.trim())) {
+              if (/^\(\(\)\S*=>\S*\{\S*\}\)\(\);\S*$/.test(file.text.trim())) {
                 continue;
               }
 
