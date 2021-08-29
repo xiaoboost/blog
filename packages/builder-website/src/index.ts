@@ -1,7 +1,7 @@
 import path from 'path';
 
-import { promises as fs } from 'fs';
 import { build as esbuild } from 'esbuild';
+import { promises as fs, readFileSync } from 'fs';
 import { mergeBuild, runScript, getCliOptions, AssetData } from '@blog/utils';
 
 interface Options {
@@ -12,6 +12,7 @@ interface Options {
 const option = getCliOptions<Options>();
 const input = path.join(__dirname, '../bundler/index.ts');
 const output = path.join(process.cwd(), option.outDir);
+const packageData = JSON.parse(readFileSync(path.join(__dirname, '../package.json'), 'utf-8'));
 
 // 检查必填项
 ['outDir'].forEach((key) => {
@@ -51,7 +52,8 @@ export async function build() {
     write: false,
     outfile: 'index.js',
     platform: 'node',
-    external: ['pinyin', 'typescript', 'react', '@mdx-js/react'],
+    external: Object.keys(packageData.dependencies)
+      .concat(Object.keys(packageData.devDependencies)),
   }))
     .catch((e) => {
       console.error(e.message);
