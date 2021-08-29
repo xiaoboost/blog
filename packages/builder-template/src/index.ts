@@ -7,7 +7,8 @@ import { build as esbuild, BuildResult } from 'esbuild';
 import { JssLoader } from '@blog/esbuild-loader-jss';
 import { ScriptLoader } from '@blog/esbuild-loader-script';
 import { FileLoader } from '@blog/esbuild-loader-file';
-import { mergeBuild, isDevelopment, runScript, getCliOption } from '@blog/utils';
+import { assetNames, publicPath } from '@blog/config';
+import { mergeBuild, isDevelopment, runScript, getCliOptions } from '@blog/utils';
 
 /** 选项数据结构 */
 interface Options {
@@ -17,7 +18,7 @@ interface Options {
 }
 
 const root = process.cwd();
-const option = getCliOption<Options>();
+const option = getCliOptions<Options>();
 const packageData = JSON.parse(fs.readFileSync(resolve('package.json'), 'utf-8'));
 
 // 检查必填项
@@ -99,7 +100,8 @@ export function build() {
         watch(result);
       },
     },
-    assetNames: isDevelopment ? '/assets/[name]' : '/assets/[name].[hash]',
+    publicPath,
+    assetNames,
     external: Object.keys(packageData.dependencies)
       .concat(Object.keys(packageData.devDependencies)),
     loader: {
