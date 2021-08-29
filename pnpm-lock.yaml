@@ -35,6 +35,7 @@ importers:
 
   packages/builder-template:
     specifiers:
+      '@blog/config': workspace:*
       '@blog/esbuild-loader-file': workspace:*
       '@blog/esbuild-loader-jss': workspace:*
       '@blog/esbuild-loader-script': workspace:*
@@ -49,6 +50,7 @@ importers:
       tslib: ^2.3.1
       typescript: ^4.3.5
     dependencies:
+      '@blog/config': link:../config
       '@blog/esbuild-loader-file': link:../esbuild-loader-file
       '@blog/esbuild-loader-jss': link:../esbuild-loader-jss
       '@blog/esbuild-loader-script': link:../esbuild-loader-script
@@ -66,6 +68,7 @@ importers:
 
   packages/builder-website:
     specifiers:
+      '@blog/config': workspace:*
       '@blog/mdx-code-block-normal': workspace:*
       '@blog/mdx-code-block-typescript': workspace:*
       '@blog/mdx-katex': workspace:*
@@ -77,17 +80,20 @@ importers:
       '@blog/tsconfig': workspace:*
       '@blog/utils': workspace:*
       '@types/blog': workspace:*
+      '@types/md5': ^2.3.1
       '@types/node': ^16.7.2
       '@types/react': ^17.0.19
       '@types/react-dom': ^17.0.9
       '@xiao-ai/utils': ^1.4.3
       chalk: ^4.1.2
       eslint: ^7.32.0
+      md5: ^2.3.0
       react: ^17.0.2
       react-dom: ^17.0.2
       tslib: ^2.3.1
       typescript: ^4.3.5
     dependencies:
+      '@blog/config': link:../config
       '@blog/mdx-code-block-normal': link:../mdx-code-block-normal
       '@blog/mdx-code-block-typescript': link:../mdx-code-block-typescript
       '@blog/mdx-katex': link:../mdx-katex
@@ -98,17 +104,36 @@ importers:
       '@blog/template-view': link:../template-view
       '@blog/utils': link:../utils
       '@xiao-ai/utils': registry.nlark.com/@xiao-ai/utils/1.4.3
+      md5: 2.3.0
       react: registry.nlark.com/react/17.0.2
       react-dom: registry.nlark.com/react-dom/17.0.2_react@17.0.2
       tslib: registry.nlark.com/tslib/2.3.1
     devDependencies:
       '@blog/tsconfig': link:../tsconfig
       '@types/blog': link:../typings
+      '@types/md5': registry.nlark.com/@types/md5/2.3.1
       '@types/node': registry.nlark.com/@types/node/16.7.2
       '@types/react': registry.nlark.com/@types/react/17.0.19
       '@types/react-dom': registry.nlark.com/@types/react-dom/17.0.9
       chalk: registry.nlark.com/chalk/4.1.2
       eslint: registry.nlark.com/eslint/7.32.0
+      typescript: registry.nlark.com/typescript/4.3.5
+
+  packages/config:
+    specifiers:
+      '@blog/tsconfig': workspace:*
+      '@blog/utils': workspace:*
+      '@types/blog': workspace:*
+      eslint: ^7.32.0
+      tslib: ^2.3.1
+      typescript: ^4.3.5
+    dependencies:
+      '@blog/utils': link:../utils
+    devDependencies:
+      '@blog/tsconfig': link:../tsconfig
+      '@types/blog': link:../typings
+      eslint: registry.nlark.com/eslint/7.32.0
+      tslib: registry.nlark.com/tslib/2.3.1
       typescript: registry.nlark.com/typescript/4.3.5
 
   packages/esbuild-loader-file:
@@ -1522,6 +1547,8 @@ packages:
       is-alphabetical: 1.0.4
       remark-parse: registry.nlark.com/remark-parse/8.0.3
       unified: registry.nlark.com/unified/9.2.0
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   /repeat-string/1.6.1:
@@ -1852,6 +1879,8 @@ packages:
       resolve: 1.20.0
       semver: 5.7.1
       source-map: 0.5.7
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   registry.nlark.com/@babel/generator/7.15.0:
@@ -2088,6 +2117,8 @@ packages:
       '@babel/types': registry.nlark.com/@babel/types/7.15.0
       debug: registry.nlark.com/debug/4.3.2
       globals: registry.nlark.com/globals/11.12.0
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   registry.nlark.com/@babel/types/7.15.0:
@@ -2115,6 +2146,8 @@ packages:
       js-yaml: 3.14.1
       minimatch: 3.0.4
       strip-json-comments: registry.nlark.com/strip-json-comments/3.1.1
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   registry.nlark.com/@humanwhocodes/config-array/0.5.0:
@@ -2126,6 +2159,8 @@ packages:
       '@humanwhocodes/object-schema': registry.nlark.com/@humanwhocodes/object-schema/1.2.0
       debug: registry.nlark.com/debug/4.3.2
       minimatch: 3.0.4
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   registry.nlark.com/@humanwhocodes/object-schema/1.2.0:
@@ -2442,6 +2477,10 @@ packages:
     peerDependencies:
       '@typescript-eslint/parser': ^4.0.0
       eslint: ^5.0.0 || ^6.0.0 || ^7.0.0
+      typescript: '*'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
     dependencies:
       '@typescript-eslint/experimental-utils': registry.nlark.com/@typescript-eslint/experimental-utils/4.29.3_eslint@7.32.0+typescript@4.3.5
       '@typescript-eslint/parser': registry.nlark.com/@typescript-eslint/parser/4.29.3_eslint@7.32.0+typescript@4.3.5
@@ -2454,7 +2493,7 @@ packages:
       tsutils: 3.21.0_typescript@4.3.5
       typescript: registry.nlark.com/typescript/4.3.5
     transitivePeerDependencies:
-      - typescript
+      - supports-color
     dev: true
 
   registry.nlark.com/@typescript-eslint/experimental-utils/4.29.3_eslint@7.32.0+typescript@4.3.5:
@@ -2474,6 +2513,7 @@ packages:
       eslint-scope: registry.nlark.com/eslint-scope/5.1.1
       eslint-utils: registry.nlark.com/eslint-utils/3.0.0_eslint@7.32.0
     transitivePeerDependencies:
+      - supports-color
       - typescript
     dev: true
 
@@ -2485,6 +2525,10 @@ packages:
     engines: {node: ^10.12.0 || >=12.0.0}
     peerDependencies:
       eslint: ^5.0.0 || ^6.0.0 || ^7.0.0
+      typescript: '*'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
     dependencies:
       '@typescript-eslint/scope-manager': registry.nlark.com/@typescript-eslint/scope-manager/4.29.3
       '@typescript-eslint/types': registry.nlark.com/@typescript-eslint/types/4.29.3
@@ -2493,7 +2537,7 @@ packages:
       eslint: registry.nlark.com/eslint/7.32.0
       typescript: registry.nlark.com/typescript/4.3.5
     transitivePeerDependencies:
-      - typescript
+      - supports-color
     dev: true
 
   registry.nlark.com/@typescript-eslint/scope-manager/4.29.3:
@@ -2519,6 +2563,11 @@ packages:
     name: '@typescript-eslint/typescript-estree'
     version: 4.29.3
     engines: {node: ^10.12.0 || >=12.0.0}
+    peerDependencies:
+      typescript: '*'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
     dependencies:
       '@typescript-eslint/types': registry.nlark.com/@typescript-eslint/types/4.29.3
       '@typescript-eslint/visitor-keys': registry.nlark.com/@typescript-eslint/visitor-keys/4.29.3
@@ -2529,7 +2578,7 @@ packages:
       tsutils: 3.21.0_typescript@4.3.5
       typescript: registry.nlark.com/typescript/4.3.5
     transitivePeerDependencies:
-      - typescript
+      - supports-color
     dev: true
 
   registry.nlark.com/@typescript-eslint/visitor-keys/4.29.3:
@@ -2702,6 +2751,11 @@ packages:
     name: debug
     version: 4.3.2
     engines: {node: '>=6.0'}
+    peerDependencies:
+      supports-color: '*'
+    peerDependenciesMeta:
+      supports-color:
+        optional: true
     dependencies:
       ms: registry.nlark.com/ms/2.1.2
 
@@ -2805,6 +2859,8 @@ packages:
       table: registry.nlark.com/table/6.7.1
       text-table: 0.2.0
       v8-compile-cache: 2.3.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   registry.nlark.com/espree/7.3.1:

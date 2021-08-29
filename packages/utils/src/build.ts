@@ -1,6 +1,7 @@
 import type { BuildOptions } from 'esbuild';
-import { isDevelopment } from './env';
 import { isString, AnyObject } from '@xiao-ai/utils';
+
+export const isDevelopment = getCliOption<boolean>('development');
 
 export function mergeBuild(opt: BuildOptions): BuildOptions {
   const base: BuildOptions = {
@@ -28,13 +29,12 @@ export function mergeBuild(opt: BuildOptions): BuildOptions {
   return base;
 }
 
-export function getCliOption<T = AnyObject>(): T {
+function getOptions(args: string[]) {
   const options: AnyObject = {};
-  const matcher = /--([a-zA-Z]+?)(:[^=]+?)?(=[^$]+?)?$/;
-  const args = process.argv.filter((arg) => arg.startsWith('--'));
+  const optionMatcher = /--([a-zA-Z]+?)(:[^=]+?)?(=[^$]+?)?$/;
 
   for (const arg of args) {
-    const matchResult = matcher.exec(arg);
+    const matchResult = optionMatcher.exec(arg);
 
     if (!matchResult) {
       continue;
@@ -44,8 +44,16 @@ export function getCliOption<T = AnyObject>(): T {
 
     let optValue: string[] | string | boolean = matchResult[3] ? matchResult[3].slice(1) : true;
 
-    if (isString(optValue) && optValue.includes(',')) {
-      optValue = optValue.split(',');
+    if (isString(optValue)) {
+      if (optValue === 'true') {
+        optValue = true;
+      }
+      else if (optValue === 'false') {
+        optValue = false;
+      }
+      else if (optValue.includes(',')) {
+        optValue = optValue.split(',');
+      }
     }
 
     if (matchResult[2]) {
@@ -62,5 +70,15 @@ export function getCliOption<T = AnyObject>(): T {
     }
   }
 
-  return options as T;
+  return options;
+}
+
+export function getCliOptions<T = AnyObject>(): T {
+  const args = process.argv.filter((arg) => arg.startsWith('--'));
+  return getOptions(args) as T;
+}
+
+export function getCliOption<T = any>(name: string): T {
+  const args = process.argv.filter((arg) => arg.startsWith(`--${name}`));
+  return getOptions(args)[name] as T;
 }
