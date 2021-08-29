@@ -12,20 +12,11 @@ import * as fs from 'fs';
 export interface Options {
   name: string;
   minify?: boolean;
-  scriptDir?: string;
-  styleDir?: string;
+  scriptNames?: string;
+  styleNames?: string;
 }
 
-function normalizeOption(opt: Options, buildOpt: BuildOptions): Required<Options> {
-  return {
-    name: opt.name,
-    minify: opt.minify ?? buildOpt.minify ?? false,
-    scriptDir: opt.scriptDir ?? 'scripts',
-    styleDir: opt.styleDir ?? 'styles',
-  };
-}
-
-export function ScriptLoader(opt: Options) {
+export function ScriptLoader(loaderOpt: Options) {
   const fileRecorder = FileRecorder();
   const jssLoader = JssLoader();
 
@@ -38,14 +29,10 @@ export function ScriptLoader(opt: Options) {
     plugin: {
       name: 'loader-script',
       setup(esbuild: PluginBuild) {
-        const outputDir = process.cwd();
         const { initialOptions: options } = esbuild;
-        const loaderOpt = normalizeOption(opt, options);
-        const getName = getNameCreator(
-          options.assetNames
-            ? path.basename(options.assetNames)
-            : '[name]'
-        );
+        const outputDir = process.cwd();
+        const getStyleName = getNameCreator(loaderOpt.styleNames ?? options.assetNames ?? '[name]');
+        const getScriptName = getNameCreator(loaderOpt.styleNames ?? options.assetNames ?? '[name]');
 
         esbuild.onLoad({ filter: /\.script\.(t|j)s$/ }, async (args) => {
           const content = await fs.promises.readFile(args.path, 'utf-8');
@@ -54,7 +41,7 @@ export function ScriptLoader(opt: Options) {
             write: false,
             format: 'iife',
             logLevel: 'warning',
-            minify: loaderOpt.minify,
+            minify: loaderOpt.minify ?? options.minify ?? false,
             outdir: outputDir,
             loader: options.loader,
             mainFields: options.mainFields,
@@ -90,8 +77,8 @@ export function ScriptLoader(opt: Options) {
               codeContent = JSON.stringify(file.text);
               filePath = path.format({
                 ext: '.css',
-                dir: path.join('/', loaderOpt.styleDir, relativePath),
-                name: getName({ name: loaderOpt.name, hash }),
+                dir: path.join('/', relativePath),
+                name: getStyleName({ name: loaderOpt.name, hash }),
               });
             }
             else if (path.extname(file.path) === '.js') {
@@ -104,8 +91,8 @@ export function ScriptLoader(opt: Options) {
               codeContent = JSON.stringify(file.text);
               filePath = path.format({
                 ext: '.js',
-                dir: path.join('/', loaderOpt.scriptDir, relativePath),
-                name: getName({ name: loaderOpt.name, hash }),
+                dir: path.join('/', relativePath),
+                name: getScriptName({ name: loaderOpt.name, hash }),
               });
             }
             else {

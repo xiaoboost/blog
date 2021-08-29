@@ -20,7 +20,7 @@ export function getNameCreator(origin: string) {
     let text = origin;
 
     for (const key of Object.keys(opt)) {
-      text = origin.replace(new RegExp(`\\[${key}\\]`, 'g'), opt[key]);
+      text = text.replace(new RegExp(`\\[${key}\\]`, 'g'), opt[key]);
     }
 
     return text;

@@ -15,7 +15,7 @@
     "package.json"
   ],
   "scripts": {
-    "build": "tsc -p .",
+    "build": "tsc -p ./tsconfig.build.json",
     "watch": "pnpm run build -- -w",
     "lint": "eslint --quiet --no-error-on-unmatched-pattern --config ../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}",
     "lint:fix": "eslint --fix --quiet --no-error-on-unmatched-pattern --config ../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}"
@@ -25,6 +25,7 @@
     "url": "https://github.com/xiaoboost/blog"
   },
   "dependencies": {
+    "@blog/config": "workspace:*",
     "@blog/mdx-code-block-normal": "workspace:*",
     "@blog/mdx-code-block-typescript": "workspace:*",
     "@blog/mdx-katex": "workspace:*",
@@ -35,6 +36,8 @@
     "@blog/template-view": "workspace:*",
     "@blog/utils": "workspace:*",
     "@xiao-ai/utils": "^1.4.3",
+    "esbuild": "^0.12.23",
+    "md5": "^2.3.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "tslib": "^2.3.1"
@@ -42,6 +45,7 @@
   "devDependencies": {
     "@blog/tsconfig": "workspace:*",
     "@types/blog": "workspace:*",
+    "@types/md5": "^2.3.1",
     "@types/node": "^16.7.2",
     "@types/react": "^17.0.19",
     "@types/react-dom": "^17.0.9",

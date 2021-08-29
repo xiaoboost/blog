@@ -12,16 +12,15 @@ async function main() {
     minify: true,
     write: true,
     watch: false,
-    assetNames: '/assets/[name]',
+    assetNames: 'assets/[name]',
     publicPath: '/',
     format: 'cjs',
     plugins: [
       ScriptLoader({
         name: 'test',
-        outDir: 'static',
-        scriptDir: 'scripts',
-        styleDir: 'styles',
-      }),
+        scriptNames: 'scripts/[name].[hash]',
+        styleNames: 'styles/[name].[hash]',
+      }).plugin,
     ],
   }).catch((e) => {
     console.error(e.message)

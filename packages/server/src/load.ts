@@ -1,4 +1,3 @@
-import { mkdirp } from '@blog/utils';
 import { renderToString } from 'react-dom/server';
 
 import mfs from 'memfs';
@@ -11,14 +10,13 @@ export interface FileData {
 
 export async function load(app: JSX.Element, assets: FileData[]) {
   const fs = mfs.fs.promises;
-  const dirCache: Record<string, boolean> = {};
 
-  await mkdirp('/', dirCache, fs);
+  await fs.mkdir('/', { recursive: true });
   await fs.writeFile('/index.html', renderToString(app));
 
   for (const file of assets) {
     const fullPath = path.join('/', file.path);
-    await mkdirp(path.dirname(fullPath), dirCache, fs);
+    await fs.mkdir(path.dirname(fullPath), { recursive: true });
     await fs.writeFile(fullPath, file.contents);
   }
 }

@@ -5,7 +5,7 @@ interface SanBoxParams {
 
 export function runScript<T = any>(
   code: string,
-  requireInner: NodeRequire = require,
+  requireOut?: NodeRequire,
   params?: SanBoxParams,
 ): T {
   interface FakeModule {
@@ -13,6 +13,23 @@ export function runScript<T = any>(
       default: any;
     }
   }
+
+  const requireFunc = (id: string) => {
+    let result: any;
+
+    try {
+      if (requireOut) {
+        result = requireOut(id);
+      }
+    }
+    catch(e) {}
+
+    if (!result) {
+      result = require(id);
+    }
+
+    return result;
+  };
 
   const fake: FakeModule = {
     exports: {},
@@ -25,7 +42,7 @@ export function runScript<T = any>(
       return function box(module, exports, require${paramList ? `, ${paramList}` : ''}) {
         ${code}
       }
-    `))()(fake, fake.exports, requireInner, ...(params?.params ?? []));
+    `))()(fake, fake.exports, requireFunc, ...(params?.params ?? []));
   }
   catch (e) {
     throw new Error(e);

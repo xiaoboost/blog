@@ -7,7 +7,7 @@ import { build as esbuild, BuildResult } from 'esbuild';
 import { JssLoader } from '@blog/esbuild-loader-jss';
 import { ScriptLoader } from '@blog/esbuild-loader-script';
 import { FileLoader } from '@blog/esbuild-loader-file';
-import { assetNames, publicPath } from '@blog/config';
+import { assetNames, styleNames, scriptNames, publicPath } from '@blog/config';
 import { mergeBuild, isDevelopment, runScript, getCliOptions } from '@blog/utils';
 
 /** 选项数据结构 */
@@ -68,8 +68,13 @@ function getOutput() {
 export function build() {
   const outFile = getOutput();
   const plugins = [
-    ScriptLoader({ name: option.name, minify: !isDevelopment }).plugin,
     JssLoader({ extractCss: false }).plugin,
+    ScriptLoader({
+      name: option.name,
+      minify: !isDevelopment,
+      styleNames,
+      scriptNames,
+    }).plugin,
   ];
 
   if (option.loader) {
