@@ -1,7 +1,9 @@
 import { PluginBuild } from 'esbuild';
 import { promises as fs } from 'fs';
 import { Parser, PostData, PostMeta } from './types';
-import { normalize, getNameCreator, toPinyin } from '@blog/utils';
+import { toPinyin, normalize } from '@blog/utils';
+
+import mdx from '@mdx-js/mdx';
 
 import * as path from 'path';
 import * as yaml from 'yaml';
@@ -74,8 +76,8 @@ async function getPostData(fileName: string): Promise<PostData> {
       ? new Date(meta.update).getTime()
       : (await fs.stat(fileName)).mtimeMs,
     tags: meta.tags ?? [],
-    content: postContent,
     public: meta.public ?? true,
+    content: postContent,
     pathname: meta.pathname ?? path.join('posts', createAt, decodeTitle),
     toc: meta.toc ?? true,
     ast: removePosition(parser.parse(postContent)),
@@ -91,24 +93,48 @@ export function MdxLoader() {
     name: 'loader-mdx',
     setup(esbuild: PluginBuild) {
       const namespace = 'loader-mdx';
+      const mdxMatcher = /\.mdx?$/;
+      const mdxJsxMatcher = /\.mdx?-jsx$/;
+      const mdxContents: Record<string, string> = {};
       // const { initialOptions: options } = esbuild;
       // const publicPath = options.publicPath ?? '/';
       // const getName = getNameCreator(options.assetNames ?? '[name]');
 
-      esbuild.onResolve({ filter: /\.mdx?$/ }, (args) => {
+      esbuild.onResolve({ filter: mdxMatcher }, (args) => ({
+        namespace,
+        path: path.resolve(args.resolveDir, args.path),
+      }));
+
+      esbuild.onResolve({ filter: mdxJsxMatcher }, (args) => ({
+        namespace,
+        path: path.resolve(args.resolveDir, args.path),
+      }));
+
+      esbuild.onLoad({ filter: mdxJsxMatcher }, async (args) => {
+        const content = mdxContents[normalize(args.path)];
+        const renderCode = await mdx(content);
         return {
-          namespace,
-          path: path.resolve(args.resolveDir, args.path),
+          loader: 'jsx',
+          contents: renderCode,
         };
       });
 
-      esbuild.onLoad({ filter: /.*/, namespace }, async (args) => {
+      esbuild.onLoad({ filter: mdxMatcher, namespace }, async (args) => {
         const post = await getPostData(args.path);
+        const mdxJsxPath = normalize(`${args.path}-jsx`);
+        const { content, ...rest } = post;
+
+        mdxContents[mdxJsxPath] = content;
 
         return {
           loader: 'js',
           watchFiles: [args.path],
-          contents: `export default ${JSON.stringify(post, null, 2)};`,
+          contents: `
+          import Render from '${mdxJsxPath}';
+          export default {
+            render: Render,
+            ...(${JSON.stringify(rest, null, 2)}),
+          };`,
         };
       });
     },

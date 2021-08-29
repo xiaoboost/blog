@@ -29,10 +29,10 @@ async function getInputCode() {
 
 function writeTypeFile() {
   return fs.promises.writeFile(path.join(outDir, 'index.d.ts'), `
-  import { PostData } from '@blog/esbuild-loader-mdx';
-  const posts: PostData[];
+  import { PostRendered } from '@blog/esbuild-loader-mdx';
+  const posts: PostRendered[];
   export default posts;
-  export * from '@blog/esbuild-loader-mdx';
+  export type * from '@blog/esbuild-loader-mdx';
   `.trim());
 }
 
