@@ -20,7 +20,7 @@ const output = path.join(process.cwd(), option.outDir);
   }
 });
 
-async function write(files: AssetData[]) {
+async function writeDisk(files: AssetData[]) {
   for (const file of files) {
     const filePath = path.join(output, file.path);
     await fs.mkdir(path.dirname(filePath), { recursive: true });
@@ -32,17 +32,15 @@ async function finish(code: string) {
   try {
     const assets = runScript(code, require);
 
-    debugger;
     if (option.development) {
 
     }
     else {
-      await write(assets);
+      await writeDisk(assets);
     }
   }
   catch(e) {
-    debugger;
-    console.error(e);
+    console.error(e.message);
   }
 }
 

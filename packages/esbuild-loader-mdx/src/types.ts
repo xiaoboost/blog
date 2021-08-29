@@ -1,4 +1,5 @@
 import type { Root } from 'mdast';
+import type React from 'react';
 
 /** 文章原始元数据 */
 export interface PostMeta {
@@ -46,6 +47,12 @@ export interface PostData {
   ast: Root;
   /** 是否启用目录 */
   toc: boolean;
+}
+
+/** 文章元数据 */
+export interface PostRendered extends Omit<PostData, 'content'> {
+  /** 渲染函数 */
+  render: React.ReactNode;
 }
 
 export type {
