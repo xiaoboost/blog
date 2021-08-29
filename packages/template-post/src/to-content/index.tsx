@@ -5,7 +5,7 @@ import React from 'react';
 
 // import { Markdown } from 'build/markdown';
 // import { toPinyin } from 'build/utils/string';
-import { elementId, levelLimit } from './constant';
+import { levelLimit } from './constant';
 import { stringifyClass } from '@xiao-ai/utils';
 
 export const pluginName = 'toc';
@@ -129,7 +129,7 @@ interface NavTitle {
 export function ToContent(props: Props) {
   // const titles = createTitles(tokens, levelLimit);
 
-  return <aside id={elementId}>
+  return <aside>
     {/* <header className='menu-list-header'>目录</header>
     <article className='menu-list-article'>
       <NavTitle titles={titles} />

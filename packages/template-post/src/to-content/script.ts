@@ -1,5 +1,7 @@
-import { elementId, marginTop, highlightClassName, levelLimit } from './constant';
+import { marginTop, levelLimit } from './constant';
 import { supportsPassive, addClassName, removeClassName } from '@xiao-ai/utils/web';
+
+import styles from './index.jss';
 
 const enum Status {
   Init,
@@ -12,11 +14,11 @@ interface TitlePosition {
   offsetTop: number;
 }
 
-const menu = document.body.querySelector<HTMLElement>(`#${elementId}`);
+const menu = document.body.querySelector<HTMLElement>(`.${styles.classes.toContent}`);
 const mainBody = menu?.parentElement;
 
 if (menu && mainBody) {
-  const menuItems = Array.from(menu.querySelectorAll<HTMLLIElement>('.menu-item'));
+  const menuItems = Array.from(menu.querySelectorAll<HTMLLIElement>(styles.classes.menuItem));
   const bodyTop = mainBody.offsetTop - marginTop;
   const options: AddEventListenerOptions | boolean = !supportsPassive ? false : {
     passive: true,
@@ -46,10 +48,10 @@ if (menu && mainBody) {
 
     menuItems.forEach((el) => {
       if (el === highLightItem) {
-        addClassName(highLightItem, highlightClassName);
+        addClassName(highLightItem, styles.classes.menuItemHighlight);
       }
       else {
-        removeClassName(el, highlightClassName);
+        removeClassName(el, styles.classes.menuItemHighlight);
       }
     });
   };

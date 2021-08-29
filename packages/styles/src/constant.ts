@@ -73,13 +73,13 @@ export const FontTitle = getFontFamily([
 ]);
 
 /** 网站宽度 */
-export const mainWidth = '1000px';
+export const mainWidth = 1000;
 /** 右侧边栏宽度 */
-export const articleWidth = '750px';
+export const articleWidth = 750;
 /** 右侧边栏挂件间隔 */
-export const asideMarginLeft = '20px';
+export const asideMarginLeft = 20;
 /** 默认字体大小 */
-export const FontDefaultSize = '14px';
+export const FontDefaultSize = 14;
 
 export const mediaPhone = `@media only screen and (max-width: ${mainWidth})`;
 
