@@ -26,7 +26,6 @@
     "@blog/utils": "workspace:*",
     "@types/mdast": "^3.0.10",
     "@xiao-ai/utils": "^1.4.3",
-    "fs-extra": "^10.0.0",
     "remark": "^14.0.1",
     "remark-mdx": "^1.6.22",
     "remark-parse": "^10.0.0",
@@ -37,7 +36,6 @@
   "devDependencies": {
     "@blog/tsconfig": "workspace:*",
     "@types/blog": "workspace:*",
-    "@types/fs-extra": "^9.0.12",
     "esbuild": "^0.12.23",
     "eslint": "^7.32.0",
     "tslib": "^2.3.1",

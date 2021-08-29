@@ -1,6 +1,6 @@
 import pinyin from 'pinyin';
 
-import { concat } from '@xiao-ai/utils';
+import { concat, AnyObject } from '@xiao-ai/utils';
 
 /** 汉字转换为拼音 */
 export function toPinyin(str: string) {
@@ -15,15 +15,14 @@ export function toPinyin(str: string) {
     .replace(/(^-|-$)/g, '');
 }
 
-export interface NameOption {
-  name: string;
-  hash?: string;
-}
-
 export function getNameCreator(origin: string) {
-  return function getName(opt: NameOption) {
-    return origin
-      .replace(/\[name\]/g, opt.name)
-      .replace(/\[hash\]/g, opt.hash ?? '');
+  return function getName(opt: AnyObject) {
+    let text = origin;
+
+    for (const key of Object.keys(opt)) {
+      text = origin.replace(new RegExp(`\\[${key}\\]`, 'g'), opt[key]);
+    }
+
+    return text;
   };
 }
