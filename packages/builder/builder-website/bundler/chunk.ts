@@ -45,14 +45,14 @@ export class Chunk {
   }
 
   private mergeAssets() {
-    const merge = (ext: string, codeJoin = '') => {
+    const merge = (ext: string, codeJoin = '', preCode = '') => {
       const assets = this.assets.filter((name) => name.path.endsWith(ext));
 
       if (assets.length === 0) {
         return;
       }
 
-      const newCode = assets.map((asset) => asset.contents.toString('utf-8')).join(codeJoin);
+      const newCode = preCode + assets.map((asset) => asset.contents.toString('utf-8')).join(codeJoin);
       const getName = ext === '.js' ? getScriptName : getStyleName;
       const name = normalize(path.format({
         ext: ext,
@@ -67,8 +67,8 @@ export class Chunk {
         .concat([{ path: name, contents: newCode }]);
     };
 
-    merge('.css');
-    merge('.js', ';');
+    merge('.css', '', '@charset "utf-8";');
+    merge('.js', ';', '');
   }
 
   includes(name: string) {

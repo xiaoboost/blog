@@ -2,7 +2,7 @@ const Glob = require('fast-glob');
 const path = require('path');
 const fs = require('fs');
 const { build: esbuild } = require('esbuild');
-const { isDevelopment } = require('@blog/utils');
+const { isDevelopment, mergeBuild } = require('@blog/utils');
 const { MdxLoader } = require('@blog/esbuild-loader-mdx');
 
 const outDir = path.join(__dirname, './dist');
@@ -41,16 +41,12 @@ async function build() {
 
   const inputCode = await getInputCode();
 
-  esbuild({
-    bundle: true,
-    write: true,
-    format: 'cjs',
-    logLevel: 'info',
+  esbuild(mergeBuild({
     minify: false,
     watch: isDevelopment,
+    publicPath: '/',
     mainFields: ['source', 'source', 'main'],
     assetNames: '/assets/[name].[hash]',
-    publicPath: '/',
     outfile: path.join(outDir, 'index.js'),
     external: ['react', '@mdx-js/react'],
     stdin: {
@@ -62,7 +58,7 @@ async function build() {
     plugins: [
       MdxLoader(),
     ],
-  })
+  }))
   .catch((e) => {
     console.warn(e);
   })

@@ -1,5 +1,3 @@
-import { isDevelopment } from '@blog/utils';
-
 /** 网站简介 */
 export const site = {
   title: 'Dreaming Cat\'s',
@@ -23,11 +21,11 @@ export const pageConfig = {
 /** 公共资源公共路径 */
 export const publicPath = '/';
 /** 静态资源路径 */
-export const assetNames = isDevelopment ? 'assets/[name]' : 'assets/[name].[hash]';
+export const assetNames = 'assets/[name].[hash]';
 /** 样式资源路径 */
-export const styleNames = isDevelopment ? 'styles/[name]' : 'styles/[name].[hash]';
+export const styleNames = 'styles/[name].[hash]';
 /** 脚本资源路径 */
-export const scriptNames = isDevelopment ? 'scripts/[name]' : 'scripts/[name].[hash]';
+export const scriptNames = 'scripts/[name].[hash]';
 /** 标签页路径 */
 export const tagsPath = 'tag';
 /** 归档页路径 */
