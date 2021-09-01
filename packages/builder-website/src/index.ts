@@ -1,4 +1,5 @@
 import path from 'path';
+import rm from 'rmrf';
 
 import { build as esbuild } from 'esbuild';
 import { promises as fs, readFileSync } from 'fs';
@@ -37,6 +38,7 @@ async function finish(code: string) {
 
     }
     else {
+      await rm(output);
       await writeDisk(assets);
     }
   }

@@ -1,4 +1,4 @@
-import { createStyles, mainWidth, mediaPhone } from '@blog/styles';
+import { createStyles, mainWidth, mediaPhone, headerBodyMargin } from '@blog/styles';
 
 export default createStyles({
   mainArticle: {},
@@ -10,6 +10,10 @@ export default createStyles({
     '& $mainArticle': {
       display: 'flex',
       width: mainWidth,
+      position: 'relative',
+      marginTop: headerBodyMargin,
+      justifyContent: 'flex-start',
+      alignItems: 'flex-start',
 
       [mediaPhone]: {
         width: '100vw',

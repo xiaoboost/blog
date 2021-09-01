@@ -1,6 +1,7 @@
 import type { BuildOptions } from 'esbuild';
 import { isString, AnyObject } from '@xiao-ai/utils';
 
+export const isServe = getCliOption<boolean>('serve');
 export const isDevelopment = getCliOption<boolean>('development');
 
 export function mergeBuild(opt: BuildOptions): BuildOptions {

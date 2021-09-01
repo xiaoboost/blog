@@ -78,9 +78,11 @@ export const mainWidth = 1000;
 export const articleWidth = 750;
 /** 右侧边栏挂件间隔 */
 export const asideMarginLeft = 20;
+/** 文章主体和顶栏的空隙高度 */
+export const headerBodyMargin = 20;
 /** 默认字体大小 */
 export const FontDefaultSize = 14;
 
-export const mediaPhone = `@media only screen and (max-width: ${mainWidth})`;
+export const mediaPhone = `@media only screen and (max-width: ${mainWidth}px)`;
 
-export const mediaPc = `@media only screen and (min-width: ${mainWidth})`;
+export const mediaPc = `@media only screen and (min-width: ${mainWidth}px)`;
