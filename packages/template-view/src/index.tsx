@@ -1,4 +1,4 @@
-export * from './index';
+export * from './main-index';
 export * from './post-list';
 
 import { AssetData } from '@blog/utils';

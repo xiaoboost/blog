@@ -1,8 +1,10 @@
 import { assets as extraAssets } from './extra';
 import { assets as staticAssets } from './chunk';
-import { build as buildPost } from './post';
+import { assets as postAssets } from './post';
+import { assets as listAssets } from './list';
 
 export default staticAssets.concat(
   extraAssets,
-  buildPost(),
+  postAssets,
+  listAssets,
 );

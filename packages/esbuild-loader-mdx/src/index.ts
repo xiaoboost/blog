@@ -145,7 +145,7 @@ export function MdxLoader() {
           contents: `
           import Render from '${mdxJsxPath}';
           export default {
-            render: Render,
+            Render: Render,
             ...(${JSON.stringify(rest, null, 2)}),
           };`,
         };

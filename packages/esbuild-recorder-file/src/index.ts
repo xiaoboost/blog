@@ -30,7 +30,7 @@ export function FileRecorder() {
               resolveDir: path.dirname(args.path),
             };
           }
-          catch (e) {
+          catch (e: any) {
             return {
               errors: [{
                 text: e.message,

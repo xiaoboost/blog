@@ -40,7 +40,7 @@ async function finish(code: string) {
       await writeDisk(assets);
     }
   }
-  catch(e) {
+  catch(e: any) {
     console.error(e.message);
   }
 }
