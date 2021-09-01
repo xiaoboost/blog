@@ -1,11 +1,9 @@
 ---
 title: 关于我
 create: 2020/05/01
-public: false
 pathname: posts/about
-disabled:
-  - toc
-  - goto-top
+public: false
+toc: false
 ---
 
 阿宅一枚，喜欢的事情是坐在家里看闲书、看动画、写代码。
