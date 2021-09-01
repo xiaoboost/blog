@@ -26,7 +26,7 @@
     "@blog/utils": "workspace:*",
     "chalk": "^4.1.2",
     "koa": "^2.13.1",
-    "memfs": "^3.2.2",
+    "memfs": "^3.2.3",
     "mime": "^2.5.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
@@ -37,7 +37,7 @@
     "@types/koa": "^2.13.4",
     "@types/md5": "^2.3.1",
     "@types/mime": "^2.0.3",
-    "@types/node": "^16.7.6",
+    "@types/node": "^16.7.10",
     "@types/react": "^17.0.19",
     "@types/react-dom": "^17.0.9",
     "eslint": "^7.32.0",

@@ -26,7 +26,7 @@
   },
   "dependencies": {
     "@blog/styles": "workspace:*",
-    "katex": "^0.13.16",
+    "katex": "^0.13.17",
     "react": "^17.0.2",
     "tslib": "^2.3.1"
   },
