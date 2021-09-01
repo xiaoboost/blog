@@ -1,7 +1,6 @@
-// import './index.styl';
-
 import React from 'react';
 import Moment from 'moment';
+import styles from './index.jss';
 
 // import { Tags } from '../../components/icons';
 import { Layout, LayoutProps } from '@blog/template-layout';
@@ -16,15 +15,15 @@ interface PostProps {
 }
 
 function Post(post: PostProps) {
-  return <section className='posts-list__item'>
-    <header className='posts-list__item-header'>
+  return <section className={styles.classes.postsListItem}>
+    <header className={styles.classes.postsListItemHeader}>
       <span>
         <a href={parseUrl(post.pathname)}>{post.title}</a>
       </span>
       <time>{Moment(post.create).format('yyyy-MM-DD')}</time>
     </header>
-    <article className='posts-list__item-description'>{post.description}</article>
-    {post.tags.length !== 0 && <footer className='posts-list__item-footer'>
+    <article className={styles.classes.postsListItemDescription}>{post.description}</article>
+    {post.tags.length !== 0 && <footer className={styles.classes.postsListItemFooter}>
       {/* <Tags /> */}
       {post.tags.map((tag) => (
         <a key={tag}>{tag}</a>
@@ -56,7 +55,7 @@ export interface Props extends LayoutProps, PaginationProps {
 export function IndexRender(props: Props) {
   return (
     <Layout {...props}>
-      <div className='posts-list'>
+      <div className={styles.classes.postsList}>
         {(props.posts || []).map((post) => <Post key={post.create} {...post} />)}
       </div>
       <Pagination {...props} />

@@ -9,9 +9,8 @@ import {
   mainWidth,
   articleWidth,
   asideMarginLeft,
+  headerBodyMargin,
 } from '@blog/styles';
-
-export const marginTop = 20;
 
 export default createStyles({
   menuListHeader: {},
@@ -29,9 +28,10 @@ export default createStyles({
     color: Black.toString(),
     backgroundColor: White.toString(),
     boxShadow: `0 1px 3px ${Shadow.toString()}`,
-    width: mainWidth - articleWidth - asideMarginLeft,
     position: 'absolute',
+    width: mainWidth - articleWidth - asideMarginLeft,
     marginLeft: articleWidth + asideMarginLeft,
+    marginTop: headerBodyMargin,
     boxSizing: 'border-box',
     padding: `0 14px`,
     fontSize: 14,
