@@ -5,6 +5,7 @@ import { site, publicPath } from '@blog/config';
 import { default as posts, PostRendered } from '@blog/posts';
 import { PostRender } from '@blog/template-post';
 import { createHtml } from './utils';
+import { layout, post as postChunk } from './chunk';
 
 function getPostHtml(post: PostRendered) {
   const createPost = createHtml(PostRender);
@@ -15,8 +16,14 @@ function getPostHtml(post: PostRendered) {
     author: site.author,
     description: post.description,
     publicPath: publicPath,
-    styles: [],
-    scripts: [],
+    styles: [
+      ...layout.styles,
+      ...postChunk.styles,
+    ],
+    scripts: [
+      ...layout.scripts,
+      ...postChunk.scripts,
+    ],
     post: post,
   });
 

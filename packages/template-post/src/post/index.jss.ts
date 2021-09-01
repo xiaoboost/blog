@@ -1,6 +1,7 @@
 import {
   createStyles,
   articleWidth,
+  mainWidth,
   Black,
   White,
   Shadow,
@@ -22,6 +23,7 @@ export default createStyles({
   postHeaderTitle: {},
   postHeaderCreate: {},
   postArticle: {},
+  postNoToc: {},
   postDefault: {
     color: Black.toString(),
     backgroundColor: White.toString(),
@@ -29,6 +31,10 @@ export default createStyles({
     width: articleWidth,
     flexGrow: 0,
     flexShrink: 0,
+
+    '&$postNoToc': {
+      width: mainWidth,
+    },
 
     '& $postHeader': {
       display: 'flex',

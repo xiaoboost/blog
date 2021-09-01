@@ -3,6 +3,7 @@ import Moment from 'moment';
 import styles from './index.jss';
 
 import { ToContent } from '../to-content';
+import { stringifyClass } from '@xiao-ai/utils';
 import { PostRendered } from '@blog/posts';
 import { Layout, LayoutProps } from '@blog/template-layout';
 
@@ -17,7 +18,9 @@ export function PostRender(props: Props) {
   return (
     <Layout {...props}>
       <section
-        className={styles.classes.postDefault}
+        className={stringifyClass(styles.classes.postDefault, {
+          [styles.classes.postNoToc]: !post.toc,
+        })}
         style={props ? undefined : { width: '100%' }}
       >
         <header className={styles.classes.postHeader}>

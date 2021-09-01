@@ -50,7 +50,7 @@ export default createStyles({
     height: '100%',
     transition: 'color .2s',
 
-    '& $mainNavItemHighlight': {
+    '&$mainNavItemHighlight': {
       color: Black.toString(),
     },
 
