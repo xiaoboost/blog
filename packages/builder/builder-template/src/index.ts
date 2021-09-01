@@ -1,14 +1,13 @@
 import path from 'path';
 import fs from 'fs';
 
-import { isFunc, isArray } from '@xiao-ai/utils';
-import { load, serve } from '@blog/server';
-import { build as esbuild, BuildResult } from 'esbuild';
+import { isArray } from '@xiao-ai/utils';
+import { build as esbuild } from 'esbuild';
 import { JssLoader } from '@blog/esbuild-loader-jss';
 import { ScriptLoader } from '@blog/esbuild-loader-script';
 import { FileLoader } from '@blog/esbuild-loader-file';
 import { assetNames, styleNames, scriptNames, publicPath } from '@blog/config';
-import { mergeBuild, isDevelopment, runScript, getCliOptions } from '@blog/utils';
+import { mergeBuild, isDevelopment, getCliOptions } from '@blog/utils';
 
 /** 选项数据结构 */
 interface Options {
@@ -30,30 +29,6 @@ const packageData = JSON.parse(fs.readFileSync(resolve('package.json'), 'utf-8')
 
 function resolve(...paths: string[]) {
   return path.join(root, ...paths);
-}
-
-function watch(result: BuildResult | null | undefined) {
-  const files = result?.outputFiles ?? [];
-
-  if (!isDevelopment || files.length === 0) {
-    return;
-  }
-
-  const jsFile = files.find((file) => path.extname(file.path) === '.js');
-  const jsCode = jsFile?.text;
-
-  if (!jsCode) {
-    return;
-  }
-
-  const runResult = runScript(jsCode, require);
-
-  if (isFunc(runResult.devApp)) {
-    load(runResult.devApp(), runResult.assets);
-  }
-  else {
-    console.error('入口文件必须含有名为\'devApp\'并返回 React.Node 的函数，用于调试');
-  }
 }
 
 function getOutput() {
@@ -91,20 +66,9 @@ export function build() {
     entryPoints: [option.input],
     outfile: outFile,
     minify: false,
-    logLevel: 'info',
-    platform: 'node',
-    write: !isDevelopment,
-    sourcemap: isDevelopment,
-    watch: !isDevelopment ? false : {
-      onRebuild(err, result) {
-        if (err) {
-          console.error(err.errors.map((er) => er.text));
-          return;
-        }
-
-        watch(result);
-      },
-    },
+    write: true,
+    bundle: true,
+    watch: isDevelopment,
     publicPath,
     assetNames,
     external: Object.keys(packageData.dependencies)
@@ -117,12 +81,6 @@ export function build() {
     },
     plugins,
   }))
-    .then((data) => {
-      if (isDevelopment) {
-        watch(data);
-        serve('/', 8080);
-      }
-    })
     .catch((e) => {
       console.error(e.message);
     });

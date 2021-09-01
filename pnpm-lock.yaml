@@ -10,7 +10,7 @@ importers:
       eslint: ^7.32.0
       typescript: ^4.4.2
     devDependencies:
-      '@blog/builder-website': link:packages/builder-website
+      '@blog/builder-website': link:packages/builder/builder-website
       '@typescript-eslint/eslint-plugin': registry.nlark.com/@typescript-eslint/eslint-plugin/4.29.3_5b13bab190e8051f191796d8c4619073
       '@typescript-eslint/parser': registry.nlark.com/@typescript-eslint/parser/4.29.3_eslint@7.32.0+typescript@4.4.2
       eslint: registry.nlark.com/eslint/7.32.0
@@ -33,7 +33,7 @@ importers:
       tslib: registry.nlark.com/tslib/2.3.1
       typescript: registry.nlark.com/typescript/4.4.2
 
-  packages/builder-template:
+  packages/builder/builder-template:
     specifiers:
       '@blog/config': workspace:*
       '@blog/esbuild-loader-file': workspace:*
@@ -50,23 +50,23 @@ importers:
       tslib: ^2.3.1
       typescript: ^4.4.2
     dependencies:
-      '@blog/config': link:../config
+      '@blog/config': link:../../config
       '@blog/esbuild-loader-file': link:../esbuild-loader-file
       '@blog/esbuild-loader-jss': link:../esbuild-loader-jss
       '@blog/esbuild-loader-script': link:../esbuild-loader-script
-      '@blog/server': link:../server
-      '@blog/utils': link:../utils
+      '@blog/server': link:../../server
+      '@blog/utils': link:../../utils
       '@xiao-ai/utils': registry.nlark.com/@xiao-ai/utils/1.4.3
       tslib: registry.nlark.com/tslib/2.3.1
     devDependencies:
-      '@blog/tsconfig': link:../tsconfig
-      '@types/blog': link:../typings
+      '@blog/tsconfig': link:../../tsconfig
+      '@types/blog': link:../../typings
       '@types/node': registry.nlark.com/@types/node/16.7.6
       esbuild: registry.nlark.com/esbuild/0.12.24
       eslint: registry.nlark.com/eslint/7.32.0
       typescript: registry.nlark.com/typescript/4.4.2
 
-  packages/builder-website:
+  packages/builder/builder-website:
     specifiers:
       '@blog/config': workspace:*
       '@blog/mdx-code-block-normal': workspace:*
@@ -97,16 +97,16 @@ importers:
       tslib: ^2.3.1
       typescript: ^4.4.2
     dependencies:
-      '@blog/config': link:../config
-      '@blog/mdx-code-block-normal': link:../mdx-code-block-normal
-      '@blog/mdx-code-block-typescript': link:../mdx-code-block-typescript
-      '@blog/mdx-katex': link:../mdx-katex
-      '@blog/posts': link:../posts
-      '@blog/server': link:../server
-      '@blog/template-layout': link:../template-layout
-      '@blog/template-post': link:../template-post
-      '@blog/template-view': link:../template-view
-      '@blog/utils': link:../utils
+      '@blog/config': link:../../config
+      '@blog/mdx-code-block-normal': link:../../mdx-code-block-normal
+      '@blog/mdx-code-block-typescript': link:../../mdx-code-block-typescript
+      '@blog/mdx-katex': link:../../mdx-katex
+      '@blog/posts': link:../../posts
+      '@blog/server': link:../../server
+      '@blog/template-layout': link:../../template-layout
+      '@blog/template-post': link:../../template-post
+      '@blog/template-view': link:../../template-view
+      '@blog/utils': link:../../utils
       '@mdx-js/react': registry.nlark.com/@mdx-js/react/1.6.22_react@17.0.2
       '@xiao-ai/utils': registry.nlark.com/@xiao-ai/utils/1.4.3
       esbuild: registry.nlark.com/esbuild/0.12.24
@@ -116,8 +116,8 @@ importers:
       rmrf: registry.nlark.com/rmrf/2.0.4
       tslib: registry.nlark.com/tslib/2.3.1
     devDependencies:
-      '@blog/tsconfig': link:../tsconfig
-      '@types/blog': link:../typings
+      '@blog/tsconfig': link:../../tsconfig
+      '@types/blog': link:../../typings
       '@types/md5': registry.nlark.com/@types/md5/2.3.1
       '@types/mdx-js__react': registry.nlark.com/@types/mdx-js__react/1.5.4
       '@types/node': registry.nlark.com/@types/node/16.7.6
@@ -127,24 +127,7 @@ importers:
       eslint: registry.nlark.com/eslint/7.32.0
       typescript: registry.nlark.com/typescript/4.4.2
 
-  packages/config:
-    specifiers:
-      '@blog/tsconfig': workspace:*
-      '@blog/utils': workspace:*
-      '@types/blog': workspace:*
-      eslint: ^7.32.0
-      tslib: ^2.3.1
-      typescript: ^4.4.2
-    dependencies:
-      '@blog/utils': link:../utils
-    devDependencies:
-      '@blog/tsconfig': link:../tsconfig
-      '@types/blog': link:../typings
-      eslint: registry.nlark.com/eslint/7.32.0
-      tslib: registry.nlark.com/tslib/2.3.1
-      typescript: registry.nlark.com/typescript/4.4.2
-
-  packages/esbuild-loader-file:
+  packages/builder/esbuild-loader-file:
     specifiers:
       '@blog/tsconfig': workspace:*
       '@blog/utils': workspace:*
@@ -156,18 +139,18 @@ importers:
       tslib: ^2.3.1
       typescript: ^4.4.2
     dependencies:
-      '@blog/utils': link:../utils
+      '@blog/utils': link:../../utils
       esbuild: registry.nlark.com/esbuild/0.12.24
       md5: 2.3.0
     devDependencies:
-      '@blog/tsconfig': link:../tsconfig
-      '@types/blog': link:../typings
+      '@blog/tsconfig': link:../../tsconfig
+      '@types/blog': link:../../typings
       '@types/md5': registry.nlark.com/@types/md5/2.3.1
       eslint: registry.nlark.com/eslint/7.32.0
       tslib: registry.nlark.com/tslib/2.3.1
       typescript: registry.nlark.com/typescript/4.4.2
 
-  packages/esbuild-loader-jss:
+  packages/builder/esbuild-loader-jss:
     specifiers:
       '@blog/esbuild-recorder-file': workspace:*
       '@blog/tsconfig': workspace:*
@@ -182,19 +165,19 @@ importers:
       typescript: ^4.4.2
     dependencies:
       '@blog/esbuild-recorder-file': link:../esbuild-recorder-file
-      '@blog/utils': link:../utils
+      '@blog/utils': link:../../utils
       '@xiao-ai/utils': registry.nlark.com/@xiao-ai/utils/1.4.3
       esbuild: registry.nlark.com/esbuild/0.12.24
     devDependencies:
-      '@blog/tsconfig': link:../tsconfig
-      '@types/blog': link:../typings
+      '@blog/tsconfig': link:../../tsconfig
+      '@types/blog': link:../../typings
       eslint: registry.nlark.com/eslint/7.32.0
       jss: registry.nlark.com/jss/10.7.1
       jss-preset-default: registry.nlark.com/jss-preset-default/10.7.1
       tslib: registry.nlark.com/tslib/2.3.1
       typescript: registry.nlark.com/typescript/4.4.2
 
-  packages/esbuild-loader-mdx:
+  packages/builder/esbuild-loader-mdx:
     specifiers:
       '@blog/tsconfig': workspace:*
       '@blog/utils': workspace:*
@@ -214,7 +197,7 @@ importers:
       unified: ^10.1.0
       yaml: ^1.10.2
     dependencies:
-      '@blog/utils': link:../utils
+      '@blog/utils': link:../../utils
       '@mdx-js/mdx': registry.nlark.com/@mdx-js/mdx/1.6.22
       '@types/mdast': registry.nlark.com/@types/mdast/3.0.10
       '@xiao-ai/utils': registry.nlark.com/@xiao-ai/utils/1.4.3
@@ -225,15 +208,15 @@ importers:
       unified: registry.nlark.com/unified/10.1.0
       yaml: registry.nlark.com/yaml/1.10.2
     devDependencies:
-      '@blog/tsconfig': link:../tsconfig
-      '@types/blog': link:../typings
+      '@blog/tsconfig': link:../../tsconfig
+      '@types/blog': link:../../typings
       '@types/react': registry.nlark.com/@types/react/17.0.19
       esbuild: registry.nlark.com/esbuild/0.12.24
       eslint: registry.nlark.com/eslint/7.32.0
       tslib: registry.nlark.com/tslib/2.3.1
       typescript: registry.nlark.com/typescript/4.4.2
 
-  packages/esbuild-loader-script:
+  packages/builder/esbuild-loader-script:
     specifiers:
       '@blog/esbuild-loader-jss': workspace:*
       '@blog/esbuild-recorder-file': workspace:*
@@ -251,20 +234,20 @@ importers:
     dependencies:
       '@blog/esbuild-loader-jss': link:../esbuild-loader-jss
       '@blog/esbuild-recorder-file': link:../esbuild-recorder-file
-      '@blog/utils': link:../utils
+      '@blog/utils': link:../../utils
       '@xiao-ai/utils': registry.nlark.com/@xiao-ai/utils/1.4.3
       esbuild: registry.nlark.com/esbuild/0.12.24
       md5: 2.3.0
     devDependencies:
-      '@blog/tsconfig': link:../tsconfig
-      '@types/blog': link:../typings
+      '@blog/tsconfig': link:../../tsconfig
+      '@types/blog': link:../../typings
       '@types/md5': registry.nlark.com/@types/md5/2.3.1
       eslint: registry.nlark.com/eslint/7.32.0
       jss: registry.nlark.com/jss/10.7.1
       tslib: registry.nlark.com/tslib/2.3.1
       typescript: registry.nlark.com/typescript/4.4.2
 
-  packages/esbuild-recorder-file:
+  packages/builder/esbuild-recorder-file:
     specifiers:
       '@blog/tsconfig': workspace:*
       '@types/blog': workspace:*
@@ -274,6 +257,20 @@ importers:
       typescript: ^4.4.2
     dependencies:
       esbuild: registry.nlark.com/esbuild/0.12.24
+    devDependencies:
+      '@blog/tsconfig': link:../../tsconfig
+      '@types/blog': link:../../typings
+      eslint: registry.nlark.com/eslint/7.32.0
+      tslib: registry.nlark.com/tslib/2.3.1
+      typescript: registry.nlark.com/typescript/4.4.2
+
+  packages/config:
+    specifiers:
+      '@blog/tsconfig': workspace:*
+      '@types/blog': workspace:*
+      eslint: ^7.32.0
+      tslib: ^2.3.1
+      typescript: ^4.4.2
     devDependencies:
       '@blog/tsconfig': link:../tsconfig
       '@types/blog': link:../typings
@@ -302,7 +299,7 @@ importers:
       highlight.js: registry.nlark.com/highlight.js/11.2.0
       react: registry.nlark.com/react/17.0.2
     devDependencies:
-      '@blog/builder-template': link:../builder-template
+      '@blog/builder-template': link:../builder/builder-template
       '@blog/tsconfig': link:../tsconfig
       '@types/blog': link:../typings
       '@types/react': registry.nlark.com/@types/react/17.0.19
@@ -336,7 +333,7 @@ importers:
       vscode-oniguruma: registry.nlark.com/vscode-oniguruma/1.5.1
       vscode-textmate: registry.nlark.com/vscode-textmate/5.4.0
     devDependencies:
-      '@blog/builder-template': link:../builder-template
+      '@blog/builder-template': link:../builder/builder-template
       '@blog/tsconfig': link:../tsconfig
       '@types/blog': link:../typings
       '@types/react': registry.nlark.com/@types/react/17.0.19
@@ -363,7 +360,7 @@ importers:
       react: registry.nlark.com/react/17.0.2
       tslib: registry.nlark.com/tslib/2.3.1
     devDependencies:
-      '@blog/builder-template': link:../builder-template
+      '@blog/builder-template': link:../builder/builder-template
       '@blog/tsconfig': link:../tsconfig
       '@blog/utils': link:../utils
       '@types/blog': link:../typings
@@ -387,7 +384,7 @@ importers:
       '@blog/utils': link:../utils
       fast-glob: registry.nlark.com/fast-glob/3.2.7
     devDependencies:
-      '@blog/esbuild-loader-mdx': link:../esbuild-loader-mdx
+      '@blog/esbuild-loader-mdx': link:../builder/esbuild-loader-mdx
       '@mdx-js/react': registry.nlark.com/@mdx-js/react/1.6.22_react@17.0.2
       esbuild: registry.nlark.com/esbuild/0.12.24
       eslint: registry.nlark.com/eslint/7.32.0
@@ -483,7 +480,7 @@ importers:
       react: registry.nlark.com/react/17.0.2
       tslib: registry.nlark.com/tslib/2.3.1
     devDependencies:
-      '@blog/builder-template': link:../builder-template
+      '@blog/builder-template': link:../builder/builder-template
       '@blog/tsconfig': link:../tsconfig
       '@types/blog': link:../typings
       '@types/react': registry.nlark.com/@types/react/17.0.19
@@ -515,7 +512,7 @@ importers:
       react: registry.nlark.com/react/17.0.2
       tslib: registry.nlark.com/tslib/2.3.1
     devDependencies:
-      '@blog/builder-template': link:../builder-template
+      '@blog/builder-template': link:../builder/builder-template
       '@blog/posts': link:../posts
       '@blog/tsconfig': link:../tsconfig
       '@types/blog': link:../typings
@@ -547,7 +544,7 @@ importers:
       react: registry.nlark.com/react/17.0.2
       tslib: registry.nlark.com/tslib/2.3.1
     devDependencies:
-      '@blog/builder-template': link:../builder-template
+      '@blog/builder-template': link:../builder/builder-template
       '@blog/tsconfig': link:../tsconfig
       '@types/blog': link:../typings
       '@types/react': registry.nlark.com/@types/react/17.0.19
@@ -1906,6 +1903,8 @@ packages:
       resolve: 1.20.0
       semver: 5.7.1
       source-map: 0.5.7
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   registry.nlark.com/@babel/generator/7.15.0:
@@ -1980,6 +1979,8 @@ packages:
       '@babel/template': registry.nlark.com/@babel/template/7.14.5
       '@babel/traverse': registry.nlark.com/@babel/traverse/7.15.0
       '@babel/types': registry.nlark.com/@babel/types/7.15.0
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   registry.nlark.com/@babel/helper-optimise-call-expression/7.14.5:
@@ -2014,6 +2015,8 @@ packages:
       '@babel/helper-optimise-call-expression': registry.nlark.com/@babel/helper-optimise-call-expression/7.14.5
       '@babel/traverse': registry.nlark.com/@babel/traverse/7.15.0
       '@babel/types': registry.nlark.com/@babel/types/7.15.0
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   registry.nlark.com/@babel/helper-simple-access/7.14.8:
@@ -2049,6 +2052,8 @@ packages:
       '@babel/template': registry.nlark.com/@babel/template/7.14.5
       '@babel/traverse': registry.nlark.com/@babel/traverse/7.15.0
       '@babel/types': registry.nlark.com/@babel/types/7.15.0
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   registry.nlark.com/@babel/highlight/7.14.5:
@@ -2078,7 +2083,7 @@ packages:
       '@babel/core': ^7.0.0-0
     dependencies:
       '@babel/core': registry.nlark.com/@babel/core/7.12.9
-      '@babel/helper-plugin-utils': registry.nlark.com/@babel/helper-plugin-utils/7.10.4
+      '@babel/helper-plugin-utils': registry.nlark.com/@babel/helper-plugin-utils/7.14.5
       '@babel/plugin-syntax-object-rest-spread': 7.8.3_@babel+core@7.12.9
       '@babel/plugin-transform-parameters': registry.nlark.com/@babel/plugin-transform-parameters/7.14.5_@babel+core@7.12.9
     dev: false
@@ -2092,7 +2097,7 @@ packages:
       '@babel/core': ^7.0.0-0
     dependencies:
       '@babel/core': registry.nlark.com/@babel/core/7.12.9
-      '@babel/helper-plugin-utils': registry.nlark.com/@babel/helper-plugin-utils/7.10.4
+      '@babel/helper-plugin-utils': registry.nlark.com/@babel/helper-plugin-utils/7.14.5
     dev: false
 
   registry.nlark.com/@babel/plugin-transform-parameters/7.14.5_@babel+core@7.12.9:
@@ -2142,6 +2147,8 @@ packages:
       '@babel/types': registry.nlark.com/@babel/types/7.15.0
       debug: registry.nlark.com/debug/4.3.2
       globals: registry.nlark.com/globals/11.12.0
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   registry.nlark.com/@babel/types/7.15.0:
@@ -2169,6 +2176,8 @@ packages:
       js-yaml: 3.14.1
       minimatch: 3.0.4
       strip-json-comments: registry.nlark.com/strip-json-comments/3.1.1
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   registry.nlark.com/@humanwhocodes/config-array/0.5.0:
@@ -2180,6 +2189,8 @@ packages:
       '@humanwhocodes/object-schema': registry.nlark.com/@humanwhocodes/object-schema/1.2.0
       debug: registry.nlark.com/debug/4.3.2
       minimatch: 3.0.4
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   registry.nlark.com/@humanwhocodes/object-schema/1.2.0:
@@ -2230,6 +2241,8 @@ packages:
       unified: registry.nlark.com/unified/9.2.0
       unist-builder: registry.nlark.com/unist-builder/2.0.3
       unist-util-visit: registry.nlark.com/unist-util-visit/2.0.3
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   registry.nlark.com/@mdx-js/react/1.6.22_react@17.0.2:
@@ -2955,6 +2968,8 @@ packages:
       table: registry.nlark.com/table/6.7.1
       text-table: 0.2.0
       v8-compile-cache: 2.3.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   registry.nlark.com/espree/7.3.1:
@@ -3380,6 +3395,8 @@ packages:
       micromark-util-types: registry.nlark.com/micromark-util-types/1.0.1
       parse-entities: 3.0.0
       unist-util-stringify-position: 3.0.0
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   registry.nlark.com/mdast-util-to-hast/10.0.1:
@@ -3615,6 +3632,8 @@ packages:
       micromark-util-symbol: registry.nlark.com/micromark-util-symbol/1.0.0
       micromark-util-types: registry.nlark.com/micromark-util-types/1.0.1
       parse-entities: 3.0.0
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   registry.nlark.com/mime-db/1.49.0:
@@ -3769,6 +3788,8 @@ packages:
       is-alphabetical: 1.0.4
       remark-parse: registry.nlark.com/remark-parse/8.0.3
       unified: registry.nlark.com/unified/9.2.0
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   registry.nlark.com/remark-parse/10.0.0:
@@ -3779,6 +3800,8 @@ packages:
       '@types/mdast': registry.nlark.com/@types/mdast/3.0.10
       mdast-util-from-markdown: registry.nlark.com/mdast-util-from-markdown/1.0.0
       unified: registry.nlark.com/unified/10.1.0
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   registry.nlark.com/remark-parse/8.0.3:
@@ -3831,6 +3854,8 @@ packages:
       remark-parse: registry.nlark.com/remark-parse/10.0.0
       remark-stringify: registry.nlark.com/remark-stringify/10.0.0
       unified: registry.nlark.com/unified/10.1.0
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   registry.nlark.com/rmrf/2.0.4:

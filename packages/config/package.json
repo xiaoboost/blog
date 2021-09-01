@@ -22,9 +22,6 @@
     "type": "git",
     "url": "https://github.com/xiaoboost/blog"
   },
-  "dependencies": {
-    "@blog/utils": "workspace:*"
-  },
   "devDependencies": {
     "@blog/tsconfig": "workspace:*",
     "@types/blog": "workspace:*",

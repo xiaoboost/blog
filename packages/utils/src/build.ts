@@ -13,6 +13,9 @@ export function mergeBuild(opt: BuildOptions): BuildOptions {
     sourcemap: false,
     publicPath: '/',
     format: 'cjs',
+    logLevel: 'info',
+    platform: 'node',
+    charset: 'utf8',
     mainFields: ['source', 'module', 'main'],
     ...opt,
     define: {

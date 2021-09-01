@@ -54,6 +54,7 @@ export async function build() {
     write: false,
     outfile: 'index.js',
     platform: 'node',
+    logLevel: 'error',
     external: Object.keys(packageData.dependencies)
       .concat(Object.keys(packageData.devDependencies)),
   }))
