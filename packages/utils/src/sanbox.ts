@@ -44,7 +44,7 @@ export function runScript<T = any>(
       }
     `))()(fake, fake.exports, requireFunc, ...(params?.params ?? []));
   }
-  catch (e) {
+  catch (e: any) {
     throw new Error(e);
   }
 

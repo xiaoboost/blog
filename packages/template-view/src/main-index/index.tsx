@@ -1,4 +1,4 @@
-import './index.styl';
+// import './index.styl';
 
 import React from 'react';
 import Moment from 'moment';
@@ -53,7 +53,7 @@ export interface Props extends LayoutProps, PaginationProps {
   posts: PostProps[];
 }
 
-export function Render(props: Props) {
+export function IndexRender(props: Props) {
   return (
     <Layout {...props}>
       <div className='posts-list'>
