@@ -37,7 +37,7 @@ export function TsCodeBlock({
     <CodeBlockWrapper lang={lang} lineCount={codeLines.length} highlightLines={highlightLines}>
       <ul className={classes.codeBlockLsp}>
         {codeLines.map((line, i) => (
-          <li className={stringifyClass({
+          <li key={i} className={stringifyClass({
             [normalStyles.classes.codeBlockHighlightLine]: highlightLines[i],
           })}>
             <span dangerouslySetInnerHTML={{ __html: line }} />

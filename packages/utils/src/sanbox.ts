@@ -22,7 +22,9 @@ export function runScript<T = any>(
         result = requireOut(id);
       }
     }
-    catch(e) {}
+    catch (e) {
+      // ..
+    }
 
     if (!result) {
       result = require(id);

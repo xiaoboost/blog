@@ -35,14 +35,14 @@ async function finish(code: string) {
     const assets = runScript(code, require);
 
     if (option.development) {
-
+      // ..
     }
     else {
       await rm(output);
       await writeDisk(assets);
     }
   }
-  catch(e: any) {
+  catch (e: any) {
     console.error(e.message);
   }
 }

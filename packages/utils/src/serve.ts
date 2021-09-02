@@ -1,13 +1,11 @@
 import Koa from 'koa';
 import Chalk from 'chalk';
+import fs from 'fs';
 
-import { fs } from 'memfs';
 import { join } from 'path';
 import { getType } from 'mime';
 
-const vfs = fs.promises;
-
-export function serve(dir: string, port: number) {
+export function serve(dir: string, port: number, vfs: typeof fs.promises) {
   const app = new Koa();
 
   app.listen(port);

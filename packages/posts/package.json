@@ -13,9 +13,7 @@
   ],
   "scripts": {
     "build": "node ./build.js",
-    "watch": "pnpm run build -- --development",
-    "lint": "eslint --quiet --no-error-on-unmatched-pattern --config ../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}",
-    "lint:fix": "eslint --fix --quiet --no-error-on-unmatched-pattern --config ../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}"
+    "watch": "pnpm run build -- --development"
   },
   "repository": {
     "type": "git",
@@ -28,10 +26,6 @@
   "devDependencies": {
     "@blog/esbuild-loader-mdx": "workspace:*",
     "@mdx-js/react": "^1.6.22",
-    "esbuild": "^0.12.24",
-    "eslint": "^7.32.0",
-    "react": "^17.0.2",
-    "tslib": "^2.3.1",
-    "typescript": "^4.4.2"
+    "esbuild": "^0.12.24"
   }
 }
