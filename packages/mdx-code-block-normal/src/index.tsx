@@ -36,7 +36,14 @@ export function CodeBlockWrapper(props: React.PropsWithChildren<WrapperProps>) {
       <code className={classes.codeBlockList}>
         <ul className={classes.codeBlockGutter}>
           {Array(lineCount).fill(0).map((_, i) => (
-            <li className={highlightLines[i] ? classes.codeBlockHighlightLine : ''}>{i + 1}</li>
+            <li
+              key={i}
+              className={stringifyClass({
+                [classes.codeBlockHighlightLine]: highlightLines[i],
+              })}
+            >
+              {i + 1}
+            </li>
           ))}
         </ul>
         <span className={classes.codeBlockBox}>
@@ -74,7 +81,7 @@ export function CodeBlock({ lang, children }: React.PropsWithChildren<CodeBlockP
     <CodeBlockWrapper lang={lang} lineCount={codeLines.length} highlightLines={highlightLines}>
       <ul className={classes.codeBlockBox}>
         {codeLines.map((line, i) => (
-          <li className={stringifyClass({
+          <li key={i} className={stringifyClass({
             [classes.codeBlockHighlightLine]: highlightLines[i],
           })}>
             <span dangerouslySetInnerHTML={{ __html: line }} />

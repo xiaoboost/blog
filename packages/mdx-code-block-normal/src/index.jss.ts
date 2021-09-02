@@ -126,7 +126,7 @@ export default createStyles({
       },
 
       '& > li:after': {
-        content: `"　"`,
+        content: `" "`,
       },
     },
 

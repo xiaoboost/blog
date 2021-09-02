@@ -11,9 +11,9 @@ if (btn && body) {
   const options: AddEventListenerOptions | boolean = !supportsPassive
     ? false
     : {
-        passive: true,
-        capture: false,
-      };
+      passive: true,
+      capture: false,
+    };
 
   let inScrollTop = false;
 
