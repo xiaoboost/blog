@@ -1,19 +1,37 @@
 import path from 'path';
 import rm from 'rmrf';
 
-import { build as esbuild } from 'esbuild';
+import { fs as mfs } from 'memfs';
+import { build as esbuild, BuildResult } from 'esbuild';
 import { promises as fs, readFileSync } from 'fs';
-import { mergeBuild, runScript, getCliOptions, AssetData } from '@blog/utils';
+import { mergeBuild, runScript, getCliOptions, AssetData, serve } from '@blog/utils';
 
 interface Options {
   outDir: string;
+  internal?: string;
   development?: boolean;
 }
+
+let isServerSet = false;
 
 const option = getCliOptions<Options>();
 const input = path.join(__dirname, '../bundler/index.ts');
 const output = path.join(process.cwd(), option.outDir);
+const packageMatcher = /^@blog\//;
 const packageData = JSON.parse(readFileSync(path.join(__dirname, '../package.json'), 'utf-8'));
+const external = (
+  Object.keys(packageData.dependencies)
+    .concat(Object.keys(packageData.devDependencies))
+    .filter((name) => {
+      if (option.internal) {
+        const packageName = name.replace(/^@blog\//, '');
+        return !option.internal.includes(packageName);
+      }
+      else {
+        return !packageMatcher.test(name);
+      }
+    })
+);
 
 // 检查必填项
 ['outDir'].forEach((key) => {
@@ -22,24 +40,31 @@ const packageData = JSON.parse(readFileSync(path.join(__dirname, '../package.jso
   }
 });
 
-async function writeDisk(files: AssetData[]) {
+async function writeDisk(files: AssetData[], vfs: typeof fs) {
   for (const file of files) {
     const filePath = path.join(output, file.path);
-    await fs.mkdir(path.dirname(filePath), { recursive: true });
-    await fs.writeFile(filePath, file.contents);
+    await vfs.mkdir(path.dirname(filePath), { recursive: true });
+    await vfs.writeFile(filePath, file.contents);
   }
 }
 
-async function finish(code: string) {
+async function finish(result?: BuildResult) {
+  const code = result?.outputFiles?.[0].text ?? '';
+
   try {
-    const assets = runScript(code, require);
+    const assets = runScript<AssetData[]>(code, require);
 
     if (option.development) {
-      // ..
+      await writeDisk(assets, mfs.promises as any);
+
+      if (!isServerSet) {
+        isServerSet = true;
+        serve(output, 6535, mfs.promises as any);
+      }
     }
     else {
       await rm(output);
-      await writeDisk(assets);
+      await writeDisk(assets, fs);
     }
   }
   catch (e: any) {
@@ -55,12 +80,23 @@ export async function build() {
     outfile: 'index.js',
     platform: 'node',
     logLevel: 'error',
-    external: Object.keys(packageData.dependencies)
-      .concat(Object.keys(packageData.devDependencies)),
+    watch: !option.development ? false : {
+      onRebuild(err, result) {
+        if (err) {
+          console.error(err.message);
+          return;
+        }
+
+        if (result) {
+          finish(result);
+        }
+      },
+    },
+    external,
   }))
     .catch((e) => {
       console.error(e.message);
     });
 
-  await finish(result?.outputFiles?.[0].text ?? '');
+  await finish(result!);
 }
