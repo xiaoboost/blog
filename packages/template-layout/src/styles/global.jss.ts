@@ -1,6 +1,7 @@
 import {
   createStyles,
   createScrollbarWidth,
+  getHeadSelector,
   mergeStyles,
   FontSerif,
   FontMono,
@@ -21,7 +22,7 @@ const global = createStyles({
     a: {
       textDecoration: 'none',
     },
-    [Array(5).fill(0).map((_, i) => `h${i + 1}`).join(',')]: {
+    [getHeadSelector()]: {
       fontFamily: FontSerif,
       fontWeight: 'normal',
       position: 'relative',
