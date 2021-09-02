@@ -1,4 +1,5 @@
-import { marginTop, levelLimit } from './constant';
+import { levelLimit } from './constant';
+import { headerBodyMargin } from '@blog/styles';
 import { supportsPassive, addClassName, removeClassName } from '@xiao-ai/utils/web';
 
 import styles from './index.jss';
@@ -18,8 +19,8 @@ const menu = document.body.querySelector<HTMLElement>(`.${styles.classes.toConte
 const mainBody = menu?.parentElement;
 
 if (menu && mainBody) {
-  const menuItems = Array.from(menu.querySelectorAll<HTMLLIElement>(styles.classes.menuItem));
-  const bodyTop = mainBody.offsetTop - marginTop;
+  const menuItems = Array.from(menu.querySelectorAll<HTMLLIElement>(`.${styles.classes.menuItem}`));
+  const bodyTop = mainBody.offsetTop - headerBodyMargin;
   const options: AddEventListenerOptions | boolean = !supportsPassive ? false : {
     passive: true,
     capture: false,
@@ -34,7 +35,7 @@ if (menu && mainBody) {
     if (top > bodyTop && (status === Status.Static || status === Status.Init)) {
       status = Status.Follow;
       menu.style.position = 'fixed';
-      menu.style.top = `${marginTop}px`;
+      menu.style.top = `${headerBodyMargin}px`;
     }
     else if (top <= bodyTop && (status === Status.Follow || status === Status.Init)) {
       status = Status.Static;

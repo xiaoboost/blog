@@ -5,7 +5,10 @@ import styles from './index.jss';
 import { ToContent } from '../to-content';
 import { stringifyClass } from '@xiao-ai/utils';
 import { PostRendered } from '@blog/posts';
+import { MDXProvider } from '@mdx-js/react';
 import { Layout, LayoutProps } from '@blog/template-layout';
+
+import * as title from './title';
 
 export interface Props extends LayoutProps {
   /** 文章数据 */
@@ -30,7 +33,13 @@ export function PostRender(props: Props) {
           </time>
         </header>
         <article className={styles.classes.postArticle}>
-          <post.Render />
+          <MDXProvider
+            components={{
+              ...title,
+            }}
+          >
+            <post.Render />
+          </MDXProvider>
         </article>
       </section>
       {post.toc && <ToContent />}

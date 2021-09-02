@@ -7,18 +7,21 @@ import {
   Shadow,
   WhiteBg,
   GrayLight,
+  BlackLight,
   BlackLighter,
   BlackExtraLight,
   YellowLight,
   YellowLighter,
   FontDefault,
   createMediaStyles,
+  getHeadSelector,
 } from '@blog/styles';
 
 const indent = 24;
 const smallIndent = 14;
 
 export default createStyles({
+  postAnchor: {},
   postHeader: {},
   postHeaderTitle: {},
   postHeaderCreate: {},
@@ -35,7 +38,6 @@ export default createStyles({
     '&$postNoToc': {
       width: mainWidth,
     },
-
     '& $postHeader': {
       display: 'flex',
       height: 50,
@@ -67,6 +69,28 @@ export default createStyles({
       '& > *:first-child': {
         marginTop: '0 !important',
       },
+      [getHeadSelector('& ')]: {
+        position: 'relative',
+        display: 'flex',
+        alignItems: 'center',
+        ...createMediaStyles(indent, smallIndent, (indent) => ({
+          marginLeft: `${-1 * indent}px`,
+          marginRight: `${-1 * indent}px`,
+        })),
+        '& $postAnchor': {
+          fontSize: '.8em',
+          color: BlackLight.toString(),
+          cursor: 'pointer',
+          opacity: 0,
+          width: indent,
+          transition: 'opacity .2s',
+          boxSizing: 'border-box',
+          textAlign: 'center',
+        },
+        '&:hover $postAnchor': {
+          opacity: 1,
+        },
+      },
       '& p': {
         lineHeight: 1.7,
         textIndent: '2em',
@@ -89,7 +113,9 @@ export default createStyles({
         margin: '0 3px',
         fontStyle: 'normal',
         textDecoration: 'none',
+        // eslint-disable-next-line max-len
         backgroundImage: `linear-gradient(to top, transparent, transparent 0px, ${BlackLighter.toString()} 0px, ${BlackLighter.toString()} 1px, transparent 1px)`,
+        // eslint-disable-next-line max-len
         textShadow: `-1px -1px 0 #fafafa, 1px -1px 0 ${WhiteBg.toString()}, -1px 1px 0 ${WhiteBg.toString()}, 1px 1px ${WhiteBg.toString()}`,
       },
       '& s': {

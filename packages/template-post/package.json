@@ -28,6 +28,7 @@
     "@blog/styles": "workspace:*",
     "@blog/template-layout": "workspace:*",
     "@blog/utils": "workspace:*",
+    "@mdx-js/react": "^1.6.22",
     "@xiao-ai/utils": "^1.4.3",
     "moment": "^2.29.1",
     "react": "^17.0.2",
@@ -38,6 +39,7 @@
     "@blog/posts": "workspace:*",
     "@blog/tsconfig": "workspace:*",
     "@types/blog": "workspace:*",
+    "@types/mdx-js__react": "^1.5.4",
     "@types/react": "^17.0.19",
     "eslint": "^7.32.0",
     "typescript": "^4.4.2"

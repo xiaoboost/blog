@@ -4,7 +4,7 @@ import { scrollTopLimit, fadeTime } from './constant';
 
 import styles from './index.jss';
 
-const btn = document.body.querySelector<HTMLElement>(styles.classes.gotoTop);
+const btn = document.body.querySelector<HTMLElement>(`.${styles.classes.gotoTop}`);
 const body = btn?.parentElement;
 
 if (btn && body) {

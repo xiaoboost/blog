@@ -82,7 +82,11 @@ export const asideMarginLeft = 20;
 export const headerBodyMargin = 20;
 /** 默认字体大小 */
 export const FontDefaultSize = 14;
-
+/** 移动端判断 */
 export const mediaPhone = `@media only screen and (max-width: ${mainWidth}px)`;
-
+/** PC 端判断 */
 export const mediaPc = `@media only screen and (min-width: ${mainWidth}px)`;
+/** 标题元素选择器 */
+export const getHeadSelector = (pre = '') => {
+  return Array(5).fill(0).map((_, i) => `${pre}h${i + 1}`).join(',');
+};
