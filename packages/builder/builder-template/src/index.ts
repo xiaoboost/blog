@@ -13,7 +13,7 @@ import { mergeBuild, isDevelopment, getCliOptions } from '@blog/utils';
 interface Options {
   name: string;
   input: string;
-  loader?: Record<string, string | string[]>;
+  loader?: Record<string, string>;
 }
 
 const root = process.cwd();
@@ -56,7 +56,7 @@ export function build() {
     for (const loaderType of Object.keys(option.loader)) {
       const value = option.loader[loaderType];
       plugins.push(FileLoader({
-        exts: isArray(value) ? value : [value],
+        exts: value.split(','),
         type: loaderType as "text" | "binary",
       }));
     }

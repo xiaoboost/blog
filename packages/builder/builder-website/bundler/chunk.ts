@@ -52,7 +52,8 @@ export class Chunk {
         return;
       }
 
-      const newCode = preCode + assets.map((asset) => asset.contents.toString('utf-8')).join(codeJoin);
+      const bundledCode = assets.map((asset) => asset.contents.toString('utf-8')).join(codeJoin);
+      const newCode = preCode + bundledCode;
       const getName = ext === '.js' ? getScriptName : getStyleName;
       const name = normalize(path.format({
         ext: ext,

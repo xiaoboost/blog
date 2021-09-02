@@ -46,7 +46,7 @@ function getOptions(args: string[]) {
 
     const optName = matchResult[1];
 
-    let optValue: string[] | string | boolean = matchResult[3] ? matchResult[3].slice(1) : true;
+    let optValue: string | boolean = matchResult[3] ? matchResult[3].slice(1) : true;
 
     if (isString(optValue)) {
       if (optValue === 'true') {
@@ -54,9 +54,6 @@ function getOptions(args: string[]) {
       }
       else if (optValue === 'false') {
         optValue = false;
-      }
-      else if (optValue.includes(',')) {
-        optValue = optValue.split(',');
       }
     }
 
