@@ -9,7 +9,6 @@ import {
   mainWidth,
   articleWidth,
   asideMarginLeft,
-  headerBodyMargin,
 } from '@blog/styles';
 
 export default createStyles({
@@ -31,40 +30,39 @@ export default createStyles({
     position: 'absolute',
     width: mainWidth - articleWidth - asideMarginLeft,
     marginLeft: articleWidth + asideMarginLeft,
-    marginTop: headerBodyMargin,
     boxSizing: 'border-box',
     padding: `0 14px`,
     fontSize: 14,
     flexGrow: 0,
     flexShrink: 0,
 
-    '& #menuListHeader': {
+    '& $menuListHeader': {
       padding: '8px 0',
       borderBottom: `1px solid ${GrayLight.toString()}`,
     },
 
-    '& #menuList': {
+    '& $menuList': {
       padding: 0,
 
-      '& #menuList': {
+      '& $menuList': {
         paddingLeft: 16,
         marginBottom: 8,
       },
     },
 
-    '& #menuListArticle': {
+    '& $menuListArticle': {
       marginLeft: 16,
     },
 
-    '& #menuItem': {
+    '& $menuItem': {
       marginTop: 4,
 
-      '& #menuLevel1': {
+      '& $menuLevel1': {
         marginTop: 0,
       },
     },
 
-    '& #menuItemHighlight > a': {
+    '& $menuItemHighlight > a': {
       color: BlueLight.toString(),
     },
 

@@ -1,25 +1,27 @@
-// import './index.styl';
-
 import React from 'react';
-// import type Token from 'markdown-it/lib/token';
+import styles from './index.jss';
 
-// import { Markdown } from 'build/markdown';
-// import { toPinyin } from 'build/utils/string';
+import { toPinyin } from '@blog/utils';
 import { levelLimit } from './constant';
 import { stringifyClass } from '@xiao-ai/utils';
+import { PostRendered } from '@blog/posts';
 
-export const pluginName = 'toc';
+type AST = PostRendered['ast'];
 
 export interface Props {
-  // tokens: Token[];
+  data: AST;
 }
 
-interface NavTitle {
+export interface NavTitleData {
   content: string;
   hash: string;
   level: number;
-  parent?: NavTitle;
-  children?: NavTitle[];
+  parent?: NavTitleData;
+  children?: NavTitleData[];
+}
+
+export interface NavTitleProps {
+  titles: NavTitleData[];
 }
 
 // function createTitles(tokens: Token[], deep = 2) {
@@ -126,13 +128,37 @@ interface NavTitle {
 //   </ul>;
 // }
 
-export function ToContent(props: Props) {
-  // const titles = createTitles(tokens, levelLimit);
+function createNavFromAst(ast: AST, limit: number): NavTitleData[] {
+  return [];
+}
 
-  return <aside>
-    {/* <header className='menu-list-header'>目录</header>
-    <article className='menu-list-article'>
+function NavTitle({ titles }: NavTitleProps) {
+  return <ul className={styles.classes.menuList}>
+    {titles.map((title, i) => (
+      <li
+        key={i}
+        className={stringifyClass(
+          styles.classes.menuItem,
+          styles.classes[`menuLevel${title.level}`],
+        )}
+      >
+        <a
+          href={`#${title.hash}`}
+          dangerouslySetInnerHTML={{ __html: title.content }}
+        />
+        {title.children && <NavTitle titles={title.children} />}
+      </li>
+    ))}
+  </ul>;
+}
+
+export function ToContent({ data }: Props) {
+  const titles = createNavFromAst(data, levelLimit);
+
+  return <aside className={styles.classes.toContent}>
+    <header className={styles.classes.menuListHeader}>目录</header>
+    <article className={styles.classes.menuListArticle}>
       <NavTitle titles={titles} />
-    </article> */}
+    </article>
   </aside>;
 }
