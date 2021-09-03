@@ -17,7 +17,7 @@ let isServerSet = false;
 const option = getCliOptions<Options>();
 const input = path.join(__dirname, '../bundler/index.ts');
 const output = path.join(process.cwd(), option.outDir);
-const packageMatcher = /^@blog\//;
+const packageMatcher = /^@blog\/(posts|mdx|template)/;
 const packageData = JSON.parse(readFileSync(path.join(__dirname, '../package.json'), 'utf-8'));
 const external = (
   Object.keys(packageData.dependencies)

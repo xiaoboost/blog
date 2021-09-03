@@ -42,7 +42,7 @@ export function PostRender(props: Props) {
           </MDXProvider>
         </article>
       </section>
-      {post.toc && <ToContent />}
+      {post.toc && <ToContent data={post.ast} />}
     </Layout>
   )
 }

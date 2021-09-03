@@ -12,9 +12,7 @@
     "update": "pnpm update -r",
     "update:last": "pnpm update -r -L",
     "build": "build-website --outDir=dist",
-    "watch": "pnpm run build -- --development --internal=posts",
-    "watch:all": "pnpm run build -- --development",
-    "write": "pnpm run watch --parallel --filter blog --filter @blog/posts",
+    "watch": "pnpm run build -- --development",
     "build:dep": "pnpm run build --filter @blog/builder-website...",
     "lint": "pnpm run -r lint --parallel --filter .",
     "lint:fix": "pnpm run -r lint:fix --parallel --filter ."

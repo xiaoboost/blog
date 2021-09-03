@@ -14,6 +14,7 @@ import {
   YellowLighter,
   FontDefault,
   createMediaStyles,
+  createHeadStyles,
   getHeadSelector,
 } from '@blog/styles';
 
@@ -66,9 +67,11 @@ export default createStyles({
       ...createMediaStyles(indent, smallIndent, (width) => ({
         padding: `16px ${width}px`,
       })),
-      '& > *:first-child': {
-        marginTop: '0 !important',
-      },
+      ...createHeadStyles('& ', (level) => ({
+        fontSize: `${(1.6 - 0.2 * (level - 1))}em`,
+        marginTop: `${(1.1 - 0.1 * (level - 1))}em`,
+        marginBottom: `${(0.8 - 0.05 * (level - 1))}em`,
+      })),
       [getHeadSelector('& ')]: {
         position: 'relative',
         display: 'flex',
@@ -91,6 +94,9 @@ export default createStyles({
           opacity: 1,
         },
       },
+      '& > *:first-child': {
+        marginTop: '0 !important',
+      },
       '& p': {
         lineHeight: 1.7,
         textIndent: '2em',
@@ -106,8 +112,9 @@ export default createStyles({
         fontSize: '0.85em',
         backgroundColor: YellowLighter.toString(),
         borderBottom: `0.1em solid ${YellowLight.toString()}`,
-        borderTopLeftRadius: 4,
-        borderTopRightRadius: 4,
+        top: -1.5,
+        borderRadius: 2,
+        position: 'relative',
       },
       '& em': {
         margin: '0 3px',

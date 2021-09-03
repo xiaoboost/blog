@@ -8,11 +8,14 @@ import { mediaPhone, mediaPc } from './constant';
 export { jss };
 export * from 'jss';
 
-jss.setup(preset());
-
 type JssStyle<C extends string | number = string> = Pick<StyleSheet<C>, 'classes'>;
 
 export function createStyles<C extends string = string>(styles: Styles<C>): JssStyle<C> {
+  if (!(jss as any)._$isSetup) {
+    (jss as any)._$isSetup = true;
+    jss.setup(preset());
+  }
+
   return jss.createStyleSheet(styles, {
     link: false,
     index: 0,
@@ -76,4 +79,15 @@ export function createMediaStyles<T>(
     [mediaPc]: template(pcParam),
     [mediaPhone]: template(phoneParam),
   };
+}
+
+/** 迭代标题元素 */
+export function createHeadStyles(pre = '', cb: (level: number) => Styles) {
+  const styles: Styles = {};
+
+  for (let i = 1; i < 6; i++) {
+    styles[`${pre}h${i}`] = cb(i);
+  }
+
+  return styles;
 }

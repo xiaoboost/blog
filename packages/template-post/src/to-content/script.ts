@@ -1,8 +1,9 @@
 import { levelLimit } from './constant';
-import { headerBodyMargin } from '@blog/styles';
+import { headerBodyMargin } from '@blog/styles/src/constant';
 import { supportsPassive, addClassName, removeClassName } from '@xiao-ai/utils/web';
 
-import styles from './index.jss';
+import tocStyles from './index.jss';
+import postStyles from '../post/index.jss';
 
 const enum Status {
   Init,
@@ -15,11 +16,13 @@ interface TitlePosition {
   offsetTop: number;
 }
 
-const menu = document.body.querySelector<HTMLElement>(`.${styles.classes.toContent}`);
+const menu = document.body.querySelector<HTMLElement>(`.${tocStyles.classes.toContent}`);
 const mainBody = menu?.parentElement;
 
 if (menu && mainBody) {
-  const menuItems = Array.from(menu.querySelectorAll<HTMLLIElement>(`.${styles.classes.menuItem}`));
+  const menuItems = Array.from(
+    menu.querySelectorAll<HTMLLIElement>(`.${tocStyles.classes.menuItem}`),
+  );
   const bodyTop = mainBody.offsetTop - headerBodyMargin;
   const options: AddEventListenerOptions | boolean = !supportsPassive ? false : {
     passive: true,
@@ -49,17 +52,19 @@ if (menu && mainBody) {
 
     menuItems.forEach((el) => {
       if (el === highLightItem) {
-        addClassName(highLightItem, styles.classes.menuItemHighlight);
+        addClassName(highLightItem, tocStyles.classes.menuItemHighlight);
       }
       else {
-        removeClassName(el, styles.classes.menuItemHighlight);
+        removeClassName(el, tocStyles.classes.menuItemHighlight);
       }
     });
   };
   const recordTitlePosition = () => {
     const article = document.querySelector<HTMLElement>('.main-article');
 
-    titlePosition = Array.from(article?.querySelectorAll<HTMLAreaElement>('.anchor') ?? [])
+    titlePosition = Array.from(
+      article?.querySelectorAll<HTMLAreaElement>(postStyles.classes.postAnchor) ?? [],
+    )
       .map((el) => {
         const parent = el.parentElement;
         const tag = parent?.tagName.toLowerCase();
