@@ -28,6 +28,7 @@ export default createStyles({
   postHeaderCreate: {},
   postArticle: {},
   postNoToc: {},
+  postSoftBreak: {},
   postDefault: {
     color: Black.toString(),
     backgroundColor: White.toString(),
@@ -93,6 +94,10 @@ export default createStyles({
         '&:hover $postAnchor': {
           opacity: 1,
         },
+      },
+      '& span$postSoftBreak': {
+        display: 'inline-block',
+        width: '2em',
       },
       '& > *:first-child': {
         marginTop: '0 !important',
