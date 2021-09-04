@@ -23,12 +23,18 @@ const external = (
   Object.keys(packageData.dependencies)
     .concat(Object.keys(packageData.devDependencies))
     .filter((name) => {
-      if (option.internal) {
-        const packageName = name.replace(/^@blog\//, '');
-        return !option.internal.includes(packageName);
-      }
-      else {
+      // 不填表示全部包含
+      if (!option.internal) {
         return !packageMatcher.test(name);
+      }
+      // 为`'none'`表示全部排除
+      else if (option.internal === 'none') {
+        return true;
+      }
+      // 指定包含
+      else if (option.internal) {
+        const packageName = name.replace(/^@blog\//, '');
+        return !option.internal.split(',').includes(packageName);
       }
     })
 );
