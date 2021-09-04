@@ -1,6 +1,6 @@
 {
-  "name": "@blog/animation",
-  "description": "blog's animation",
+  "name": "@blog/web",
+  "description": "blog's web utils",
   "version": "1.0.0",
   "author": "xiaoboost",
   "license": "MIT",

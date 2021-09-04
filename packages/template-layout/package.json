@@ -25,7 +25,7 @@
     "url": "https://github.com/xiaoboost/blog"
   },
   "dependencies": {
-    "@blog/animation": "workspace:*",
+    "@blog/web": "workspace:*",
     "@blog/styles": "workspace:*",
     "@blog/utils": "workspace:*",
     "@xiao-ai/utils": "^1.4.3",
