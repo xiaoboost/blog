@@ -24,6 +24,8 @@ export interface WrapperProps {
   lineCount: number;
   /** 高亮的行数 */
   highlightLines: Record<number, boolean>;
+  /** 列表的样式名称 */
+  listClassName?: string;
 }
 
 export function CodeBlockWrapper(props: React.PropsWithChildren<WrapperProps>) {
@@ -47,7 +49,9 @@ export function CodeBlockWrapper(props: React.PropsWithChildren<WrapperProps>) {
           ))}
         </ul>
         <span className={classes.codeBlockBox}>
-          {children}
+          <ul className={stringifyClass(classes.codeBlockCode, props.listClassName)}>
+            {children}
+          </ul>
         </span>
       </code>
     </pre>
@@ -79,15 +83,15 @@ export function CodeBlock({ lang, children }: React.PropsWithChildren<CodeBlockP
 
   return (
     <CodeBlockWrapper lang={lang} lineCount={codeLines.length} highlightLines={highlightLines}>
-      <ul className={classes.codeBlockBox}>
-        {codeLines.map((line, i) => (
-          <li key={i} className={stringifyClass({
+      {codeLines.map((line, i) => (
+        <li
+          key={i}
+          className={stringifyClass({
             [classes.codeBlockHighlightLine]: highlightLines[i],
-          })}>
-            <span dangerouslySetInnerHTML={{ __html: line }} />
-          </li>
-        ))}
-      </ul>
+          })}
+          dangerouslySetInnerHTML={{ __html: line }}
+        />
+      ))}
     </CodeBlockWrapper>
   );
 }

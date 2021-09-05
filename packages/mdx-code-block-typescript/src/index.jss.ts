@@ -1,5 +1,5 @@
-import { createStyles, Color, FontMono, GrayLight } from '@blog/styles';
-import { lspInfoAttrName } from './constant';
+import { lsInfoAttrName } from './constant';
+import { createStyles, Color, FontMono, Gray, GrayLight } from '@blog/styles';
 
 const Black = Color(0x383A42);
 const Blue = Color(0x4078F2);
@@ -12,162 +12,172 @@ const Violet = Color(0xA626A4);
 const LightViolet = Color(0xDA70D6);
 
 export default createStyles({
-  codeBlockLsp: {
-    [`&:hover [${lspInfoAttrName}]`]: {
+  codeBlockLs: {
+    [`&:hover [${lsInfoAttrName}]`]: {
       borderColor: '#747474',
     },
-    [`& [${lspInfoAttrName}]`]: {
+    [`& [${lsInfoAttrName}]`]: {
       borderBottom: '1px dotted transparent',
       transitionTimingFunction: 'ease',
       transition: 'border-color .3s',
     },
 
-    // [class*="lsp-keyword"],
-    // [class*="lsp-storage-type"] {
-    //   color: Violet;
-    // }
+    ['& [class*="lsp-keyword"], & [class*="lsp-storage-type"]']: {
+      color: Violet.toString(),
+    },
+    ['& [class*="lsp-keyword-operator"]']: {
+      color: '#0184BC',
+    },
+    ['& [class*="lsp-string-quoted"]']: {
+      color: Green.toString(),
+    },
+    ['& [class*="lsp-comment"]']: {
+      color: '#A0A1A7',
+      fontStyle: 'italic',
+    },
+    ['& [class*="lsp-support-type"]']: {
+      color: '#0184BC',
+    },
+    '& .lsp-constant-numeric-decimal': {
+      color: Brown.toString(),
+    },
 
-    // [class*="lsp-keyword-operator"] {
-    //   color: #0184BC;
-    // }
+    // import 语句
+    '& .lsp-meta-import': {
+      [`
+        &.lsp-constant-language-import-export-all,
+        &.lsp-variable-other-readwrite-alias
+      `.trim()]: {
+        color: Red.toString(),
+      },
+    },
 
-    // [class*="lsp-string-quoted"] {
-    //   color: Green;
-    // }
+    // interface 语句
+    '& .lsp-meta-interface': {
+      '&.lsp-storage-modifier': {
+        color: Violet.toString(),
+      },
+      [`
+        &.lsp-entity-name-type-interface,
+        &.lsp-entity-other-inherited-class,
+        &.lsp-entity-name-type
+      `.trim()]: {
+        color: LightBrown.toString(),
+      },
+      '&.lsp-entity-name-type-module': {
+        color: Red.toString(),
+      },
+      '&.lsp-meta-definition-method.lsp-entity-name-function': {
+        color: Blue.toString(),
+      },
+      [`
+        &.lsp-punctuation-definition-parameters-begin,
+        &.lsp-punctuation-definition-parameters-end
+      `.trim()]: {
+        color: LightViolet.toString(),
+      },
+    },
 
-    // [class*="lsp-comment"] {
-    //   color: #A0A1A7;
-    //   font-style: italic;
-    // }
+    // function 语句
+    '& .lsp-meta-function': {
+      '&.lsp-meta-definition-function.lsp-entity-name-function': {
+        color: Blue.toString(),
+      },
+      '&.lsp-entity-name-type-module': {
+        color: Red.toString(),
+      },
+      '&.lsp-entity-name-type': {
+        color: LightBrown.toString(),
+      },
+      '&.lsp-meta-type-function-return': {
+        color: Violet.toString(),
+      },
+    },
 
-    // [class*="lsp-support-type"] {
-    //   color: #0184BC;
-    // }
+    // 对象字面量
+    '& .lsp-meta-objectliteral': {
+      [`
+        &.lsp-meta-object-literal-key,
+        &.lsp-variable-other-property,
+        &.lsp-variable-other-object-property`.trim()
+      ]: {
+        color: Red.toString(),
+      },
+    },
 
-    // .lsp-constant-numeric-decimal {
-    //   color: Brown;
-    // }
+    // 数组字面量
+    '& .lsp-meta-array-literal': {
+      '&.lsp-meta-brace-square': {
+        color: LighterBlue.toString(),
+      },
+    },
 
-    // // import 语句
-    // .lsp-meta-import {
-    //   &.lsp-constant-language-import-export-all,
-    //   &.lsp-variable-other-readwrite-alias {
-    //     color:Red
-    //   }
-    // }
+    // 变量/常量声明
+    '& .lsp-meta-var-expr': {
+      '&.lsp-meta-type-annotation': {
+        '&.lsp-entity-name-type': {
+          color: Brown.toString(),
+        },
+      },
+      '&.lsp-variable-other-constant': {
+        color: LightBrown.toString(),
+      },
+    },
 
-    // // interface 语句
-    // .lsp-meta-interface {
-    //   &.lsp-storage-modifier {
-    //     color: Violet;
-    //   }
-    //   &.lsp-entity-name-type-interface,
-    //   &.lsp-entity-other-inherited-class,
-    //   &.lsp-entity-name-type {
-    //     color: LightBrown;
-    //   }
-    //   &.lsp-entity-name-type-module {
-    //     color:Red
-    //   }
-    //   &.lsp-meta-definition-method.lsp-entity-name-function {
-    //     color: Blue;
-    //   }
-    //   &.lsp-punctuation-definition-parameters-begin,
-    //   &.lsp-punctuation-definition-parameters-end {
-    //     color: LightViolet;
-    //   }
-    // }
+    // 模板字符串
+    '& .lsp-string-template': {
+      color: Green.toString(),
 
-    // // function 语句
-    // .lsp-meta-function {
-    //   &.lsp-meta-definition-function.lsp-entity-name-function {
-    //     color: Blue;
-    //   }
-    //   &.lsp-entity-name-type-module {
-    //     color:Red
-    //   }
-    //   &.lsp-entity-name-type {
-    //     color: LightBrown;
-    //   }
-    //   // &.lsp-meta-type-function-return {
-    //   //   color: Violet;
-    //   // }
-    // }
+      [`
+        &.lsp-punctuation-definition-template-expression-begin,
+        &.lsp-punctuation-definition-template-expression-end`.trim()
+      ]: {
+        color: '#CA1243',
+      },
+    },
 
-    // // 对象字面量
-    // .lsp-meta-objectliteral {
-    //   &.lsp-meta-object-literal-key,
-    //   &.lsp-variable-other-property,
-    //   &.lsp-variable-other-object-property {
-    //     color: Red;
-    //   }
-    // }
+    // 正则表达式
+    '& .lsp-string-regexp': {
+      color: '#0184C4',
+    },
 
-    // // 数组字面量
-    // .lsp-meta-array-literal {
-    //   &.lsp-meta-brace-square {
-    //     color: LighterBlue;
-    //   }
-    // }
+    [`
+      & .lsp-constant-language-boolean-false,
+      & .lsp-constant-language-boolean-true`.trim()
+    ]: {
+      color: Brown.toString(),
+    },
 
-    // // 变量/常量声明
-    // .lsp-meta-var-expr {
-    //   &.lsp-meta-type-annotation {
-    //     &.lsp-entity-name-type {
-    //       color: Brown;
-    //     }
-    //   }
-    //   &.lsp-variable-other-constant {
-    //     color: LightBrown;
-    //   }
-    // }
+    '& .lsp-meta-function-call': {
+      color: Blue.toString(),
 
-    // // 模板字符串
-    // .lsp-string-template {
-    //   color: Green;
+      '&.lsp-variable-other-object': {
+        color: Black.toString(),
+      },
+    },
 
-    //   &.lsp-punctuation-definition-template-expression-begin,
-    //   &.lsp-punctuation-definition-template-expression-end {
-    //     color: #CA1243;
-    //   }
-    // }
+    [`
+      & .lsp-support-variable-property-dom,
+      & .lsp-support-variable-property,
+      & .lsp-variable-other-property`.trim()
+    ]: {
+      color: Red.toString(),
+    },
 
-    // // 正则表达式
-    // .lsp-string-regexp {
-    //   color: #0184C4;
-    // }
-
-    // .lsp-constant-language-boolean-false,
-    // .lsp-constant-language-boolean-true {
-    //   color: Brown;
-    // }
-
-    // .lsp-meta-function-call {
-    //   color: Blue;
-
-    //   &.lsp-variable-other-object {
-    //     color: Black;
-    //   }
-    // }
-
-    // .lsp-support-variable-property-dom,
-    // .lsp-support-variable-property,
-    // .lsp-variable-other-property {
-    //   color: Red;
-    // }
-
-    // .lsp-support-class-console,
-    // .lsp-support-constant-math {
-    //   color: Brown !important;
-    // }
+    [`
+      & .lsp-support-class-console,
+      & .lsp-support-constant-math`.trim()
+    ]: {
+      color: `${Brown.toString()} !important`,
+    },
   },
-  lspInfoBox: {
+  lsInfoBox: {
     position: 'fixed',
     fontSize: 12,
     fontFamily: FontMono,
     transform: 'translateY(14px)',
     color: Black.toString(),
-    border: '1px solid Gray',
+    border: `1px solid ${Gray.toString()}`,
     backgroundColor: GrayLight.toString(),
     lineHeight: '1.5em',
     padding: '4px 6px',

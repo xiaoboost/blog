@@ -1,4 +1,5 @@
 import { tokenize, ready } from './tokenize';
+import { lsInfoAttrName } from '../constant';
 import { ScriptKind, Platform, DisplaySymbol } from './host';
 import { splitTag, getLineSpaceWidth } from '@blog/mdx-code-block-normal';
 
@@ -63,7 +64,7 @@ export function renderTsCode(
         }
 
         if (token.info) {
-          code += ` ls-info="${token.info}"`;
+          code += ` ${lsInfoAttrName}="${token.info}"`;
         }
 
         code += `>${token.text}</span>`;

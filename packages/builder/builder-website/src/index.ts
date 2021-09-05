@@ -58,7 +58,8 @@ async function finish(result?: BuildResult) {
   const code = result?.outputFiles?.[0].text ?? '';
 
   try {
-    const assets = runScript<AssetData[]>(code, require);
+    const build = runScript<() => Promise<AssetData[]>>(code, require);
+    const assets = await build();
 
     if (option.development) {
       await writeDisk(assets, mfs.promises as any);

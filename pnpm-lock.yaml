@@ -422,6 +422,8 @@ importers:
   packages/template-post:
     specifiers:
       '@blog/builder-template': workspace:*
+      '@blog/mdx-code-block-normal': workspace:*
+      '@blog/mdx-code-block-typescript': workspace:*
       '@blog/posts': workspace:*
       '@blog/styles': workspace:*
       '@blog/template-layout': workspace:*
@@ -438,6 +440,8 @@ importers:
       tslib: ^2.3.1
       typescript: ^4.4.2
     dependencies:
+      '@blog/mdx-code-block-normal': link:../mdx-code-block-normal
+      '@blog/mdx-code-block-typescript': link:../mdx-code-block-typescript
       '@blog/styles': link:../styles
       '@blog/template-layout': link:../template-layout
       '@blog/utils': link:../utils

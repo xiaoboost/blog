@@ -11,6 +11,8 @@ import {
   getMinSpaceWidth,
 } from '@blog/mdx-code-block-normal';
 
+export { ready, ScriptKind, Platform } from './typescript';
+
 export const assets: AssetData[] = require("./index.script").default;
 export const ModuleName = process.env.ModuleName as string;
 
@@ -34,16 +36,20 @@ export function TsCodeBlock({
   const codeLines = renderTsCode(code, tabWidth, lang, platform);
 
   return (
-    <CodeBlockWrapper lang={lang} lineCount={codeLines.length} highlightLines={highlightLines}>
-      <ul className={classes.codeBlockLsp}>
-        {codeLines.map((line, i) => (
-          <li key={i} className={stringifyClass({
+    <CodeBlockWrapper
+      lang={lang}
+      listClassName={classes.codeBlockLs}
+      lineCount={codeLines.length}
+      highlightLines={highlightLines}>
+      {codeLines.map((line, i) => (
+        <li
+          key={i}
+          className={stringifyClass({
             [normalStyles.classes.codeBlockHighlightLine]: highlightLines[i],
-          })}>
-            <span dangerouslySetInnerHTML={{ __html: line }} />
-          </li>
-        ))}
-      </ul>
+          })}
+          dangerouslySetInnerHTML={{ __html: line }}
+        />
+      ))}
     </CodeBlockWrapper>
   );
 }

@@ -8,7 +8,7 @@ import { cut } from '@xiao-ai/utils';
 import { createHtml } from './utils';
 import { layout } from './chunk';
 
-function build(): AssetData[] {
+export function build(): AssetData[] {
   const createIndex = createHtml(IndexRender);
   const posts = inputs.filter((post) => post.public);
   const pagePosts = cut(posts, pageConfig.index);
@@ -46,5 +46,3 @@ function build(): AssetData[] {
     };
   });
 }
-
-export const assets = build();

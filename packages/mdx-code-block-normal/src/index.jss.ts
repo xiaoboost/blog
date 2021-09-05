@@ -19,6 +19,8 @@ const borderRadius = 4;
 
 // 小屏幕时的两边宽度，此值和 layout 中相等
 const SmallIndent = 14;
+/** 行高 */
+const lineHeight = 1.3;
 
 export default createStyles({
   '@import': '\'highlight.js/styles/atom-one-light.css\'',
@@ -41,18 +43,6 @@ export default createStyles({
       marginRight: -1 * SmallIndent,
     },
 
-    '& ul': {
-      padding: 0,
-      margin: 0,
-      listStyleType: 'none',
-    },
-
-    '& li': {
-      padding: 0,
-      margin: 0,
-      lineHeight: '1.3',
-    },
-
     '& $codeBlockLabel': {
       position: 'absolute',
       color: GutterColor.toString(),
@@ -72,6 +62,31 @@ export default createStyles({
       overflowWrap: 'normal',
       whiteSpace: 'inherit',
       backgroundColor: 'transparent',
+
+      '& ul$codeBlockGutter': {
+        float: 'left',
+        padding: '.4em 0',
+        margin: 0,
+        flexShrink: 0,
+        flexGrow: 0,
+        listStyleType: 'none',
+        color: GutterColor.toString(),
+        backgroundColor: GutterBgColor.toString(),
+        borderTopLeftRadius: borderRadius,
+        borderBottomLeftRadius: borderRadius,
+
+        [mediaPhone]: {
+          borderTopLeftRadius: 0,
+          borderBottomLeftRadius: 0,
+        },
+
+        '& > li': {
+          textAlign: 'right',
+          margin: 0,
+          padding: '0 .5em 0 .4em',
+          lineHeight,
+        },
+      },
     },
 
     '& $codeBlockBox': {
@@ -81,52 +96,33 @@ export default createStyles({
       display: 'inline-flex',
 
       [mediaPhone]: createScrollbarWidth(4, '&'),
-    },
 
-    '& $codeBlockGutter': {
-      float: 'left',
-      padding: '.4em 0',
-      flexShrink: 0,
-      flexGrow: 0,
-      color: GutterColor.toString(),
-      backgroundColor: GutterBgColor.toString(),
-      borderTopLeftRadius: borderRadius.toString(),
-      borderBottomLeftRadius: borderRadius.toString(),
+      '& $codeBlockCode': {
+        padding: '.4em 0',
+        margin: 0,
+        flexGrow: 1,
+        flexShrink: 0,
+        listStyleType: 'none',
+        color: CodeColor.toString(),
+        backgroundColor: CodeBgColor.toString(),
+        borderTopRightRadius: borderRadius,
+        borderBottomRightRadius: borderRadius,
 
-      [mediaPhone]: {
-        borderTopLeftRadius: 0,
-        borderBottomLeftRadius: 0,
-      },
+        [mediaPhone]: {
+          borderTopLeftRadius: 0,
+          borderBottomLeftRadius: 0,
+        },
 
-      '& > li': {
-        textAlign: 'right',
-        paddingLeft: '.4em',
-        paddingRight: '.5em',
-      },
-    },
+        '& > li': {
+          position: 'relative',
+          padding: '0 .4em',
+          margin: 0,
+          lineHeight,
+        },
 
-    '& $codeBlockCode': {
-      padding: '.4em 0',
-      flexGrow: 1,
-      flexShrink: 0,
-      color: CodeColor.toString(),
-      backgroundColor: CodeBgColor.toString(),
-      borderTopRightRadius: borderRadius.toString(),
-      borderBottomRightRadius: borderRadius.toString(),
-
-      [mediaPhone]: {
-        borderTopLeftRadius: 0,
-        borderBottomLeftRadius: 0,
-      },
-
-      '& > li': {
-        position: 'relative',
-        paddingLeft: '.4em',
-        paddingRight: '.4em',
-      },
-
-      '& > li:after': {
-        content: `" "`,
+        '& > li:after': {
+          content: `" "`,
+        },
       },
     },
 
