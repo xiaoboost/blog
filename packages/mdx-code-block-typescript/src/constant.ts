@@ -1,1 +1,2 @@
-export const lspInfoAttrName = 'lsp-info';
+const lsName = 'ls';
+export const lsInfoAttrName = `${lsName}-info`;

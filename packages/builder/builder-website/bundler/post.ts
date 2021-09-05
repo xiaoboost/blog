@@ -30,7 +30,7 @@ function getPostHtml(post: PostRendered) {
   return html;
 }
 
-function build(): AssetData[] {
+export function build(): AssetData[] {
   const assets: AssetData[] = [];
 
   for (const post of posts) {
@@ -42,5 +42,3 @@ function build(): AssetData[] {
 
   return assets;
 }
-
-export const assets = build();

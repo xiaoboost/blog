@@ -3,7 +3,7 @@ import styles from './index.jss';
 
 import { isArray, isString } from '@xiao-ai/utils';
 
-interface Props {
+export interface Props {
   children: React.ReactNode | React.ReactNode[];
 }
 

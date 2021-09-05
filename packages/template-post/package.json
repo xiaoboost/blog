@@ -25,6 +25,8 @@
     "url": "https://github.com/xiaoboost/blog"
   },
   "dependencies": {
+    "@blog/mdx-code-block-normal": "workspace:*",
+    "@blog/mdx-code-block-typescript": "workspace:*",
     "@blog/styles": "workspace:*",
     "@blog/template-layout": "workspace:*",
     "@blog/utils": "workspace:*",

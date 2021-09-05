@@ -83,11 +83,7 @@ export const katex = new Chunk('katex', KatexModule);
 
 const chunks = [layout, post, katex];
 
-/** 所有静态资源 */
-export const assets = concat(
-  chunks.map((chunk) => chunk.assets),
-  (arr) => arr,
-);
+export { ready } from '@blog/mdx-code-block-typescript';
 
 /** 由模块获取资源引用 */
 export function getAssetByName(name: string) {
@@ -98,4 +94,11 @@ export function getAssetByName(name: string) {
       scripts: chunk.scripts,
     }
     : null;
+}
+
+export function build() {
+  return concat(
+    chunks.map((chunk) => chunk.assets),
+    (arr) => arr,
+  );
 }

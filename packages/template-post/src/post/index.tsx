@@ -9,6 +9,7 @@ import { MDXProvider } from '@mdx-js/react';
 import { Layout, LayoutProps } from '@blog/template-layout';
 
 import * as title from './title';
+import * as code from './code';
 import * as paragraph from './paragraph';
 
 export interface Props extends LayoutProps {
@@ -37,6 +38,7 @@ export function PostRender(props: Props) {
           <MDXProvider
             components={{
               ...title,
+              ...code,
               ...paragraph,
             }}
           >
