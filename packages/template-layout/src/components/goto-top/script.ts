@@ -1,5 +1,5 @@
+import { fadeIn, fadeOut } from '@blog/web';
 import { supportsPassive } from '@xiao-ai/utils/web';
-import { fadeIn, fadeOut } from '@blog/animation';
 import { scrollTopLimit, fadeTime } from './constant';
 
 import styles from './index.jss';
