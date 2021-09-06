@@ -52,7 +52,7 @@ export default createStyles({
       top: 4,
     },
 
-    '& $codeBlockList': {
+    '& code$codeBlockList': {
       margin: 0,
       border: 0,
       padding: 0,
@@ -61,6 +61,7 @@ export default createStyles({
       flexDirection: 'row',
       overflowWrap: 'normal',
       whiteSpace: 'inherit',
+      position: 'initial',
       backgroundColor: 'transparent',
 
       '& ul$codeBlockGutter': {
