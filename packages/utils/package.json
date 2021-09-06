@@ -36,7 +36,7 @@
     "@types/mime": "^2.0.3",
     "@types/node": "^16.7.10",
     "@types/pinyin": "^2.8.3",
-    "esbuild": "^0.12.24",
+    "esbuild": "^0.12.25",
     "eslint": "^7.32.0",
     "tslib": "^2.3.1",
     "typescript": "^4.4.2"
