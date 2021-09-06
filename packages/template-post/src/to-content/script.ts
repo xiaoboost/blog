@@ -28,8 +28,8 @@ if (menu && mainBody) {
     passive: true,
     capture: false,
   };
-  let titlePosition: TitlePosition[] = [];
 
+  let titlePosition: TitlePosition[] = [];
   let status = Status.Init;
 
   const scrollEvent = () => {
@@ -60,10 +60,10 @@ if (menu && mainBody) {
     });
   };
   const recordTitlePosition = () => {
-    const article = document.querySelector<HTMLElement>('.main-article');
+    const article = document.querySelector<HTMLElement>(`.${postStyles.classes.postDefault}`);
 
     titlePosition = Array.from(
-      article?.querySelectorAll<HTMLAreaElement>(postStyles.classes.postAnchor) ?? [],
+      article?.querySelectorAll<HTMLAreaElement>(`.${postStyles.classes.postAnchor}`) ?? [],
     )
       .map((el) => {
         const parent = el.parentElement;

@@ -85,6 +85,9 @@ export type {
   Association,
   Reference,
   Alternative,
+  PhrasingContent,
+  Content,
+  RowContent,
 } from 'mdast';
 
 /** 解析器类型 */

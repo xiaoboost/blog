@@ -111,7 +111,7 @@ export default createStyles({
           marginBottom: 0,
         },
       },
-      '& p code': {
+      '& code': {
         margin: '0 0.2em',
         padding: '0.2em',
         fontSize: '0.85em',

@@ -1,12 +1,7 @@
-interface SanBoxParams {
-  names: string[];
-  params: any[];
-}
-
 export function runScript<T = any>(
   code: string,
   requireOut?: NodeRequire,
-  params?: SanBoxParams,
+  params: Record<string, any> = {},
 ): T {
   interface FakeModule {
     exports: {
@@ -37,14 +32,15 @@ export function runScript<T = any>(
     exports: {},
   } as any;
 
-  const paramList = params?.names.join(', ');
+  const paramList = Object.keys(params);
+  const paramValues = paramList.map((key) => params[key]);
 
   try {
     (new Function(`
-      return function box(module, exports, require${paramList ? `, ${paramList}` : ''}) {
+      return function box(module, exports, require${paramList ? `, ${paramList.join(', ')}` : ''}) {
         ${code}
       }
-    `))()(fake, fake.exports, requireFunc, ...(params?.params ?? []));
+    `))()(fake, fake.exports, requireFunc, ...paramValues);
   }
   catch (e: any) {
     throw new Error(e);
