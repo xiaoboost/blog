@@ -63,7 +63,7 @@ jobs:
         run: pnpm run lint
 
       - name: Build Blog
-        run: pnpm run build:website
+        run: pnpm run build:blog
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v2

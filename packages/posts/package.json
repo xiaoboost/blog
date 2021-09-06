@@ -26,7 +26,7 @@
   "devDependencies": {
     "@blog/esbuild-loader-mdx": "workspace:*",
     "@mdx-js/react": "^1.6.22",
-    "esbuild": "^0.12.24",
+    "esbuild": "^0.12.25",
     "react": "^17.0.2"
   }
 }
