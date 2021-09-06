@@ -27,12 +27,14 @@ async function getInputCode() {
   return code;
 }
 
-function writeTypeFile() {
-  return fs.promises.writeFile(path.join(outDir, 'index.d.ts'), `
-  import { PostRendered } from '@blog/esbuild-loader-mdx';
-  const posts: PostRendered[];
-  export default posts;
-  export type * from '@blog/esbuild-loader-mdx';
+async function writeTypeFile() {
+  const outFile = path.join(outDir, 'index.d.ts');
+  await fs.promises.mkdir(path.dirname(outFile), { recursive: true });
+  await fs.promises.writeFile(outFile, `
+import { PostRendered } from '@blog/esbuild-loader-mdx';
+const posts: PostRendered[];
+export default posts;
+export type * from '@blog/esbuild-loader-mdx';
   `.trim());
 }
 
