@@ -4,7 +4,7 @@ import rm from 'rmrf';
 import { fs as mfs } from 'memfs';
 import { build as esbuild, BuildResult } from 'esbuild';
 import { promises as fs, readFileSync } from 'fs';
-import { mergeBuild, runScript, getCliOptions, AssetData, serve } from '@blog/utils';
+import { mergeBuild, runScript, getCliOptions, AssetData, serve, normalize } from '@blog/utils';
 
 interface Options {
   outDir: string;
@@ -48,7 +48,7 @@ const external = (
 
 async function writeDisk(files: AssetData[], vfs: typeof fs) {
   for (const file of files) {
-    const filePath = path.join(output, file.path);
+    const filePath = normalize(path.join(output, file.path));
     await vfs.mkdir(path.dirname(filePath), { recursive: true });
     await vfs.writeFile(filePath, file.contents);
   }
