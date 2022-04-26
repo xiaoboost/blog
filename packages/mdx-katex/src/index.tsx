@@ -1,5 +1,5 @@
 import React from 'react';
-import Katex from 'katex';
+import Katex, { KatexOptions } from 'katex';
 import styles from './index.jss';
 
 import type { AssetData } from '@blog/utils';
@@ -8,10 +8,10 @@ export const assets: AssetData[] = require("./index.script").default;
 
 interface Props {
   value: string;
-  options?: Katex.KatexOptions;
+  options?: KatexOptions;
 }
 
-const baseOptions: Katex.KatexOptions = {
+const baseOptions: KatexOptions = {
   displayMode: true,
   output: 'html',
 };

@@ -19,6 +19,8 @@ jobs:
           - '14'
         platform:
           - ubuntu-18.04
+        storeDir:
+         - '\.pnpm-store'
 
     name: '${{ matrix.platform }} / Node.js v${{ matrix.node }}'
     runs-on: ${{ matrix.platform }}
@@ -40,8 +42,11 @@ jobs:
 
       - name: Install Pnpm
         run: |
-          npm install --g pnpm
+          npm install --g pnpm@6.32.0
           pnpm --version
+
+      - name: Set Cache Directory
+        run: 'pnpm config set store-dir ${{ matrix.storeDir }}'
 
       - name: Get Cache Directory
         id: pnpm-cache-dir
@@ -51,7 +56,7 @@ jobs:
         uses: actions/cache@v2
         id: pnpm-cache
         with:
-          path: ${{ steps.pnpm-cache-dir.outputs.dir }}
+          path: ${{ matrix.storeDir }}
           key: ${{ runner.os }}-node-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-node-

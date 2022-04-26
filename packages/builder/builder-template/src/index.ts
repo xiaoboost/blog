@@ -1,7 +1,6 @@
 import path from 'path';
 import fs from 'fs';
 
-import { isArray } from '@xiao-ai/utils';
 import { build as esbuild } from 'esbuild';
 import { JssLoader } from '@blog/esbuild-loader-jss';
 import { ScriptLoader } from '@blog/esbuild-loader-script';
