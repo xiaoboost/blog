@@ -1,6 +1,7 @@
 import { StyleSheet } from 'jss';
 import { isObject } from '@xiao-ai/utils';
-import { runScript, normalize } from '@blog/utils';
+import { runScript } from '@xiao-ai/utils/node';
+import { normalize } from '@blog/utils';
 import { FileRecorder } from '@blog/esbuild-recorder-file';
 import { PluginBuild, build, PartialMessage } from 'esbuild';
 
@@ -104,7 +105,9 @@ export function JssLoader({ extractCss = true }: Options = {}) {
           let jssObject: any = {};
 
           try {
-            jssObject = runScript(jssCode ?? '', require);
+            jssObject = runScript(jssCode ?? '', {
+              require: require,
+            });
           }
           catch (e) {
             console.warn(e);
