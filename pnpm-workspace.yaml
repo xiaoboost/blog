@@ -1,3 +1,8 @@
 packages:
-  - packages/*
+  - packages/posts
   - packages/builder/*
+  - packages/esbuild/*
+  - packages/components/*
+  - packages/shared/*
+  - packages/templates/*
+  - packages/tools/*
