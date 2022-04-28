@@ -8,50 +8,23 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.21.0
       '@typescript-eslint/parser': ^5.21.0
       eslint: ^8.14.0
+      eslint-plugin-prettier: ^4.0.0
       eslint-plugin-react: ^7.29.4
+      prettier: ^2.6.2
       typescript: ^4.6.3
     devDependencies:
-      '@blog/builder-website': link:packages/builder/builder-website
+      '@blog/builder-website': link:packages/builder/builder
       '@typescript-eslint/eslint-plugin': registry.npmmirror.com/@typescript-eslint/eslint-plugin/5.21.0_829e74f28e9c9eb05edda582d47d45b8
       '@typescript-eslint/parser': registry.npmmirror.com/@typescript-eslint/parser/5.21.0_eslint@8.14.0+typescript@4.6.3
       eslint: registry.npmmirror.com/eslint/8.14.0
+      eslint-plugin-prettier: registry.npmmirror.com/eslint-plugin-prettier/4.0.0_eslint@8.14.0+prettier@2.6.2
       eslint-plugin-react: registry.npmmirror.com/eslint-plugin-react/7.29.4_eslint@8.14.0
+      prettier: registry.npmmirror.com/prettier/2.6.2
       typescript: registry.npmmirror.com/typescript/4.6.3
 
-  packages/builder/builder-template:
+  packages/builder/builder:
     specifiers:
-      '@blog/config': workspace:*
-      '@blog/esbuild-loader-file': workspace:*
-      '@blog/esbuild-loader-jss': workspace:*
-      '@blog/esbuild-loader-script': workspace:*
-      '@blog/tsconfig': workspace:*
-      '@blog/utils': workspace:*
-      '@types/blog': workspace:*
-      '@types/node': ^17.0.27
-      '@xiao-ai/utils': ^1.6.0
-      esbuild: ^0.14.38
-      eslint: ^8.14.0
-      tslib: ^2.4.0
-      typescript: ^4.6.3
-    dependencies:
-      '@blog/config': link:../../config
-      '@blog/esbuild-loader-file': link:../esbuild-loader-file
-      '@blog/esbuild-loader-jss': link:../esbuild-loader-jss
-      '@blog/esbuild-loader-script': link:../esbuild-loader-script
-      '@blog/utils': link:../../utils
-      '@xiao-ai/utils': registry.npmmirror.com/@xiao-ai/utils/1.6.0
-      tslib: registry.npmmirror.com/tslib/2.4.0
-    devDependencies:
-      '@blog/tsconfig': link:../../tsconfig
-      '@types/blog': link:../../typings
-      '@types/node': registry.npmmirror.com/@types/node/17.0.27
-      esbuild: registry.npmmirror.com/esbuild/0.14.38
-      eslint: registry.npmmirror.com/eslint/8.14.0
-      typescript: registry.npmmirror.com/typescript/4.6.3
-
-  packages/builder/builder-website:
-    specifiers:
-      '@blog/config': workspace:*
+      '@blog/builder-config': workspace:*
       '@blog/mdx-code-block-normal': workspace:*
       '@blog/mdx-code-block-typescript': workspace:*
       '@blog/mdx-katex': workspace:*
@@ -78,15 +51,15 @@ importers:
       tslib: ^2.4.0
       typescript: ^4.6.3
     dependencies:
-      '@blog/config': link:../../config
-      '@blog/mdx-code-block-normal': link:../../mdx-code-block-normal
-      '@blog/mdx-code-block-typescript': link:../../mdx-code-block-typescript
-      '@blog/mdx-katex': link:../../mdx-katex
+      '@blog/builder-config': link:../config
+      '@blog/mdx-code-block-normal': link:../../components/code-block-normal
+      '@blog/mdx-code-block-typescript': link:../../components/code-block-typescript
+      '@blog/mdx-katex': link:../../components/katex
       '@blog/posts': link:../../posts
-      '@blog/template-layout': link:../../template-layout
-      '@blog/template-post': link:../../template-post
-      '@blog/template-view': link:../../template-view
-      '@blog/utils': link:../../utils
+      '@blog/template-layout': link:../../templates/layout
+      '@blog/template-post': link:../../templates/post
+      '@blog/template-view': link:../../templates/view
+      '@blog/utils': link:../../shared/utils
       '@xiao-ai/utils': registry.npmmirror.com/@xiao-ai/utils/1.6.0
       esbuild: registry.npmmirror.com/esbuild/0.14.38
       md5: registry.npmmirror.com/md5/2.3.0
@@ -96,8 +69,8 @@ importers:
       rmrf: registry.npmmirror.com/rmrf/2.0.4
       tslib: registry.npmmirror.com/tslib/2.4.0
     devDependencies:
-      '@blog/tsconfig': link:../../tsconfig
-      '@types/blog': link:../../typings
+      '@blog/tsconfig': link:../../tools/tsconfig
+      '@types/blog': link:../../tools/typings
       '@types/md5': registry.npmmirror.com/@types/md5/2.3.2
       '@types/node': registry.npmmirror.com/@types/node/17.0.27
       '@types/react': registry.npmmirror.com/@types/react/18.0.7
@@ -106,7 +79,143 @@ importers:
       eslint: registry.npmmirror.com/eslint/8.14.0
       typescript: registry.npmmirror.com/typescript/4.6.3
 
-  packages/builder/esbuild-loader-file:
+  packages/builder/config:
+    specifiers:
+      '@blog/tsconfig': workspace:*
+      '@types/blog': workspace:*
+      eslint: ^8.14.0
+      tslib: ^2.4.0
+      typescript: ^4.6.3
+    devDependencies:
+      '@blog/tsconfig': link:../../tools/tsconfig
+      '@types/blog': link:../../tools/typings
+      eslint: registry.npmmirror.com/eslint/8.14.0
+      tslib: registry.npmmirror.com/tslib/2.4.0
+      typescript: registry.npmmirror.com/typescript/4.6.3
+
+  packages/builder/template:
+    specifiers:
+      '@blog/builder-config': workspace:*
+      '@blog/esbuild-loader-file': workspace:*
+      '@blog/esbuild-loader-jss': workspace:*
+      '@blog/esbuild-loader-script': workspace:*
+      '@blog/tsconfig': workspace:*
+      '@blog/utils': workspace:*
+      '@types/blog': workspace:*
+      '@types/node': ^17.0.27
+      '@xiao-ai/utils': ^1.6.0
+      esbuild: ^0.14.38
+      eslint: ^8.14.0
+      tslib: ^2.4.0
+      typescript: ^4.6.3
+    dependencies:
+      '@blog/builder-config': link:../config
+      '@blog/esbuild-loader-file': link:../../esbuild/loader-file
+      '@blog/esbuild-loader-jss': link:../../esbuild/loader-jss
+      '@blog/esbuild-loader-script': link:../../esbuild/loader-script
+      '@blog/utils': link:../../shared/utils
+      '@xiao-ai/utils': registry.npmmirror.com/@xiao-ai/utils/1.6.0
+      tslib: registry.npmmirror.com/tslib/2.4.0
+    devDependencies:
+      '@blog/tsconfig': link:../../tools/tsconfig
+      '@types/blog': link:../../tools/typings
+      '@types/node': registry.npmmirror.com/@types/node/17.0.27
+      esbuild: registry.npmmirror.com/esbuild/0.14.38
+      eslint: registry.npmmirror.com/eslint/8.14.0
+      typescript: registry.npmmirror.com/typescript/4.6.3
+
+  packages/components/code-block-normal:
+    specifiers:
+      '@blog/builder-template': workspace:*
+      '@blog/styles': workspace:*
+      '@blog/tsconfig': workspace:*
+      '@blog/utils': workspace:*
+      '@types/blog': workspace:*
+      '@types/react': ^18.0.7
+      '@xiao-ai/utils': ^1.6.0
+      eslint: ^8.14.0
+      highlight.js: ^11.5.1
+      react: ^18.0.0
+      tslib: ^2.4.0
+      typescript: ^4.6.3
+    dependencies:
+      '@blog/styles': link:../../shared/styles
+      '@blog/utils': link:../../shared/utils
+      '@xiao-ai/utils': registry.npmmirror.com/@xiao-ai/utils/1.6.0
+      highlight.js: registry.npmmirror.com/highlight.js/11.5.1
+      react: registry.npmmirror.com/react/18.0.0
+    devDependencies:
+      '@blog/builder-template': link:../../builder/template
+      '@blog/tsconfig': link:../../tools/tsconfig
+      '@types/blog': link:../../tools/typings
+      '@types/react': registry.npmmirror.com/@types/react/18.0.7
+      eslint: registry.npmmirror.com/eslint/8.14.0
+      tslib: registry.npmmirror.com/tslib/2.4.0
+      typescript: registry.npmmirror.com/typescript/4.6.3
+
+  packages/components/code-block-typescript:
+    specifiers:
+      '@blog/builder-template': workspace:*
+      '@blog/mdx-code-block-normal': workspace:*
+      '@blog/styles': workspace:*
+      '@blog/tsconfig': workspace:*
+      '@blog/utils': workspace:*
+      '@types/blog': workspace:*
+      '@types/react': ^18.0.7
+      '@xiao-ai/utils': ^1.6.0
+      eslint: ^8.14.0
+      react: ^18.0.0
+      tslib: ^2.4.0
+      typescript: ^4.6.3
+      vscode-oniguruma: ^1.6.2
+      vscode-textmate: ^7.0.1
+    dependencies:
+      '@blog/mdx-code-block-normal': link:../code-block-normal
+      '@blog/styles': link:../../shared/styles
+      '@blog/utils': link:../../shared/utils
+      '@xiao-ai/utils': registry.npmmirror.com/@xiao-ai/utils/1.6.0
+      react: registry.npmmirror.com/react/18.0.0
+      typescript: registry.npmmirror.com/typescript/4.6.3
+      vscode-oniguruma: registry.npmmirror.com/vscode-oniguruma/1.6.2
+      vscode-textmate: registry.npmmirror.com/vscode-textmate/7.0.1
+    devDependencies:
+      '@blog/builder-template': link:../../builder/template
+      '@blog/tsconfig': link:../../tools/tsconfig
+      '@types/blog': link:../../tools/typings
+      '@types/react': registry.npmmirror.com/@types/react/18.0.7
+      eslint: registry.npmmirror.com/eslint/8.14.0
+      tslib: registry.npmmirror.com/tslib/2.4.0
+
+  packages/components/katex:
+    specifiers:
+      '@blog/builder-template': workspace:*
+      '@blog/styles': workspace:*
+      '@blog/tsconfig': workspace:*
+      '@blog/utils': workspace:*
+      '@types/blog': workspace:*
+      '@types/katex': ^0.14.0
+      '@types/react': ^18.0.7
+      eslint: ^8.14.0
+      katex: ^0.15.3
+      react: ^18.0.0
+      tslib: ^2.4.0
+      typescript: ^4.6.3
+    dependencies:
+      '@blog/styles': link:../../shared/styles
+      katex: registry.npmmirror.com/katex/0.15.3
+      react: registry.npmmirror.com/react/18.0.0
+      tslib: registry.npmmirror.com/tslib/2.4.0
+    devDependencies:
+      '@blog/builder-template': link:../../builder/template
+      '@blog/tsconfig': link:../../tools/tsconfig
+      '@blog/utils': link:../../shared/utils
+      '@types/blog': link:../../tools/typings
+      '@types/katex': registry.npmmirror.com/@types/katex/0.14.0
+      '@types/react': registry.npmmirror.com/@types/react/18.0.7
+      eslint: registry.npmmirror.com/eslint/8.14.0
+      typescript: registry.npmmirror.com/typescript/4.6.3
+
+  packages/esbuild/loader-file:
     specifiers:
       '@blog/tsconfig': workspace:*
       '@blog/utils': workspace:*
@@ -118,18 +227,18 @@ importers:
       tslib: ^2.4.0
       typescript: ^4.6.3
     dependencies:
-      '@blog/utils': link:../../utils
+      '@blog/utils': link:../../shared/utils
       esbuild: registry.npmmirror.com/esbuild/0.14.38
       md5: registry.npmmirror.com/md5/2.3.0
     devDependencies:
-      '@blog/tsconfig': link:../../tsconfig
-      '@types/blog': link:../../typings
+      '@blog/tsconfig': link:../../tools/tsconfig
+      '@types/blog': link:../../tools/typings
       '@types/md5': registry.npmmirror.com/@types/md5/2.3.2
       eslint: registry.npmmirror.com/eslint/8.14.0
       tslib: registry.npmmirror.com/tslib/2.4.0
       typescript: registry.npmmirror.com/typescript/4.6.3
 
-  packages/builder/esbuild-loader-jss:
+  packages/esbuild/loader-jss:
     specifiers:
       '@blog/esbuild-recorder-file': workspace:*
       '@blog/tsconfig': workspace:*
@@ -140,23 +249,25 @@ importers:
       eslint: ^8.14.0
       jss: ^10.9.0
       jss-preset-default: ^10.9.0
+      source-map: ^0.7.3
       tslib: ^2.4.0
       typescript: ^4.6.3
     dependencies:
-      '@blog/esbuild-recorder-file': link:../esbuild-recorder-file
-      '@blog/utils': link:../../utils
+      '@blog/esbuild-recorder-file': link:../recorder-file
+      '@blog/utils': link:../../shared/utils
       '@xiao-ai/utils': registry.npmmirror.com/@xiao-ai/utils/1.6.0
       esbuild: registry.npmmirror.com/esbuild/0.14.38
     devDependencies:
-      '@blog/tsconfig': link:../../tsconfig
-      '@types/blog': link:../../typings
+      '@blog/tsconfig': link:../../tools/tsconfig
+      '@types/blog': link:../../tools/typings
       eslint: registry.npmmirror.com/eslint/8.14.0
       jss: registry.npmmirror.com/jss/10.9.0
       jss-preset-default: registry.npmmirror.com/jss-preset-default/10.9.0
+      source-map: registry.npmmirror.com/source-map/0.7.3
       tslib: registry.npmmirror.com/tslib/2.4.0
       typescript: registry.npmmirror.com/typescript/4.6.3
 
-  packages/builder/esbuild-loader-mdx:
+  packages/esbuild/loader-mdx:
     specifiers:
       '@blog/tsconfig': workspace:*
       '@blog/utils': workspace:*
@@ -176,7 +287,7 @@ importers:
       unified: ^10.1.2
       yaml: ^2.0.1
     dependencies:
-      '@blog/utils': link:../../utils
+      '@blog/utils': link:../../shared/utils
       '@mdx-js/mdx': registry.npmmirror.com/@mdx-js/mdx/2.1.1
       '@types/mdast': registry.npmmirror.com/@types/mdast/3.0.10
       '@xiao-ai/utils': registry.npmmirror.com/@xiao-ai/utils/1.6.0
@@ -187,15 +298,15 @@ importers:
       unified: registry.npmmirror.com/unified/10.1.2
       yaml: registry.npmmirror.com/yaml/2.0.1
     devDependencies:
-      '@blog/tsconfig': link:../../tsconfig
-      '@types/blog': link:../../typings
+      '@blog/tsconfig': link:../../tools/tsconfig
+      '@types/blog': link:../../tools/typings
       '@types/react': registry.npmmirror.com/@types/react/18.0.7
       esbuild: registry.npmmirror.com/esbuild/0.14.38
       eslint: registry.npmmirror.com/eslint/8.14.0
       tslib: registry.npmmirror.com/tslib/2.4.0
       typescript: registry.npmmirror.com/typescript/4.6.3
 
-  packages/builder/esbuild-loader-script:
+  packages/esbuild/loader-script:
     specifiers:
       '@blog/esbuild-loader-jss': workspace:*
       '@blog/esbuild-recorder-file': workspace:*
@@ -211,22 +322,22 @@ importers:
       tslib: ^2.4.0
       typescript: ^4.6.3
     dependencies:
-      '@blog/esbuild-loader-jss': link:../esbuild-loader-jss
-      '@blog/esbuild-recorder-file': link:../esbuild-recorder-file
-      '@blog/utils': link:../../utils
+      '@blog/esbuild-loader-jss': link:../loader-jss
+      '@blog/esbuild-recorder-file': link:../recorder-file
+      '@blog/utils': link:../../shared/utils
       '@xiao-ai/utils': registry.npmmirror.com/@xiao-ai/utils/1.6.0
       esbuild: registry.npmmirror.com/esbuild/0.14.38
       md5: registry.npmmirror.com/md5/2.3.0
     devDependencies:
-      '@blog/tsconfig': link:../../tsconfig
-      '@types/blog': link:../../typings
+      '@blog/tsconfig': link:../../tools/tsconfig
+      '@types/blog': link:../../tools/typings
       '@types/md5': registry.npmmirror.com/@types/md5/2.3.2
       eslint: registry.npmmirror.com/eslint/8.14.0
       jss: registry.npmmirror.com/jss/10.9.0
       tslib: registry.npmmirror.com/tslib/2.4.0
       typescript: registry.npmmirror.com/typescript/4.6.3
 
-  packages/builder/esbuild-recorder-file:
+  packages/esbuild/recorder-file:
     specifiers:
       '@blog/tsconfig': workspace:*
       '@types/blog': workspace:*
@@ -237,115 +348,10 @@ importers:
     dependencies:
       esbuild: registry.npmmirror.com/esbuild/0.14.38
     devDependencies:
-      '@blog/tsconfig': link:../../tsconfig
-      '@types/blog': link:../../typings
+      '@blog/tsconfig': link:../../tools/tsconfig
+      '@types/blog': link:../../tools/typings
       eslint: registry.npmmirror.com/eslint/8.14.0
       tslib: registry.npmmirror.com/tslib/2.4.0
-      typescript: registry.npmmirror.com/typescript/4.6.3
-
-  packages/config:
-    specifiers:
-      '@blog/tsconfig': workspace:*
-      '@types/blog': workspace:*
-      eslint: ^8.14.0
-      tslib: ^2.4.0
-      typescript: ^4.6.3
-    devDependencies:
-      '@blog/tsconfig': link:../tsconfig
-      '@types/blog': link:../typings
-      eslint: registry.npmmirror.com/eslint/8.14.0
-      tslib: registry.npmmirror.com/tslib/2.4.0
-      typescript: registry.npmmirror.com/typescript/4.6.3
-
-  packages/mdx-code-block-normal:
-    specifiers:
-      '@blog/builder-template': workspace:*
-      '@blog/styles': workspace:*
-      '@blog/tsconfig': workspace:*
-      '@blog/utils': workspace:*
-      '@types/blog': workspace:*
-      '@types/react': ^18.0.7
-      '@xiao-ai/utils': ^1.6.0
-      eslint: ^8.14.0
-      highlight.js: ^11.5.1
-      react: ^18.0.0
-      tslib: ^2.4.0
-      typescript: ^4.6.3
-    dependencies:
-      '@blog/styles': link:../styles
-      '@blog/utils': link:../utils
-      '@xiao-ai/utils': registry.npmmirror.com/@xiao-ai/utils/1.6.0
-      highlight.js: registry.npmmirror.com/highlight.js/11.5.1
-      react: registry.npmmirror.com/react/18.0.0
-    devDependencies:
-      '@blog/builder-template': link:../builder/builder-template
-      '@blog/tsconfig': link:../tsconfig
-      '@types/blog': link:../typings
-      '@types/react': registry.npmmirror.com/@types/react/18.0.7
-      eslint: registry.npmmirror.com/eslint/8.14.0
-      tslib: registry.npmmirror.com/tslib/2.4.0
-      typescript: registry.npmmirror.com/typescript/4.6.3
-
-  packages/mdx-code-block-typescript:
-    specifiers:
-      '@blog/builder-template': workspace:*
-      '@blog/mdx-code-block-normal': workspace:*
-      '@blog/styles': workspace:*
-      '@blog/tsconfig': workspace:*
-      '@blog/utils': workspace:*
-      '@types/blog': workspace:*
-      '@types/react': ^18.0.7
-      '@xiao-ai/utils': ^1.6.0
-      eslint: ^8.14.0
-      react: ^18.0.0
-      tslib: ^2.4.0
-      typescript: ^4.6.3
-      vscode-oniguruma: ^1.6.2
-      vscode-textmate: ^7.0.1
-    dependencies:
-      '@blog/mdx-code-block-normal': link:../mdx-code-block-normal
-      '@blog/styles': link:../styles
-      '@blog/utils': link:../utils
-      '@xiao-ai/utils': registry.npmmirror.com/@xiao-ai/utils/1.6.0
-      react: registry.npmmirror.com/react/18.0.0
-      typescript: registry.npmmirror.com/typescript/4.6.3
-      vscode-oniguruma: registry.npmmirror.com/vscode-oniguruma/1.6.2
-      vscode-textmate: registry.npmmirror.com/vscode-textmate/7.0.1
-    devDependencies:
-      '@blog/builder-template': link:../builder/builder-template
-      '@blog/tsconfig': link:../tsconfig
-      '@types/blog': link:../typings
-      '@types/react': registry.npmmirror.com/@types/react/18.0.7
-      eslint: registry.npmmirror.com/eslint/8.14.0
-      tslib: registry.npmmirror.com/tslib/2.4.0
-
-  packages/mdx-katex:
-    specifiers:
-      '@blog/builder-template': workspace:*
-      '@blog/styles': workspace:*
-      '@blog/tsconfig': workspace:*
-      '@blog/utils': workspace:*
-      '@types/blog': workspace:*
-      '@types/katex': ^0.14.0
-      '@types/react': ^18.0.7
-      eslint: ^8.14.0
-      katex: ^0.15.3
-      react: ^18.0.0
-      tslib: ^2.4.0
-      typescript: ^4.6.3
-    dependencies:
-      '@blog/styles': link:../styles
-      katex: registry.npmmirror.com/katex/0.15.3
-      react: registry.npmmirror.com/react/18.0.0
-      tslib: registry.npmmirror.com/tslib/2.4.0
-    devDependencies:
-      '@blog/builder-template': link:../builder/builder-template
-      '@blog/tsconfig': link:../tsconfig
-      '@blog/utils': link:../utils
-      '@types/blog': link:../typings
-      '@types/katex': registry.npmmirror.com/@types/katex/0.14.0
-      '@types/react': registry.npmmirror.com/@types/react/18.0.7
-      eslint: registry.npmmirror.com/eslint/8.14.0
       typescript: registry.npmmirror.com/typescript/4.6.3
 
   packages/posts:
@@ -357,15 +363,15 @@ importers:
       fast-glob: ^3.2.11
       react: ^18.0.0
     dependencies:
-      '@blog/utils': link:../utils
+      '@blog/utils': link:../shared/utils
       fast-glob: registry.npmmirror.com/fast-glob/3.2.11
     devDependencies:
-      '@blog/esbuild-loader-mdx': link:../builder/esbuild-loader-mdx
+      '@blog/esbuild-loader-mdx': link:../esbuild/loader-mdx
       '@mdx-js/react': registry.npmmirror.com/@mdx-js/react/2.1.1_react@18.0.0
       esbuild: registry.npmmirror.com/esbuild/0.14.38
       react: registry.npmmirror.com/react/18.0.0
 
-  packages/styles:
+  packages/shared/styles:
     specifiers:
       '@blog/tsconfig': workspace:*
       '@types/blog': workspace:*
@@ -383,124 +389,14 @@ importers:
       jss: registry.npmmirror.com/jss/10.9.0
       jss-preset-default: registry.npmmirror.com/jss-preset-default/10.9.0
     devDependencies:
-      '@blog/tsconfig': link:../tsconfig
-      '@types/blog': link:../typings
+      '@blog/tsconfig': link:../../tools/tsconfig
+      '@types/blog': link:../../tools/typings
       '@types/color': registry.npmmirror.com/@types/color/3.0.3
       eslint: registry.npmmirror.com/eslint/8.14.0
       tslib: registry.npmmirror.com/tslib/2.4.0
       typescript: registry.npmmirror.com/typescript/4.6.3
 
-  packages/template-layout:
-    specifiers:
-      '@blog/builder-template': workspace:*
-      '@blog/styles': workspace:*
-      '@blog/tsconfig': workspace:*
-      '@blog/utils': workspace:*
-      '@blog/web': workspace:*
-      '@types/blog': workspace:*
-      '@types/react': ^18.0.7
-      '@xiao-ai/utils': ^1.6.0
-      eslint: ^8.14.0
-      react: ^18.0.0
-      tslib: ^2.4.0
-      typescript: ^4.6.3
-    dependencies:
-      '@blog/styles': link:../styles
-      '@blog/utils': link:../utils
-      '@blog/web': link:../web
-      '@xiao-ai/utils': registry.npmmirror.com/@xiao-ai/utils/1.6.0
-      react: registry.npmmirror.com/react/18.0.0
-      tslib: registry.npmmirror.com/tslib/2.4.0
-    devDependencies:
-      '@blog/builder-template': link:../builder/builder-template
-      '@blog/tsconfig': link:../tsconfig
-      '@types/blog': link:../typings
-      '@types/react': registry.npmmirror.com/@types/react/18.0.7
-      eslint: registry.npmmirror.com/eslint/8.14.0
-      typescript: registry.npmmirror.com/typescript/4.6.3
-
-  packages/template-post:
-    specifiers:
-      '@blog/builder-template': workspace:*
-      '@blog/mdx-code-block-normal': workspace:*
-      '@blog/mdx-code-block-typescript': workspace:*
-      '@blog/posts': workspace:*
-      '@blog/styles': workspace:*
-      '@blog/template-layout': workspace:*
-      '@blog/tsconfig': workspace:*
-      '@blog/utils': workspace:*
-      '@mdx-js/react': ^2.1.1
-      '@types/blog': workspace:*
-      '@types/mdx-js__react': ^1.5.5
-      '@types/react': ^18.0.7
-      '@xiao-ai/utils': ^1.6.0
-      eslint: ^8.14.0
-      moment: ^2.29.3
-      react: ^18.0.0
-      tslib: ^2.4.0
-      typescript: ^4.6.3
-    dependencies:
-      '@blog/mdx-code-block-normal': link:../mdx-code-block-normal
-      '@blog/mdx-code-block-typescript': link:../mdx-code-block-typescript
-      '@blog/styles': link:../styles
-      '@blog/template-layout': link:../template-layout
-      '@blog/utils': link:../utils
-      '@mdx-js/react': registry.npmmirror.com/@mdx-js/react/2.1.1_react@18.0.0
-      '@xiao-ai/utils': registry.npmmirror.com/@xiao-ai/utils/1.6.0
-      moment: registry.npmmirror.com/moment/2.29.3
-      react: registry.npmmirror.com/react/18.0.0
-      tslib: registry.npmmirror.com/tslib/2.4.0
-    devDependencies:
-      '@blog/builder-template': link:../builder/builder-template
-      '@blog/posts': link:../posts
-      '@blog/tsconfig': link:../tsconfig
-      '@types/blog': link:../typings
-      '@types/mdx-js__react': registry.npmmirror.com/@types/mdx-js__react/1.5.5
-      '@types/react': registry.npmmirror.com/@types/react/18.0.7
-      eslint: registry.npmmirror.com/eslint/8.14.0
-      typescript: registry.npmmirror.com/typescript/4.6.3
-
-  packages/template-view:
-    specifiers:
-      '@blog/builder-template': workspace:*
-      '@blog/styles': workspace:*
-      '@blog/template-layout': workspace:*
-      '@blog/tsconfig': workspace:*
-      '@blog/utils': workspace:*
-      '@types/blog': workspace:*
-      '@types/react': ^18.0.7
-      '@xiao-ai/utils': ^1.6.0
-      eslint: ^8.14.0
-      moment: ^2.29.3
-      react: ^18.0.0
-      tslib: ^2.4.0
-      typescript: ^4.6.3
-    dependencies:
-      '@blog/styles': link:../styles
-      '@blog/template-layout': link:../template-layout
-      '@blog/utils': link:../utils
-      '@xiao-ai/utils': registry.npmmirror.com/@xiao-ai/utils/1.6.0
-      moment: registry.npmmirror.com/moment/2.29.3
-      react: registry.npmmirror.com/react/18.0.0
-      tslib: registry.npmmirror.com/tslib/2.4.0
-    devDependencies:
-      '@blog/builder-template': link:../builder/builder-template
-      '@blog/tsconfig': link:../tsconfig
-      '@types/blog': link:../typings
-      '@types/react': registry.npmmirror.com/@types/react/18.0.7
-      eslint: registry.npmmirror.com/eslint/8.14.0
-      typescript: registry.npmmirror.com/typescript/4.6.3
-
-  packages/tsconfig:
-    specifiers:
-      '@xiao-ai/utils': ^1.6.0
-    devDependencies:
-      '@xiao-ai/utils': registry.npmmirror.com/@xiao-ai/utils/1.6.0
-
-  packages/typings:
-    specifiers: {}
-
-  packages/utils:
+  packages/shared/utils:
     specifiers:
       '@blog/tsconfig': workspace:*
       '@types/blog': workspace:*
@@ -524,8 +420,8 @@ importers:
       mime: registry.npmmirror.com/mime/3.0.0
       pinyin: registry.npmmirror.com/pinyin/2.11.2
     devDependencies:
-      '@blog/tsconfig': link:../tsconfig
-      '@types/blog': link:../typings
+      '@blog/tsconfig': link:../../tools/tsconfig
+      '@types/blog': link:../../tools/typings
       '@types/koa': registry.npmmirror.com/@types/koa/2.13.4
       '@types/mime': registry.npmmirror.com/@types/mime/2.0.3
       '@types/node': registry.npmmirror.com/@types/node/17.0.27
@@ -535,7 +431,7 @@ importers:
       tslib: registry.npmmirror.com/tslib/2.4.0
       typescript: registry.npmmirror.com/typescript/4.6.3
 
-  packages/web:
+  packages/shared/web:
     specifiers:
       '@blog/tsconfig': workspace:*
       '@types/blog': workspace:*
@@ -546,11 +442,118 @@ importers:
     dependencies:
       '@xiao-ai/utils': registry.npmmirror.com/@xiao-ai/utils/1.6.0
     devDependencies:
-      '@blog/tsconfig': link:../tsconfig
-      '@types/blog': link:../typings
+      '@blog/tsconfig': link:../../tools/tsconfig
+      '@types/blog': link:../../tools/typings
       eslint: registry.npmmirror.com/eslint/8.14.0
       tslib: registry.npmmirror.com/tslib/2.4.0
       typescript: registry.npmmirror.com/typescript/4.6.3
+
+  packages/templates/layout:
+    specifiers:
+      '@blog/builder-template': workspace:*
+      '@blog/styles': workspace:*
+      '@blog/tsconfig': workspace:*
+      '@blog/utils': workspace:*
+      '@blog/web': workspace:*
+      '@types/blog': workspace:*
+      '@types/react': ^18.0.7
+      '@xiao-ai/utils': ^1.6.0
+      eslint: ^8.14.0
+      react: ^18.0.0
+      tslib: ^2.4.0
+      typescript: ^4.6.3
+    dependencies:
+      '@blog/styles': link:../../shared/styles
+      '@blog/utils': link:../../shared/utils
+      '@blog/web': link:../../shared/web
+      '@xiao-ai/utils': registry.npmmirror.com/@xiao-ai/utils/1.6.0
+      react: registry.npmmirror.com/react/18.0.0
+      tslib: registry.npmmirror.com/tslib/2.4.0
+    devDependencies:
+      '@blog/builder-template': link:../../builder/template
+      '@blog/tsconfig': link:../../tools/tsconfig
+      '@types/blog': link:../../tools/typings
+      '@types/react': registry.npmmirror.com/@types/react/18.0.7
+      eslint: registry.npmmirror.com/eslint/8.14.0
+      typescript: registry.npmmirror.com/typescript/4.6.3
+
+  packages/templates/post:
+    specifiers:
+      '@blog/builder-template': workspace:*
+      '@blog/mdx-code-block-normal': workspace:*
+      '@blog/mdx-code-block-typescript': workspace:*
+      '@blog/posts': workspace:*
+      '@blog/styles': workspace:*
+      '@blog/template-layout': workspace:*
+      '@blog/tsconfig': workspace:*
+      '@blog/utils': workspace:*
+      '@mdx-js/react': ^2.1.1
+      '@types/blog': workspace:*
+      '@types/mdx-js__react': ^1.5.5
+      '@types/react': ^18.0.7
+      '@xiao-ai/utils': ^1.6.0
+      eslint: ^8.14.0
+      moment: ^2.29.3
+      react: ^18.0.0
+      tslib: ^2.4.0
+      typescript: ^4.6.3
+    dependencies:
+      '@blog/mdx-code-block-normal': link:../../components/code-block-normal
+      '@blog/mdx-code-block-typescript': link:../../components/code-block-typescript
+      '@blog/styles': link:../../shared/styles
+      '@blog/template-layout': link:../layout
+      '@blog/utils': link:../../shared/utils
+      '@mdx-js/react': registry.npmmirror.com/@mdx-js/react/2.1.1_react@18.0.0
+      '@xiao-ai/utils': registry.npmmirror.com/@xiao-ai/utils/1.6.0
+      moment: registry.npmmirror.com/moment/2.29.3
+      react: registry.npmmirror.com/react/18.0.0
+      tslib: registry.npmmirror.com/tslib/2.4.0
+    devDependencies:
+      '@blog/builder-template': link:../../builder/template
+      '@blog/posts': link:../../posts
+      '@blog/tsconfig': link:../../tools/tsconfig
+      '@types/blog': link:../../tools/typings
+      '@types/mdx-js__react': registry.npmmirror.com/@types/mdx-js__react/1.5.5
+      '@types/react': registry.npmmirror.com/@types/react/18.0.7
+      eslint: registry.npmmirror.com/eslint/8.14.0
+      typescript: registry.npmmirror.com/typescript/4.6.3
+
+  packages/templates/view:
+    specifiers:
+      '@blog/builder-template': workspace:*
+      '@blog/styles': workspace:*
+      '@blog/template-layout': workspace:*
+      '@blog/tsconfig': workspace:*
+      '@blog/utils': workspace:*
+      '@types/blog': workspace:*
+      '@types/react': ^18.0.7
+      '@xiao-ai/utils': ^1.6.0
+      eslint: ^8.14.0
+      moment: ^2.29.3
+      react: ^18.0.0
+      tslib: ^2.4.0
+      typescript: ^4.6.3
+    dependencies:
+      '@blog/styles': link:../../shared/styles
+      '@blog/template-layout': link:../layout
+      '@blog/utils': link:../../shared/utils
+      '@xiao-ai/utils': registry.npmmirror.com/@xiao-ai/utils/1.6.0
+      moment: registry.npmmirror.com/moment/2.29.3
+      react: registry.npmmirror.com/react/18.0.0
+      tslib: registry.npmmirror.com/tslib/2.4.0
+    devDependencies:
+      '@blog/builder-template': link:../../builder/template
+      '@blog/tsconfig': link:../../tools/tsconfig
+      '@types/blog': link:../../tools/typings
+      '@types/react': registry.npmmirror.com/@types/react/18.0.7
+      eslint: registry.npmmirror.com/eslint/8.14.0
+      typescript: registry.npmmirror.com/typescript/4.6.3
+
+  packages/tools/tsconfig:
+    specifiers: {}
+
+  packages/tools/typings:
+    specifiers: {}
 
 packages:
 
@@ -1185,6 +1188,7 @@ packages:
     resolution: {integrity: sha512-+3PtUXwRMaj5KeFRSJclOBXc6SachxUDKlMiEPCjC4ZAhrHKpXgv/X4Q+PPyBkpYrLTTGLBiGmgUkx461dkHBA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@xiao-ai/utils/-/utils-1.6.0.tgz}
     name: '@xiao-ai/utils'
     version: 1.6.0
+    dev: false
 
   registry.npmmirror.com/abbrev/1.1.1:
     resolution: {integrity: sha512-nne9/IiQ/hzIhY6pdDnbBtz7DjPTKrY00P/zvPSm5pOFkl6xuGrGnXn/VtTNNfNtAfZ9/1RtehkszU9qcTii0Q==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/abbrev/-/abbrev-1.1.1.tgz}
@@ -1976,6 +1980,25 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
+  registry.npmmirror.com/eslint-plugin-prettier/4.0.0_eslint@8.14.0+prettier@2.6.2:
+    resolution: {integrity: sha512-98MqmCJ7vJodoQK359bqQWaxOE0CS8paAz/GgjaZLyex4TTk3g9HugoO89EqWCrFiOqn9EVvcoo7gZzONCWVwQ==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/eslint-plugin-prettier/-/eslint-plugin-prettier-4.0.0.tgz}
+    id: registry.npmmirror.com/eslint-plugin-prettier/4.0.0
+    name: eslint-plugin-prettier
+    version: 4.0.0
+    engines: {node: '>=6.0.0'}
+    peerDependencies:
+      eslint: '>=7.28.0'
+      eslint-config-prettier: '*'
+      prettier: '>=2.0.0'
+    peerDependenciesMeta:
+      eslint-config-prettier:
+        optional: true
+    dependencies:
+      eslint: registry.npmmirror.com/eslint/8.14.0
+      prettier: registry.npmmirror.com/prettier/2.6.2
+      prettier-linter-helpers: registry.npmmirror.com/prettier-linter-helpers/1.0.0
+    dev: true
+
   registry.npmmirror.com/eslint-plugin-react/7.29.4_eslint@8.14.0:
     resolution: {integrity: sha512-CVCXajliVh509PcZYRFyu/BoUEz452+jtQJq2b3Bae4v3xBUWPLCmtmBM+ZinG4MzwmxJgJ2M5rMqhqLVn7MtQ==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/eslint-plugin-react/-/eslint-plugin-react-7.29.4.tgz}
     id: registry.npmmirror.com/eslint-plugin-react/7.29.4
@@ -2194,6 +2217,12 @@ packages:
     resolution: {integrity: sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/fast-deep-equal/-/fast-deep-equal-3.1.3.tgz}
     name: fast-deep-equal
     version: 3.1.3
+    dev: true
+
+  registry.npmmirror.com/fast-diff/1.2.0:
+    resolution: {integrity: sha512-xJuoT5+L99XlZ8twedaRf6Ax2TgQVxvgZOYoPKqZufmJib0tL2tegPBOZb1pVNgIhlqDlA0eO0c3wBvQcmzx4w==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/fast-diff/-/fast-diff-1.2.0.tgz}
+    name: fast-diff
+    version: 1.2.0
     dev: true
 
   registry.npmmirror.com/fast-glob/3.2.11:
@@ -3902,6 +3931,23 @@ packages:
     engines: {node: '>= 0.8.0'}
     dev: true
 
+  registry.npmmirror.com/prettier-linter-helpers/1.0.0:
+    resolution: {integrity: sha512-GbK2cP9nraSSUF9N2XwUwqfzlAFlMNYYl+ShE/V+H8a9uNl/oUqB1w2EL54Jh0OlyRSd8RfWYJ3coVS4TROP2w==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/prettier-linter-helpers/-/prettier-linter-helpers-1.0.0.tgz}
+    name: prettier-linter-helpers
+    version: 1.0.0
+    engines: {node: '>=6.0.0'}
+    dependencies:
+      fast-diff: registry.npmmirror.com/fast-diff/1.2.0
+    dev: true
+
+  registry.npmmirror.com/prettier/2.6.2:
+    resolution: {integrity: sha512-PkUpF+qoXTqhOeWL9fu7As8LXsIUZ1WYaJiY/a7McAQzxjk82OF0tibkFXVCDImZtWxbvojFjerkiLb0/q8mew==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/prettier/-/prettier-2.6.2.tgz}
+    name: prettier
+    version: 2.6.2
+    engines: {node: '>=10.13.0'}
+    hasBin: true
+    dev: true
+
   registry.npmmirror.com/prop-types/15.8.1:
     resolution: {integrity: sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/prop-types/-/prop-types-15.8.1.tgz}
     name: prop-types
@@ -4183,6 +4229,13 @@ packages:
     name: slash
     version: 3.0.0
     engines: {node: '>=8'}
+    dev: true
+
+  registry.npmmirror.com/source-map/0.7.3:
+    resolution: {integrity: sha512-CkCj6giN3S+n9qrYiBTX5gystlENnRW5jZeNLHpe6aue+SrHcG5VYwujhW9s4dY31mEGsxBDrHR6oI69fTXsaQ==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/source-map/-/source-map-0.7.3.tgz}
+    name: source-map
+    version: 0.7.3
+    engines: {node: '>= 8'}
     dev: true
 
   registry.npmmirror.com/space-separated-tokens/2.0.1:

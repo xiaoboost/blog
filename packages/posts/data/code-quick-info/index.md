@@ -31,7 +31,6 @@ print({
 那么，不使用在线编辑器，而只是把语言服务搬入网页中呢？`TypeScript`的语言服务是文件`node_modules/typescript/lib/typescriptServices.js`，这个文件具体有多大大家可以自己看看。
 总之，对于我这个静态博客来说，在线编辑器和语言服务都是不可接受的。那么就只剩下一个方案，将代码提示的结果全部在构建过程中就全部计算出来，这样的话，在前端只需要展示结果就行了，并不需要将语言服务搬上网页。
 
-
 # 语言服务
 
 通常情况下的语言服务，是在 VSCode 的插件中启动的，默认行为都是随着用户操作读取各种文件或者是给出提示。
@@ -42,8 +41,8 @@ print({
 
 `TypeScript`的语言服务是由两个部分组成的：
 
-* `LanguageService`即语言服务本身，它提供语言服务对外的各种接口，代码提示，自动补全等等方法都在这里。
-* `LanguageServiceHost`是给语言服务提供和项目交互的部分，读取文件，项目更新，等等操作在这里。
+- `LanguageService`即语言服务本身，它提供语言服务对外的各种接口，代码提示，自动补全等等方法都在这里。
+- `LanguageServiceHost`是给语言服务提供和项目交互的部分，读取文件，项目更新，等等操作在这里。
 
 创建语言服务的代码非常简单，如下所示：
 
@@ -106,9 +105,7 @@ interface LanguageServiceHost extends ts.GetEffectiveTypeRootsHost {
   getDirectories?(directoryName: string): string[];
   getCustomTransformers?(): ts.CustomTransformers | undefined;
   isKnownTypesPackageName?(name: string): boolean;
-  installPackage?(
-    options: ts.InstallPackageOptions,
-  ): Promise<ts.ApplyCodeActionCommandResult>;
+  installPackage?(options: ts.InstallPackageOptions): Promise<ts.ApplyCodeActionCommandResult>;
   writeFile?(fileName: string, content: string): void;
 }
 ```
@@ -197,9 +194,7 @@ interface IScriptSnapshot {
    * cannot be determined.  However, in that case, incremental parsing will
    * not happen and the entire document will be re - parsed.
    */
-  getChangeRange(
-    oldSnapshot: ts.IScriptSnapshot,
-  ): ts.TextChangeRange | undefined;
+  getChangeRange(oldSnapshot: ts.IScriptSnapshot): ts.TextChangeRange | undefined;
   /** Releases all resources held by this script snapshot */
   dispose?(): void;
 }
@@ -215,7 +210,7 @@ function getScriptSnapshot(code: string): ts.IScriptSnapshot {
     getText: (start, end) => code.substring(start, end),
     getLength: () => code.length,
     getChangeRange: () => void 0,
-  }
+  };
 }
 ```
 
@@ -234,7 +229,7 @@ function getScriptSnapshot(code: string): ts.IScriptSnapshot {
 ```ts
 import * as ts from 'typescript';
 
-function resolveModuleNames (
+function resolveModuleNames(
   moduleNames: string[],
   containingFile: string,
   reusedNames?: string[],
@@ -242,16 +237,10 @@ function resolveModuleNames (
   options?: ts.CompilerOptions,
 ): (ts.ResolvedModule | undefined)[] {
   return moduleNames.map((name) => {
-    return ts.resolveModuleName(
-      name,
-      containingFile,
-      options,
-      ts.sys,
-    ).resolvedModule;
+    return ts.resolveModuleName(name, containingFile, options, ts.sys).resolvedModule;
   });
 }
 ```
-
 
 ## 获取代码提示
 
@@ -348,8 +337,7 @@ async function getGrammar() {
     loadGrammar: (scopeName) => {
       if (scopeName === 'source.ts') {
         return Promise.resolve(vsctm.parseRawGrammar(ts));
-      }
-      else {
+      } else {
         throw new Error(`Unknown scopeName: ${scopeName}.`);
       }
     },
@@ -429,9 +417,9 @@ interface ITokenizeLineResult {
 
 ```html
 <script>
-const lspData = {
-  'ts-0-0': '(interface) Name',
-};
+  const lspData = {
+    'ts-0-0': '(interface) Name',
+  };
 </script>
 
 <pre>
