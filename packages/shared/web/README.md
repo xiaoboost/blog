@@ -1,3 +1,3 @@
-# circuit/web
+# @blog/web
 
-web 平台工具库
+web 线程辅助工具库

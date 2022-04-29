@@ -1,7 +1,7 @@
 {
-  "name": "@blog/web",
+  "name": "@blog/node",
   "version": "1.0.0",
-  "description": "blog web lib",
+  "description": "blog node lib",
   "main": "dist/index.js",
   "module": "src/index.ts",
   "types": "src/index.ts",
@@ -19,10 +19,12 @@
     "@blog/tsconfig": "workspace:*",
     "@types/blog": "workspace:*",
     "@types/node": "^17.0.23",
+    "@types/pinyin": "^2.10.0",
     "tslib": "^2.3.1",
     "typescript": "4.6.3"
   },
   "dependencies": {
-    "@xiao-ai/utils": "^1.6.0"
+    "@xiao-ai/utils": "^1.6.0",
+    "pinyin": "^2.11.2"
   }
 }

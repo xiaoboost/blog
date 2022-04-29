@@ -1,5 +1,4 @@
 import Koa from 'koa';
-import Chalk from 'chalk';
 import fs from 'fs';
 
 import { join } from 'path';
@@ -45,11 +44,7 @@ export function serve(dir: string, port: number, vfs: typeof fs.promises) {
     next();
   });
 
-  console.log(
-    `\n${Chalk.green('⚡')} ` +
-      `Your application is already set at ` +
-      `http://localhost:${Chalk.green(port)}/.\n`,
-  );
+  console.log(`\n⚡ Your application is already set at http://localhost:${port}/.\n`);
 
   return app;
 }

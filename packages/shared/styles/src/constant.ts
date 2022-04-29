@@ -13,7 +13,7 @@ export const CustomFont = {
 };
 
 /** 默认字体 */
-export const FontDefault = /* @__PURE__ */ getFontFamily([
+export const FontDefault = getFontFamily([
   CustomFont.Lato,
   '-apple-system',
   'BlinkMacSystemFont',
@@ -27,19 +27,13 @@ export const FontDefault = /* @__PURE__ */ getFontFamily([
 ]);
 
 /** 衬线字体 */
-export const FontSerif = /* @__PURE__ */ getFontFamily(['思源宋体', 'STSong', '宋体', 'serif']);
+export const FontSerif = getFontFamily(['思源宋体', 'STSong', '宋体', 'serif']);
 
 /** 等宽字体 */
-export const FontMono = /* @__PURE__ */ getFontFamily([
-  'Menlo',
-  'Monaco',
-  'Consolas',
-  'Courier New',
-  'monospace',
-]);
+export const FontMono = getFontFamily(['Menlo', 'Monaco', 'Consolas', 'Courier New', 'monospace']);
 
 /** 标题字体 */
-export const FontTitle = /* @__PURE__ */ getFontFamily([CustomFont.Dancing]);
+export const FontTitle = getFontFamily([CustomFont.Dancing]);
 
 /** 网站宽度 */
 export const mainWidth = 1000;
