@@ -1,21 +1,14 @@
-import jss from 'jss';
-import preset from 'jss-preset-default';
+import type { default as Jss, Styles, StyleSheet } from 'jss';
 
-import { Styles, StyleSheet } from 'jss';
 import { hyphenate } from '@xiao-ai/utils';
 import { mediaPhone, mediaPc } from './constant';
 
-export { jss };
-export * from 'jss';
+/** 外部注入虚拟 jss 变量 */
+declare const jss: typeof Jss;
 
 type JssStyle<C extends string | number = string> = Pick<StyleSheet<C>, 'classes'>;
 
 export function createStyles<C extends string = string>(styles: Styles<C>): JssStyle<C> {
-  if (!(jss as any)._$isSetup) {
-    (jss as any)._$isSetup = true;
-    jss.setup(preset());
-  }
-
   return jss.createStyleSheet(styles, {
     link: false,
     index: 0,
