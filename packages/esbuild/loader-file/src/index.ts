@@ -1,5 +1,5 @@
 import { PluginBuild } from 'esbuild';
-import { normalize, getNameCreator } from '@blog/utils';
+import { normalize, getNameCreator } from '@blog/node';
 
 import md5 from 'md5';
 
@@ -12,13 +12,22 @@ export interface Options {
 
 function getFileContent(input: string, output: string) {
   return `
-    import { readFileSync } from 'fs';
+    import { promises as fs } from 'fs';
 
-    export default function readFile() {
-      return {
-        path: ${JSON.stringify(output)},
-        contents: readFileSync('${JSON.stringify(input)}', 'binary'),
-      };
+    let cache;
+
+    const path = ${JSON.stringify(output)};
+    const getContent = async () => {
+      if (!cache) {
+        cache = await fs.readFile(${JSON.stringify(input)}, 'binary');
+      }
+
+      return cache;
+    };
+
+    export default {
+      path,
+      getContent,
     };
   `;
 }
