@@ -1,7 +1,7 @@
 import { StyleSheet } from 'jss';
 import { isObject } from '@xiao-ai/utils';
 import { runScript } from '@xiao-ai/utils/node';
-import { normalize } from '@blog/utils';
+import { normalize } from '@blog/node';
 import { FileRecorder, FilePlugin } from '@blog/esbuild-recorder-file';
 import { PluginBuild, build, PartialMessage, BuildResult } from 'esbuild';
 
@@ -30,20 +30,8 @@ export function JssLoader({ extractCss = true }: Options = {}): FilePlugin {
   const suffixMatcher = new RegExp(`\\.${jssSuffix}$`);
   const recorder = FileRecorder();
 
-  let inputFile = '';
-
-  function getFiles() {
-    const files = recorder.getFiles();
-
-    if (inputFile) {
-      files.push(inputFile);
-    }
-
-    return files;
-  }
-
   return {
-    getFiles,
+    getFiles: recorder.getFiles,
     plugin: {
       name: 'loader-jss',
       setup(process: PluginBuild) {
@@ -73,7 +61,6 @@ export function JssLoader({ extractCss = true }: Options = {}): FilePlugin {
           const content = await fs.readFile(args.path, 'utf-8');
           const buildResult = await build({
             bundle: true,
-            minify: false,
             write: false,
             format: 'cjs',
             platform: 'node',
@@ -81,6 +68,7 @@ export function JssLoader({ extractCss = true }: Options = {}): FilePlugin {
             logLevel: 'warning',
             charset: 'utf8',
             sourcemap: true,
+            minify: options.minify,
             mainFields: options.mainFields,
             assetNames: options.assetNames,
             publicPath: options.publicPath,
@@ -97,8 +85,6 @@ export function JssLoader({ extractCss = true }: Options = {}): FilePlugin {
           }).catch((e: BuildResult) => {
             return e;
           });
-
-          inputFile = args.path;
 
           if (buildResult.errors.length > 0) {
             return {
@@ -159,7 +145,7 @@ export function JssLoader({ extractCss = true }: Options = {}): FilePlugin {
           } else {
             errors.push({
               pluginName: pluginName,
-              text: 'default 导出应该是个 jss 实例',
+              text: 'default 应该导出 jss 实例',
             });
           }
 
@@ -174,7 +160,7 @@ export function JssLoader({ extractCss = true }: Options = {}): FilePlugin {
           return {
             errors,
             loader: 'js',
-            watchFiles: getFiles(),
+            watchFiles: recorder.getFiles(),
             contents: `
               ${extractCss ? `import '${cssPath}';` : ''}
               export default {
