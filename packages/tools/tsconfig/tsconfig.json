@@ -28,7 +28,8 @@
     "allowJs": true,
     "lib": ["ESNext", "DOM"],
     "paths": {
-      "@xiao-ai/utils/*": ["./node_modules/@xiao-ai/utils/dist/types/*"]
+      "@xiao-ai/utils/*": ["./node_modules/@xiao-ai/utils/dist/types/*"],
+      "@blog/shared/*": ["./node_modules/@blog/shared/src/*"]
     }
   }
 }
