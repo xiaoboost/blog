@@ -6,7 +6,7 @@ import { ToContent } from '../to-content';
 import { stringifyClass } from '@xiao-ai/utils';
 import { PostRendered } from '@blog/posts';
 import { MDXProvider } from '@mdx-js/react';
-import { Layout, LayoutProps } from '@blog/template-layout';
+import { Layout, LayoutProps } from '@blog/template-layout/dist/components/layout';
 
 import * as title from './title';
 import * as code from './code';

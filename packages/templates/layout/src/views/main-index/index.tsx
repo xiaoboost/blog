@@ -3,8 +3,8 @@ import Moment from 'moment';
 import styles from './index.jss';
 
 // import { Tags } from '../../components/icons';
-import { Layout, LayoutProps } from '@blog/template-layout';
-import { parseUrl } from '@blog/utils';
+import { Layout, LayoutProps } from '../../components/layout';
+import { parseUrl } from '@blog/shared/node';
 
 interface PostProps {
   title: string;
@@ -49,11 +49,11 @@ function Pagination(props: PaginationProps) {
   return <div className='pagination'>TODO: Pagination</div>;
 }
 
-export interface Props extends LayoutProps, PaginationProps {
+export interface MainIndexProps extends LayoutProps, PaginationProps {
   posts: PostProps[];
 }
 
-export function IndexRender(props: Props) {
+export function MainIndex(props: MainIndexProps) {
   return (
     <Layout {...props}>
       <div className={styles.classes.postsList}>

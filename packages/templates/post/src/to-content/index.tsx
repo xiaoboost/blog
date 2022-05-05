@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './index.jss';
 
-import { toPinyin } from '@blog/utils';
+import { toPinyin } from '@blog/shared/node';
 import { levelLimit } from './constant';
 import { stringifyClass } from '@xiao-ai/utils';
 import { PostRendered, Heading, PhrasingContent } from '@blog/posts';

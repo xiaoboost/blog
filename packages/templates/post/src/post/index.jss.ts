@@ -16,7 +16,7 @@ import {
   createMediaStyles,
   createHeadStyles,
   getHeadSelector,
-} from '@blog/styles';
+} from '@blog/shared/styles';
 
 const indent = 24;
 const smallIndent = 14;

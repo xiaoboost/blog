@@ -2,16 +2,11 @@ import React from 'react';
 import favicon from './assets/image/favicon.ico';
 
 import { PropsWithChildren } from 'react';
+import { parseUrl } from '@blog/shared/node';
 
-import { Header, HeaderProps } from './components/header';
-import { Footer } from './components/footer';
-import { Article } from './components/article';
-
-import { AssetData, parseUrl } from '@blog/utils';
-
-export const assets: AssetData[] = [...require('./index.script').default, favicon];
-
-export const ModuleName = process.env.ModuleName as string;
+import { Header, HeaderProps } from '../header';
+import { Footer } from '../footer';
+import { Article } from '../article';
 
 export interface LayoutProps extends HeaderProps {
   /** 网站标题 */
@@ -67,23 +62,5 @@ export function Layout(props: PropsWithChildren<LayoutProps>) {
         ))}
       </body>
     </html>
-  );
-}
-
-export function devApp() {
-  const findAssets = (ext: string) => {
-    return assets.filter((item) => item.path.endsWith(ext)).map(({ path }) => path);
-  };
-
-  return (
-    <Layout
-      siteTitle='Site Title'
-      pageTitle='Page Title'
-      pathname='/index.html'
-      styles={findAssets('.css')}
-      scripts={findAssets('.js')}
-    >
-      网站内容
-    </Layout>
   );
 }
