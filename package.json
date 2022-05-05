@@ -9,14 +9,14 @@
     "url": "https://github.com/xiaoboost/blog"
   },
   "scripts": {
-    "build": "blog --outDir=dist",
-    "watch": "pnpm run build -- --development",
-    "build:website": "pnpm run build --filter blog...",
+    "build": "blog build --outDir=dist --mode=production",
+    "watch": "blog watch --mode=development",
+    "build:website": "pnpm run build --filter @blog/builder...",
     "lint": "pnpm run -r lint --parallel --filter .",
     "lint:fix": "pnpm run -r lint:fix --parallel --filter ."
   },
   "devDependencies": {
-    "@blog/builder-website": "workspace:*",
+    "@blog/builder": "workspace:*",
     "@typescript-eslint/eslint-plugin": "^5.21.0",
     "@typescript-eslint/parser": "^5.21.0",
     "eslint": "^8.14.0",

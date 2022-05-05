@@ -4,8 +4,9 @@
   "description": "blog shared lib",
   "exports": {
     "./*": {
-      "import": "./dist/*/index.ts",
-      "types": "./dist/*/index.ts"
+      "require": "./dist/*/index.js",
+      "import": "./src/*/index.ts",
+      "types": "./src/*/index.ts"
     }
   },
   "scripts": {
