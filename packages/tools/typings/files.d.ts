@@ -1,4 +1,4 @@
 declare module '*.ttf' {
-  const data: AssetData;
+  const data: AssetImportData;
   export default data;
 }
