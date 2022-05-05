@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './index.jss';
 
-import { parseUrl } from '@blog/utils';
+import { parseUrl } from '@blog/shared/node';
 import { stringifyClass } from '@xiao-ai/utils';
 
 export interface HeaderProps {

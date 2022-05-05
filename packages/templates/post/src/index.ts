@@ -1,5 +1,12 @@
-import { AssetData } from '@blog/utils';
+import assets from './index.script';
 
 export * from './post';
-export const assets: AssetData[] = require('./index.script').default;
-export const ModuleName = process.env.ModuleName as string;
+
+export const createAssets: CreateAssets = () => {
+  assets;
+  return Promise.resolve([]);
+};
+
+export const getAssetNames: GetAssetNames = () => {
+  return [];
+};

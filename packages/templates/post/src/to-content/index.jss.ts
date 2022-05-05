@@ -9,7 +9,7 @@ import {
   mainWidth,
   articleWidth,
   asideMarginLeft,
-} from '@blog/styles';
+} from '@blog/shared/styles';
 
 export default createStyles({
   menuListHeader: {},

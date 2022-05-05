@@ -7,7 +7,7 @@ import {
   BlackLighter,
   FontDefault,
   FontSerif,
-} from '@blog/styles';
+} from '@blog/shared/styles';
 
 export default createStyles({
   postsListItemFooter: {},

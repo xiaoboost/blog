@@ -11,7 +11,7 @@ import {
   WhiteBg,
   Black,
   BlackLight,
-} from '@blog/styles';
+} from '@blog/shared/styles';
 
 const global = createStyles({
   '@global': {
