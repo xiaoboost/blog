@@ -1,18 +1,67 @@
 import path from 'path';
 import esbuild from 'esbuild';
 
-import { PostLoader } from './esbuild/loader-post';
+import { PostLoader } from './plugins/loader-post';
+import { JssLoader } from './plugins/loader-jss';
+import { ScriptLoader } from './plugins/loader-script';
 
-export async function build() {
+import { runScript } from '@xiao-ai/utils/node';
+import { cache, CacheVarName } from './context';
+import { getExternalPkg } from './utils';
+import { scriptNames, styleNames, assetNames, CommandOptions } from '../utils';
+
+async function bundle(opt: CommandOptions) {
   const result = await esbuild.build({
     bundle: true,
     write: false,
+    outdir: path.join(process.cwd(), opt.outDir),
     entryPoints: [path.join(__dirname, '../../', 'src/builder/index.ts')],
     platform: 'node',
-    // sourcemap: true,
+    sourcemap: false,
     minify: false,
-    external: ['@blog/shared', 'react', '@mdx-js/react'],
-    plugins: [PostLoader()],
+    publicPath: '/',
+    external: await getExternalPkg(),
+    mainFields: ['source', 'module', 'main'],
+    assetNames,
+    loader: {
+      '.ttf': 'file',
+      '.woff': 'file',
+      '.woff2': 'file',
+    },
+    plugins: [
+      PostLoader(),
+      JssLoader({ extractCss: false }).plugin,
+      ScriptLoader({
+        styleNames,
+        scriptNames,
+        cache: cache,
+      }).plugin,
+    ],
   });
-  debugger;
+
+  return result.outputFiles[0].text;
+}
+
+function runBuild(code: string) {
+  const start = Date.now();
+  const result = runScript(code, {
+    dirname: __dirname,
+    globalParams: {
+      [CacheVarName]: cache,
+    },
+  });
+  const end = Date.now();
+
+  console.log(`运行耗时：${end - start} 毫秒`);
+
+  if (result.error) {
+    throw result.error;
+  }
+
+  return result.output();
+}
+
+export async function build(opt: CommandOptions) {
+  const bundledCode = await bundle(opt);
+  const result = await runBuild(bundledCode);
 }
