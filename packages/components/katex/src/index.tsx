@@ -1,13 +1,10 @@
 import React from 'react';
 import Katex, { KatexOptions } from 'katex';
 import styles from './index.jss';
-
-import type { AssetData } from '@blog/utils';
-
-export const assets: AssetData[] = require('./index.script').default;
+import assets = require('./katex.script');
 
 interface Props {
-  value: string;
+  children: string;
   options?: KatexOptions;
 }
 
@@ -16,14 +13,12 @@ const baseOptions: KatexOptions = {
   output: 'html',
 };
 
-export const ModuleName = process.env.ModuleName as string;
-
-export function MathBlock({ value, options }: Props) {
+export function MathBlock({ children, options }: Props) {
   return (
     <p
       className={styles.classes.mathBlock}
       dangerouslySetInnerHTML={{
-        __html: Katex.renderToString(value.trim(), {
+        __html: Katex.renderToString(children.trim(), {
           ...baseOptions,
           ...options,
           displayMode: true,
@@ -33,12 +28,12 @@ export function MathBlock({ value, options }: Props) {
   );
 }
 
-export function MathInline({ value, options }: Props) {
+export function MathInline({ children, options }: Props) {
   return (
     <span
       className={styles.classes.mathInline}
       dangerouslySetInnerHTML={{
-        __html: Katex.renderToString(value.trim(), {
+        __html: Katex.renderToString(children.trim(), {
           ...baseOptions,
           ...options,
           displayMode: false,
@@ -48,27 +43,13 @@ export function MathInline({ value, options }: Props) {
   );
 }
 
-export function devApp() {
-  return (
-    <div>
-      <div>
-        <MathBlock
-          value={`
-        \\left\\{\\begin{matrix}
-        x_2=cos\\theta(x_1+y_1\\cdot tan\\theta)\\\\
-        y_2=cos\\theta(y_1-x_1\\cdot tan\\theta)
-        \\end{matrix}\\right.
-      `}
-        />
-      </div>
-      <div>
-        将<MathInline value='(x_1, y_1)' />
-        旋转
-        <MathInline value='\theta' />
-        度之后到
-        <MathInline value='(x_2, y_2)' />
-        的过程
-      </div>
-    </div>
-  );
-}
+export const createAssets: CreateAssets = () => {
+  assets;
+  console.log(assets);
+  debugger;
+  return Promise.resolve([]);
+};
+
+export const getAssetNames: GetAssetNames = () => {
+  return [];
+};

@@ -1,15 +1,13 @@
-declare type AssetContent = Buffer | string;
-
 /** 静态资源引用数据 */
 declare interface AssetImportData {
   path: string;
-  getContent: () => AssetContent | Promise<AssetContent>;
+  getContent: () => Buffer | Promise<Buffer>;
 }
 
 /** 静态资源数据 */
 declare interface AssetData {
   path: string;
-  content: AssetContent;
+  content: Buffer | string;
 }
 
 /** 创建静态资源 */
