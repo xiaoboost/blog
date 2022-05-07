@@ -22,8 +22,8 @@ async function bundle(opt: CommandOptions) {
       entryPoints: [path.join(__dirname, '../../', 'src/builder/index.ts')],
       platform: 'node',
       sourcemap: false,
-      minify: false,
       publicPath: '/',
+      minify: opt.mode === 'production',
       external: await getExternalPkg(),
       mainFields: ['source', 'module', 'main'],
       assetNames,
@@ -47,15 +47,16 @@ async function bundle(opt: CommandOptions) {
         }).plugin,
       ],
     })
-    .catch((e) => {
-      console.log(e);
-      debugger;
-    });
+    .catch((e: esbuild.BuildResult) => e);
   const end = Date.now();
+
+  if (result.errors.length > 0) {
+    console.warn(result.errors);
+  }
 
   console.log(`打包耗时：${end - start} 毫秒`);
 
-  return result.outputFiles[0].text;
+  return result.outputFiles?.[0].text ?? '';
 }
 
 function runBuild(code: string) {
@@ -64,6 +65,7 @@ function runBuild(code: string) {
     dirname: __dirname,
     globalParams: {
       [CacheVarName]: cache,
+      process,
     },
   });
   const end = Date.now();

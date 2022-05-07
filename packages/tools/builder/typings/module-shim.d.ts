@@ -1,5 +1,5 @@
 declare module '@blog/posts' {
-  import { PostMeta } from 'src/bundler/plugins/loader-post/types';
-  const data: PostMeta[];
+  import { PostRendered } from 'src/bundler/plugins/loader-post/types';
+  const data: PostRendered[];
   export default data;
 }

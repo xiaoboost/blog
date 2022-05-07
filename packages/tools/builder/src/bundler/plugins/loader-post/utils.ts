@@ -108,11 +108,8 @@ export async function getPostData(fileName: string): Promise<PostData> {
         .replace(/[\n\r]/g, ''),
   };
 
-  const assetExport = addAssetExport(data);
-
-  if (assetExport) {
-    data.content += `\n\n${assetExport}`;
-  }
+  // 添加静态资源导出方法
+  data.content += `\n\n${addAssetExport(data)}`;
 
   // TODO: 还需要导出图片的语句
 
@@ -142,10 +139,6 @@ function addAssetExport(data: PostData) {
     restContent = restContent.substring((result.index ?? 0) + result[0].length);
     imports.push(result[1]);
     result = importMatcher.exec(restContent);
-  }
-
-  if (imports.length === 0) {
-    return;
   }
 
   let exportCode = '';

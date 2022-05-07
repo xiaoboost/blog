@@ -24,15 +24,13 @@ export interface LayoutProps extends HeaderProps {
   pathname: string;
   /** 网站根路径 */
   publicPath?: string;
-  /** 样式文件列表 */
-  styles?: string[];
-  /** 脚本文件列表 */
-  scripts?: string[];
+  /** 静态资源列表 */
+  assets?: string[];
 }
 
 export function Layout(props: PropsWithChildren<LayoutProps>) {
-  const styles = props.styles ?? [];
-  const scripts = props.scripts ?? [];
+  const styles = (props.assets ?? []).filter((item) => item.endsWith('.css'));
+  const scripts = (props.assets ?? []).filter((item) => item.endsWith('.js'));
   const publicPath = props.publicPath ?? '/';
 
   return (

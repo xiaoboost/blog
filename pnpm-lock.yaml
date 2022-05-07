@@ -22,92 +22,6 @@ importers:
       prettier: registry.npmmirror.com/prettier/2.6.2
       typescript: registry.npmmirror.com/typescript/4.6.3
 
-  packages/builder/builder:
-    specifiers:
-      '@blog/mdx-code-block-normal': workspace:*
-      '@blog/mdx-code-block-typescript': workspace:*
-      '@blog/mdx-katex': workspace:*
-      '@blog/posts': workspace:*
-      '@blog/shared': workspace:*
-      '@blog/tsconfig': workspace:*
-      '@types/blog': workspace:*
-      '@types/md5': ^2.3.2
-      '@types/node': ^17.0.27
-      '@types/react': ^18.0.7
-      '@types/react-dom': ^18.0.0
-      '@xiao-ai/utils': ^1.6.0
-      chalk: ^5.0.1
-      esbuild: ^0.14.38
-      eslint: ^8.14.0
-      md5: ^2.3.0
-      memfs: ^3.4.1
-      react: ^18.0.0
-      react-dom: ^18.0.0
-      rmrf: ^2.0.4
-      tslib: ^2.4.0
-      typescript: ^4.6.3
-    dependencies:
-      '@blog/mdx-code-block-normal': link:../../components/code-block-normal
-      '@blog/mdx-code-block-typescript': link:../../components/code-block-typescript
-      '@blog/mdx-katex': link:../../components/katex
-      '@blog/posts': link:../../posts
-      '@blog/shared': link:../../shared
-      '@xiao-ai/utils': registry.npmmirror.com/@xiao-ai/utils/1.6.0
-      esbuild: registry.npmmirror.com/esbuild/0.14.38
-      md5: registry.npmmirror.com/md5/2.3.0
-      memfs: registry.npmmirror.com/memfs/3.4.1
-      react: registry.npmmirror.com/react/18.0.0
-      react-dom: registry.npmmirror.com/react-dom/18.0.0_react@18.0.0
-      rmrf: registry.npmmirror.com/rmrf/2.0.4
-      tslib: registry.npmmirror.com/tslib/2.4.0
-    devDependencies:
-      '@blog/tsconfig': link:../../tools/tsconfig
-      '@types/blog': link:../../tools/typings
-      '@types/md5': registry.npmmirror.com/@types/md5/2.3.2
-      '@types/node': registry.npmmirror.com/@types/node/17.0.27
-      '@types/react': registry.npmmirror.com/@types/react/18.0.7
-      '@types/react-dom': registry.npmmirror.com/@types/react-dom/18.0.0
-      chalk: registry.npmmirror.com/chalk/5.0.1
-      eslint: registry.npmmirror.com/eslint/8.14.0
-      typescript: registry.npmmirror.com/typescript/4.6.3
-
-  packages/builder/config:
-    specifiers:
-      '@blog/tsconfig': workspace:*
-      '@types/blog': workspace:*
-      eslint: ^8.14.0
-      tslib: ^2.4.0
-      typescript: ^4.6.3
-    devDependencies:
-      '@blog/tsconfig': link:../../tools/tsconfig
-      '@types/blog': link:../../tools/typings
-      eslint: registry.npmmirror.com/eslint/8.14.0
-      tslib: registry.npmmirror.com/tslib/2.4.0
-      typescript: registry.npmmirror.com/typescript/4.6.3
-
-  packages/builder/template:
-    specifiers:
-      '@blog/shared': workspace:*
-      '@blog/tsconfig': workspace:*
-      '@types/blog': workspace:*
-      '@types/node': ^17.0.27
-      '@xiao-ai/utils': ^1.6.0
-      esbuild: ^0.14.38
-      eslint: ^8.14.0
-      tslib: ^2.4.0
-      typescript: ^4.6.3
-    dependencies:
-      '@blog/shared': link:../../shared
-      '@xiao-ai/utils': registry.npmmirror.com/@xiao-ai/utils/1.6.0
-      tslib: registry.npmmirror.com/tslib/2.4.0
-    devDependencies:
-      '@blog/tsconfig': link:../../tools/tsconfig
-      '@types/blog': link:../../tools/typings
-      '@types/node': registry.npmmirror.com/@types/node/17.0.27
-      esbuild: registry.npmmirror.com/esbuild/0.14.38
-      eslint: registry.npmmirror.com/eslint/8.14.0
-      typescript: registry.npmmirror.com/typescript/4.6.3
-
   packages/components/code-block-normal:
     specifiers:
       '@blog/shared': workspace:*
@@ -1427,13 +1341,6 @@ packages:
       supports-color: registry.npmmirror.com/supports-color/7.2.0
     dev: true
 
-  registry.npmmirror.com/chalk/5.0.1:
-    resolution: {integrity: sha512-Fo07WOYGqMfCWHOzSXOt2CxDbC6skS/jO9ynEcmpANMoPrD+W1r1K6Vx7iNm+AQmETU1Xr2t+n8nzkV9t6xh3w==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/chalk/-/chalk-5.0.1.tgz}
-    name: chalk
-    version: 5.0.1
-    engines: {node: ^12.17.0 || ^14.13 || >=16.0.0}
-    dev: true
-
   registry.npmmirror.com/character-entities-html4/2.1.0:
     resolution: {integrity: sha512-1v7fgQRj6hnSwFpq1Eu0ynr/CDEw0rXo2B61qXrLNdHZmPKgb7fqS1a2JwF0rISo9q77jDI8VMEHoApn8qDoZA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/character-entities-html4/-/character-entities-html4-2.1.0.tgz}
     name: character-entities-html4
@@ -1960,6 +1867,7 @@ packages:
     cpu: [x64]
     os: [android]
     requiresBuild: true
+    dev: false
     optional: true
 
   registry.npmmirror.com/esbuild-android-arm64/0.14.38:
@@ -1970,6 +1878,7 @@ packages:
     cpu: [arm64]
     os: [android]
     requiresBuild: true
+    dev: false
     optional: true
 
   registry.npmmirror.com/esbuild-darwin-64/0.14.38:
@@ -1980,6 +1889,7 @@ packages:
     cpu: [x64]
     os: [darwin]
     requiresBuild: true
+    dev: false
     optional: true
 
   registry.npmmirror.com/esbuild-darwin-arm64/0.14.38:
@@ -1990,6 +1900,7 @@ packages:
     cpu: [arm64]
     os: [darwin]
     requiresBuild: true
+    dev: false
     optional: true
 
   registry.npmmirror.com/esbuild-freebsd-64/0.14.38:
@@ -2000,6 +1911,7 @@ packages:
     cpu: [x64]
     os: [freebsd]
     requiresBuild: true
+    dev: false
     optional: true
 
   registry.npmmirror.com/esbuild-freebsd-arm64/0.14.38:
@@ -2010,6 +1922,7 @@ packages:
     cpu: [arm64]
     os: [freebsd]
     requiresBuild: true
+    dev: false
     optional: true
 
   registry.npmmirror.com/esbuild-linux-32/0.14.38:
@@ -2020,6 +1933,7 @@ packages:
     cpu: [ia32]
     os: [linux]
     requiresBuild: true
+    dev: false
     optional: true
 
   registry.npmmirror.com/esbuild-linux-64/0.14.38:
@@ -2030,6 +1944,7 @@ packages:
     cpu: [x64]
     os: [linux]
     requiresBuild: true
+    dev: false
     optional: true
 
   registry.npmmirror.com/esbuild-linux-arm/0.14.38:
@@ -2040,6 +1955,7 @@ packages:
     cpu: [arm]
     os: [linux]
     requiresBuild: true
+    dev: false
     optional: true
 
   registry.npmmirror.com/esbuild-linux-arm64/0.14.38:
@@ -2050,6 +1966,7 @@ packages:
     cpu: [arm64]
     os: [linux]
     requiresBuild: true
+    dev: false
     optional: true
 
   registry.npmmirror.com/esbuild-linux-mips64le/0.14.38:
@@ -2060,6 +1977,7 @@ packages:
     cpu: [mips64el]
     os: [linux]
     requiresBuild: true
+    dev: false
     optional: true
 
   registry.npmmirror.com/esbuild-linux-ppc64le/0.14.38:
@@ -2070,6 +1988,7 @@ packages:
     cpu: [ppc64]
     os: [linux]
     requiresBuild: true
+    dev: false
     optional: true
 
   registry.npmmirror.com/esbuild-linux-riscv64/0.14.38:
@@ -2080,6 +1999,7 @@ packages:
     cpu: [riscv64]
     os: [linux]
     requiresBuild: true
+    dev: false
     optional: true
 
   registry.npmmirror.com/esbuild-linux-s390x/0.14.38:
@@ -2090,6 +2010,7 @@ packages:
     cpu: [s390x]
     os: [linux]
     requiresBuild: true
+    dev: false
     optional: true
 
   registry.npmmirror.com/esbuild-netbsd-64/0.14.38:
@@ -2100,6 +2021,7 @@ packages:
     cpu: [x64]
     os: [netbsd]
     requiresBuild: true
+    dev: false
     optional: true
 
   registry.npmmirror.com/esbuild-openbsd-64/0.14.38:
@@ -2110,6 +2032,7 @@ packages:
     cpu: [x64]
     os: [openbsd]
     requiresBuild: true
+    dev: false
     optional: true
 
   registry.npmmirror.com/esbuild-sunos-64/0.14.38:
@@ -2120,6 +2043,7 @@ packages:
     cpu: [x64]
     os: [sunos]
     requiresBuild: true
+    dev: false
     optional: true
 
   registry.npmmirror.com/esbuild-windows-32/0.14.38:
@@ -2130,6 +2054,7 @@ packages:
     cpu: [ia32]
     os: [win32]
     requiresBuild: true
+    dev: false
     optional: true
 
   registry.npmmirror.com/esbuild-windows-64/0.14.38:
@@ -2140,6 +2065,7 @@ packages:
     cpu: [x64]
     os: [win32]
     requiresBuild: true
+    dev: false
     optional: true
 
   registry.npmmirror.com/esbuild-windows-arm64/0.14.38:
@@ -2150,6 +2076,7 @@ packages:
     cpu: [arm64]
     os: [win32]
     requiresBuild: true
+    dev: false
     optional: true
 
   registry.npmmirror.com/esbuild/0.14.38:
@@ -2180,6 +2107,7 @@ packages:
       esbuild-windows-32: registry.npmmirror.com/esbuild-windows-32/0.14.38
       esbuild-windows-64: registry.npmmirror.com/esbuild-windows-64/0.14.38
       esbuild-windows-arm64: registry.npmmirror.com/esbuild-windows-arm64/0.14.38
+    dev: false
 
   registry.npmmirror.com/escalade/3.1.1:
     resolution: {integrity: sha512-k0er2gUkLf8O0zKJiAhmkTnJlTvINGv7ygDNPbeIsX/TJjGJZHuh9B2UxbsaEkmlEo9MfhrSzmhIlhRlI2GXnw==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/escalade/-/escalade-3.1.1.tgz}
@@ -5137,12 +5065,6 @@ packages:
     hasBin: true
     dependencies:
       glob: registry.npmmirror.com/glob/7.2.0
-
-  registry.npmmirror.com/rmrf/2.0.4:
-    resolution: {integrity: sha512-kvZVgjj6l/J1GlGGXyeKvch1+4nhfkdPRGToXJeUgr3T9AHmDDkZOCLyoY0m6MyycYNb+ZvBR9FdI58xhmczDQ==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/rmrf/-/rmrf-2.0.4.tgz}
-    name: rmrf
-    version: 2.0.4
-    dev: false
 
   registry.npmmirror.com/run-parallel/1.2.0:
     resolution: {integrity: sha512-5l4VyZR86LZ/lDxZTR6jqL8AFE2S0IFLMP26AbjsLVADxHdhB/c0GUsH+y39UfCi3dzz8OlQuPmnaJOMoDHQBA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/run-parallel/-/run-parallel-1.2.0.tgz}
