@@ -6,6 +6,7 @@ import * as path from 'path';
 
 import { Parser, PostData, PostMeta } from './types';
 import { toPinyin } from '@blog/shared/node';
+import { GetAssetMethodName } from '../../utils';
 
 import type Mdx from '@mdx-js/mdx';
 
@@ -107,6 +108,14 @@ export async function getPostData(fileName: string): Promise<PostData> {
         .replace(/[\n\r]/g, ''),
   };
 
+  const assetExport = addAssetExport(data);
+
+  if (assetExport) {
+    data.content += `\n\n${assetExport}`;
+  }
+
+  // TODO: 还需要导出图片的语句
+
   return data;
 }
 
@@ -121,7 +130,37 @@ export async function compileMdx(code: string) {
     .then((result) => result.toString());
 }
 
-// TODO: 在文章中自动检测是否含有某些组件，然后添加导出静态资源语句，这要放到生成 ast 之后，因为还要收集引用图片这样的静态资源
-export function addAssetExport() {
-  // ..
+function addAssetExport(data: PostData) {
+  const { content } = data;
+  const importMatcher = /import[^'"]*['"](@blog\/mdx-[^'"]+)['"]/;
+  const imports: string[] = [];
+
+  let restContent = content;
+  let result = importMatcher.exec(content);
+
+  while (result) {
+    restContent = restContent.substring((result.index ?? 0) + result[0].length);
+    imports.push(result[1]);
+    result = importMatcher.exec(restContent);
+  }
+
+  if (imports.length === 0) {
+    return;
+  }
+
+  let exportCode = '';
+
+  for (let i = 0; i < imports.length; i++) {
+    exportCode += `import * as a${i} from '${imports[0]}'\n`;
+  }
+
+  exportCode += `\nexport function ${GetAssetMethodName}() {\n  return [].concat(\n`;
+
+  for (let i = 0; i < imports.length; i++) {
+    exportCode += `    a${i}.getAssetNames(),\n`;
+  }
+
+  exportCode += '  );\n}\n';
+
+  return exportCode;
 }

@@ -13,6 +13,8 @@ const components = [katex, tsCodeBlock];
 const views = [layout, post];
 
 export default async function build() {
+  await tsCodeBlock.ready;
+
   const assets = (
     await Promise.all(components.concat(views as any).map((item) => item.createAssets()))
   ).reduce((ans, item) => ans.concat(item), []);

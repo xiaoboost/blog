@@ -6,46 +6,51 @@ import { JssLoader } from './plugins/loader-jss';
 import { ScriptLoader } from './plugins/loader-script';
 import { AssetLoader } from './plugins/loader-asset';
 import { runScript } from '@xiao-ai/utils/node';
-import { cache, CacheVarName } from './context';
-import { getExternalPkg } from './utils';
+import { cache } from './context';
+import { getExternalPkg, CacheVarName } from './utils';
 import { scriptNames, styleNames, assetNames, CommandOptions } from '../utils';
 
 // import cliSpinners from 'cli-spinners';
 
 async function bundle(opt: CommandOptions) {
   const start = Date.now();
-  const result = await esbuild.build({
-    bundle: true,
-    write: false,
-    outdir: path.join(process.cwd(), opt.outDir),
-    entryPoints: [path.join(__dirname, '../../', 'src/builder/index.ts')],
-    platform: 'node',
-    sourcemap: false,
-    minify: false,
-    publicPath: '/',
-    external: await getExternalPkg(),
-    mainFields: ['source', 'module', 'main'],
-    assetNames,
-    loader: {
-      '.ttf': 'file',
-      '.woff': 'file',
-      '.woff2': 'file',
-      '.svg': 'file',
-    },
-    plugins: [
-      PostLoader(),
-      AssetLoader({
-        exts: ['ico', 'plist', '.wasm'],
-        cache,
-      }),
-      JssLoader({ extractCss: false }).plugin,
-      ScriptLoader({
-        styleNames,
-        scriptNames,
-        cache,
-      }).plugin,
-    ],
-  });
+  const result = await esbuild
+    .build({
+      bundle: true,
+      write: false,
+      outdir: path.join(process.cwd(), opt.outDir),
+      entryPoints: [path.join(__dirname, '../../', 'src/builder/index.ts')],
+      platform: 'node',
+      sourcemap: false,
+      minify: false,
+      publicPath: '/',
+      external: await getExternalPkg(),
+      mainFields: ['source', 'module', 'main'],
+      assetNames,
+      loader: {
+        '.ttf': 'file',
+        '.woff': 'file',
+        '.woff2': 'file',
+        '.svg': 'file',
+      },
+      plugins: [
+        PostLoader(),
+        AssetLoader({
+          exts: ['ico', 'plist', '.wasm'],
+          cache,
+        }),
+        JssLoader({ extractCss: false }).plugin,
+        ScriptLoader({
+          styleNames,
+          scriptNames,
+          cache,
+        }).plugin,
+      ],
+    })
+    .catch((e) => {
+      console.log(e);
+      debugger;
+    });
   const end = Date.now();
 
   console.log(`打包耗时：${end - start} 毫秒`);

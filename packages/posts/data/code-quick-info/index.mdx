@@ -4,26 +4,31 @@ create: 2021/03/22
 description: TypeScript 官网不知道啥时候上线了静态代码提示功能，看着觉得非常不错，于是准备在博客里也做一个。
 ---
 
+import { TsCodeBlock as Code } from '@blog/mdx-code-block-typescript'
+
 所谓“静态代码提示”，是指在没有语言服务的情况下，展示出鼠标`hover`代码的类型提示功能。如下所示：
 
-```ts platform=browser
-// 将鼠标放在变量上
+<Code
+  platform="browser"
+  code={`
+    // 将鼠标放在变量上
 
-interface Point {
-  x: number;
-  y: number;
-}
+    interface Point {
+      x: number;
+      y: number;
+    }
 
-function print(pt: Point) {
-  console.log("The coordinate's x value is " + pt.x);
-  console.log("The coordinate's y value is " + pt.y);
-}
+    function print(pt: Point) {
+      console.log("The coordinate's x value is " + pt.x);
+      console.log("The coordinate's y value is " + pt.y);
+    }
 
-print({
-  x: 100,
-  y: 100,
-});
-```
+    print({
+      x: 100,
+      y: 100,
+    });
+  `}
+/>
 
 # 方案概述
 
