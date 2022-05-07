@@ -4,17 +4,25 @@ import styles from './index.jss';
 
 import { ToContent } from '../to-content';
 import { stringifyClass } from '@xiao-ai/utils';
-import { PostRendered } from '@blog/posts';
 import { MDXProvider } from '@mdx-js/react';
-import { Layout, LayoutProps } from '@blog/template-layout/dist/components/layout';
+import { Layout, LayoutProps } from '@blog/template-layout';
+import { Root } from 'mdast';
 
 import * as title from './title';
 import * as code from './code';
 import * as paragraph from './paragraph';
 
+interface PostData {
+  title: string;
+  create: number;
+  toc: any;
+  ast: Root;
+  Component: () => JSX.Element;
+}
+
 export interface Props extends LayoutProps {
   /** 文章数据 */
-  post: PostRendered;
+  post: PostData;
 }
 
 export function PostRender(props: Props) {
@@ -42,7 +50,7 @@ export function PostRender(props: Props) {
               ...paragraph,
             }}
           >
-            <post.Render />
+            <post.Component />
           </MDXProvider>
         </article>
       </section>

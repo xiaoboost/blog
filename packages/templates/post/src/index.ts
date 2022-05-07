@@ -1,12 +1,13 @@
-import assets from './index.script';
+import assets = require('./post.script');
+
+import { getAssetContents, getAssetPaths } from '@blog/shared/node';
 
 export * from './post';
 
 export const createAssets: CreateAssets = () => {
-  assets;
-  return Promise.resolve([]);
+  return getAssetContents(assets);
 };
 
 export const getAssetNames: GetAssetNames = () => {
-  return [];
+  return getAssetPaths(assets);
 };

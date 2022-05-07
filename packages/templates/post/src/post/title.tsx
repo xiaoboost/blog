@@ -6,7 +6,7 @@ import { isBaseType, isArray, isObject } from '@xiao-ai/utils';
 
 interface HeadProps {
   props?: HeadProps;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 function getHeadContent(props: React.ReactNode): string {

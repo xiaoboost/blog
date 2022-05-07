@@ -1,5 +1,5 @@
 import { levelLimit } from './constant';
-import { headerBodyMargin } from '@blog/styles/src/constant';
+import { headerBodyMargin } from '@blog/shared/styles';
 import { supportsPassive, addClassName, removeClassName } from '@xiao-ai/utils/web';
 
 import tocStyles from './index.jss';

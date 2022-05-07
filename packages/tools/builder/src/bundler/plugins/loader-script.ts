@@ -103,6 +103,15 @@ export function ScriptLoader(loaderOpt: Options) {
 
           let code = 'export default [\n';
 
+          if (buildResult.errors.length > 0) {
+            return {
+              errors: buildResult.errors ?? [],
+              warnings: buildResult.warnings ?? [],
+              loader: 'js',
+              contents: '',
+            };
+          }
+
           for (const file of (buildResult?.outputFiles ?? []) as OutputFile[]) {
             let filePath = '';
             let getContent = '';

@@ -1,9 +1,11 @@
 import React from 'react';
 import styles from './index.jss';
 import highlight from 'highlight.js';
+import assets = require('./code-block.script');
 
-import { AssetData } from '@blog/utils';
+import { getAssetContents, getAssetPaths } from '@blog/shared/node';
 import { stringifyClass } from '@xiao-ai/utils';
+
 import {
   getHighlightCode,
   getMinSpaceWidth,
@@ -12,8 +14,6 @@ import {
   getLangLabel,
 } from './utils';
 
-export const assets: AssetData[] = require('./index.script').default;
-export const ModuleName = process.env.ModuleName as string;
 export * from './utils';
 export { styles };
 
@@ -95,3 +95,11 @@ export function CodeBlock({ lang, children }: React.PropsWithChildren<CodeBlockP
     </CodeBlockWrapper>
   );
 }
+
+export const createAssets: CreateAssets = () => {
+  return getAssetContents(assets);
+};
+
+export const getAssetNames: GetAssetNames = () => {
+  return getAssetPaths(assets);
+};

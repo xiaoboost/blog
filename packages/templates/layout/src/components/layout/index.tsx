@@ -1,5 +1,4 @@
 import React from 'react';
-import favicon from './assets/image/favicon.ico';
 
 import { PropsWithChildren } from 'react';
 import { parseUrl } from '@blog/shared/node';
@@ -7,6 +6,8 @@ import { parseUrl } from '@blog/shared/node';
 import { Header, HeaderProps } from '../header';
 import { Footer } from '../footer';
 import { Article } from '../article';
+
+import { favicon } from '../../utils';
 
 export interface LayoutProps extends HeaderProps {
   /** 网站标题 */

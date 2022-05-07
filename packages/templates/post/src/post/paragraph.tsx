@@ -4,7 +4,7 @@ import styles from './index.jss';
 import { isArray, isString } from '@xiao-ai/utils';
 
 export interface Props {
-  children: React.ReactNode | React.ReactNode[];
+  children?: React.ReactNode | React.ReactNode[];
 }
 
 export function p(props: Props) {

@@ -120,3 +120,8 @@ export async function compileMdx(code: string) {
     )
     .then((result) => result.toString());
 }
+
+// TODO: 在文章中自动检测是否含有某些组件，然后添加导出静态资源语句，这要放到生成 ast 之后，因为还要收集引用图片这样的静态资源
+export function addAssetExport() {
+  // ..
+}

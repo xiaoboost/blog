@@ -4,13 +4,16 @@ import esbuild from 'esbuild';
 import { PostLoader } from './plugins/loader-post';
 import { JssLoader } from './plugins/loader-jss';
 import { ScriptLoader } from './plugins/loader-script';
-
+import { AssetLoader } from './plugins/loader-asset';
 import { runScript } from '@xiao-ai/utils/node';
 import { cache, CacheVarName } from './context';
 import { getExternalPkg } from './utils';
 import { scriptNames, styleNames, assetNames, CommandOptions } from '../utils';
 
+// import cliSpinners from 'cli-spinners';
+
 async function bundle(opt: CommandOptions) {
+  const start = Date.now();
   const result = await esbuild.build({
     bundle: true,
     write: false,
@@ -27,17 +30,25 @@ async function bundle(opt: CommandOptions) {
       '.ttf': 'file',
       '.woff': 'file',
       '.woff2': 'file',
+      '.svg': 'file',
     },
     plugins: [
       PostLoader(),
+      AssetLoader({
+        exts: ['ico', 'plist'],
+        cache,
+      }),
       JssLoader({ extractCss: false }).plugin,
       ScriptLoader({
         styleNames,
         scriptNames,
-        cache: cache,
+        cache,
       }).plugin,
     ],
   });
+  const end = Date.now();
+
+  console.log(`打包耗时：${end - start} 毫秒`);
 
   return result.outputFiles[0].text;
 }
@@ -58,10 +69,13 @@ function runBuild(code: string) {
     throw result.error;
   }
 
-  return result.output();
+  return result.output() as AssetData[];
 }
 
 export async function build(opt: CommandOptions) {
   const bundledCode = await bundle(opt);
   const result = await runBuild(bundledCode);
+
+  console.log(result.length);
+  debugger;
 }

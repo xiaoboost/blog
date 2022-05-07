@@ -4,19 +4,9 @@
   "version": "1.0.0",
   "author": "xiaoboost",
   "license": "MIT",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "files": [
-    "dist",
-    "README.md",
-    "package.json"
-  ],
+  "source": "src/index.tsx",
+  "types": "src/index.tsx",
   "scripts": {
-    "build:type": "tsc -p . --emitDeclarationOnly",
-    "build:bundle": "build-template --input=src/index.tsx --name=code-block",
-    "watch:bundle": "pnpm run build:bundle -- --development",
-    "build": "pnpm run build:type && pnpm run build:bundle",
-    "watch": "pnpm run build:type && pnpm run watch:bundle",
     "lint": "eslint --quiet --no-error-on-unmatched-pattern --config ../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}",
     "lint:fix": "eslint --fix --quiet --no-error-on-unmatched-pattern --config ../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}"
   },
@@ -25,14 +15,12 @@
     "url": "https://github.com/xiaoboost/blog"
   },
   "dependencies": {
-    "@blog/styles": "workspace:*",
-    "@blog/utils": "workspace:*",
+    "@blog/shared": "workspace:*",
     "@xiao-ai/utils": "^1.6.0",
     "highlight.js": "^11.5.1",
     "react": "^18.0.0"
   },
   "devDependencies": {
-    "@blog/builder-template": "workspace:*",
     "@blog/tsconfig": "workspace:*",
     "@types/blog": "workspace:*",
     "@types/react": "^18.0.7",

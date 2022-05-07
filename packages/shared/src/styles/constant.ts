@@ -1,7 +1,3 @@
-function getFontFamily(names: string[]) {
-  return names.join(', ');
-}
-
 /** 自定义字体名称枚举 */
 export const CustomFont = {
   /** 英文正文 */
@@ -13,7 +9,7 @@ export const CustomFont = {
 };
 
 /** 默认字体 */
-export const FontDefault = getFontFamily([
+export const FontDefault = [
   CustomFont.Lato,
   '-apple-system',
   'BlinkMacSystemFont',
@@ -24,16 +20,16 @@ export const FontDefault = getFontFamily([
   'WenQuanYi Micro Hei',
   'Microsoft YaHei',
   'sans-serif',
-]);
+].join(', ');
 
 /** 衬线字体 */
-export const FontSerif = getFontFamily(['思源宋体', 'STSong', '宋体', 'serif']);
+export const FontSerif = ['思源宋体', 'STSong', '宋体', 'serif'].join(', ');
 
 /** 等宽字体 */
-export const FontMono = getFontFamily(['Menlo', 'Monaco', 'Consolas', 'Courier New', 'monospace']);
+export const FontMono = ['Menlo', 'Monaco', 'Consolas', 'Courier New', 'monospace'].join(', ');
 
 /** 标题字体 */
-export const FontTitle = getFontFamily([CustomFont.Dancing]);
+export const FontTitle = CustomFont.Dancing;
 
 /** 网站宽度 */
 export const mainWidth = 1000;
