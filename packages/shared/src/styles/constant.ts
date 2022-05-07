@@ -9,7 +9,7 @@ export const CustomFont = {
 };
 
 /** 默认字体 */
-export const FontDefault = [
+export const FontDefault = /* @__PURE__ */ [
   CustomFont.Lato,
   '-apple-system',
   'BlinkMacSystemFont',
@@ -23,10 +23,16 @@ export const FontDefault = [
 ].join(', ');
 
 /** 衬线字体 */
-export const FontSerif = ['思源宋体', 'STSong', '宋体', 'serif'].join(', ');
+export const FontSerif = /* @__PURE__ */ ['思源宋体', 'STSong', '宋体', 'serif'].join(', ');
 
 /** 等宽字体 */
-export const FontMono = ['Menlo', 'Monaco', 'Consolas', 'Courier New', 'monospace'].join(', ');
+export const FontMono = /* @__PURE__ */ [
+  'Menlo',
+  'Monaco',
+  'Consolas',
+  'Courier New',
+  'monospace',
+].join(', ');
 
 /** 标题字体 */
 export const FontTitle = CustomFont.Dancing;

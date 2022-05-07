@@ -18,14 +18,14 @@
     "@blog/shared": "workspace:*",
     "@xiao-ai/utils": "^1.6.0",
     "highlight.js": "^11.5.1",
-    "react": "^18.0.0"
+    "react": "^18.1.0"
   },
   "devDependencies": {
     "@blog/tsconfig": "workspace:*",
     "@types/blog": "workspace:*",
-    "@types/react": "^18.0.7",
-    "eslint": "^8.14.0",
+    "@types/react": "^18.0.9",
+    "eslint": "^8.15.0",
     "tslib": "^2.4.0",
-    "typescript": "^4.6.3"
+    "typescript": "^4.6.4"
   }
 }

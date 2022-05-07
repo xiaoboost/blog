@@ -22,7 +22,7 @@
     "@mdx-js/react": "^2.1.1",
     "@xiao-ai/utils": "^1.6.0",
     "moment": "^2.29.3",
-    "react": "^18.0.0",
+    "react": "^18.1.0",
     "tslib": "^2.4.0"
   },
   "devDependencies": {
@@ -30,8 +30,8 @@
     "@types/blog": "workspace:*",
     "@types/mdast": "^3.0.10",
     "@types/mdx-js__react": "^1.5.5",
-    "@types/react": "^18.0.7",
-    "eslint": "^8.14.0",
-    "typescript": "^4.6.3"
+    "@types/react": "^18.0.9",
+    "eslint": "^8.15.0",
+    "typescript": "^4.6.4"
   }
 }

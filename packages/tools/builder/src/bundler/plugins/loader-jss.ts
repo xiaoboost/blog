@@ -26,7 +26,6 @@ export function JssLoader({ extractCss = true }: Options = {}): FilePlugin {
   const pluginName = 'loader-jss';
   const namespace = 'jss-style';
   const jssSuffix = 'jss-style-suffix';
-  const NameHash: Record<string, number | undefined> = {};
   const suffixMatcher = new RegExp(`\\.${jssSuffix}$`);
   const recorder = FileRecorder();
 
@@ -102,8 +101,6 @@ export function JssLoader({ extractCss = true }: Options = {}): FilePlugin {
             filename: 'jss-bundle.js',
             globalParams: {
               jss,
-              NameHash,
-              setTimeout: () => void 0,
             },
           });
 

@@ -11,9 +11,8 @@ import { cache } from './context';
 import { getExternalPkg, CacheVarName, log } from './utils';
 import { scriptNames, styleNames, assetNames, CommandOptions } from '../utils';
 
-// import cliSpinners from 'cli-spinners';
-
 async function bundle(opt: CommandOptions) {
+  log.loadStart('代码打包...');
   const start = Date.now();
   const result = await esbuild
     .build({
@@ -55,12 +54,16 @@ async function bundle(opt: CommandOptions) {
     console.warn(result.errors);
   }
 
+  await new Promise((resolve) => setTimeout(resolve, 5000));
+
+  log.loadEnd();
   log.log(`打包耗时：${end - start} 毫秒`);
 
   return result.outputFiles?.[0].text ?? '';
 }
 
 function runBuild(code: string) {
+  log.loadStart('运行构建...');
   const start = Date.now();
   const result = runScript(code, {
     dirname: __dirname,
@@ -71,6 +74,7 @@ function runBuild(code: string) {
   });
   const end = Date.now();
 
+  log.loadEnd();
   log.log(`运行耗时：${end - start} 毫秒`);
 
   if (result.error) {
