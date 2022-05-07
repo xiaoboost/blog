@@ -4,12 +4,10 @@ import styles from './index.jss';
 import { toPinyin } from '@blog/shared/node';
 import { levelLimit } from './constant';
 import { stringifyClass } from '@xiao-ai/utils';
-import { PostRendered, Heading, PhrasingContent } from '@blog/posts';
-
-type AST = PostRendered['ast'];
+import { Root, Heading, PhrasingContent } from 'mdast';
 
 export interface Props {
-  data: AST;
+  data: Root;
 }
 
 export interface NavTitleData {
@@ -34,7 +32,7 @@ function getContext(node: Heading | PhrasingContent): string {
   }
 }
 
-function createNavFromAst(ast: AST, limit: number): NavTitleData[] {
+function createNavFromAst(ast: Root, limit: number): NavTitleData[] {
   const root: NavTitleData = {
     content: 'root',
     hash: '',

@@ -6,16 +6,22 @@ import * as katex from '@blog/mdx-katex';
 // import * as tsCodeBlock from '@blog/mdx-code-block-typescript';
 
 // 模板
+import * as layout from '@blog/template-layout';
+import * as post from '@blog/template-post';
 
 const components = [katex];
+const views = [layout, post];
 
-export default async function main() {
-  console.log(katex);
-  // const asset = await katex.createAssets();
-  // console.log(asset);
-  katex;
-  debugger;
-  return React.createElement((posts[0] as any).Component);
+export default async function build() {
+  const assets = (
+    await Promise.all(components.concat(views as any).map((item) => item.createAssets()))
+  ).reduce((ans, item) => ans.concat(item), []);
+
+  return assets;
+
+  // console.log(assets.length);
+  // debugger;
+  // return React.createElement((posts[0] as any).Component);
 }
 
 // 流水线流程

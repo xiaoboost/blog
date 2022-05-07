@@ -1,6 +1,7 @@
 import { PluginBuild } from 'esbuild';
 import { normalize, getNameCreator } from '@blog/shared/node';
 import { FileCache } from '../utils';
+import { CacheVarName } from '../context';
 
 import md5 from 'md5';
 
@@ -12,29 +13,53 @@ export interface Options {
   cache?: FileCache;
 }
 
-function getFileContent(input: string, output: string) {
-  return `
-    const path = ${JSON.stringify(output)};
-    const getContent = () => fsm.readFile(path);
-
-    export default {
-      path,
-      getContent,
-    };
-  `;
-}
-
-export function FileLoader(opt: Options) {
+export function AssetLoader(loaderOpt: Options) {
   return {
-    name: 'loader-file',
+    name: 'loader-asset',
     setup(esbuild: PluginBuild) {
       const { initialOptions: options } = esbuild;
+      const namespace = 'asset-loader';
       const publicPath = options.publicPath ?? '/';
-      const fileExts = opt.exts.map((name) => name.replace(/^\.+/, '')).join('|');
+      const fileExts = loaderOpt.exts.map((name) => name.replace(/^\.+/, '')).join('|');
       const fileMatcher = new RegExp(`\\.(${fileExts})$`);
       const getName = getNameCreator(options.assetNames ?? '[name]');
 
-      esbuild.onLoad({ filter: fileMatcher }, async (args) => {
+      function getFileContent(filePath: string, content: Uint8Array) {
+        let getContent = '';
+
+        if (loaderOpt.cache) {
+          loaderOpt.cache.writeFile(filePath, Buffer.from(content));
+          getContent = `() => ${CacheVarName}.readFile(${JSON.stringify(filePath)})`;
+        } else {
+          getContent = `() => Buffer.from([${content.join(',')}])`;
+        }
+
+        return `
+          const path = ${JSON.stringify(filePath)};
+          const getContent = () => ${CacheVarName}.readFile(${JSON.stringify(filePath)});
+
+          export default {
+            path: ${JSON.stringify(filePath)},
+            getContent: ${getContent},
+          };
+        `;
+      }
+
+      esbuild.onResolve({ filter: fileMatcher }, (args) => {
+        if (path.isAbsolute(args.path)) {
+          return {
+            namespace,
+            path: args.path,
+          };
+        } else {
+          return {
+            namespace,
+            path: path.resolve(args.resolveDir, args.path),
+          };
+        }
+      });
+
+      esbuild.onLoad({ filter: fileMatcher, namespace }, async (args) => {
         const content = await fs.readFile(args.path);
         const nameOpt = path.parse(args.path);
         const assetName = getName({ name: nameOpt.name, hash: md5(content) });
@@ -46,7 +71,7 @@ export function FileLoader(opt: Options) {
         return {
           loader: 'js',
           watchFiles: [args.path],
-          contents: getFileContent(args.path, normalize(path.join(publicPath, assetPath))),
+          contents: getFileContent(normalize(path.join(publicPath, assetPath)), content),
         };
       });
     },
