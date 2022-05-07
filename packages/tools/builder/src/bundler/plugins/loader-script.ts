@@ -69,7 +69,7 @@ export function ScriptLoader(loaderOpt: Options) {
         const outputDir = options.outdir ?? process.cwd();
         const getStyleName = getNameCreator(loaderOpt.styleNames ?? options.assetNames ?? '[name]');
         const getScriptName = getNameCreator(
-          loaderOpt.styleNames ?? options.assetNames ?? '[name]',
+          loaderOpt.scriptNames ?? options.assetNames ?? '[name]',
         );
 
         esbuild.onLoad({ filter: /\.script\.(t|j)s$/ }, async (args) => {
