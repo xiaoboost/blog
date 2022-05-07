@@ -53,6 +53,8 @@ export interface PostData {
 export interface PostRendered extends Omit<PostData, 'content'> {
   /** 渲染函数 */
   Component: React.FC<Record<string, any>>;
+  /** 获取引用组件静态资源接口 */
+  getComponentAssetNames(): string[];
 }
 
 export type {

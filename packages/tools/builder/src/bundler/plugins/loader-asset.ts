@@ -1,7 +1,7 @@
 import { PluginBuild } from 'esbuild';
 import { normalize, getNameCreator } from '@blog/shared/node';
 import { FileCache } from '../utils';
-import { CacheVarName } from '../context';
+import { CacheVarName } from '../utils';
 
 import md5 from 'md5';
 

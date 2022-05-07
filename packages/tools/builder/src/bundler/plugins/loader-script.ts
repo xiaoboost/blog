@@ -3,8 +3,7 @@ import { unique } from '@xiao-ai/utils';
 import { getNameCreator, normalize } from '@blog/shared/node';
 import { JssLoader } from './loader-jss';
 import { FileRecorder } from './record-file';
-import { FileCache } from '../utils';
-import { CacheVarName } from '../context';
+import { FileCache, CacheVarName } from '../utils';
 
 import md5 from 'md5';
 

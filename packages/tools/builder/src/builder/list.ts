@@ -1,15 +1,15 @@
 import path from 'path';
 
-import { AssetData } from '@blog/utils';
-import { site, pageConfig, publicPath } from '@blog/config';
+import { MainIndex, getAssetNames } from '@blog/template-layout';
 import { default as inputs } from '@blog/posts';
-import { IndexRender } from '@blog/template-view';
+import { normalize } from '@blog/shared/node';
 import { cut } from '@xiao-ai/utils';
-import { createHtml } from './utils';
-import { layout } from './chunk';
+import { createHtml } from './react';
+import { site, publicPath, pageConfig } from '../utils';
 
-export function build(): AssetData[] {
-  const createIndex = createHtml(IndexRender);
+/** 获取网站各列表页静态资源 */
+export function getListAssets(): Promise<AssetData[]> {
+  const createIndex = createHtml(MainIndex);
   const posts = inputs.filter((post) => post.public);
   const pagePosts = cut(posts, pageConfig.index);
   const getPathname = (index: number) => {
@@ -26,13 +26,13 @@ export function build(): AssetData[] {
       : path.join(publicPath, 'index', String(index), 'index.html');
   };
 
-  return pagePosts.map((page, index) => {
+  const result = pagePosts.map((page, index) => {
     const pathname = getPathname(index)!;
     const pageTitle = index === 0 ? site.title : `${site.title} | 第 ${index + 1} 页`;
 
     return {
-      path: path.join(publicPath, pathname!),
-      contents: createIndex({
+      path: normalize(path.join(publicPath, pathname!)),
+      content: createIndex({
         posts: page,
         siteTitle: site.title,
         pageTitle,
@@ -40,9 +40,10 @@ export function build(): AssetData[] {
         publicPath,
         next: getPathname(index + 1),
         pre: getPathname(index - 1),
-        styles: layout.styles,
-        scripts: layout.scripts,
+        assets: getAssetNames(),
       }),
     };
   });
+
+  return Promise.resolve(result);
 }

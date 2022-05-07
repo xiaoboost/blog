@@ -1,5 +1,5 @@
-import vsctm from 'vscode-textmate';
-import oniguruma from 'vscode-oniguruma';
+import * as vsctm from 'vscode-textmate';
+import * as oniguruma from 'vscode-oniguruma';
 
 import { getTsServer, ScriptKind, Platform, TsServer } from './host';
 
@@ -123,7 +123,7 @@ function getInfo(server: TsServer, token: Token) {
   return info;
 }
 
-export const ready = getGrammar();
+export const ready: Promise<void> = getGrammar().then(() => void 0);
 
 export function tokenize(code: string, lang: ScriptKind = 'ts', platform: Platform = 'browser') {
   const server = getTsServer(lang, platform);
