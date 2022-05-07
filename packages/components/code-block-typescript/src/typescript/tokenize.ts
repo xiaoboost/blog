@@ -22,23 +22,22 @@ interface Token extends vsctm.IToken {
 }
 
 async function getGrammar() {
-  const vscodeOnigurumaLib: Promise<vsctm.IOnigLib> = oniguruma
-    .loadWASM((wasmBin.contents as Buffer).buffer)
-    .then(
-      () =>
-        ({
-          createOnigScanner: (source: string[]) => new oniguruma.OnigScanner(source),
-          createOnigString: (str: string) => new oniguruma.OnigString(str),
-        } as any),
-    );
+  const wasmContent = await wasmBin.getContent();
+  const vscodeOnigurumaLib: Promise<vsctm.IOnigLib> = oniguruma.loadWASM(wasmContent.buffer).then(
+    () =>
+      ({
+        createOnigScanner: (source: string[]) => new oniguruma.OnigScanner(source),
+        createOnigString: (str: string) => new oniguruma.OnigString(str),
+      } as any),
+  );
 
   const registry = new vsctm.Registry({
     onigLib: vscodeOnigurumaLib,
-    loadGrammar: (scopeName) => {
+    loadGrammar: async (scopeName) => {
       if (scopeName === 'source.ts') {
-        return Promise.resolve(vsctm.parseRawGrammar(tsPlist.contents as string));
+        return vsctm.parseRawGrammar((await tsPlist.getContent()).toString('utf-8'));
       } else if (scopeName === 'source.tsx') {
-        return Promise.resolve(vsctm.parseRawGrammar(tsxPlist.contents as string));
+        return vsctm.parseRawGrammar((await tsxPlist.getContent()).toString('utf-8'));
       } else {
         throw new Error(`Unknown scopeName: ${scopeName}.`);
       }

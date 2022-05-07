@@ -1,5 +1,5 @@
 import { lsInfoAttrName } from './constant';
-import { createStyles, Color, FontMono, Gray, GrayLight } from '@blog/styles';
+import { createStyles, Color, FontMono, Gray, GrayLight } from '@blog/shared/styles';
 
 const Black = Color(0x383a42);
 const Blue = Color(0x4078f2);

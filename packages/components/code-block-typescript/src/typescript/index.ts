@@ -86,7 +86,6 @@ export function renderTsCode(
         const splitCode = Array(blockCount).fill(`${splitTag}${tabString}`).join('');
         const splitString = Array(splitNumber).fill(tabString).join('');
 
-        // debugger;
         code = code.replace(new RegExp(`^${splitString}`), splitCode);
       }
     } else if (code.length === 0 && blockCount > 0) {

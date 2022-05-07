@@ -2,19 +2,20 @@ import type { PluginBuild } from 'esbuild';
 
 import { normalize } from '@blog/shared/node';
 import { getPostsInputCode, getPostData, compileMdx } from './utils';
+import { GetAssetMethodName } from '../../utils';
 
 import * as lookup from 'look-it-up';
 import * as path from 'path';
 
 const postsNamespace = 'posts-loader';
 const mdxNamespace = 'mdx-loader';
-const postVirtual = 'Post:/';
 
 export function PostLoader() {
   return {
     name: 'posts-loader',
     setup(build: PluginBuild) {
       const mdxContents = new Map<string, string>();
+      const mdxComponentSuffix = '.mdx-js';
 
       build.onResolve({ filter: /^@blog\/posts$/ }, async (args) => {
         const postDir = await lookup.lookItUp('node_modules/@blog/posts', args.resolveDir);
@@ -27,7 +28,7 @@ export function PostLoader() {
         };
       });
 
-      build.onResolve({ filter: new RegExp(`^${postVirtual}`) }, (args) => {
+      build.onResolve({ filter: new RegExp(`\\${mdxComponentSuffix}$`) }, (args) => {
         return {
           namespace: mdxNamespace,
           sideEffects: false,
@@ -69,7 +70,7 @@ export function PostLoader() {
 
       build.onLoad({ filter: /\.mdx?$/ }, async (args) => {
         const { content, ...post } = await getPostData(args.path);
-        const mdxPath = normalize(`${postVirtual}${args.path}.js`);
+        const mdxPath = normalize(`${args.path}${mdxComponentSuffix}`);
 
         mdxContents.set(mdxPath, content);
 
@@ -78,10 +79,11 @@ export function PostLoader() {
           watchFiles: [args.path],
           resolveDir: path.dirname(args.path),
           contents: `
-            import Component from '${mdxPath}';
+            import Component, { ${GetAssetMethodName} } from '${mdxPath}';
 
             export default {
-              Component: Component,
+              Component,
+              ${GetAssetMethodName},
               ...(${JSON.stringify(post, null, 2)}),
             };
           `,

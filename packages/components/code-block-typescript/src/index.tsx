@@ -1,9 +1,11 @@
 import React from 'react';
 import styles from './index.jss';
+import assets = require('./code-block-ts.script');
 
-import { AssetData } from '@blog/utils';
 import { stringifyClass } from '@xiao-ai/utils';
 import { renderTsCode, ScriptKind, Platform } from './typescript';
+import { getAssetContents, getAssetPaths } from '@blog/shared/node';
+
 import {
   styles as normalStyles,
   CodeBlockWrapper,
@@ -12,9 +14,6 @@ import {
 } from '@blog/mdx-code-block-normal';
 
 export { ready, ScriptKind, Platform } from './typescript';
-
-export const assets: AssetData[] = require('./index.script').default;
-export const ModuleName = process.env.ModuleName as string;
 
 export interface Options {
   lang?: ScriptKind;
@@ -54,3 +53,11 @@ export function TsCodeBlock({
     </CodeBlockWrapper>
   );
 }
+
+export const createAssets: CreateAssets = () => {
+  return getAssetContents(assets);
+};
+
+export const getAssetNames: GetAssetNames = () => {
+  return getAssetPaths(assets);
+};
