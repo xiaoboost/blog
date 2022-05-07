@@ -3,13 +3,13 @@ import posts from '@blog/posts';
 
 // 独立组件
 import * as katex from '@blog/mdx-katex';
-// import * as tsCodeBlock from '@blog/mdx-code-block-typescript';
+import * as tsCodeBlock from '@blog/mdx-code-block-typescript';
 
 // 模板
 import * as layout from '@blog/template-layout';
 import * as post from '@blog/template-post';
 
-const components = [katex];
+const components = [katex, tsCodeBlock];
 const views = [layout, post];
 
 export default async function build() {

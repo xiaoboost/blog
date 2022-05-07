@@ -35,7 +35,7 @@ async function bundle(opt: CommandOptions) {
     plugins: [
       PostLoader(),
       AssetLoader({
-        exts: ['ico', 'plist'],
+        exts: ['ico', 'plist', '.wasm'],
         cache,
       }),
       JssLoader({ extractCss: false }).plugin,
