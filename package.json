@@ -10,8 +10,8 @@
   },
   "scripts": {
     "build": "blog build --outDir=dist --mode=production",
+    "build:prepare": "pnpm run build --filter @blog/builder...",
     "watch": "blog watch --mode=development",
-    "build:website": "pnpm run build --filter @blog/builder...",
     "lint": "pnpm run -r lint --parallel --filter .",
     "lint:fix": "pnpm run -r lint:fix --parallel --filter ."
   },

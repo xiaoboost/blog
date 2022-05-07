@@ -20,7 +20,7 @@ jobs:
         platform:
           - ubuntu-18.04
         storeDir:
-         - '\.pnpm-store'
+          - '\.pnpm-store'
 
     name: '${{ matrix.platform }} / Node.js v${{ matrix.node }}'
     runs-on: ${{ matrix.platform }}
@@ -67,8 +67,11 @@ jobs:
       - name: Check Code Style
         run: pnpm run lint
 
+      - name: Build Prepare
+        run: pnpm run build:prepare
+
       - name: Build Blog
-        run: pnpm run build:blog
+        run: pnpm run build
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v2
