@@ -64,7 +64,7 @@ export async function bundle(opt: CommandOptions) {
   const end = Date.now();
 
   log.loadEnd();
-  log.log(`打包耗时：${end - start} 毫秒`);
+  log.log(`打包耗时 ${end - start} 毫秒`);
 
   const watchFiles = unique(
     fileRecorder
@@ -92,7 +92,7 @@ export async function runBuild(code: string) {
   const end = Date.now();
 
   log.loadEnd();
-  log.log(`运行耗时：${end - start} 毫秒`);
+  log.log(`运行耗时 ${end - start} 毫秒`);
 
   if (result.error) {
     throw result.error;

@@ -56,7 +56,7 @@ async function build(opt: CommandOptions) {
     await writeMemory(assets.files);
 
     compiling = false;
-    log.log(`网站部署在 http://localhost:${devPort}`);
+    log.log(`网站部署在 http://localhost:${devPort}\n`);
 
     watchFiles(bundled.watchFiles, opt);
   } catch (e: unknown) {
