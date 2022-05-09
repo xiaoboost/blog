@@ -1,14 +1,13 @@
 import yargs from 'yargs';
 
-import { build } from './build';
-import { watch } from './watch';
+import { build, watch } from '../bundler';
 
 function setYargsCommand(yargs: yargs.Argv<any>) {
   return yargs.options({
     outDir: {
       type: 'string',
       describe: '输出文件夹',
-      require: true,
+      default: 'dist',
     },
     mode: {
       type: 'string',

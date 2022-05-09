@@ -1,8 +1,11 @@
 import type { PluginBuild } from 'esbuild';
 
+import Glob from 'fast-glob';
+
 import { normalize } from '@blog/shared/node';
 import { getPostsInputCode, getPostData, compileMdx } from './utils';
 import { GetAssetMethodName } from '../../utils';
+import { FilePlugin } from '../record-file';
 
 import * as lookup from 'look-it-up';
 import * as path from 'path';
@@ -10,75 +13,82 @@ import * as path from 'path';
 const postsNamespace = 'posts-loader';
 const mdxNamespace = 'mdx-loader';
 
-export function PostLoader() {
+export function PostLoader(): FilePlugin {
+  let posts: string[] = [];
+
   return {
-    name: 'posts-loader',
-    setup(build: PluginBuild) {
-      const mdxContents = new Map<string, string>();
-      const mdxComponentSuffix = '.mdx-js';
+    getFiles: () => posts.slice(),
+    plugin: {
+      name: 'posts-loader',
+      setup(build: PluginBuild) {
+        const mdxContents = new Map<string, string>();
+        const mdxComponentSuffix = '.mdx-js';
 
-      build.onResolve({ filter: /^@blog\/posts$/ }, async (args) => {
-        const postDir = await lookup.lookItUp('node_modules/@blog/posts', args.resolveDir);
+        build.onResolve({ filter: /^@blog\/posts$/ }, async (args) => {
+          const postDir = await lookup.lookItUp('node_modules/@blog/posts', args.resolveDir);
 
-        return {
-          namespace: postsNamespace,
-          sideEffects: false,
-          external: false,
-          path: postDir ?? '',
-        };
-      });
+          return {
+            namespace: postsNamespace,
+            sideEffects: false,
+            external: false,
+            path: postDir ?? '',
+          };
+        });
 
-      build.onResolve({ filter: new RegExp(`\\${mdxComponentSuffix}$`) }, (args) => {
-        return {
-          namespace: mdxNamespace,
-          sideEffects: false,
-          external: false,
-          path: args.path,
-        };
-      });
+        build.onResolve({ filter: new RegExp(`\\${mdxComponentSuffix}$`) }, (args) => {
+          return {
+            namespace: mdxNamespace,
+            sideEffects: false,
+            external: false,
+            path: args.path,
+          };
+        });
 
-      build.onLoad({ filter: /.*/, namespace: postsNamespace }, async (args) => {
-        const packageFile = path.join(args.path, 'package.json');
-        const packageJson = require(path.join(args.path, 'package.json'));
+        build.onLoad({ filter: /.*/, namespace: postsNamespace }, async (args) => {
+          const packageFile = path.join(args.path, 'package.json');
+          const packageJson = require(path.join(args.path, 'package.json'));
 
-        if (!packageJson.main) {
-          throw new Error(`文件 ${packageFile} 中未发现合法的 main 字段`);
-        }
+          if (!packageJson.main) {
+            throw new Error(`文件 ${packageFile} 中未发现合法的 main 字段`);
+          }
 
-        const postSearcher = path.join(args.path, packageJson.main);
-        const code = await getPostsInputCode(normalize(postSearcher));
+          const postSearcher = path.join(args.path, packageJson.main);
+          const postFiles = await Glob(normalize(postSearcher));
+          const code = await getPostsInputCode(postFiles);
 
-        return {
-          contents: code,
-          resolveDir: args.path,
-        };
-      });
+          posts = postFiles.slice();
 
-      build.onLoad({ filter: /.*/, namespace: mdxNamespace }, async (args) => {
-        const mdxPath = normalize(args.path);
-        const content = mdxContents.get(mdxPath);
-        const renderCode = await compileMdx(content ?? '');
+          return {
+            contents: code,
+            resolveDir: args.path,
+          };
+        });
 
-        mdxContents.delete(mdxPath);
+        build.onLoad({ filter: /.*/, namespace: mdxNamespace }, async (args) => {
+          const mdxPath = normalize(args.path);
+          const content = mdxContents.get(mdxPath);
+          const renderCode = await compileMdx(content ?? '');
 
-        return {
-          loader: 'js',
-          contents: renderCode,
-          resolveDir: path.dirname(args.path),
-        };
-      });
+          mdxContents.delete(mdxPath);
 
-      build.onLoad({ filter: /\.mdx?$/ }, async (args) => {
-        const { content, ...post } = await getPostData(args.path);
-        const mdxPath = normalize(`${args.path}${mdxComponentSuffix}`);
+          return {
+            loader: 'js',
+            contents: renderCode,
+            resolveDir: path.dirname(args.path),
+          };
+        });
 
-        mdxContents.set(mdxPath, content);
+        build.onLoad({ filter: /\.mdx?$/ }, async (args) => {
+          const { content, ...post } = await getPostData(args.path);
+          const mdxPath = normalize(`${args.path}${mdxComponentSuffix}`);
 
-        return {
-          loader: 'js',
-          watchFiles: [args.path],
-          resolveDir: path.dirname(args.path),
-          contents: `
+          mdxContents.set(mdxPath, content);
+
+          return {
+            loader: 'js',
+            watchFiles: [args.path],
+            resolveDir: path.dirname(args.path),
+            contents: `
             import Component, { ${GetAssetMethodName} } from '${mdxPath}';
 
             export default {
@@ -87,8 +97,9 @@ export function PostLoader() {
               ...(${JSON.stringify(post, null, 2)}),
             };
           `,
-        };
-      });
+          };
+        });
+      },
     },
   };
 }

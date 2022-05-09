@@ -1,5 +1,3 @@
-import Glob from 'fast-glob';
-
 import * as fs from 'fs/promises';
 import * as yaml from 'yaml';
 import * as path from 'path';
@@ -10,9 +8,7 @@ import { GetAssetMethodName } from '../../utils';
 
 import type Mdx from '@mdx-js/mdx';
 
-export async function getPostsInputCode(searcher: string) {
-  const posts = await Glob(searcher);
-
+export async function getPostsInputCode(posts: string[]) {
   let code = '';
 
   for (let i = 0; i < posts.length; i++) {

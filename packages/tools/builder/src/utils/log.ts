@@ -1,11 +1,14 @@
 import createSpinner, { Ora } from 'ora';
+import Moment from 'moment';
 
-const prefix = '>';
 let spinner: Ora | undefined;
 
 export const log = {
   log(...args: any[]) {
-    console.log(prefix, ...args);
+    console.log(`[${Moment().format('hh:mm:ss')}]`, ...args);
+  },
+  warn(...args: any[]) {
+    console.warn(`[${Moment().format('hh:mm:ss')}]`, ...args);
   },
   loadStart(message: string) {
     spinner = createSpinner({

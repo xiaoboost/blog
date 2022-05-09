@@ -228,6 +228,7 @@ importers:
       look-it-up: ^2.1.0
       md5: ^2.3.0
       mime: ^3.0.0
+      moment: ^2.29.3
       ora: 5.4.1
       react: ^18.1.0
       react-dom: ^18.1.0
@@ -260,6 +261,7 @@ importers:
       look-it-up: registry.npmmirror.com/look-it-up/2.1.0
       md5: registry.npmmirror.com/md5/2.3.0
       mime: registry.npmmirror.com/mime/3.0.0
+      moment: registry.npmmirror.com/moment/2.29.3
       ora: registry.npmmirror.com/ora/5.4.1
       react: registry.npmmirror.com/react/18.1.0
       react-dom: registry.npmmirror.com/react-dom/18.1.0_react@18.1.0
