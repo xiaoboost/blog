@@ -1,6 +1,6 @@
 {
   "name": "blog",
-  "version": "4.0.0",
+  "version": "4.1.0",
   "description": "个人博客",
   "author": "xiaoboost",
   "license": "MIT",
@@ -9,9 +9,10 @@
     "url": "https://github.com/xiaoboost/blog"
   },
   "scripts": {
-    "build": "blog build --outDir=dist --mode=production",
-    "build:prepare": "pnpm run build --filter @blog/builder...",
+    "build": "blog build --outDir=dist --mode=development",
     "watch": "blog watch --mode=development",
+    "build:builder": "pnpm run build --filter @blog/builder...",
+    "watch:builder": "pnpm run watch --filter @blog/builder",
     "lint": "pnpm run -r lint --parallel --filter .",
     "lint:fix": "pnpm run -r lint:fix --parallel --filter ."
   },

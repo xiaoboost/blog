@@ -20,12 +20,6 @@ export const pageConfig = {
 
 /** 公共资源公共路径 */
 export const publicPath = '/';
-/** 静态资源路径 */
-export const assetNames = 'assets/[name].[hash]';
-/** 样式资源路径 */
-export const styleNames = 'styles/[name].[hash]';
-/** 脚本资源路径 */
-export const scriptNames = 'scripts/[name].[hash]';
 /** 标签页路径 */
 export const tagsPath = 'tag';
 /** 归档页路径 */

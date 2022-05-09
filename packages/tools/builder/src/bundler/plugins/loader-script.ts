@@ -16,8 +16,6 @@ export interface Options {
   cache?: FileCache;
 }
 
-const nameMap = new Map<string, boolean>();
-
 function getAssetName(entry: string) {
   const importName = path.basename(entry);
   const nameMatch = /^([^.]+)/.exec(importName);
@@ -28,17 +26,7 @@ function getAssetName(entry: string) {
     name = nameMatch[1];
   }
 
-  let index = 1;
-  let current = name;
-
-  while (nameMap.has(current)) {
-    current = `${name}-${index}`;
-    index++;
-  }
-
-  nameMap.set(current, true);
-
-  return current;
+  return name;
 }
 
 export function ScriptLoader(loaderOpt: Options) {

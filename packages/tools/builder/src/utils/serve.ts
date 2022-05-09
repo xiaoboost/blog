@@ -1,15 +1,21 @@
 import Koa from 'koa';
-import fs from 'fs';
 
 import { join } from 'path';
 import { getType } from 'mime';
+import { wait } from '@xiao-ai/utils';
+import { normalize } from '@blog/shared/node';
+import { log } from './log';
 
-export function serve(dir: string, port: number, vfs: typeof fs.promises) {
+export function serve(port: number, vfs: Map<string, Buffer>, isLoading?: () => boolean) {
   const app = new Koa();
 
   app.listen(port);
 
   app.use(async (ctx, next) => {
+    if (isLoading?.()) {
+      await wait(() => !isLoading(), 100);
+    }
+
     if (ctx.method !== 'GET' && ctx.method !== 'HEAD') {
       ctx.status = 405;
       ctx.length = 0;
@@ -18,14 +24,17 @@ export function serve(dir: string, port: number, vfs: typeof fs.promises) {
       return false;
     }
 
-    const filePath =
+    const filePath = normalize(
       ctx.path[ctx.path.length - 1] === '/'
-        ? join(dir, ctx.path, 'index.html')
-        : join(dir, ctx.path);
+        ? join('/', ctx.path, 'index.html')
+        : join('/', ctx.path),
+    );
 
-    const stat = await vfs.stat(filePath).catch(() => void 0);
+    log.log(`请求文件 ${filePath}`);
 
-    if (!stat) {
+    const file = vfs.get(filePath);
+
+    if (!file) {
       ctx.status = 404;
       ctx.length = 0;
       next();
@@ -38,13 +47,11 @@ export function serve(dir: string, port: number, vfs: typeof fs.promises) {
     ctx.set('Accept-Ranges', 'bytes');
     ctx.set('Cache-Control', 'max-age=0');
 
-    ctx.length = Number(stat.size);
-    ctx.body = await vfs.readFile(filePath);
+    ctx.length = file.byteLength;
+    ctx.body = file;
 
     next();
   });
-
-  console.log(`\n⚡ Your application is already set at http://localhost:${port}/.\n`);
 
   return app;
 }
