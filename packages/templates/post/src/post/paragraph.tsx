@@ -11,7 +11,6 @@ export function p(props: Props) {
   const children: React.ReactNode[] = [];
   const nodes = isArray(props.children) ? props.children : [props.children];
 
-  // debugger;
   for (const node of nodes) {
     if (isString(node)) {
       const stringNodes = node.split(/[\r\n]+/);

@@ -13,8 +13,12 @@ export async function getExternalPkg() {
   const data = JSON.parse(content);
 
   externals = Object.keys(data.dependencies)
-    .filter((key) => !data.dependencies[key].startsWith('workspace'))
-    .concat(['@blog/shared', 'typescript']);
+    .filter((key) => !data.dependencies[key].startsWith('workspace') || key === '@blog/shared')
+    .concat(
+      Object.keys(data.devDependencies).filter(
+        (key) => !data.devDependencies[key].startsWith('workspace'),
+      ),
+    );
 
-  return externals;
+  return externals.slice();
 }

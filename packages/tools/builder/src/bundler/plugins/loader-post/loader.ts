@@ -4,7 +4,7 @@ import Glob from 'fast-glob';
 
 import { normalize } from '@blog/shared/node';
 import { getPostsInputCode, getPostData, compileMdx } from './utils';
-import { GetAssetMethodName } from '../../utils';
+import { GetComponentAssetMethodName, GetTemplateAssetMethodName } from '../../utils';
 import { FilePlugin } from '../record-file';
 
 import * as lookup from 'look-it-up';
@@ -89,11 +89,15 @@ export function PostLoader(): FilePlugin {
             watchFiles: [args.path],
             resolveDir: path.dirname(args.path),
             contents: `
-            import Component, { ${GetAssetMethodName} } from '${mdxPath}';
+            import Component, {
+              ${GetComponentAssetMethodName},
+              ${GetTemplateAssetMethodName},
+            } from '${mdxPath}';
 
             export default {
               Component,
-              ${GetAssetMethodName},
+              ${GetComponentAssetMethodName},
+              ${GetTemplateAssetMethodName},
               ...(${JSON.stringify(post, null, 2)}),
             };
           `,

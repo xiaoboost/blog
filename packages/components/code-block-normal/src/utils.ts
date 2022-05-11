@@ -18,12 +18,49 @@ const langLabel = {
   json: 'JSON',
 };
 
+/**
+ * 格式化代码
+ *   - 前后空行
+ *   - 作为代码块的左侧统一空格
+ */
+export function formatCode(code: string) {
+  const lines = code.split(/[\n\r]/);
+
+  while (lines[0].trim().length === 0) {
+    lines.shift();
+  }
+
+  while (lines[lines.length - 1].trim().length === 0) {
+    lines.pop();
+  }
+
+  const clearedSpaceLines = lines.map((line) => {
+    return /^\s+$/.test(line) ? '' : line;
+  });
+
+  const blockLeftSpace = Math.min(
+    ...clearedSpaceLines.map((line) => {
+      if (line.length === 0) {
+        return Infinity;
+      }
+
+      const result = /^ +/.exec(line);
+      return result ? result[0].length : 0;
+    }),
+  );
+
+  const removeLeftSpace = clearedSpaceLines.map((line) =>
+    line.substring(blockLeftSpace, line.length),
+  );
+
+  return removeLeftSpace.join('\n');
+}
+
 /** 获取高亮代码行数据 */
 export function getHighlightCode(code: string) {
   const hlLabel = /\/\*\*\* +hl +\*\*\*\//g;
   const highlightLines: Record<number, boolean> = {};
-  const lines = code
-    .trim()
+  const lines = formatCode(code)
     .split(/[\n\r]/)
     .map((line, index) => {
       const match = line.match(hlLabel);

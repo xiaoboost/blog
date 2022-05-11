@@ -4,7 +4,7 @@ import * as path from 'path';
 
 import { Parser, PostData, PostMeta } from './types';
 import { toPinyin } from '@blog/shared/node';
-import { GetAssetMethodName } from '../../utils';
+import { GetComponentAssetMethodName, GetTemplateAssetMethodName } from '../../utils';
 
 import type Mdx from '@mdx-js/mdx';
 
@@ -96,6 +96,7 @@ export async function getPostData(fileName: string): Promise<PostData> {
     pathname: meta.pathname ?? path.join('posts', createAt, decodeTitle),
     toc: meta.toc ?? true,
     ast: removePosition(parser.parse(postContent)),
+    template: meta.template ?? 'post',
     description:
       meta.description ??
       mdContent
@@ -106,6 +107,7 @@ export async function getPostData(fileName: string): Promise<PostData> {
 
   // 添加静态资源导出方法
   data.content += `\n\n${addAssetExport(data)}`;
+  data.content += `\n\n${addTemplateExport(data)}`;
 
   // TODO: 还需要导出图片的语句
 
@@ -143,7 +145,7 @@ function addAssetExport(data: PostData) {
     exportCode += `import * as a${i} from '${imports[0]}'\n`;
   }
 
-  exportCode += `\nexport function ${GetAssetMethodName}() {\n  return [].concat(\n`;
+  exportCode += `\nexport function ${GetComponentAssetMethodName}() {\n  return [].concat(\n`;
 
   for (let i = 0; i < imports.length; i++) {
     exportCode += `    a${i}.getAssetNames(),\n`;
@@ -152,4 +154,14 @@ function addAssetExport(data: PostData) {
   exportCode += '  );\n}\n';
 
   return exportCode;
+}
+
+function addTemplateExport(data: PostData) {
+  return `
+import * as template from '@blog/template-${data.template}'
+
+export function ${GetTemplateAssetMethodName}() {
+  return template.getAssetNames();
+}
+  `.trim();
 }

@@ -4,7 +4,6 @@ import styles from './index.jss';
 
 import { ToContent } from '../to-content';
 import { stringifyClass } from '@xiao-ai/utils';
-import { MDXProvider } from '@mdx-js/react';
 import { Layout, LayoutProps } from '@blog/template-layout';
 import { Root } from 'mdast';
 
@@ -17,7 +16,7 @@ interface PostData {
   create: number;
   toc: any;
   ast: Root;
-  Component: () => JSX.Element;
+  Component: (props: any) => JSX.Element;
 }
 
 export interface Props extends LayoutProps {
@@ -43,15 +42,13 @@ export function Post(props: Props) {
           </time>
         </header>
         <article className={styles.classes.postArticle}>
-          <MDXProvider
+          <post.Component
             components={{
               ...title,
               ...code,
               ...paragraph,
             }}
-          >
-            <post.Component />
-          </MDXProvider>
+          />
         </article>
       </section>
       {post.toc && <ToContent data={post.ast} />}

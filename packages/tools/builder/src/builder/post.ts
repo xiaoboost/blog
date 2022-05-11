@@ -5,7 +5,6 @@ import posts from '@blog/posts';
 import { normalize } from '@blog/shared/node';
 import { Post as PostRender } from '@blog/template-post';
 import { getAssetNames as getLayoutAssetNames } from '@blog/template-layout';
-import { getAssetNames as getPostAssetNames } from '@blog/template-post';
 
 import { createHtml } from './react';
 import { site, publicPath } from '../utils';
@@ -30,7 +29,10 @@ function getPostHtml(post: PostRendered) {
     author: site.author,
     description: post.description,
     publicPath: publicPath,
-    assets: getLayoutAssetNames().concat(getPostAssetNames(), post.getComponentAssetNames()),
+    assets: getLayoutAssetNames().concat(
+      post.getComponentAssetNames(),
+      post.getTemplateAssetNames(),
+    ),
     post: post as any,
   });
 
