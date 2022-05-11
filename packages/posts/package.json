@@ -10,6 +10,7 @@
     "url": "https://github.com/xiaoboost/blog"
   },
   "dependencies": {
-    "@blog/mdx-code-block-typescript": "workspace:*"
+    "@blog/mdx-code-block-typescript": "workspace:*",
+    "@blog/template-post": "workspace:*"
   }
 }

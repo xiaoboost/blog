@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@blog/mdx-code-block-normal": "workspace:*",
+    "@blog/mdx-code-block-typescript": "workspace:*",
     "@blog/shared": "workspace:*",
     "@blog/template-layout": "workspace:*",
     "@mdx-js/react": "^2.1.1",

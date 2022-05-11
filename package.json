@@ -1,6 +1,6 @@
 {
   "name": "blog",
-  "version": "4.1.0",
+  "version": "4.1.1",
   "description": "个人博客",
   "author": "xiaoboost",
   "license": "MIT",
@@ -18,8 +18,8 @@
   },
   "devDependencies": {
     "@blog/builder": "workspace:*",
-    "@typescript-eslint/eslint-plugin": "^5.22.0",
-    "@typescript-eslint/parser": "^5.22.0",
+    "@typescript-eslint/eslint-plugin": "^5.23.0",
+    "@typescript-eslint/parser": "^5.23.0",
     "eslint": "^8.15.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.29.4",

@@ -23,3 +23,27 @@ export function getNameCreator(origin: string) {
     return text;
   };
 }
+
+export type Query = Record<string, string | boolean>;
+
+export function parseQuery(input: string) {
+  const [base, rawQuery] = input.split('?');
+  const searchParams = new URLSearchParams(rawQuery);
+  const query: Query = {};
+
+  for (const [key, value] of searchParams.entries()) {
+    if (value.length === 0 || value === 'true') {
+      query[key] = true;
+    } else if (value === 'false') {
+      query[key] = false;
+    } else {
+      query[key] = value;
+    }
+  }
+
+  return {
+    base,
+    rawQuery,
+    query,
+  };
+}

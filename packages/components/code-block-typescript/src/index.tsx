@@ -16,6 +16,7 @@ import {
 export { ready, ScriptKind, Platform } from './typescript';
 
 export interface Options {
+  children?: string;
   lang?: ScriptKind;
   platform?: Platform;
 }

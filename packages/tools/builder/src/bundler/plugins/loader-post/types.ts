@@ -47,14 +47,18 @@ export interface PostData {
   ast: Root;
   /** 是否启用目录 */
   toc: boolean;
+  /** 文章模板 */
+  template: string;
 }
 
 /** 文章元数据 */
 export interface PostRendered extends Omit<PostData, 'content'> {
   /** 渲染函数 */
   Component: React.FC<Record<string, any>>;
-  /** 获取引用组件静态资源接口 */
+  /** 获取引用组件的静态资源接口 */
   getComponentAssetNames(): string[];
+  /** 获取使用模板的静态资源接口 */
+  getTemplateAssetNames(): string[];
 }
 
 export type {
