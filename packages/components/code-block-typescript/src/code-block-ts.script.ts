@@ -51,11 +51,16 @@ class InfoElement {
   }
 
   hidden() {
-    document.body.removeChild(this.el);
+    if (document.body.contains(this.el)) {
+      document.body.removeChild(this.el);
+    }
   }
 
   show(rect: DOMRect, infos: DisplaySymbol[]) {
-    document.body.appendChild(this.el);
+    if (!document.body.contains(this.el)) {
+      document.body.appendChild(this.el);
+    }
+
     this.setInfo(infos);
     this.el.setAttribute('style', `left: ${rect.left}px; top: ${rect.top + 1}px`);
   }
@@ -79,6 +84,11 @@ for (const el of Array.from(elHasInfo)) {
   });
 
   el.addEventListener('mouseleave', () => {
+    infoEle.hidden();
+  });
+
+  // 页面滚动时，代码提示框要隐藏
+  document.addEventListener('scroll', () => {
     infoEle.hidden();
   });
 }

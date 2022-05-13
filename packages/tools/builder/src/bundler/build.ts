@@ -11,7 +11,7 @@ import { FileRecorder } from './plugins/record-file';
 import { runScript } from '@xiao-ai/utils/node';
 import { unique } from '@xiao-ai/utils';
 import { cache } from './context';
-import { getExternalPkg, CacheVarName } from './utils';
+import { getExternalPkg, CacheVarName, getShortSize, getSize } from './utils';
 import { CommandOptions, log } from '../utils';
 
 export async function bundle(opt: CommandOptions) {
@@ -134,5 +134,5 @@ export async function build(opt: CommandOptions) {
 
   await writeDisk(assets.files, outDir);
 
-  log.log('网站生成完毕');
+  log.log(`网站生成完毕，总大小为：${getShortSize(getSize(assets.files))}。`);
 }
