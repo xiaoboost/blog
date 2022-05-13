@@ -35,8 +35,12 @@ export function ScriptLoader(loaderOpt: Options) {
     extractCss: true,
   });
 
+  const entryFiles = new Set<string>();
+
   function getFiles() {
-    return unique(fileRecorder.getFiles().concat(jssLoader.getFiles()));
+    return unique(
+      fileRecorder.getFiles().concat(jssLoader.getFiles()).concat(Array.from(entryFiles.keys())),
+    );
   }
 
   function getContentCode(filePath: string, file: OutputFile) {
@@ -61,6 +65,8 @@ export function ScriptLoader(loaderOpt: Options) {
         );
 
         esbuild.onLoad({ filter: /\.script\.(t|j)s$/ }, async (args) => {
+          entryFiles.add(args.path);
+
           const content = await fs.promises.readFile(args.path, 'utf-8');
           const entryName = getAssetName(args.path);
           const buildResult = await build({
@@ -71,6 +77,7 @@ export function ScriptLoader(loaderOpt: Options) {
             logLevel: 'warning',
             charset: 'utf8',
             outdir: outputDir,
+            sourcemap: options.sourcemap,
             minify: options.minify,
             loader: options.loader,
             mainFields: options.mainFields,

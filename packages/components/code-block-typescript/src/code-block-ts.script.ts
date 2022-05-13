@@ -4,17 +4,65 @@ import { isString } from '@xiao-ai/utils';
 import { DisplaySymbol } from './typescript';
 import { lsInfoAttrName } from './constant';
 
-function createInfoDom(infos: DisplaySymbol[]): HTMLElement {
-  const infoSpan = infos.map((info) => {
-    return isString(info) ? info : `<span class="${info[0]}">${info[1]}</span>`;
-  });
-  const code = `<div class="${styles.classes.lsInfoBox}"><pre>${infoSpan.join('')}</pre></div>`;
-  const el = document.createElement('div');
-  el.innerHTML = code;
-  return el.children[0] as HTMLElement;
+class InfoElement {
+  private el: Element;
+  private pre: Element;
+  private list: HTMLElement[] = [];
+
+  constructor() {
+    const el = document.createElement('div');
+    const pre = document.createElement('pre');
+
+    el.setAttribute('class', styles.classes.lsInfoBox);
+    el.appendChild(pre);
+
+    this.el = el;
+    this.pre = pre;
+  }
+
+  private setInfo(infos: DisplaySymbol[]) {
+    const { list, pre } = this;
+
+    while (this.list.length > infos.length) {
+      pre.removeChild(this.list.pop()!);
+    }
+
+    for (let i = 0; i < infos.length; i++) {
+      const info = infos[i];
+
+      let text: HTMLElement;
+
+      if (list[i]) {
+        text = list[i];
+      } else {
+        text = document.createElement('span');
+        list.push(text);
+        pre.appendChild(text);
+      }
+
+      if (isString(info)) {
+        text.removeAttribute('class');
+        text.textContent = info;
+      } else {
+        text.setAttribute('class', info[0]);
+        text.textContent = info[1];
+      }
+    }
+  }
+
+  hidden() {
+    document.body.removeChild(this.el);
+  }
+
+  show(rect: DOMRect, infos: DisplaySymbol[]) {
+    document.body.appendChild(this.el);
+    this.setInfo(infos);
+    this.el.setAttribute('style', `left: ${rect.left}px; top: ${rect.top + 1}px`);
+  }
 }
 
 const elHasInfo = document.querySelectorAll<HTMLElement>(`pre span[${lsInfoAttrName}]`);
+const infoEle = new InfoElement();
 
 for (const el of Array.from(elHasInfo)) {
   const infoStr = el.getAttribute(lsInfoAttrName) ?? '';
@@ -26,17 +74,11 @@ for (const el of Array.from(elHasInfo)) {
     break;
   }
 
-  const infoEle = createInfoDom(infoData);
-
   el.addEventListener('mouseenter', () => {
-    const offset = el.getBoundingClientRect();
-
-    document.body.appendChild(infoEle);
-    infoEle.style.left = `${offset.left}px`;
-    infoEle.style.top = `${offset.top}px`;
+    infoEle.show(el.getBoundingClientRect(), infoData);
   });
 
   el.addEventListener('mouseleave', () => {
-    document.body.removeChild(infoEle);
+    infoEle.hidden();
   });
 }

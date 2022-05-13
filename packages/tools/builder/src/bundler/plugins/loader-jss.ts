@@ -1,5 +1,5 @@
 import { StyleSheet } from 'jss';
-import { isObject } from '@xiao-ai/utils';
+import { isObject, unique } from '@xiao-ai/utils';
 import { runScript } from '@xiao-ai/utils/node';
 import { normalize } from '@blog/shared/node';
 import { FileRecorder, FilePlugin } from './record-file';
@@ -28,9 +28,14 @@ export function JssLoader({ extractCss = true }: Options = {}): FilePlugin {
   const jssSuffix = 'jss-style-suffix';
   const suffixMatcher = new RegExp(`\\.${jssSuffix}$`);
   const recorder = FileRecorder();
+  const entryFiles = new Set<string>();
+
+  function getFiles() {
+    return unique(recorder.getFiles().concat(Array.from(entryFiles.keys())));
+  }
 
   return {
-    getFiles: recorder.getFiles,
+    getFiles: getFiles,
     plugin: {
       name: 'loader-jss',
       setup(process: PluginBuild) {
@@ -56,6 +61,8 @@ export function JssLoader({ extractCss = true }: Options = {}): FilePlugin {
         }
 
         process.onLoad({ filter: /\.jss\.(t|j)s$/ }, async (args) => {
+          entryFiles.add(args.path);
+
           const cssPath = normalize(`${args.path}.${jssSuffix}`);
           const content = await fs.readFile(args.path, 'utf-8');
           const buildResult = await build({
@@ -156,7 +163,7 @@ export function JssLoader({ extractCss = true }: Options = {}): FilePlugin {
           return {
             errors,
             loader: 'js',
-            watchFiles: recorder.getFiles(),
+            watchFiles: getFiles(),
             contents: `
               ${extractCss ? `import '${cssPath}';` : ''}
               export default {

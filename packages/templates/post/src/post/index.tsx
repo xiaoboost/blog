@@ -19,12 +19,12 @@ interface PostData {
   Component: (props: any) => JSX.Element;
 }
 
-export interface Props extends LayoutProps {
+export interface PostProps extends LayoutProps {
   /** 文章数据 */
   post: PostData;
 }
 
-export function Post(props: Props) {
+export function Post(props: PostProps) {
   const { post } = props;
 
   return (
