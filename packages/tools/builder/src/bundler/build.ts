@@ -40,7 +40,7 @@ export async function bundle(opt: CommandOptions) {
     outdir: path.join(process.cwd(), opt.outDir),
     entryPoints: [path.join(__dirname, '../../', 'src/builder/index.ts')],
     platform: 'node',
-    sourcemap: false,
+    sourcemap: isProduction ? false : 'inline',
     publicPath: '/',
     minify: isProduction,
     external: externals,

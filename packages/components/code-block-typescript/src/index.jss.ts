@@ -176,6 +176,7 @@ export default createStyles({
     backgroundColor: GrayLight.toString(),
     lineHeight: '1.5em',
     padding: '4px 6px',
+    boxShadow: '0 0 6px rgb(0 0 0 / 20%)',
 
     '& pre': {
       margin: 0,

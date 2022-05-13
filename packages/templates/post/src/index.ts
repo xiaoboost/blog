@@ -2,7 +2,7 @@ import assets = require('./post.script');
 
 import { getAssetContents, getAssetPaths } from '@blog/shared/node';
 
-export * from './post';
+export { Post, PostProps } from './post';
 
 export const createAssets: CreateAssets = () => {
   return getAssetContents(assets);
