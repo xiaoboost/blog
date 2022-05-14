@@ -8,6 +8,7 @@ import { JssLoader } from './plugins/loader-jss';
 import { ScriptLoader } from './plugins/loader-script';
 import { AssetLoader } from './plugins/loader-asset';
 import { FileRecorder } from './plugins/record-file';
+import { LocalPackageLoader } from './plugins/loader-local-package';
 import { runScript } from '@xiao-ai/utils/node';
 import { unique } from '@xiao-ai/utils';
 import { cache } from './context';
@@ -22,6 +23,7 @@ export async function bundle(opt: CommandOptions) {
   const isProduction = opt.mode === 'production';
   const fileRecorder = FileRecorder();
   const postLoader = PostLoader();
+  const localLoader = LocalPackageLoader();
   const assetLoader = AssetLoader({
     exts: ['ico', 'plist', '.wasm'],
     cache,
@@ -40,7 +42,7 @@ export async function bundle(opt: CommandOptions) {
     outdir: path.join(process.cwd(), opt.outDir),
     entryPoints: [path.join(__dirname, '../../', 'src/builder/index.ts')],
     platform: 'node',
-    sourcemap: isProduction ? false : 'inline',
+    sourcemap: false, // isProduction ? false : 'inline',
     publicPath: '/',
     minify: isProduction,
     external: externals,
@@ -54,6 +56,7 @@ export async function bundle(opt: CommandOptions) {
     },
     plugins: [
       assetLoader,
+      localLoader,
       postLoader.plugin,
       jssLoader.plugin,
       scriptLoader.plugin,
@@ -81,6 +84,7 @@ export async function bundle(opt: CommandOptions) {
 
 export async function runBuild(code: string) {
   log.loadStart('运行构建...');
+
   const start = Date.now();
   const result = runScript(code, {
     dirname: __dirname,
@@ -89,19 +93,29 @@ export async function runBuild(code: string) {
       process,
     },
   });
-  const end = Date.now();
 
-  log.loadEnd();
-  log.log(`运行耗时 ${end - start} 毫秒`);
+  try {
+    const outputAsset = (await result.output()) as AssetData[];
+    const end = Date.now();
 
-  if (result.error) {
-    throw result.error;
+    log.loadEnd();
+    log.log(`构建耗时 ${end - start} 毫秒`);
+
+    return {
+      error: result.error as Error | undefined,
+      files: outputAsset,
+    };
+  } catch (e: any) {
+    const end = Date.now();
+
+    log.loadEnd();
+    log.log(`构建耗时 ${end - start} 毫秒`);
+
+    return {
+      error: e,
+      files: [],
+    };
   }
-
-  return {
-    error: result.error as Error | undefined,
-    files: (await result.output()) as AssetData[],
-  };
 }
 
 export async function writeDisk(assets: AssetData[], outDir: string) {
