@@ -2,6 +2,7 @@ import ts from 'typescript';
 import path from 'path';
 
 import { toBoolMap, isString } from '@xiao-ai/utils';
+import { lookItUpSync } from 'look-it-up';
 
 export type ScriptKind = 'ts' | 'tsx';
 export type Platform = 'browser' | 'node' | 'none';
@@ -11,8 +12,18 @@ export type DisplaySymbol = string | [string, string];
 const serverCache: Record<string, TsServer> = {};
 /** 公共静态文件缓存 */
 const cache: Record<string, CodeFile> = {};
-/** 读取绝对路径 */
-const resolve = (...paths: string[]) => path.join(__dirname, '..', ...paths);
+/** 项目根目录 */
+const modulesPath = lookItUpSync('node_modules', __dirname);
+
+if (!modulesPath) {
+  throw new Error(`未找到包含 node_modules 目录的上级路径，起始路径为：${__dirname}`);
+}
+
+/**
+ * 读取绝对路径
+ *   - 路径是相对于 builder 库根目录的
+ */
+const resolve = (...paths: string[]) => path.join(modulesPath, '..', ...paths);
 
 /** 代码文件 */
 interface CodeFile {
@@ -54,13 +65,13 @@ export class TsServer {
   /** 语言服务器 */
   private readonly server: ts.LanguageService;
   /** 包含的静态文件 */
-  private readonly files: Record<string, boolean> = {};
+  private readonly files = new Set<string>();
   /** 当前文件 */
   private current!: CodeFile;
   /** 当前项目版本 */
   private version = 0;
 
-  constructor(scriptKind: ScriptKind, platform: Platform = 'none') {
+  constructor(scriptKind: ScriptKind, platform: Platform = 'browser') {
     this.scriptKind = scriptKind;
     this.platform = platform;
     this.setFile('');
@@ -76,27 +87,27 @@ export class TsServer {
   }
 
   private getCurrentName() {
-    return path.join(process.cwd(), `_template.${this.scriptKind}`);
+    return path.join(resolve(), `_template.${this.scriptKind}`);
   }
 
   private getAllFileNames() {
     if (this.current) {
-      this.files[this.current.name] = true;
+      this.files.add(this.current.name);
     }
 
-    this.files[resolve('node_modules/typescript/lib/lib.esnext.d.ts')] = true;
+    this.files.add(resolve('node_modules/typescript/lib/lib.esnext.d.ts'));
 
     if (this.scriptKind === 'tsx') {
-      this.files[resolve('node_modules/@types/react/index.d.ts')] = true;
+      this.files.add(resolve('node_modules/@types/react/index.d.ts'));
     }
 
     if (this.platform === 'node') {
-      this.files[resolve('node_modules/@types/node/index.d.ts')] = true;
+      this.files.add(resolve('node_modules/@types/node/index.d.ts'));
     } else if (this.platform === 'browser') {
-      this.files[resolve('node_modules/typescript/lib/lib.dom.d.ts')] = true;
+      this.files.add(resolve('node_modules/typescript/lib/lib.dom.d.ts'));
     }
 
-    return Object.keys(this.files);
+    return Array.from(this.files.keys());
   }
 
   private createLanguageServiceHost(): ts.LanguageServiceHost {
@@ -134,7 +145,7 @@ export class TsServer {
         if (this.current && filePath === this.current.name) {
           return this.current.snapshot;
         } else if (cache[filePath]) {
-          this.files[filePath] = true;
+          this.files.add(filePath);
           return cache[filePath].snapshot;
         } else {
           const fileText = ts.sys.readFile(filePath) ?? '';
@@ -145,7 +156,7 @@ export class TsServer {
             snapshot: this.getScriptSnapshot(fileText),
           };
 
-          this.files[filePath] = true;
+          this.files.add(filePath);
           cache[filePath] = file;
 
           return file.snapshot;
