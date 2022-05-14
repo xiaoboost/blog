@@ -12,8 +12,8 @@ import { LocalPackageLoader } from './plugins/loader-local-package';
 import { runScript } from '@xiao-ai/utils/node';
 import { unique } from '@xiao-ai/utils';
 import { cache } from './context';
-import { getExternalPkg, CacheVarName, getShortSize, getSize } from './utils';
 import { CommandOptions, log } from '../utils';
+import { getExternalPkg, CacheVarName, getShortSize, getSize, getShortTime } from './utils';
 
 export async function bundle(opt: CommandOptions) {
   log.loadStart('代码打包...');
@@ -67,7 +67,7 @@ export async function bundle(opt: CommandOptions) {
   const end = Date.now();
 
   log.loadEnd();
-  log.log(`打包耗时 ${end - start} 毫秒`);
+  log.log(`打包耗时 ${getShortTime(end - start)}`);
 
   const watchFiles = unique(
     fileRecorder
@@ -99,7 +99,7 @@ export async function runBuild(code: string) {
     const end = Date.now();
 
     log.loadEnd();
-    log.log(`构建耗时 ${end - start} 毫秒`);
+    log.log(`构建耗时 ${getShortTime(end - start)}`);
 
     return {
       error: result.error as Error | undefined,
@@ -109,7 +109,7 @@ export async function runBuild(code: string) {
     const end = Date.now();
 
     log.loadEnd();
-    log.log(`构建耗时 ${end - start} 毫秒`);
+    log.log(`构建耗时 ${getShortTime(end - start)}`);
 
     return {
       error: e,
