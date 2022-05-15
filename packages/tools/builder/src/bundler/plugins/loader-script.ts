@@ -3,7 +3,7 @@ import { unique } from '@xiao-ai/utils';
 import { getNameCreator, normalize } from '@blog/shared/node';
 import { JssLoader } from './loader-jss';
 import { FileRecorder } from './record-file';
-import { FileCache, CacheVarName } from '../utils';
+import { FileCache, FileCacheVarName } from '../utils';
 
 import md5 from 'md5';
 
@@ -46,7 +46,7 @@ export function ScriptLoader(loaderOpt: Options) {
   function getContentCode(filePath: string, file: OutputFile) {
     if (loaderOpt.cache) {
       loaderOpt.cache.writeFile(filePath, Buffer.from(file.contents));
-      return `() => ${CacheVarName}.readFile(${JSON.stringify(filePath)})`;
+      return `() => ${FileCacheVarName}.readFile(${JSON.stringify(filePath)})`;
     } else {
       return `() => Buffer.from([${file.contents.join(',')}])`;
     }

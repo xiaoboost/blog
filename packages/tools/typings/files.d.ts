@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/triple-slash-reference */
+
+/// <reference path="./types.d.ts" />
+
 declare module '*.ttf' {
   const data: AssetImportData;
   export default data;

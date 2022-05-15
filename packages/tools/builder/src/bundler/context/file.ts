@@ -4,7 +4,7 @@ import { FileCache } from '../utils';
 
 const fsCache = new Map<string, Buffer>();
 
-export const cache: FileCache = {
+export const fileCache: FileCache = {
   readFile: async (target: string) => {
     if (fsCache.has(target)) {
       return fsCache.get(target);
