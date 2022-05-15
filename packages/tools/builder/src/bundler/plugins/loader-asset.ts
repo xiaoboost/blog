@@ -1,7 +1,7 @@
 import { PluginBuild } from 'esbuild';
 import { normalize, getNameCreator } from '@blog/shared/node';
 import { FileCache } from '../utils';
-import { CacheVarName } from '../utils';
+import { FileCacheVarName } from '../utils';
 
 import md5 from 'md5';
 
@@ -29,14 +29,14 @@ export function AssetLoader(loaderOpt: Options) {
 
         if (loaderOpt.cache) {
           loaderOpt.cache.writeFile(filePath, Buffer.from(content));
-          getContent = `() => ${CacheVarName}.readFile(${JSON.stringify(filePath)})`;
+          getContent = `() => ${FileCacheVarName}.readFile(${JSON.stringify(filePath)})`;
         } else {
           getContent = `() => Buffer.from([${content.join(',')}])`;
         }
 
         return `
           const path = ${JSON.stringify(filePath)};
-          const getContent = () => ${CacheVarName}.readFile(${JSON.stringify(filePath)});
+          const getContent = () => ${FileCacheVarName}.readFile(${JSON.stringify(filePath)});
 
           export default {
             path: ${JSON.stringify(filePath)},

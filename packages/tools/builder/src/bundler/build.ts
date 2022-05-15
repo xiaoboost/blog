@@ -11,9 +11,9 @@ import { FileRecorder } from './plugins/record-file';
 import { LocalPackageLoader } from './plugins/loader-local-package';
 import { runScript } from '@xiao-ai/utils/node';
 import { unique } from '@xiao-ai/utils';
-import { cache } from './context';
+import { fileCache } from './context';
 import { CommandOptions, log } from '../utils';
-import { getExternalPkg, CacheVarName, getShortSize, getSize, getShortTime } from './utils';
+import { getExternalPkg, FileCacheVarName, getShortSize, getSize, getShortTime } from './utils';
 
 export async function bundle(opt: CommandOptions) {
   log.loadStart('代码打包...');
@@ -26,7 +26,7 @@ export async function bundle(opt: CommandOptions) {
   const localLoader = LocalPackageLoader();
   const assetLoader = AssetLoader({
     exts: ['ico', 'plist', '.wasm'],
-    cache,
+    cache: fileCache,
   });
   const jssLoader = JssLoader({
     extractCss: false,
@@ -34,7 +34,7 @@ export async function bundle(opt: CommandOptions) {
   const scriptLoader = ScriptLoader({
     styleNames: isProduction ? 'styles/[name].[hash]' : 'styles/[name]',
     scriptNames: isProduction ? 'scripts/[name].[hash]' : 'scripts/[name]',
-    cache,
+    cache: fileCache,
   });
   const options: BuildOptions = {
     bundle: true,
@@ -42,12 +42,15 @@ export async function bundle(opt: CommandOptions) {
     outdir: path.join(process.cwd(), opt.outDir),
     entryPoints: [path.join(__dirname, '../../', 'src/builder/index.ts')],
     platform: 'node',
-    sourcemap: false, // isProduction ? false : 'inline',
+    sourcemap: isProduction ? false : 'inline',
     publicPath: '/',
     minify: isProduction,
     external: externals,
     mainFields: ['source', 'module', 'main'],
     assetNames: isProduction ? 'assets/[name].[hash]' : 'assets/[name]',
+    define: {
+      'process.env.NODE_ENV': isProduction ? '"development"' : '"production"',
+    },
     loader: {
       '.ttf': 'file',
       '.woff': 'file',
@@ -89,7 +92,7 @@ export async function runBuild(code: string) {
   const result = runScript(code, {
     dirname: __dirname,
     globalParams: {
-      [CacheVarName]: cache,
+      [FileCacheVarName]: fileCache,
       process,
     },
   });
