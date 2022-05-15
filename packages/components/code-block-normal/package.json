@@ -7,8 +7,8 @@
   "source": "src/index.tsx",
   "types": "src/index.tsx",
   "scripts": {
-    "lint": "eslint --quiet --no-error-on-unmatched-pattern --config ../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}",
-    "lint:fix": "eslint --fix --quiet --no-error-on-unmatched-pattern --config ../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}"
+    "lint": "eslint --quiet --no-error-on-unmatched-pattern --config ../../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}",
+    "lint:fix": "eslint --fix --quiet --no-error-on-unmatched-pattern --config ../../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}"
   },
   "repository": {
     "type": "git",
