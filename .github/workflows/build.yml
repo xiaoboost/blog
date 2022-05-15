@@ -11,6 +11,7 @@ jobs:
           - '16'
         platform:
           - windows-latest
+          - ubuntu-latest
 
     name: Build Check on '${{ matrix.platform }} / Node.js v${{ matrix.node }}'
     runs-on: ${{ matrix.platform }}
