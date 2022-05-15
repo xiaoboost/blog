@@ -1,8 +1,0 @@
-{
-  "extends": "@blog/tsconfig",
-  "include": ["src", "bundler"],
-  "exclude": ["node_modules", "dist"],
-  "compilerOptions": {
-    "outDir": "./dist"
-  }
-}

@@ -1,0 +1,34 @@
+{
+  "name": "@blog/mdx-code-block-typescript",
+  "description": "blog's typescript code block",
+  "version": "1.0.0",
+  "author": "xiaoboost",
+  "license": "MIT",
+  "source": "src/index.tsx",
+  "types": "src/index.tsx",
+  "scripts": {
+    "lint": "eslint --quiet --no-error-on-unmatched-pattern --config ../../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}",
+    "lint:fix": "eslint --fix --quiet --no-error-on-unmatched-pattern --config ../../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xiaoboost/blog"
+  },
+  "dependencies": {
+    "@blog/mdx-code-block-normal": "workspace:*",
+    "@blog/shared": "workspace:*",
+    "@xiao-ai/utils": "^1.6.0",
+    "look-it-up": "^2.1.0",
+    "react": "^18.1.0",
+    "typescript": "^4.6.4",
+    "vscode-oniguruma": "^1.6.2",
+    "vscode-textmate": "^7.0.1"
+  },
+  "devDependencies": {
+    "@blog/tsconfig": "workspace:*",
+    "@types/blog": "workspace:*",
+    "@types/react": "^18.0.9",
+    "eslint": "^8.15.0",
+    "tslib": "^2.4.0"
+  }
+}

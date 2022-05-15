@@ -1,0 +1,38 @@
+{
+  "name": "@blog/template-post",
+  "description": "blog's template post layout",
+  "version": "1.0.0",
+  "author": "xiaoboost",
+  "license": "MIT",
+  "source": "src/index.ts",
+  "module": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "lint": "eslint --quiet --no-error-on-unmatched-pattern --config ../../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}",
+    "lint:fix": "eslint --fix --quiet --no-error-on-unmatched-pattern --config ../../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xiaoboost/blog"
+  },
+  "dependencies": {
+    "@blog/mdx-code-block-normal": "workspace:*",
+    "@blog/mdx-code-block-typescript": "workspace:*",
+    "@blog/shared": "workspace:*",
+    "@blog/template-layout": "workspace:*",
+    "@mdx-js/react": "^2.1.1",
+    "@xiao-ai/utils": "^1.6.0",
+    "moment": "^2.29.3",
+    "react": "^18.1.0",
+    "tslib": "^2.4.0"
+  },
+  "devDependencies": {
+    "@blog/tsconfig": "workspace:*",
+    "@types/blog": "workspace:*",
+    "@types/mdast": "^3.0.10",
+    "@types/mdx-js__react": "^1.5.5",
+    "@types/react": "^18.0.9",
+    "eslint": "^8.15.0",
+    "typescript": "^4.6.4"
+  }
+}

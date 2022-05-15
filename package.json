@@ -1,6 +1,6 @@
 {
   "name": "blog",
-  "version": "4.0.0",
+  "version": "4.2.2",
   "description": "个人博客",
   "author": "xiaoboost",
   "license": "MIT",
@@ -9,20 +9,21 @@
     "url": "https://github.com/xiaoboost/blog"
   },
   "scripts": {
-    "update": "pnpm update -r",
-    "update:last": "pnpm update -r -L",
-    "build": "build-website --outDir=dist",
-    "watch": "pnpm run build -- --development",
-    "build:blog": "pnpm run build --filter blog...",
+    "build": "blog build --outDir=dist --mode=production",
+    "watch": "blog watch --mode=development",
+    "build:builder": "pnpm run build --filter @blog/builder...",
+    "watch:builder": "pnpm run watch --filter @blog/builder",
     "lint": "pnpm run -r lint --parallel --filter .",
     "lint:fix": "pnpm run -r lint:fix --parallel --filter ."
   },
   "devDependencies": {
-    "@blog/builder-website": "workspace:*",
-    "@typescript-eslint/eslint-plugin": "^4.30.0",
-    "@typescript-eslint/parser": "^4.30.0",
-    "eslint": "^7.32.0",
-    "eslint-plugin-react": "^7.25.1",
-    "typescript": "^4.4.2"
+    "@blog/builder": "workspace:*",
+    "@typescript-eslint/eslint-plugin": "^5.23.0",
+    "@typescript-eslint/parser": "^5.23.0",
+    "eslint": "^8.15.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-react": "^7.29.4",
+    "prettier": "^2.6.2",
+    "typescript": "^4.6.4"
   }
 }

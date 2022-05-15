@@ -4,29 +4,13 @@
   "version": "1.0.0",
   "author": "xiaoboost",
   "license": "MIT",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "files": [
-    "dist",
-    "README.md",
-    "package.json"
-  ],
-  "scripts": {
-    "build": "node ./build.js",
-    "watch": "pnpm run build -- --development"
-  },
+  "main": "data/**/*.{md,mdx}",
   "repository": {
     "type": "git",
     "url": "https://github.com/xiaoboost/blog"
   },
   "dependencies": {
-    "@blog/utils": "workspace:*",
-    "fast-glob": "^3.2.7"
-  },
-  "devDependencies": {
-    "@blog/esbuild-loader-mdx": "workspace:*",
-    "@mdx-js/react": "^1.6.22",
-    "esbuild": "^0.12.25",
-    "react": "^17.0.2"
+    "@blog/mdx-code-block-typescript": "workspace:*",
+    "@blog/template-post": "workspace:*"
   }
 }
