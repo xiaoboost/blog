@@ -1,0 +1,9 @@
+{
+  "extends": "@blog/tsconfig",
+  "include": ["src", "tests"],
+  "exclude": ["node_modules", "dist"],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "outDir": "dist"
+  }
+}
