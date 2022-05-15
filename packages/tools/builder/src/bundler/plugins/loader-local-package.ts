@@ -9,25 +9,25 @@ const requireSuffix = 'require';
 const moduleSuffix = 'local-module';
 const namespace = 'local-package';
 
-async function isExternal(path: string) {
+async function isExternal(file: string) {
   const externals = (await getExternalPkg()).concat(builtinModules);
 
-  // monorepo 和相对路径
-  if (path.startsWith('@blog') || path.startsWith('.')) {
+  // monorepo
+  if (file.startsWith('@blog')) {
     return false;
   }
 
-  // 绝对路径
-  if (/^[a-zA-Z]:[\\/]/.test(path)) {
+  // 相对路径和绝对路径
+  if (file.startsWith('.') || path.isAbsolute(file)) {
     return false;
   }
 
   // 特殊库
-  if (path.startsWith('@xiao-ai/utils')) {
+  if (file.startsWith('@xiao-ai/utils')) {
     return false;
   }
 
-  const [packageName] = path.split('/');
+  const [packageName] = file.split('/');
   return !externals.includes(packageName);
 }
 
