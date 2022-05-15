@@ -20,7 +20,7 @@ jobs:
         node:
           - '16'
         platform:
-          - windows-latest
+          - ubuntu-latest
 
     name: Deploy on '${{ matrix.platform }} / Node.js v${{ matrix.node }}'
     runs-on: ${{ matrix.platform }}
@@ -43,9 +43,7 @@ jobs:
           node-version: ${{ matrix.node }}
 
       - name: Install Pnpm
-        run: |
-          npm install --g pnpm@6.32.0
-          pnpm --version
+        run: npm install --g pnpm@6.32.0
 
       - name: Install Dependencies
         run: pnpm install
