@@ -16,9 +16,10 @@ jobs:
       fail-fast: false
       matrix:
         node:
-          - '14'
+          - '16'
         platform:
-          - ubuntu-18.04
+          - ubuntu-21.04
+          - windows-2021
         storeDir:
           - '\.pnpm-store'
 
