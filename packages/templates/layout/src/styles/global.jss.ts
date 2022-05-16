@@ -46,9 +46,12 @@ const global = createStyles({
       display: 'flex',
       flexDirection: 'column',
       backgroundImage: `url("../assets/image/bg.svg")`,
-    },
-    '::-webkit-scrollbar': {
-      backgroundColor: WhiteBg.toString(),
+
+      // 禁用 body 的滚动条
+      overflow: '-moz-scrollbars-none',
+      '&::-webkit-scrollbar': {
+        width: '0 !important',
+      },
     },
     '::-webkit-scrollbar-track': {
       backgroundColor: WhiteBg.toString(),
