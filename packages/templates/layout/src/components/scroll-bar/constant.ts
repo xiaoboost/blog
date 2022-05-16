@@ -1,1 +1,1 @@
-export const width = 8;
+export const width = 10;
