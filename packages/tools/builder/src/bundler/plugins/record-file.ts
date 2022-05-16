@@ -6,18 +6,17 @@ export interface FilePlugin {
 }
 
 export function FileRecorder(): FilePlugin {
-  let files: Record<string, boolean> = {};
+  const files = new Set<string>();
 
   return {
     getFiles() {
-      return Object.keys(files);
+      return Array.from(files.keys());
     },
     plugin: {
       name: 'record-file',
       setup(esbuild: PluginBuild) {
-        files = {};
-        esbuild.onLoad({ filter: /\.m?(t|j)sx?$/ }, async (args) => {
-          files[args.path] = true;
+        esbuild.onLoad({ filter: /\.m?(t|j)sx?$/ }, (args) => {
+          files.add(args.path);
           return null;
         });
       },
