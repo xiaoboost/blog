@@ -5,7 +5,7 @@ export default createStyles({
   gotoTopBtn: {},
   gotoTop: {
     position: 'fixed',
-    right: 18,
+    right: 22,
     bottom: 18,
     fontSize: '1.4em',
     borderRadius: '100%',

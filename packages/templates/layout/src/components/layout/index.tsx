@@ -6,6 +6,8 @@ import { parseUrl } from '@blog/shared/node';
 import { Header, HeaderProps } from '../header';
 import { Footer } from '../footer';
 import { Article } from '../article';
+import { GotoTop } from '../goto-top';
+import { ScrollBar } from '../scroll-bar';
 
 import { favicon } from '../../utils';
 
@@ -56,6 +58,8 @@ export function Layout(props: PropsWithChildren<LayoutProps>) {
         <Header {...props} />
         <Article>{props.children}</Article>
         <Footer />
+        <GotoTop />
+        <ScrollBar />
         {scripts.map((pathname, i) => (
           <script key={i} type='text/javascript' src={parseUrl(publicPath, pathname)} />
         ))}
