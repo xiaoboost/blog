@@ -1,4 +1,4 @@
-import { supportsPassive, addClassName, removeClassName } from '@xiao-ai/utils/web';
+import { supportsPassive, addClassName, removeClassName, MouseButtons } from '@xiao-ai/utils/web';
 
 import styles from './index.jss';
 
@@ -58,8 +58,8 @@ if (scrollbar && slider && container) {
       behavior: 'auto',
     });
   };
-  const startDropMouseMove = () => {
-    if (!dropMoveScrollbar) {
+  const startDropMouseMove = (mouse: MouseEvent) => {
+    if (!dropMoveScrollbar && mouse.button === MouseButtons.Left) {
       dropMoveScrollbar = true;
       // 鼠标滑动时，不允许选中文本
       container.style.userSelect = 'none';
