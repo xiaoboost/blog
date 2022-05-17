@@ -8,12 +8,18 @@ export type ScriptKind = 'ts' | 'tsx';
 export type Platform = 'browser' | 'node' | 'none';
 export type DisplaySymbol = string | [string, string];
 
+/** 全局缓存名称 */
+const globalCacheKey = 'TsServer';
 /** 语言服务器缓存 */
-const serverCache: Record<string, TsServer> = {};
+const serverCache: Record<string, TsServer> = getGlobalVar(globalCacheKey) ?? {};
 /** 公共静态文件缓存 */
 const cache: Record<string, CodeFile> = {};
 /** 项目根目录 */
 const modulesPath = lookItUpSync('node_modules', __dirname);
+
+if (!getGlobalVar(globalCacheKey)) {
+  setGlobalVar(globalCacheKey, serverCache);
+}
 
 if (!modulesPath) {
   throw new Error(`未找到包含 node_modules 目录的上级路径，起始路径为：${__dirname}`);

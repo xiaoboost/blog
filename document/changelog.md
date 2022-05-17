@@ -1,5 +1,17 @@
 # 博客
 
+## 4.3.2
+
+fix:
+
+- 将语言服务部分的部分重要变量设置为缓存，节省调试阶段的构建时间 (PR 23)[https://github.com/xiaoboost/blog/pull/23]
+
+## 4.3.1
+
+fix:
+
+- 修复滚动条没有界限的问题 (PR 22)[https://github.com/xiaoboost/blog/pull/22]
+
 ## 4.3.0
 
 feat:
