@@ -10,6 +10,9 @@ import wasmBin from '../../node_modules/vscode-oniguruma/release/onig.wasm';
 let tsGrammar: vsctm.IGrammar;
 let tsxGrammar: vsctm.IGrammar;
 
+const tsGrammarCacheKey = 'tsGrammar';
+const tsxGrammarCacheKey = 'tsxGrammar';
+
 interface Token extends vsctm.IToken {
   /** 距离整个代码开头的偏移 */
   offset: number;
@@ -22,6 +25,15 @@ interface Token extends vsctm.IToken {
 }
 
 async function getGrammar() {
+  const cacheTsGrammar = getGlobalVar(tsGrammarCacheKey);
+  const cacheTsxGrammar = getGlobalVar(tsxGrammarCacheKey);
+
+  if (cacheTsGrammar && cacheTsxGrammar) {
+    tsGrammar = cacheTsGrammar;
+    tsxGrammar = cacheTsxGrammar;
+    return;
+  }
+
   const wasmContent = await wasmBin.getContent();
   const vscodeOnigurumaLib: Promise<vsctm.IOnigLib> = oniguruma.loadWASM(wasmContent.buffer).then(
     () =>
@@ -47,7 +59,8 @@ async function getGrammar() {
   tsGrammar = (await registry.loadGrammar('source.ts'))!;
   tsxGrammar = (await registry.loadGrammar('source.tsx'))!;
 
-  return [tsGrammar, tsxGrammar];
+  setGlobalVar(tsGrammarCacheKey, tsGrammar);
+  setGlobalVar(tsxGrammarCacheKey, tsxGrammar);
 }
 
 /** 不需要获取语法提示的字符 */
