@@ -11,15 +11,15 @@
   "scripts": {
     "build": "blog build --outDir=dist --mode=production",
     "watch": "blog watch --mode=development",
-    "build:builder": "pnpm run build --filter @blog/builder...",
-    "watch:builder": "pnpm run watch --filter @blog/builder",
-    "lint": "pnpm run -r lint --parallel --filter .",
-    "lint:fix": "pnpm run -r lint:fix --parallel --filter ."
+    "build:builder": "pnpm run --filter @blog/builder... build",
+    "watch:builder": "pnpm run --filter @blog/builder watch",
+    "lint": "pnpm run -r --parallel lint",
+    "lint:fix": "pnpm run -r --parallel lint:fix"
   },
   "devDependencies": {
     "@blog/builder": "workspace:*",
-    "@typescript-eslint/eslint-plugin": "^5.23.0",
-    "@typescript-eslint/parser": "^5.23.0",
+    "@typescript-eslint/eslint-plugin": "^5.25.0",
+    "@typescript-eslint/parser": "^5.25.0",
     "eslint": "^8.15.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.29.4",
