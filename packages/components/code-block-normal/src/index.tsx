@@ -5,6 +5,7 @@ import assets = require('./code-block.script');
 
 import { getAssetContents, getAssetPaths } from '@blog/shared/node';
 import { stringifyClass } from '@xiao-ai/utils';
+import { ScrollBar } from '@blog/component-scrollbar';
 
 import {
   getHighlightCode,
@@ -52,6 +53,7 @@ export function CodeBlockWrapper(props: React.PropsWithChildren<WrapperProps>) {
         </ul>
         <span className={classes.codeBlockBox}>
           <ul className={stringifyClass(classes.codeBlockCode, props.listClassName)}>{children}</ul>
+          <ScrollBar width={4} mode='x' />
         </span>
       </code>
     </pre>

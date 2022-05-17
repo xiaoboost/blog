@@ -7,7 +7,7 @@ import { Header, HeaderProps } from '../header';
 import { Footer } from '../footer';
 import { Article } from '../article';
 import { GotoTop } from '../goto-top';
-import { ScrollBar } from '../scroll-bar';
+import { ScrollBar } from '@blog/component-scrollbar';
 
 import { favicon } from '../../utils';
 
@@ -59,7 +59,7 @@ export function Layout(props: PropsWithChildren<LayoutProps>) {
         <Article>{props.children}</Article>
         <Footer />
         <GotoTop />
-        <ScrollBar />
+        <ScrollBar width={8} mode='y' />
         {scripts.map((pathname, i) => (
           <script key={i} type='text/javascript' src={parseUrl(publicPath, pathname)} />
         ))}
