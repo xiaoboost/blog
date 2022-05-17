@@ -11,7 +11,7 @@ import { FileRecorder } from './plugins/record-file';
 import { LocalPackageLoader } from './plugins/loader-local-package';
 import { runScript } from '@xiao-ai/utils/node';
 import { unique } from '@xiao-ai/utils';
-import { fileCache } from './context';
+import { fileCache, setGlobalVar, getGlobalVar } from './context';
 import { CommandOptions, log } from '../utils';
 import { getExternalPkg, FileCacheVarName, getShortSize, getSize, getShortTime } from './utils';
 
@@ -49,7 +49,7 @@ export async function bundle(opt: CommandOptions) {
     mainFields: ['source', 'module', 'main'],
     assetNames: isProduction ? 'assets/[name].[hash]' : 'assets/[name]',
     define: {
-      'process.env.NODE_ENV': isProduction ? '"development"' : '"production"',
+      'process.env.NODE_ENV': isProduction ? '"production"' : '"development"',
     },
     loader: {
       '.ttf': 'file',
@@ -94,6 +94,8 @@ export async function runBuild(code: string) {
     globalParams: {
       [FileCacheVarName]: fileCache,
       process,
+      setGlobalVar,
+      getGlobalVar,
     },
   });
 
