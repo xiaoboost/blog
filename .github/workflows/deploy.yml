@@ -43,7 +43,7 @@ jobs:
           node-version: ${{ matrix.node }}
 
       - name: Install Pnpm
-        run: npm install --g pnpm@6.32.0
+        run: npm install --g pnpm@7.1.0
 
       - name: Install Dependencies
         run: pnpm install
