@@ -1,12 +1,11 @@
 {
-  "name": "@blog/template-layout",
-  "description": "blog's template main layout",
+  "name": "@blog/component-scrollbar",
+  "description": "blog's scrollbar component",
   "version": "1.0.0",
   "author": "xiaoboost",
   "license": "MIT",
-  "source": "src/index.ts",
-  "module": "src/index.ts",
-  "types": "src/index.ts",
+  "source": "src/index.tsx",
+  "types": "src/index.tsx",
   "scripts": {
     "lint": "eslint --quiet --no-error-on-unmatched-pattern --config ../../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}",
     "lint:fix": "eslint --fix --quiet --no-error-on-unmatched-pattern --config ../../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}"
@@ -16,18 +15,16 @@
     "url": "https://github.com/xiaoboost/blog"
   },
   "dependencies": {
-    "@blog/component-scrollbar": "workspace:*",
     "@blog/shared": "workspace:*",
     "@xiao-ai/utils": "^1.6.0",
-    "moment": "^2.29.3",
-    "react": "^18.1.0",
-    "tslib": "^2.4.0"
+    "react": "^18.1.0"
   },
   "devDependencies": {
     "@blog/tsconfig": "workspace:*",
     "@types/blog": "workspace:*",
     "@types/react": "^18.0.9",
     "eslint": "^8.15.0",
+    "tslib": "^2.4.0",
     "typescript": "^4.6.4"
   }
 }
