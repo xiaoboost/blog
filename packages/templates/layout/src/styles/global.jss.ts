@@ -53,7 +53,8 @@ const global = createStyles({
       },
     },
     '::-webkit-scrollbar': {
-      backgroundColor: WhiteBg.toString(),
+      width: '0 !important',
+      // backgroundColor: WhiteBg.toString(),
     },
     '::-webkit-scrollbar-track': {
       backgroundColor: WhiteBg.toString(),
