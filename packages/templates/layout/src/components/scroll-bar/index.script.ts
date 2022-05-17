@@ -33,7 +33,9 @@ if (scrollbar && slider && container) {
 
     const scrollbarHeight = (getClientHeight() / getScrollHeight()) * getClientHeight();
     const scrollbarTop = (window.scrollY / getScrollHeight()) * getClientHeight();
+
     dropMouseOffsetTop = scrollbarTop;
+
     slider.style.height = `${scrollbarHeight}px`;
     slider.style.top = `${scrollbarTop}px`;
   };
@@ -47,14 +49,27 @@ if (scrollbar && slider && container) {
       return;
     }
 
+    const clientHeight = getClientHeight();
+    const scrollHeight = getScrollHeight();
     const offsetY = mouse.clientY - dropMouseLastOffsetTop;
+    const scrollbarHeight = (clientHeight / scrollHeight) * clientHeight;
 
     dropMouseLastOffsetTop = mouse.clientY;
     dropMouseOffsetTop += offsetY;
 
-    slider.style.top = `${dropMouseOffsetTop}px`;
+    let realOffset = dropMouseOffsetTop;
+
+    if (realOffset < 0) {
+      realOffset = 0;
+    }
+
+    if (realOffset > clientHeight - scrollbarHeight) {
+      realOffset = clientHeight - scrollbarHeight;
+    }
+
+    slider.style.top = `${realOffset}px`;
     window.scrollTo({
-      top: (dropMouseOffsetTop / getClientHeight()) * getScrollHeight(),
+      top: (realOffset / clientHeight) * scrollHeight,
       behavior: 'auto',
     });
   };
