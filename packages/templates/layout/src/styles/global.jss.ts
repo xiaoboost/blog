@@ -24,7 +24,6 @@ const global = createStyles({
     },
     [getHeadSelector()]: {
       fontFamily: FontSerif,
-      fontWeight: 'normal',
       position: 'relative',
     },
     'code, pre': {

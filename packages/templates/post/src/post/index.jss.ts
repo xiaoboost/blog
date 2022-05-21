@@ -23,6 +23,7 @@ const indent = 24;
 const smallIndent = 14;
 const tableHeaderBorderColor = Color().hsl(210, 18, 87, 1);
 const tableBorderColor = Color(0xd0d7de).toString();
+const tableRowBgColor = Color(0xf6f9fa).toString();
 
 export default createStyles({
   postAnchor: {},
@@ -164,8 +165,9 @@ export default createStyles({
         },
       },
       '& ul, & ol': {
-        paddingLeft: '1.5em',
         lineHeight: 1.4,
+        paddingLeft: '1.5em',
+        marginLeft: '0.4em',
       },
       '& blockquote': {
         padding: '.8em 1.2em',
@@ -196,6 +198,9 @@ export default createStyles({
         '& tr': {
           backgroundColor: White.toString(),
           borderTop: `1px solid ${tableHeaderBorderColor.toString()}`,
+        },
+        '& tbody tr:nth-child(2n+1)': {
+          backgroundColor: tableRowBgColor.toString(),
         },
         '& th, & td': {
           padding: [6, 13],
