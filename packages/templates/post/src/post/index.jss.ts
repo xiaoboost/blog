@@ -2,6 +2,7 @@ import {
   createStyles,
   articleWidth,
   mainWidth,
+  Color,
   Black,
   White,
   Shadow,
@@ -20,6 +21,8 @@ import {
 
 const indent = 24;
 const smallIndent = 14;
+const tableHeaderBorderColor = Color().hsl(210, 18, 87, 1);
+const tableBorderColor = Color(0xd0d7de).toString();
 
 export default createStyles({
   postAnchor: {},
@@ -179,6 +182,27 @@ export default createStyles({
           '&:last-child': {
             marginBottom: 0,
           },
+        },
+      },
+      '& table': {
+        display: 'block',
+        width: 'max-content',
+        maxWidth: '100%',
+        overflow: 'auto',
+        margin: '0 0 0.8em 0',
+        borderSpacing: 0,
+        borderCollapse: 'collapse',
+
+        '& tr': {
+          backgroundColor: White.toString(),
+          borderTop: `1px solid ${tableHeaderBorderColor.toString()}`,
+        },
+        '& th, & td': {
+          padding: [6, 13],
+          border: `1px solid ${tableBorderColor.toString()}`,
+        },
+        '& th': {
+          fontWeight: 600,
         },
       },
     },
