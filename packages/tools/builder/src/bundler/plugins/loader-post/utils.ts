@@ -38,6 +38,10 @@ const parserThen: Promise<Parser> = Promise.all([
   return unified().use(parse.default, { position: false }).use(stringify.default).use(mdx.default);
 });
 
+const pluginThen: Promise<any[]> = Promise.all([eval("import('remark-gfm')")]).then((val) => {
+  return val.map((i) => i.default);
+});
+
 const compilerThen: Promise<typeof Mdx> = eval("import('@mdx-js/mdx')");
 
 function removePosition(node: any) {
@@ -115,14 +119,14 @@ export async function getPostData(fileName: string): Promise<PostData> {
 }
 
 export async function compileMdx(code: string) {
-  return compilerThen
-    .then((compiler) =>
-      compiler.compile(code, {
-        format: 'mdx',
-        outputFormat: 'program',
-      }),
-    )
-    .then((result) => result.toString());
+  const [compiler, plugins] = await Promise.all([compilerThen, pluginThen]);
+  const result = await compiler.compile(code, {
+    format: 'mdx',
+    outputFormat: 'program',
+    remarkPlugins: plugins,
+  });
+
+  return result.toString();
 }
 
 function addAssetExport(data: PostData) {
