@@ -59,6 +59,14 @@ export interface PostRendered extends Omit<PostData, 'content'> {
   getComponentAssetNames(): string[];
   /** 获取使用模板的静态资源接口 */
   getTemplateAssetNames(): string[];
+  /** 获取文章本身静态资源接口 */
+  getPostAssetNames(): Promise<AssetData[]>;
+}
+
+export interface Node {
+  type: string;
+  children?: ChildNode[];
+  [key: string]: any;
 }
 
 export type {
