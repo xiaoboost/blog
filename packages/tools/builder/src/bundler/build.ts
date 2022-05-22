@@ -13,7 +13,14 @@ import { runScript } from '@xiao-ai/utils/node';
 import { unique } from '@xiao-ai/utils';
 import { fileCache, setGlobalVar, getGlobalVar } from './context';
 import { CommandOptions, log } from '../utils';
-import { getExternalPkg, FileCacheVarName, getShortSize, getSize, getShortTime } from './utils';
+import {
+  getExternalPkg,
+  FileCacheVarName,
+  getShortSize,
+  getSize,
+  getShortTime,
+  printEsbuildError,
+} from './utils';
 
 export async function bundle(opt: CommandOptions) {
   log.loadStart('代码打包...');
@@ -25,7 +32,7 @@ export async function bundle(opt: CommandOptions) {
   const postLoader = PostLoader();
   const localLoader = LocalPackageLoader();
   const assetLoader = AssetLoader({
-    exts: ['ico', 'plist', '.wasm'],
+    exts: ['ico', 'plist', '.wasm', 'jpg', 'png'],
     cache: fileCache,
   });
   const jssLoader = JssLoader({
@@ -39,6 +46,7 @@ export async function bundle(opt: CommandOptions) {
   const options: BuildOptions = {
     bundle: true,
     write: false,
+    logLevel: 'silent',
     outdir: path.join(process.cwd(), opt.outDir),
     entryPoints: [path.join(__dirname, '../../', 'src/builder/index.ts')],
     platform: 'node',
@@ -80,6 +88,7 @@ export async function bundle(opt: CommandOptions) {
 
   return {
     watchFiles,
+    warnings: result.warnings,
     errors: result.errors,
     code: result.outputFiles?.[0].text ?? '',
   };
@@ -141,7 +150,8 @@ export async function build(opt: CommandOptions) {
   const bundled = await bundle(opt);
 
   if (bundled.errors.length > 0) {
-    throw bundled.errors[0];
+    printEsbuildError(bundled.errors);
+    return;
   }
 
   const assets = await runBuild(bundled.code);

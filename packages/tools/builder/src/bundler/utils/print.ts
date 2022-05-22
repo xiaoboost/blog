@@ -1,3 +1,10 @@
+import type { Message } from 'esbuild';
+
+import Chalk from 'chalk';
+
+import { codeFrameColumns } from '@babel/code-frame';
+import { BuildError } from './types';
+
 export function getSize(assets: AssetData[]) {
   return assets.reduce((ans, item) => ans + Buffer.from(item.content).byteLength, 0);
 }
@@ -39,4 +46,28 @@ export function getShortTime(time: number) {
   }
 
   return getShortString(current, units[level]);
+}
+
+export function printEsbuildError(errors: Message[]) {
+  for (const err of errors) {
+    const data = err.detail as BuildError;
+
+    if (data) {
+      const codeFrame = codeFrameColumns(data.content, data.position, {
+        highlightCode: true,
+      });
+
+      console.log(
+        `${Chalk.bgRed('File')}: ${data.file}\n` +
+          `${Chalk.bgBlue('Reason')}: ${Chalk.red(data.message)}` +
+          `\n\n${codeFrame}\n`,
+      );
+    } else {
+      console.log(
+        `${Chalk.bgRed('File')}: ${err.location!.file}\n` +
+          `${Chalk.bgRed('Reason')}: ${Chalk.red(err.text)}\n\n` +
+          `  ${err.location!.lineText}\n`,
+      );
+    }
+  }
 }
