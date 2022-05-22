@@ -4,6 +4,7 @@ import chokidar from 'chokidar';
 
 import { CommandOptions, serve, devPort, log } from '../utils';
 import { bundle, runBuild } from './build';
+import { printEsbuildError } from './utils';
 
 /** 输出文件缓存 */
 const memory = new Map<string, Buffer>();
@@ -42,7 +43,7 @@ async function build(opt: CommandOptions) {
     const bundled = await bundle(opt);
 
     if (bundled.errors.length > 0) {
-      console.warn(bundled.errors[0]);
+      printEsbuildError(bundled.errors);
       return;
     }
 
