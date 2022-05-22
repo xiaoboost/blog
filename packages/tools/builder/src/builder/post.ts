@@ -43,7 +43,7 @@ function getPostHtml(post: PostRendered) {
  * 获取文章静态资源
  *   - TODO: 获取文章本身引用的资源
  */
-export function getPostAssets(): Promise<AssetData[]> {
+export async function getPostAssets(): Promise<AssetData[]> {
   const assets: AssetData[] = [];
 
   for (const post of posts) {
@@ -51,7 +51,9 @@ export function getPostAssets(): Promise<AssetData[]> {
       path: normalize(path.join('/', post.pathname, 'index.html')),
       content: getPostHtml(post),
     });
+
+    assets.push(...(await post.getPostAssetNames()));
   }
 
-  return Promise.resolve(assets);
+  return assets;
 }

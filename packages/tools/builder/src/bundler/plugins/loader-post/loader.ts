@@ -3,9 +3,13 @@ import type { PluginBuild } from 'esbuild';
 import Glob from 'fast-glob';
 
 import { normalize } from '@blog/shared/node';
-import { getPostsInputCode, getPostData, compileMdx } from './utils';
-import { GetComponentAssetMethodName, GetTemplateAssetMethodName } from '../../utils';
 import { FilePlugin } from '../record-file';
+import { getPostsInputCode, getPostData, compileMdx } from './utils';
+import {
+  GetComponentAssetMethodName,
+  GetTemplateAssetMethodName,
+  GetPostAssetMethodName,
+} from '../../utils';
 
 import * as lookup from 'look-it-up';
 import * as path from 'path';
@@ -92,12 +96,14 @@ export function PostLoader(): FilePlugin {
             import Component, {
               ${GetComponentAssetMethodName},
               ${GetTemplateAssetMethodName},
+              ${GetPostAssetMethodName},
             } from '${mdxPath}';
 
             export default {
               Component,
               ${GetComponentAssetMethodName},
               ${GetTemplateAssetMethodName},
+              ${GetPostAssetMethodName},
               ...(${JSON.stringify(post, null, 2)}),
             };
           `,
