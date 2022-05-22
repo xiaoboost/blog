@@ -2,9 +2,16 @@ import * as fs from 'fs/promises';
 import * as yaml from 'yaml';
 import * as path from 'path';
 
-import { Parser, PostData, PostMeta } from './types';
-import { toPinyin } from '@blog/shared/node';
-import { GetComponentAssetMethodName, GetTemplateAssetMethodName } from '../../utils';
+import { toPinyin, Fixer } from '@blog/shared/node';
+import { isUndef } from '@xiao-ai/utils';
+import { Parser, PostData, PostMeta, Root, Node, Image } from './types';
+import { decodeTemplate } from './template';
+import {
+  BuildError,
+  GetComponentAssetMethodName,
+  GetTemplateAssetMethodName,
+  GetPostAssetMethodName,
+} from '../../utils';
 
 import type Mdx from '@mdx-js/mdx';
 
@@ -44,18 +51,12 @@ const pluginThen: Promise<any[]> = Promise.all([eval("import('remark-gfm')")]).t
 
 const compilerThen: Promise<typeof Mdx> = eval("import('@mdx-js/mdx')");
 
-function removePosition(node: any) {
-  if (node.position) {
-    delete node.position;
-  }
+function visit(root: Root, cb: (node: Node) => void) {
+  cb(root as any);
 
-  if (node.children) {
-    for (const child of node.children) {
-      removePosition(child);
-    }
+  for (const no of root.children ?? []) {
+    visit(no as any, cb);
   }
-
-  return node;
 }
 
 export async function getPostData(fileName: string): Promise<PostData> {
@@ -99,7 +100,7 @@ export async function getPostData(fileName: string): Promise<PostData> {
     content: postContent,
     pathname: meta.pathname ?? path.join('posts', createAt, decodeTitle),
     toc: meta.toc ?? true,
-    ast: removePosition(parser.parse(postContent)),
+    ast: parseToAst(parser, fileName, postContent),
     template: meta.template ?? 'post',
     description:
       meta.description ??
@@ -109,27 +110,31 @@ export async function getPostData(fileName: string): Promise<PostData> {
         .replace(/[\n\r]/g, ''),
   };
 
-  // 添加静态资源导出方法
-  data.content += `\n\n${addAssetExport(data)}`;
-  data.content += `\n\n${addTemplateExport(data)}`;
+  const fixer = new Fixer(data.content);
 
-  // TODO: 还需要导出图片的语句
+  addComponentExport(data, fixer);
+  addTemplateExport(data, fixer);
+  addPostAssetExport(data, fixer);
+
+  data.content = fixer.apply();
+  data.ast = parseToAst(parser, `${fileName}.js`, data.content);
 
   return data;
 }
 
 export async function compileMdx(code: string) {
   const [compiler, plugins] = await Promise.all([compilerThen, pluginThen]);
-  const result = await compiler.compile(code, {
+  const jsxCode = await compiler.compile(code, {
     format: 'mdx',
+    jsx: false,
     outputFormat: 'program',
     remarkPlugins: plugins,
   });
 
-  return result.toString();
+  return decodeTemplate(jsxCode.toString());
 }
 
-function addAssetExport(data: PostData) {
+function addComponentExport(data: PostData, fixer: Fixer) {
   const { content } = data;
   const importMatcher = /import[^'"]*['"](@blog\/mdx-[^'"]+)['"]/;
   const imports: string[] = [];
@@ -149,23 +154,93 @@ function addAssetExport(data: PostData) {
     exportCode += `import * as a${i} from '${imports[0]}'\n`;
   }
 
-  exportCode += `\nexport function ${GetComponentAssetMethodName}() {\n  return [].concat(\n`;
+  exportCode += `export function ${GetComponentAssetMethodName}() {\n  return [].concat(\n`;
 
   for (let i = 0; i < imports.length; i++) {
     exportCode += `    a${i}.getAssetNames(),\n`;
   }
 
-  exportCode += '  );\n}\n';
+  exportCode += '  );\n}\n\n';
 
-  return exportCode;
+  fixer.insert(exportCode);
 }
 
-function addTemplateExport(data: PostData) {
-  return `
-import * as template from '@blog/template-${data.template}'
-
+function addTemplateExport(data: PostData, fixer: Fixer) {
+  fixer.insert(
+    `import * as template from '@blog/template-${data.template}'
 export function ${GetTemplateAssetMethodName}() {
   return template.getAssetNames();
+}\n\n`,
+  );
 }
-  `.trim();
+
+function addPostAssetExport(data: PostData, fixer: Fixer) {
+  const images: Image[] = [];
+
+  visit(data.ast, (node) => {
+    if (node.type === 'image') {
+      images.push(node as Image);
+    }
+  });
+
+  // 没有静态资源时，插入空函数
+  if (images.length === 0) {
+    fixer.insert(`export function ${GetPostAssetMethodName}() {\n  return [];\n}\n\n`);
+    return;
+  }
+
+  let importCode = `import { getAssetContents } from '@blog/shared/node'\n`;
+  let exportCode = `export function ${GetPostAssetMethodName}() {\n  return getAssetContents([\n`;
+
+  for (let i = 0; i < images.length; i++) {
+    const img = images[i];
+
+    // 跳过链接
+    if (/^https?:\/\//.test(img.url)) {
+      continue;
+    }
+
+    if (!img.position) {
+      throw new Error(`图片解析错误，未获得图片节点位置：${img.url}`);
+    }
+
+    importCode += `import img${i} from '${img.url}'\n`;
+    exportCode += `    img${i},\n`;
+
+    // 虚拟模板字符串
+    const imgCode = img.title
+      ? `![${img.alt}](\`\${img${i}.path}\` "${img.title}")`
+      : `![${img.alt}](\`\${img${i}.path}\`)`;
+
+    fixer.fix({
+      start: img.position.start.offset!,
+      end: img.position.end.offset!,
+      newText: imgCode,
+    });
+  }
+
+  exportCode += '  ]);\n}\n\n';
+
+  fixer.insert(importCode);
+  fixer.insert(exportCode);
+}
+
+function parseToAst(parser: Parser, file: string, content: string) {
+  try {
+    return parser.parse(content);
+  } catch (err: any) {
+    const data: BuildError = {
+      file,
+      content,
+      label: err.source,
+      message: err.message,
+      position: err.position,
+    };
+
+    if (isUndef(data.position.end?.line)) {
+      data.position.end = undefined;
+    }
+
+    throw data;
+  }
 }
