@@ -7,6 +7,24 @@ export interface Props {
   children?: React.ReactNode | React.ReactNode[];
 }
 
+/**
+ * 是否包含首行退格
+ *   - 现阶段只有整行图片不包含退格
+ */
+function hasStartIndent(nodes: React.ReactNode[]) {
+  if (nodes.length !== 1 || !React.isValidElement(nodes[0])) {
+    return true;
+  }
+
+  const node = nodes[0];
+
+  if (node.type === 'img') {
+    return false;
+  }
+
+  return true;
+}
+
 export function p(props: Props) {
   const children: React.ReactNode[] = [];
   const nodes = isArray(props.children) ? props.children : [props.children];
@@ -27,5 +45,9 @@ export function p(props: Props) {
     }
   }
 
-  return <p>{children}</p>;
+  if (hasStartIndent(nodes)) {
+    return <p>{children}</p>;
+  } else {
+    return <p className={styles.classes.noIndent}>{children}</p>;
+  }
 }

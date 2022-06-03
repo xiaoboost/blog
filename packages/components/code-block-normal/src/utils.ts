@@ -24,7 +24,7 @@ const langLabel = {
  *   - 作为代码块的左侧统一空格
  */
 export function formatCode(code: string) {
-  const lines = code.split(/[\n\r]/);
+  const lines = code.replace(/\r/g, '').split(/[\n\r]/);
 
   while (lines[0].trim().length === 0) {
     lines.shift();
@@ -70,7 +70,7 @@ export function getHighlightCode(code: string) {
         highlightLines[index] = true;
       }
 
-      return line.trimRight();
+      return line.trimEnd();
     });
 
   return {
