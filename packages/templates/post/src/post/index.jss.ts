@@ -33,6 +33,7 @@ export default createStyles({
   postArticle: {},
   postNoToc: {},
   postSoftBreak: {},
+  noIndent: {},
   postDefault: {
     color: Black.toString(),
     backgroundColor: White.toString(),
@@ -113,6 +114,9 @@ export default createStyles({
 
         '&:last-child': {
           marginBottom: 0,
+        },
+        '&$noIndent': {
+          textIndent: '0',
         },
       },
       '& code': {
@@ -209,6 +213,9 @@ export default createStyles({
         '& th': {
           fontWeight: 600,
         },
+      },
+      '& img': {
+        maxWidth: '100%',
       },
     },
   },

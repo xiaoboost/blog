@@ -14,6 +14,7 @@ import {
 } from '../../utils';
 
 import type Mdx from '@mdx-js/mdx';
+import type * as ESTree from 'estree';
 
 export async function getPostsInputCode(posts: string[]) {
   let code = '';
@@ -134,19 +135,40 @@ export async function compileMdx(code: string) {
   return decodeTemplate(jsxCode.toString());
 }
 
-function addComponentExport(data: PostData, fixer: Fixer) {
-  const { content } = data;
-  const importMatcher = /import[^'"]*['"](@blog\/mdx-[^'"]+)['"]/;
-  const imports: string[] = [];
+function getImportComponentNod(ast: Root) {
+  const importSet = new Set<string>();
 
-  let restContent = content;
-  let result = importMatcher.exec(content);
+  // 只会在首层存在
+  for (const node of ast.children) {
+    if ((node as any).type === 'mdxjsEsm' && node.data?.estree) {
+      const esNode = node.data?.estree as ESTree.Node;
 
-  while (result) {
-    restContent = restContent.substring((result.index ?? 0) + result[0].length);
-    imports.push(result[1]);
-    result = importMatcher.exec(restContent);
+      if (esNode.type !== 'Program') {
+        continue;
+      }
+
+      const firstNode = esNode.body[0];
+
+      if (firstNode.type !== 'ImportDeclaration') {
+        continue;
+      }
+
+      const importSource = String(firstNode.source.value ?? '');
+
+      if (!importSource.startsWith('@blog/mdx-')) {
+        continue;
+      }
+
+      importSet.add(importSource);
+    }
   }
+
+  return importSet;
+}
+
+function addComponentExport(data: PostData, fixer: Fixer) {
+  const importSet = getImportComponentNod(data.ast);
+  const imports = Array.from(importSet.values());
 
   let exportCode = '';
 

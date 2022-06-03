@@ -57,6 +57,7 @@
     "@blog/tsconfig": "workspace:*",
     "@types/babel__code-frame": "^7.0.3",
     "@types/blog": "workspace:*",
+    "@types/estree": "^0.0.51",
     "@types/fs-extra": "^9.0.13",
     "@types/koa": "^2.13.4",
     "@types/md5": "^2.3.2",
