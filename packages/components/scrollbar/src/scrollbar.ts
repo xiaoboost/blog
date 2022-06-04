@@ -7,10 +7,10 @@ import styles from './index.jss';
 const { classes: cla } = styles;
 
 export class ScrollBar {
+  /** 滚动条容器 */
+  private readonly _container: HTMLElement | Window;
   /** 滚动条长条 */
   private readonly scrollbar: HTMLElement;
-  /** 滚动条容器 */
-  private readonly container: HTMLElement | Window;
   /** 滚动条 */
   private readonly slider: HTMLElement;
   /** 滚动条宽度 */
@@ -21,7 +21,7 @@ export class ScrollBar {
   /** 鼠标正在移动 */
   private mouseMove = false;
   /** 鼠标当前偏移量 */
-  private mouseOffset = 0;
+  private mouseOffset = -1;
   /** 鼠标上次偏移量 */
   private mouseLastOffset = -1;
 
@@ -29,7 +29,7 @@ export class ScrollBar {
     this.scrollbar = el;
     this.width = getDataFromEl<number>(el, 'width') ?? 8;
     this.mode = getDataFromEl<ScrollMode>(el, 'mode') ?? 'y';
-    this.container = getScrollContainer(el, this.mode);
+    this._container = getScrollContainer(el, this.mode);
     this.slider = el.querySelector(`.${cla.slider}`)!;
 
     this.init();
@@ -40,36 +40,38 @@ export class ScrollBar {
     return this.mode === 'y';
   }
 
+  get isScrollWindow() {
+    return this._container === window;
+  }
+
   get clientLength() {
-    return this.isVertical ? this.containerEl.clientHeight : this.containerEl.clientWidth;
+    const el = this.isScrollWindow ? document.documentElement : this.container;
+    return this.isVertical ? el.clientHeight : el.clientWidth;
   }
 
   get scrollLength() {
-    return this.isVertical ? this.containerEl.scrollHeight : this.containerEl.scrollWidth;
+    const el = this.isScrollWindow ? document.documentElement : this.container;
+    return this.isVertical ? el.scrollHeight : el.scrollWidth;
   }
 
-  /**
-   * 容器 DOM 元素
-   *   - 滚动事件很特殊，顶层事件必须挂在 window 上，但是普通的元素操作又必须用真正的元素
-   */
-  get containerEl() {
-    return (this.container === window ? document.documentElement : this.container) as HTMLElement;
+  get container() {
+    return (this.isScrollWindow ? document.documentElement : this._container) as HTMLElement;
   }
 
   private init() {
     const {
       container,
-      containerEl,
       scrollbar,
       slider,
       scrollLength,
       clientLength,
-      isVertical,
       width,
+      isVertical,
+      isScrollWindow,
     } = this;
 
     // 容器不存在，或者是滚轴长度没有超过容器长度
-    if (!container || !containerEl || scrollLength <= clientLength) {
+    if (scrollLength <= clientLength) {
       scrollbar.style.display = 'none';
       return;
     }
@@ -94,15 +96,17 @@ export class ScrollBar {
           capture: false,
         };
 
-    containerEl.addEventListener('mouseenter', () => this.tigerClass(scrollbar, true), options);
-    containerEl.addEventListener('mouseleave', () => this.tigerClass(scrollbar, false), options);
+    container.addEventListener('mouseenter', () => this.tigerClass(scrollbar, true), options);
+    container.addEventListener('mouseleave', () => this.tigerClass(scrollbar, false), options);
     container.addEventListener('scroll', this.setSliderPositionFromContainer, options);
     slider.addEventListener('mousedown', this.startMouseMove, options);
     window.addEventListener('mouseup', this.stopMouseMove, options);
     window.addEventListener('mousemove', this.setSliderPositionFromMouse, options);
 
-    if (container === window) {
-      container.addEventListener('resize', this.setSliderPositionFromContainer, options);
+    if (isScrollWindow) {
+      scrollbar.style.position = 'fixed';
+      window.addEventListener('resize', this.setSliderPositionFromContainer, options);
+      window.addEventListener('scroll', this.setSliderPositionFromContainer, options);
     } else {
       // TODO: 内部元素应该用 ResizeObserver 监听
     }
@@ -116,7 +120,7 @@ export class ScrollBar {
     const {
       clientLength: client,
       scrollLength: scroll,
-      containerEl: parent,
+      container: parent,
       slider,
       isVertical,
     } = this;
@@ -142,12 +146,20 @@ export class ScrollBar {
 
     const { clientLength: client, scrollLength: scroll, slider, isVertical } = this;
     const currentOffset = isVertical ? mouse.clientY : mouse.clientX;
-    const offsetY = currentOffset - this.mouseLastOffset;
+
+    if (this.mouseOffset === -1) {
+      this.mouseOffset = isVertical
+        ? Number.parseFloat(slider.style.top)
+        : Number.parseFloat(slider.style.left);
+    }
 
     if (this.mouseLastOffset === -1) {
       this.mouseLastOffset = currentOffset;
       return;
     }
+
+    const offsetY = currentOffset - this.mouseLastOffset;
+    const scrollbarLen = (client / scroll) * client;
 
     this.mouseLastOffset = currentOffset;
     this.mouseOffset += offsetY;
@@ -158,8 +170,8 @@ export class ScrollBar {
       realOffset = 0;
     }
 
-    if (realOffset > client) {
-      realOffset = client;
+    if (realOffset > client - scrollbarLen) {
+      realOffset = client - scrollbarLen;
     }
 
     slider.style[isVertical ? 'top' : 'left'] = `${realOffset}px`;
@@ -173,15 +185,16 @@ export class ScrollBar {
     if (!this.mouseMove && mouse.button === MouseButtons.Left) {
       this.mouseMove = true;
       // 鼠标滑动时，不允许选中文本
-      this.containerEl.style.userSelect = 'none';
+      this.container.style.userSelect = 'none';
     }
   };
 
   stopMouseMove = () => {
     if (this.mouseMove) {
       this.mouseOffset = -1;
+      this.mouseLastOffset = -1;
       this.mouseMove = false;
-      this.containerEl.style.userSelect = '';
+      this.container.style.userSelect = '';
     }
   };
 
