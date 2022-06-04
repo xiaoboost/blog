@@ -9,6 +9,7 @@ import { Root } from 'mdast';
 
 import * as title from './title';
 import * as code from './code';
+import * as link from './link';
 import * as paragraph from './paragraph';
 
 interface PostData {
@@ -46,6 +47,7 @@ export function Post(props: PostProps) {
             components={{
               ...title,
               ...code,
+              ...link,
               ...paragraph,
             }}
           />
