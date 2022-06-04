@@ -24,7 +24,6 @@ importers:
 
   packages/components/code-block-normal:
     specifiers:
-      '@blog/component-scrollbar': workspace:*
       '@blog/shared': workspace:*
       '@blog/tsconfig': workspace:*
       '@types/blog': workspace:*
@@ -36,7 +35,6 @@ importers:
       tslib: ^2.4.0
       typescript: ^4.6.4
     dependencies:
-      '@blog/component-scrollbar': link:../scrollbar
       '@blog/shared': link:../../shared
       '@xiao-ai/utils': registry.npmmirror.com/@xiao-ai/utils/1.6.0
       highlight.js: registry.npmmirror.com/highlight.js/11.5.1
