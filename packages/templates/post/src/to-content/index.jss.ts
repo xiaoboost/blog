@@ -19,6 +19,7 @@ export default createStyles({
   menuItemHighlight: {},
   menuLevel1: {},
   menuLevel2: {},
+  menuIcon: {},
   toContent: {
     [mediaPhone]: {
       display: 'none',
@@ -43,15 +44,17 @@ export default createStyles({
 
     '& $menuList': {
       padding: 0,
+      listStyle: 'none',
 
       '& $menuList': {
-        paddingLeft: 16,
+        paddingLeft: 12,
         marginBottom: 8,
       },
     },
 
-    '& $menuListArticle': {
-      marginLeft: 16,
+    '& $menuIcon': {
+      marginRight: 4,
+      fontSize: 6,
     },
 
     '& $menuItem': {
@@ -70,6 +73,8 @@ export default createStyles({
       transition: `color .1s linear`,
       color: Black.toString(),
       textDecoration: 'none',
+      display: 'flex',
+      alignItems: 'center',
     },
     '& code': {
       margin: '0 0.2em',

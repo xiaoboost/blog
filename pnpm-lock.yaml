@@ -78,6 +78,29 @@ importers:
       eslint: registry.npmmirror.com/eslint/8.15.0
       tslib: registry.npmmirror.com/tslib/2.4.0
 
+  packages/components/icons:
+    specifiers:
+      '@blog/shared': workspace:*
+      '@blog/tsconfig': workspace:*
+      '@types/blog': workspace:*
+      '@types/react': ^18.0.9
+      '@xiao-ai/utils': ^1.6.0
+      eslint: ^8.15.0
+      react: ^18.1.0
+      tslib: ^2.4.0
+      typescript: ^4.6.4
+    dependencies:
+      '@blog/shared': link:../../shared
+      '@xiao-ai/utils': registry.npmmirror.com/@xiao-ai/utils/1.6.0
+      react: registry.npmmirror.com/react/18.1.0
+    devDependencies:
+      '@blog/tsconfig': link:../../tools/tsconfig
+      '@types/blog': link:../../tools/typings
+      '@types/react': registry.npmmirror.com/@types/react/18.0.9
+      eslint: registry.npmmirror.com/eslint/8.15.0
+      tslib: registry.npmmirror.com/tslib/2.4.0
+      typescript: registry.npmmirror.com/typescript/4.6.4
+
   packages/components/katex:
     specifiers:
       '@blog/shared': workspace:*
@@ -192,6 +215,7 @@ importers:
 
   packages/templates/post:
     specifiers:
+      '@blog/icons': workspace:*
       '@blog/mdx-code-block-normal': workspace:*
       '@blog/mdx-code-block-typescript': workspace:*
       '@blog/shared': workspace:*
@@ -209,6 +233,7 @@ importers:
       tslib: ^2.4.0
       typescript: ^4.6.4
     dependencies:
+      '@blog/icons': link:../../components/icons
       '@blog/mdx-code-block-normal': link:../../components/code-block-normal
       '@blog/mdx-code-block-typescript': link:../../components/code-block-typescript
       '@blog/shared': link:../../shared

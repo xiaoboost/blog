@@ -5,6 +5,7 @@ import { toPinyin } from '@blog/shared/node';
 import { levelLimit } from './constant';
 import { stringifyClass } from '@xiao-ai/utils';
 import { Root, Heading, PhrasingContent } from 'mdast';
+import { Circle, CircleThin } from '@blog/icons';
 
 export interface Props {
   data: Root;
@@ -49,6 +50,7 @@ function createNavFromAst(ast: Root, limit: number): NavTitleData[] {
       continue;
     }
 
+    debugger;
     const content = getContext(token);
     const hash = toPinyin(content);
     const level = token.depth;
@@ -104,17 +106,20 @@ function createNavFromAst(ast: Root, limit: number): NavTitleData[] {
 }
 
 function NavTitle({ titles }: NavTitleProps) {
+  const { classes: cla } = styles;
+
   return (
-    <ul className={styles.classes.menuList}>
+    <ul className={cla.menuList}>
       {titles.map((title, i) => (
-        <li
-          key={i}
-          className={stringifyClass(
-            styles.classes.menuItem,
-            styles.classes[`menuLevel${title.level}`],
-          )}
-        >
-          <a href={`#${title.hash}`} dangerouslySetInnerHTML={{ __html: title.content }} />
+        <li key={i} className={stringifyClass(cla.menuItem, cla[`menuLevel${title.level}`])}>
+          <a href={`#${title.hash}`}>
+            {title.level === 1 ? (
+              <Circle className={cla.menuIcon} />
+            ) : (
+              <CircleThin className={cla.menuIcon} />
+            )}
+            {title.content}
+          </a>
           {title.children && <NavTitle titles={title.children} />}
         </li>
       ))}
