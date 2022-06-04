@@ -15,7 +15,6 @@
     "url": "https://github.com/xiaoboost/blog"
   },
   "dependencies": {
-    "@blog/component-scrollbar": "workspace:*",
     "@blog/shared": "workspace:*",
     "@xiao-ai/utils": "^1.6.0",
     "highlight.js": "^11.5.1",
