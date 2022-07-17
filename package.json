@@ -18,12 +18,12 @@
   },
   "devDependencies": {
     "@blog/builder": "workspace:*",
-    "@typescript-eslint/eslint-plugin": "^5.25.0",
-    "@typescript-eslint/parser": "^5.25.0",
-    "eslint": "^8.15.0",
-    "eslint-plugin-prettier": "^4.0.0",
-    "eslint-plugin-react": "^7.29.4",
-    "prettier": "^2.6.2",
-    "typescript": "^4.6.4"
+    "@typescript-eslint/eslint-plugin": "5.30.6",
+    "@typescript-eslint/parser": "5.30.6",
+    "eslint": "8.20.0",
+    "eslint-plugin-prettier": "4.2.1",
+    "eslint-plugin-react": "7.30.1",
+    "prettier": "2.7.1",
+    "typescript": "4.7.4"
   }
 }
