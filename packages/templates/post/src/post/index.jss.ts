@@ -1,7 +1,6 @@
 import {
   createStyles,
   articleWidth,
-  mainWidth,
   Color,
   Black,
   White,
@@ -44,8 +43,12 @@ export default createStyles({
     flexGrow: 0,
     flexShrink: 0,
 
+    ...createMediaStyles<number | string>(articleWidth, '100%', (width) => ({
+      width: typeof width === 'number' ? `${width}px` : width,
+    })),
+
     '&$postNoToc': {
-      width: mainWidth,
+      width: '100%',
     },
     '& $postHeader': {
       display: 'flex',
