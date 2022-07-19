@@ -73,7 +73,7 @@ export class DevServer {
 
   /** 开启服务 */
   start() {
-    if (this._server) {
+    if (this.isStart) {
       return;
     }
 

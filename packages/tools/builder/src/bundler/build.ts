@@ -12,7 +12,7 @@ import { LocalPackageLoader } from './plugins/loader-local-package';
 import { runScript } from '@xiao-ai/utils/node';
 import { unique } from '@xiao-ai/utils';
 import { fileCache, setGlobalVar, getGlobalVar } from './context';
-import { BuildCommandOptions, WatchCommandOptions, log } from '../utils';
+import { BuildCommandOptions, WatchCommandOptions, log, getRoot } from '../utils';
 import {
   getExternalPkg,
   FileCacheVarName,
@@ -48,7 +48,7 @@ export async function bundle(opt: BuildCommandOptions & WatchCommandOptions) {
     write: false,
     logLevel: 'silent',
     outdir: path.join(process.cwd(), opt.outDir),
-    entryPoints: [path.join(__dirname, '../../', 'src/builder/index.ts')],
+    entryPoints: [path.join(getRoot(), 'src/builder/index.ts')],
     platform: 'node',
     sourcemap: isProduction ? false : 'inline',
     publicPath: '/',
