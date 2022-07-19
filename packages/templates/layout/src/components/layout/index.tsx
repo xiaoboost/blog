@@ -8,6 +8,7 @@ import { Footer } from '../footer';
 import { Article } from '../article';
 import { GotoTop } from '../goto-top';
 import { ScrollBar } from '@blog/component-scrollbar';
+import { HMRClientScriptPath } from '@blog/shared/shared';
 
 import { favicon } from '../../utils';
 
@@ -16,6 +17,8 @@ export interface LayoutProps extends HeaderProps {
   siteTitle: string;
   /** 网页标题 */
   pageTitle: string;
+  /** 是否启用 HMR */
+  hmr?: boolean;
   /** 网页作者 */
   author?: string;
   /** 网页描述 */
@@ -50,6 +53,7 @@ export function Layout(props: PropsWithChildren<LayoutProps>) {
         <meta name='force-rendering' content='webkit' />
         <meta httpEquiv='X-UA-Compatible' content='IE=edge,chrome=1' />
         <link rel='short icon' href={favicon.path} />
+        {props.hmr ? <script type='text/javascript' src={HMRClientScriptPath} /> : ''}
         {styles.map((pathname, i) => (
           <link key={i} rel='stylesheet' type='text/css' href={parseUrl(publicPath, pathname)} />
         ))}

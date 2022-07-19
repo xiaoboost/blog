@@ -29,6 +29,7 @@ function getPostHtml(post: PostRendered) {
     author: site.author,
     description: post.description,
     publicPath: publicPath,
+    hmr: process.env.HMR,
     assets: getLayoutAssetNames().concat(
       post.getComponentAssetNames(),
       post.getTemplateAssetNames(),

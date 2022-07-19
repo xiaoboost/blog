@@ -2,9 +2,10 @@ import * as path from 'path';
 
 import chokidar from 'chokidar';
 
-import { CommandOptions, serve, devPort, log } from '../utils';
+import { WatchCommandOptions, devPort, log } from '../utils';
 import { bundle, runBuild } from './build';
 import { printEsbuildError } from './utils';
+import { DevServer } from './dev';
 
 /** 输出文件缓存 */
 const memory = new Map<string, Buffer>();
@@ -19,20 +20,20 @@ function writeMemory(assets: AssetData[]) {
   }
 }
 
-function watchFiles(inputFiles: string[], opt: CommandOptions) {
+function watchFiles(inputFiles: string[], opt: WatchCommandOptions, server: DevServer) {
   const eventName = 'change';
 
   if (watcher.listenerCount(eventName) === 0) {
     watcher.addListener(eventName, (file: string) => {
       log.log(`文件变更：${path.relative(process.cwd(), file)}`);
-      build(opt);
+      build(opt, server);
     });
   }
 
   watcher.add(inputFiles);
 }
 
-async function build(opt: CommandOptions) {
+async function build(opt: WatchCommandOptions, server: DevServer) {
   if (compiling) {
     return;
   }
@@ -40,7 +41,10 @@ async function build(opt: CommandOptions) {
   compiling = true;
 
   try {
-    const bundled = await bundle(opt);
+    const bundled = await bundle({
+      ...opt,
+      outDir: '/',
+    });
 
     if (bundled.errors.length > 0) {
       printEsbuildError(bundled.errors);
@@ -56,16 +60,22 @@ async function build(opt: CommandOptions) {
 
     await writeMemory(assets.files);
 
+    server.start();
     compiling = false;
+
     log.log(`网站部署在 http://localhost:${devPort}\n`);
 
-    watchFiles(bundled.watchFiles, opt);
+    watchFiles(bundled.watchFiles, opt, server);
   } catch (e: unknown) {
     log.warn(e);
   }
 }
 
-export async function watch(opt: CommandOptions) {
-  build(opt);
-  serve(devPort, memory);
+export async function watch(opt: WatchCommandOptions) {
+  const server = new DevServer(memory, {
+    port: devPort,
+    hmr: opt.hmr,
+  });
+
+  build(opt, server);
 }
