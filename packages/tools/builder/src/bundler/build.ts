@@ -12,7 +12,7 @@ import { LocalPackageLoader } from './plugins/loader-local-package';
 import { runScript } from '@xiao-ai/utils/node';
 import { unique } from '@xiao-ai/utils';
 import { fileCache, setGlobalVar, getGlobalVar } from './context';
-import { CommandOptions, log } from '../utils';
+import { BuildCommandOptions, WatchCommandOptions, log } from '../utils';
 import {
   getExternalPkg,
   FileCacheVarName,
@@ -22,7 +22,7 @@ import {
   printEsbuildError,
 } from './utils';
 
-export async function bundle(opt: CommandOptions) {
+export async function bundle(opt: BuildCommandOptions & WatchCommandOptions) {
   log.loadStart('代码打包...');
 
   const start = Date.now();
@@ -58,6 +58,7 @@ export async function bundle(opt: CommandOptions) {
     assetNames: isProduction ? 'assets/[name].[hash]' : 'assets/[name]',
     define: {
       'process.env.NODE_ENV': isProduction ? '"production"' : '"development"',
+      'process.env.HMR': opt.hmr ? 'true' : 'false',
     },
     loader: {
       '.ttf': 'file',
@@ -146,8 +147,11 @@ export async function writeDisk(assets: AssetData[], outDir: string) {
   );
 }
 
-export async function build(opt: CommandOptions) {
-  const bundled = await bundle(opt);
+export async function build(opt: BuildCommandOptions) {
+  const bundled = await bundle({
+    ...opt,
+    hmr: false,
+  });
 
   if (bundled.errors.length > 0) {
     printEsbuildError(bundled.errors);

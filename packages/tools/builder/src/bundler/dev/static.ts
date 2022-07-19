@@ -1,27 +1,16 @@
-import Koa from 'koa';
-
+import { ParameterizedContext } from 'koa';
 import { join } from 'path';
 import { getType } from 'mime';
-import { wait } from '@xiao-ai/utils';
 import { normalize } from '@blog/shared/node';
-import { log } from './log';
+import { log } from '../../utils/logger';
 
-export function serve(port: number, vfs: Map<string, Buffer>, isLoading?: () => boolean) {
-  const app = new Koa();
-
-  app.listen(port);
-
-  app.use(async (ctx, next) => {
-    if (isLoading?.()) {
-      await wait(() => !isLoading(), 100);
-    }
-
+export function staticServe(vfs: Map<string, Buffer>) {
+  return (ctx: ParameterizedContext) => {
     if (ctx.method !== 'GET' && ctx.method !== 'HEAD') {
       ctx.status = 405;
       ctx.length = 0;
       ctx.set('Allow', 'GET, HEAD');
-      next();
-      return false;
+      return;
     }
 
     const filePath = normalize(
@@ -37,8 +26,7 @@ export function serve(port: number, vfs: Map<string, Buffer>, isLoading?: () => 
     if (!file) {
       ctx.status = 404;
       ctx.length = 0;
-      next();
-      return false;
+      return;
     }
 
     ctx.type = getType(filePath)!;
@@ -49,9 +37,5 @@ export function serve(port: number, vfs: Map<string, Buffer>, isLoading?: () => 
 
     ctx.length = file.byteLength;
     ctx.body = file;
-
-    next();
-  });
-
-  return app;
+  };
 }

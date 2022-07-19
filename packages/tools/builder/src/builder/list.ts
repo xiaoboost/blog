@@ -38,6 +38,7 @@ export function getListAssets(): Promise<AssetData[]> {
         pageTitle,
         pathname,
         publicPath,
+        hmr: process.env.HMR,
         next: getPathname(index + 1),
         pre: getPathname(index - 1),
         assets: getAssetNames(),

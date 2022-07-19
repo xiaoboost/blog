@@ -50,7 +50,6 @@ function createNavFromAst(ast: Root, limit: number): NavTitleData[] {
       continue;
     }
 
-    debugger;
     const content = getContext(token);
     const hash = toPinyin(content);
     const level = token.depth;
