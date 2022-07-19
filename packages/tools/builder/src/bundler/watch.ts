@@ -5,20 +5,12 @@ import chokidar from 'chokidar';
 import { WatchCommandOptions, devPort, log } from '../utils';
 import { bundle, runBuild } from './build';
 import { printEsbuildError } from './utils';
-import { DevServer } from './dev';
+import { DevServer, HMRData } from './dev';
 
-/** 输出文件缓存 */
-const memory = new Map<string, Buffer>();
 /** 文件监听器 */
 const watcher = chokidar.watch([]);
 /** 正在编译标志 */
 let compiling = false;
-
-function writeMemory(assets: AssetData[]) {
-  for (const file of assets) {
-    memory.set(file.path, Buffer.from(file.content));
-  }
-}
 
 function watchFiles(inputFiles: string[], opt: WatchCommandOptions, server: DevServer) {
   const eventName = 'change';
@@ -58,8 +50,7 @@ async function build(opt: WatchCommandOptions, server: DevServer) {
       return;
     }
 
-    await writeMemory(assets.files);
-
+    server.writeFiles(assets.files);
     server.start();
     compiling = false;
 
@@ -72,7 +63,7 @@ async function build(opt: WatchCommandOptions, server: DevServer) {
 }
 
 export async function watch(opt: WatchCommandOptions) {
-  const server = new DevServer(memory, {
+  const server = new DevServer({
     port: devPort,
     hmr: opt.hmr,
   });

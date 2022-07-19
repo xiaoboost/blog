@@ -1,20 +1,20 @@
 /** HMR 更新类别 */
 export enum HMRKind {
   Update,
-  Reload,
   Error,
 }
 
 /** HMR 更新数据类别 */
 export enum HMRUpdateKind {
   CSS,
+  JS,
   HTML,
 }
 
 /** HMR 更新数据 */
 export type HMRUpdate =
   | {
-      kind: HMRUpdateKind.CSS;
+      kind: HMRUpdateKind.CSS | HMRUpdateKind.JS;
       path: string;
     }
   | {
@@ -26,9 +26,6 @@ export type HMRUpdate =
 
 /** HMR 数据 */
 export type HMRData =
-  | {
-      kind: HMRKind.Reload;
-    }
   | {
       kind: HMRKind.Error;
       errors: string[];
