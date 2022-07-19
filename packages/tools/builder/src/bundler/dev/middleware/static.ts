@@ -2,7 +2,7 @@ import { ParameterizedContext } from 'koa';
 import { join } from 'path';
 import { getType } from 'mime';
 import { normalize } from '@blog/shared/node';
-import { log } from '../../utils/logger';
+import { log } from '../../../utils/logger';
 
 export function staticServe(vfs: Map<string, Buffer>) {
   return (ctx: ParameterizedContext) => {

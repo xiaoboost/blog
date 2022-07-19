@@ -3,9 +3,8 @@ import Ws from 'koa-websocket';
 
 import { createServer, Server as HTTPServer } from 'http';
 import { WebSocket } from 'ws';
-import { staticServe } from './static';
-import { transformServe } from './transform';
 import { remove } from '@xiao-ai/utils';
+import { staticServe, transformServe } from './middleware';
 import { HMRData, ServerOption } from './types';
 import { log } from '../../utils';
 
