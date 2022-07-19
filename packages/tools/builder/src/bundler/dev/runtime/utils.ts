@@ -1,14 +1,8 @@
 import { createLogger } from './logger';
-
-let reloadTimeout: number | null = null;
-let cssTimeout: number | null = null;
+import { debounce } from '@xiao-ai/utils';
 
 export const hmrLog = createLogger('HMR');
 export const wbsLog = createLogger('Socket');
-
-function isNumber(input: unknown): input is number {
-  return typeof input === 'number';
-}
 
 export function getSocketUrl() {
   const protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
@@ -16,35 +10,21 @@ export function getSocketUrl() {
 }
 
 export function reloadPage() {
-  if (isNumber(reloadTimeout)) {
-    return;
-  }
-
-  reloadTimeout = window.setTimeout(() => {
-    try {
-      window.location.reload();
-    } finally {
-      reloadTimeout = null;
-    }
-  });
+  debounce(() => window.location.reload());
 }
 
-function updateLinkElement(link: Element) {
-  const newLink = link.cloneNode() as Element;
-  const newHref = `${(link.getAttribute('href') ?? '').split('?')[0]}?${Date.now()}`;
+export function reloadCSS() {
+  function updateLinkElement(link: Element) {
+    const newLink = link.cloneNode() as Element;
+    const newHref = `${(link.getAttribute('href') ?? '').split('?')[0]}?${Date.now()}`;
 
-  newLink.setAttribute('href', newHref);
-  newLink.addEventListener('load', () => link.parentNode?.removeChild(link));
+    newLink.setAttribute('href', newHref);
+    newLink.addEventListener('load', () => link.parentNode?.removeChild(link));
 
-  link.parentNode?.insertBefore(newLink, link.nextSibling);
-}
-
-export function reloadAllCSS() {
-  if (isNumber(cssTimeout)) {
-    return;
+    link.parentNode?.insertBefore(newLink, link.nextSibling);
   }
 
-  cssTimeout = window.setTimeout(() => {
+  debounce(() => {
     const links = document.querySelectorAll('link[rel="stylesheet"]');
 
     for (let i = 0; i < links.length; i++) {
@@ -60,7 +40,17 @@ export function reloadAllCSS() {
         updateLinkElement(link);
       }
     }
+  });
+}
 
-    cssTimeout = null;
+export function reloadElement(selector: string, content: string) {
+  debounce(() => {
+    const element = document.querySelector(selector);
+
+    if (!element) {
+      return;
+    }
+
+    element.innerHTML = content;
   });
 }
