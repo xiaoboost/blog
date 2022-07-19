@@ -1,17 +1,18 @@
 import Koa from 'koa';
 import Ws from 'koa-websocket';
+import path from 'path';
 
 import { createServer, Server as HTTPServer } from 'http';
 import { WebSocket } from 'ws';
-import { remove } from '@xiao-ai/utils';
+import { remove, delay } from '@xiao-ai/utils';
 import { staticServe, transformServe } from './middleware';
-import { HMRData, ServerOption } from './types';
+import { HMRData, HMRKind, HMRUpdateKind, ServerOption } from './types';
 import { log } from '../../utils';
 
 /** 调试服务器 */
 export class DevServer {
   /** 文件系统 */
-  private _vfs: Map<string, Buffer>;
+  private _vfs = new Map<string, Buffer>();
   /** 服务器选项 */
   private _option: Required<ServerOption>;
   /** 通信服务器 */
@@ -19,8 +20,7 @@ export class DevServer {
   /** WebSocket 连接 */
   private _sockets: WebSocket[] = [];
 
-  constructor(vfs: Map<string, Buffer>, opt: ServerOption) {
-    this._vfs = vfs;
+  constructor(opt: ServerOption) {
     this._option = {
       ...opt,
       port: opt.port ?? 6060,
@@ -42,6 +42,33 @@ export class DevServer {
     socket.on('close', () => {
       remove(this._sockets, socket);
     });
+  }
+
+  private sendFilesDiff(files: AssetData[]) {
+    const data: HMRData = {
+      kind: HMRKind.Update,
+      updates: [],
+    };
+
+    for (const file of files) {
+      const ext = path.extname(file.path);
+
+      if (ext === '.js') {
+        data.updates.push({
+          kind: HMRUpdateKind.JS,
+          path: file.path,
+        });
+      } else if (ext === '.css') {
+        data.updates.push({
+          kind: HMRUpdateKind.CSS,
+          path: file.path,
+        });
+      } else if (ext === '.html') {
+        // TODO: 怎么求 html 文件的 diff
+      }
+    }
+
+    delay().then(() => this.broadcast(data));
   }
 
   /** 开启服务 */
@@ -75,9 +102,20 @@ export class DevServer {
     });
   }
 
+  /** 写入文件 */
+  writeFiles(files: AssetData[]) {
+    if (this._option.hmr && this.isStart) {
+      this.sendFilesDiff(files);
+    }
+
+    for (const file of files) {
+      this._vfs.set(file.path, Buffer.from(file.content));
+    }
+  }
+
   /** 向前端广播数据 */
   broadcast(data: HMRData) {
-    if (!this._option.hmr) {
+    if (!this._option.hmr || !this.isStart) {
       return;
     }
 

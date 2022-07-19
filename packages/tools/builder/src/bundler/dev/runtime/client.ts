@@ -1,6 +1,6 @@
-import { HMRKind, HMRUpdateKind, HMRData } from '../types';
-import { getSocketUrl, reloadPage, reloadCSS, hmrLog, wbsLog, reloadElement } from './utils';
+import { HMRKind, HMRData } from '../types';
 import { showError, closeError } from './error';
+import { getSocketUrl, hmrLog, wbsLog, updatePage } from './utils';
 
 if ('WebSocket' in window) {
   const socketUrl = getSocketUrl();
@@ -10,27 +10,12 @@ if ('WebSocket' in window) {
     const msg: HMRData = JSON.parse(event.data);
 
     switch (msg.kind) {
-      case HMRKind.Reload:
-        hmrLog(`Reload Page`);
-        reloadPage();
-        break;
-
       case HMRKind.Update:
         closeError();
-
-        for (const data of msg.updates) {
-          hmrLog(`Update '${data.path}'`);
-
-          if (data.kind === HMRUpdateKind.CSS) {
-            reloadCSS();
-          } else {
-            reloadElement(data.selector, data.content);
-          }
-        }
+        updatePage(msg.updates);
         break;
 
       case HMRKind.Error:
-        closeError();
         showError(msg.errors);
         break;
 
