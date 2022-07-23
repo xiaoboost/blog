@@ -7,7 +7,7 @@ declare interface AssetImportData {
 /** 静态资源数据 */
 declare interface AssetData {
   path: string;
-  content: Buffer | string;
+  content: Buffer;
 }
 
 /** 创建静态资源 */

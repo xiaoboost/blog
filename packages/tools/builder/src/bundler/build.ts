@@ -104,6 +104,7 @@ export async function runBuild(code: string) {
     globalParams: {
       [FileCacheVarName]: fileCache,
       process,
+      Buffer,
       setGlobalVar,
       getGlobalVar,
     },

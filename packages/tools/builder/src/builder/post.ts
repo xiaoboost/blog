@@ -50,7 +50,7 @@ export async function getPostAssets(): Promise<AssetData[]> {
   for (const post of posts) {
     assets.push({
       path: normalize(path.join('/', post.pathname, 'index.html')),
-      content: getPostHtml(post),
+      content: Buffer.from(getPostHtml(post)),
     });
 
     assets.push(...(await post.getPostAssetNames()));
