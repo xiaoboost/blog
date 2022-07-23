@@ -11,7 +11,7 @@ export function getSocketUrl() {
 }
 
 export function reloadPage() {
-  debounce(() => window.location.reload());
+  debounce(() => window.location.reload())();
 }
 
 function updateLinkElement(link: Element) {
@@ -41,7 +41,7 @@ export function reloadCSS() {
         updateLinkElement(link);
       }
     }
-  });
+  })();
 }
 
 export function reloadElement(selector: string, content: string) {
@@ -53,7 +53,7 @@ export function reloadElement(selector: string, content: string) {
     }
 
     element.innerHTML = content;
-  });
+  })();
 }
 
 function hasCSS(src: string) {
@@ -70,35 +70,58 @@ function hasCSS(src: string) {
   });
 }
 
+function hasJs(src: string) {
+  const links = Array.from(document.querySelectorAll('script[src]'));
+
+  return links.some((dom) => {
+    const link = dom.getAttribute('src');
+
+    if (link) {
+      return link.indexOf(src) === 0;
+    }
+
+    return false;
+  });
+}
+
 function isHTMLFile(filePath: string) {
   return filePath.indexOf(location.pathname) === 0;
 }
 
 export function updatePage(updates: HMRUpdate[]) {
   for (const data of updates) {
-    hmrLog(`Update '${data.path}'`);
-
     switch (data.kind) {
-      case HMRUpdateKind.HTML:
+      case HMRUpdateKind.HTML: {
         if (isHTMLFile(data.path)) {
+          hmrLog(`Update '${data.path}'`);
           reloadElement(data.selector, data.content);
         }
-        break;
 
-      case HMRUpdateKind.CSS:
+        break;
+      }
+
+      case HMRUpdateKind.CSS: {
         if (hasCSS(data.path)) {
+          hmrLog(`Update '${data.path}'`);
           reloadCSS();
         }
-        break;
 
-      case HMRUpdateKind.JS:
-        hmrLog(`Reload Page`);
-        reloadPage();
         break;
+      }
 
-      default:
+      case HMRUpdateKind.JS: {
+        if (hasJs(data.path)) {
+          hmrLog(`Update '${data.path}', Reload Page`);
+          reloadPage();
+        }
+
+        break;
+      }
+
+      default: {
         hmrLog(`Unknown update kind: ${(data as any).kind}`);
         break;
+      }
     }
   }
 }

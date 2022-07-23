@@ -5,7 +5,7 @@ export function getExtraAssets(): Promise<AssetData[]> {
   return Promise.resolve([
     {
       path: '/CNAME',
-      content: site.cname,
+      content: Buffer.from(site.cname),
     },
   ]);
 }

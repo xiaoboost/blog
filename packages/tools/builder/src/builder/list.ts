@@ -32,17 +32,19 @@ export function getListAssets(): Promise<AssetData[]> {
 
     return {
       path: normalize(path.join(publicPath, pathname!)),
-      content: createIndex({
-        posts: page,
-        siteTitle: site.title,
-        pageTitle,
-        pathname,
-        publicPath,
-        hmr: process.env.HMR,
-        next: getPathname(index + 1),
-        pre: getPathname(index - 1),
-        assets: getAssetNames(),
-      }),
+      content: Buffer.from(
+        createIndex({
+          posts: page,
+          siteTitle: site.title,
+          pageTitle,
+          pathname,
+          publicPath,
+          hmr: process.env.HMR,
+          next: getPathname(index + 1),
+          pre: getPathname(index - 1),
+          assets: getAssetNames(),
+        }),
+      ),
     };
   });
 
