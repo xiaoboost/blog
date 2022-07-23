@@ -7,6 +7,7 @@ import { WebSocket } from 'ws';
 import { remove, delay } from '@xiao-ai/utils';
 import { staticServe, transformServe } from './middleware';
 import { HMRData, HMRKind, HMRUpdateKind, ServerOption } from './types';
+import { isFileEqual } from './utils';
 import { log } from '../../utils';
 
 /** 调试服务器 */
@@ -44,13 +45,17 @@ export class DevServer {
     });
   }
 
-  private sendFilesDiff(files: AssetData[]) {
+  private getFilesDiff(files: AssetData[]) {
     const data: HMRData = {
       kind: HMRKind.Update,
       updates: [],
     };
 
     for (const file of files) {
+      if (isFileEqual(file.content, this._vfs.get(file.path))) {
+        continue;
+      }
+
       const ext = path.extname(file.path);
 
       if (ext === '.js') {
@@ -68,7 +73,7 @@ export class DevServer {
       }
     }
 
-    delay().then(() => this.broadcast(data));
+    return data;
   }
 
   /** 开启服务 */
@@ -104,13 +109,21 @@ export class DevServer {
 
   /** 写入文件 */
   writeFiles(files: AssetData[]) {
+    let diff: HMRData | undefined;
+
     if (this._option.hmr && this.isStart) {
-      this.sendFilesDiff(files);
+      diff = this.getFilesDiff(files);
     }
 
     for (const file of files) {
       this._vfs.set(file.path, Buffer.from(file.content));
     }
+
+    delay().then(() => {
+      if (diff && 'updates' in diff && diff.updates.length > 0) {
+        this.broadcast(diff);
+      }
+    });
   }
 
   /** 向前端广播数据 */
