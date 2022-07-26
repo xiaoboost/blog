@@ -1,3 +1,5 @@
+import './module';
+
 import { HMRKind, HMRData } from '../types';
 import { showError, closeError } from './error';
 import { getSocketUrl, hmrLog, wbsLog, updatePage } from './utils';
