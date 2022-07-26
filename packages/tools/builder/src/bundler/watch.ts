@@ -5,7 +5,7 @@ import chokidar from 'chokidar';
 import { WatchCommandOptions, devPort, log } from '../utils';
 import { bundle, runBuild } from './build';
 import { printEsbuildError } from './utils';
-import { DevServer, HMRData } from './dev';
+import { DevServer } from './dev';
 
 /** 文件监听器 */
 const watcher = chokidar.watch([]);
