@@ -1,5 +1,6 @@
 import { levelLimit } from './constant';
 import { headerBodyMargin } from '@blog/shared/styles/constant';
+import { getCurrentScriptSrc } from '@blog/shared/web';
 import { supportsPassive, addClassName, removeClassName } from '@xiao-ai/utils/web';
 
 import tocStyles from './index.jss';
@@ -16,10 +17,17 @@ interface TitlePosition {
   offsetTop: number;
 }
 
-const menu = document.body.querySelector<HTMLElement>(`.${tocStyles.classes.toContent}`);
-const mainBody = menu?.parentElement;
+function active() {
+  let menu = document.body.querySelector<HTMLElement>(`.${tocStyles.classes.toContent}`);
+  let mainBody = menu?.parentElement;
 
-if (menu && mainBody) {
+  if (!menu || !mainBody) {
+    return () => {
+      menu = null;
+      mainBody = null;
+    };
+  }
+
   const menuItems = Array.from(
     menu.querySelectorAll<HTMLLIElement>(`.${tocStyles.classes.menuItem}`),
   );
@@ -35,6 +43,10 @@ if (menu && mainBody) {
   let status = Status.Init;
 
   const scrollEvent = () => {
+    if (!menu) {
+      return;
+    }
+
     const top = window.scrollY;
 
     if (top > bodyTop && (status === Status.Static || status === Status.Init)) {
@@ -89,4 +101,19 @@ if (menu && mainBody) {
 
   window.addEventListener('scroll', scrollEvent, options);
   window.addEventListener('resize', recordTitlePosition, options);
+
+  return () => {
+    menu = null;
+    mainBody = null;
+
+    window.removeEventListener('scroll', scrollEvent, options);
+    window.removeEventListener('resize', recordTitlePosition, options);
+  };
+}
+
+if (process.env.NODE_ENV === 'development' && window.Module) {
+  window.Module.install({
+    currentScript: getCurrentScriptSrc(),
+    active,
+  });
 }
