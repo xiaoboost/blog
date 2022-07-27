@@ -3,6 +3,7 @@ import styles from './index.jss';
 import { isString } from '@xiao-ai/utils';
 import { DisplaySymbol } from './typescript';
 import { lsInfoAttrName } from './constant';
+import { getCurrentScriptSrc } from '@blog/shared/web';
 
 class InfoElement {
   private el: Element;
@@ -66,29 +67,41 @@ class InfoElement {
   }
 }
 
-const elHasInfo = document.querySelectorAll<HTMLElement>(`pre span[${lsInfoAttrName}]`);
-const infoEle = new InfoElement();
+function active() {
+  const infoEle = new InfoElement();
+  const elHasInfo = document.querySelectorAll<HTMLElement>(`pre span[${lsInfoAttrName}]`);
+  const hiddenEvent = () => infoEle.hidden();
 
-for (const el of Array.from(elHasInfo)) {
-  const infoStr = el.getAttribute(lsInfoAttrName) ?? '';
-  const infoData = JSON.parse(decodeURI(infoStr));
+  for (const el of Array.from(elHasInfo)) {
+    const infoStr = el.getAttribute(lsInfoAttrName) ?? '';
+    const infoData = JSON.parse(decodeURI(infoStr));
 
-  el.setAttribute(lsInfoAttrName, '');
+    // 生产模式需要移除语言服务信息
+    if (process.env.NODE_ENV === 'production') {
+      el.setAttribute(lsInfoAttrName, '');
+    }
 
-  if (!infoData) {
-    break;
+    if (!infoData) {
+      break;
+    }
+
+    el.addEventListener('mouseenter', () => {
+      infoEle.show(el.getBoundingClientRect(), infoData);
+    });
+
+    el.addEventListener('mouseleave', hiddenEvent);
+    document.addEventListener('scroll', hiddenEvent);
   }
 
-  el.addEventListener('mouseenter', () => {
-    infoEle.show(el.getBoundingClientRect(), infoData);
-  });
-
-  el.addEventListener('mouseleave', () => {
+  return () => {
     infoEle.hidden();
-  });
+    document.removeEventListener('scroll', hiddenEvent);
+  };
+}
 
-  // 页面滚动时，代码提示框要隐藏
-  document.addEventListener('scroll', () => {
-    infoEle.hidden();
+if (process.env.NODE_ENV === 'development' && window.Module) {
+  window.Module.install({
+    currentScript: getCurrentScriptSrc(),
+    active,
   });
 }
