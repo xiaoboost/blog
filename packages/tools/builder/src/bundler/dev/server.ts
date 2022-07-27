@@ -7,7 +7,7 @@ import { WebSocket } from 'ws';
 import { remove, delay } from '@xiao-ai/utils';
 import { staticServe, transformServe } from './middleware';
 import { HMRData, HMRKind, HMRUpdateKind, ServerOption } from './types';
-import { isFileEqual } from './utils';
+import { isFileEqual, getHtmlDiff } from './utils';
 import { log } from '../../utils';
 
 /** 调试服务器 */
@@ -46,13 +46,14 @@ export class DevServer {
   }
 
   private getFilesDiff(files: AssetData[]) {
+    const { _vfs: fs } = this;
     const data: HMRData = {
       kind: HMRKind.Update,
       updates: [],
     };
 
     for (const file of files) {
-      if (isFileEqual(file.content, this._vfs.get(file.path))) {
+      if (isFileEqual(fs.get(file.path), file.content)) {
         continue;
       }
 
@@ -62,6 +63,7 @@ export class DevServer {
         data.updates.push({
           kind: HMRUpdateKind.JS,
           path: file.path,
+          code: file.content.toString(),
         });
       } else if (ext === '.css') {
         data.updates.push({
@@ -69,7 +71,7 @@ export class DevServer {
           path: file.path,
         });
       } else if (ext === '.html') {
-        // TODO: 怎么求 html 文件的 diff
+        data.updates.push(...getHtmlDiff(fs.get(file.path)!.toString(), file.content.toString()));
       }
     }
 
