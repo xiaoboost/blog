@@ -34,4 +34,6 @@ class Module implements ModuleLoader {
   }
 }
 
-window.Module = new Module();
+export const module = new Module();
+
+window.Module = module;
