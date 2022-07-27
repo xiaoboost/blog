@@ -14,8 +14,13 @@ export enum HMRUpdateKind {
 /** HMR 更新数据 */
 export type HMRUpdate =
   | {
-      kind: HMRUpdateKind.CSS | HMRUpdateKind.JS;
+      kind: HMRUpdateKind.CSS;
       path: string;
+    }
+  | {
+      kind: HMRUpdateKind.JS;
+      path: string;
+      code: string;
     }
   | {
       kind: HMRUpdateKind.HTML;

@@ -1,6 +1,7 @@
 import { createLogger } from './logger';
 import { debounce } from '@xiao-ai/utils';
 import { HMRUpdate, HMRUpdateKind } from '../types';
+import { module } from './module';
 
 export const hmrLog = createLogger('HMR');
 export const wbsLog = createLogger('Socket');
@@ -24,13 +25,18 @@ function updateLinkElement(link: Element) {
   link.parentNode?.insertBefore(newLink, link.nextSibling);
 }
 
-export function reloadCSS() {
+export function reloadCSS(src: string) {
   debounce(() => {
     const links = document.querySelectorAll('link[rel="stylesheet"]');
 
     for (let i = 0; i < links.length; i++) {
       const link = links[i];
       const href = link.getAttribute('href')!;
+
+      if (!href || href.includes(src)) {
+        continue;
+      }
+
       const servedFromHMRServer = getSocketUrl();
       const absolute =
         /^https?:\/\//i.test(href) &&
@@ -92,10 +98,10 @@ export function updatePage(updates: HMRUpdate[]) {
   for (const data of updates) {
     switch (data.kind) {
       case HMRUpdateKind.HTML: {
-        if (isHTMLFile(data.path)) {
-          hmrLog(`Update '${data.path}'`);
-          reloadElement(data.selector, data.content);
-        }
+        // if (isHTMLFile(data.path)) {
+        //   hmrLog(`Update '${data.path}'`);
+        //   reloadElement(data.selector, data.content);
+        // }
 
         break;
       }
@@ -103,7 +109,7 @@ export function updatePage(updates: HMRUpdate[]) {
       case HMRUpdateKind.CSS: {
         if (hasCSS(data.path)) {
           hmrLog(`Update '${data.path}'`);
-          reloadCSS();
+          reloadCSS(data.path);
         }
 
         break;
@@ -111,8 +117,9 @@ export function updatePage(updates: HMRUpdate[]) {
 
       case HMRUpdateKind.JS: {
         if (hasJs(data.path)) {
-          hmrLog(`Update '${data.path}', Reload Page`);
-          reloadPage();
+          hmrLog(`Update '${data.path}'`);
+          module.uninstall(data.path);
+          (0, eval)(data.code);
         }
 
         break;
