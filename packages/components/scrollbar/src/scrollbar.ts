@@ -25,6 +25,9 @@ export class ScrollBar {
   /** 鼠标上次偏移量 */
   private mouseLastOffset = -1;
 
+  /** 卸载组件 */
+  disable!: () => void;
+
   constructor(el: HTMLElement) {
     this.scrollbar = el;
     this.width = getDataFromEl<number>(el, 'width') ?? 8;
@@ -87,7 +90,7 @@ export class ScrollBar {
     }
 
     this.setSliderPositionFromContainer();
-    this.tigerClass(this.scrollbar, true);
+    this.triggerClass(this.scrollbar, true);
 
     const options: AddEventListenerOptions | boolean = !supportsPassive
       ? false
@@ -96,8 +99,11 @@ export class ScrollBar {
           capture: false,
         };
 
-    container.addEventListener('mouseenter', () => this.tigerClass(scrollbar, true), options);
-    container.addEventListener('mouseleave', () => this.tigerClass(scrollbar, false), options);
+    const triggerTrue = () => this.triggerClass(scrollbar, true);
+    const triggerFalse = () => this.triggerClass(scrollbar, true);
+
+    container.addEventListener('mouseenter', triggerTrue, options);
+    container.addEventListener('mouseleave', triggerFalse, options);
     container.addEventListener('scroll', this.setSliderPositionFromContainer, options);
     slider.addEventListener('mousedown', this.startMouseMove, options);
     window.addEventListener('mouseup', this.stopMouseMove, options);
@@ -110,6 +116,24 @@ export class ScrollBar {
     } else {
       // TODO: 内部元素应该用 ResizeObserver 监听
     }
+
+    this.disable = () => {
+      this.stopMouseMove();
+
+      container.removeEventListener('mouseenter', triggerTrue, options);
+      container.removeEventListener('mouseleave', triggerFalse, options);
+      container.removeEventListener('scroll', this.setSliderPositionFromContainer, options);
+      slider.removeEventListener('mousedown', this.startMouseMove, options);
+      window.removeEventListener('mouseup', this.stopMouseMove, options);
+      window.removeEventListener('mousemove', this.setSliderPositionFromMouse, options);
+
+      if (isScrollWindow) {
+        window.removeEventListener('resize', this.setSliderPositionFromContainer, options);
+        window.removeEventListener('scroll', this.setSliderPositionFromContainer, options);
+      } else {
+        // TODO: 内部元素应该用 ResizeObserver 监听
+      }
+    };
   }
 
   setSliderPositionFromContainer = () => {
@@ -198,7 +222,7 @@ export class ScrollBar {
     }
   };
 
-  tigerClass = (el: HTMLElement, visible: boolean) => {
+  triggerClass = (el: HTMLElement, visible: boolean) => {
     removeClassName(el, visible ? cla.invisible : cla.visible);
     addClassName(el, visible ? cla.visible : cla.invisible);
   };
