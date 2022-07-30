@@ -53,7 +53,9 @@ export class DevServer {
     };
 
     for (const file of files) {
-      if (isFileEqual(fs.get(file.path), file.content)) {
+      const oldFile = fs.get(file.path);
+
+      if (!oldFile || isFileEqual(oldFile, file.content)) {
         continue;
       }
 
@@ -71,7 +73,7 @@ export class DevServer {
           path: file.path,
         });
       } else if (ext === '.html') {
-        data.updates.push(...getHtmlDiff(fs.get(file.path)!.toString(), file.content.toString()));
+        data.updates.push(...getHtmlDiff(oldFile.toString(), file.content.toString(), file.path));
       }
     }
 

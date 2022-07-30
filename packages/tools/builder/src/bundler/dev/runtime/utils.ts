@@ -1,6 +1,5 @@
 import { createLogger } from './logger';
 import { debounce } from '@xiao-ai/utils';
-import { HMRUpdate, HMRUpdateKind } from '../types';
 import { module } from './module';
 
 export const hmrLog = createLogger('HMR');
@@ -9,10 +8,6 @@ export const wbsLog = createLogger('Socket');
 export function getSocketUrl() {
   const protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
   return `${protocol}${location.host}/`;
-}
-
-export function reloadPage() {
-  debounce(() => window.location.reload())();
 }
 
 function updateLinkElement(link: Element) {
@@ -50,7 +45,7 @@ export function reloadCSS(src: string) {
   })();
 }
 
-export function reloadElement(selector: string, content: string) {
+export function reloadHTML(selector: string, content: string) {
   debounce(() => {
     const element = document.querySelector(selector);
 
@@ -59,10 +54,17 @@ export function reloadElement(selector: string, content: string) {
     }
 
     element.innerHTML = content;
+    module.reload();
   })();
 }
 
-function hasCSS(src: string) {
+export function reloadJS(file: string, code: string) {
+  module.uninstall(file);
+  // TODO: 有时候会报 JSON 错误，需要再查
+  (0, eval)(code);
+}
+
+export function hasCSS(src: string) {
   const links = Array.from(document.querySelectorAll('link[rel="stylesheet"]'));
 
   return links.some((dom) => {
@@ -76,7 +78,7 @@ function hasCSS(src: string) {
   });
 }
 
-function hasJs(src: string) {
+export function hasJs(src: string) {
   const links = Array.from(document.querySelectorAll('script[src]'));
 
   return links.some((dom) => {
@@ -90,45 +92,6 @@ function hasJs(src: string) {
   });
 }
 
-function isHTMLFile(filePath: string) {
+export function isHTMLFile(filePath: string) {
   return filePath.indexOf(location.pathname) === 0;
-}
-
-export function updatePage(updates: HMRUpdate[]) {
-  for (const data of updates) {
-    switch (data.kind) {
-      case HMRUpdateKind.HTML: {
-        // if (isHTMLFile(data.path)) {
-        //   hmrLog(`Update '${data.path}'`);
-        //   reloadElement(data.selector, data.content);
-        // }
-
-        break;
-      }
-
-      case HMRUpdateKind.CSS: {
-        if (hasCSS(data.path)) {
-          hmrLog(`Update '${data.path}'`);
-          reloadCSS(data.path);
-        }
-
-        break;
-      }
-
-      case HMRUpdateKind.JS: {
-        if (hasJs(data.path)) {
-          hmrLog(`Update '${data.path}'`);
-          module.uninstall(data.path);
-          (0, eval)(data.code);
-        }
-
-        break;
-      }
-
-      default: {
-        hmrLog(`Unknown update kind: ${(data as any).kind}`);
-        break;
-      }
-    }
-  }
 }

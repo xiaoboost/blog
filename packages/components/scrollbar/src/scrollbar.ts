@@ -25,9 +25,6 @@ export class ScrollBar {
   /** 鼠标上次偏移量 */
   private mouseLastOffset = -1;
 
-  /** 卸载组件 */
-  disable!: () => void;
-
   constructor(el: HTMLElement) {
     this.scrollbar = el;
     this.width = getDataFromEl<number>(el, 'width') ?? 8;
@@ -135,6 +132,9 @@ export class ScrollBar {
       }
     };
   }
+
+  /** 卸载组件 */
+  disable = (): void => void 0;
 
   setSliderPositionFromContainer = () => {
     if (this.mouseMove) {
