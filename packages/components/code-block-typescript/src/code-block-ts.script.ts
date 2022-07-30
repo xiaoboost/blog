@@ -96,6 +96,11 @@ function active() {
   return () => {
     infoEle.hidden();
     document.removeEventListener('scroll', hiddenEvent);
+
+    /**
+     * 至于为什么不移除元素列表的事件，详细见
+     * https://stackoverflow.com/questions/6033821/do-i-need-to-remove-event-listeners-before-removing-elements
+     */
   };
 }
 
