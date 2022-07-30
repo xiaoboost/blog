@@ -30,7 +30,10 @@ class Module implements ModuleLoader {
 
   /** 重载模块 */
   reload() {
-    // ..
+    this._modules.forEach((mod) => {
+      mod.unActive();
+      mod.unActive = mod.active();
+    });
   }
 }
 
