@@ -179,7 +179,7 @@ function addComponentExport(data: PostData, fixer: Fixer) {
   exportCode += `export function ${GetComponentAssetMethodName}() {\n  return [].concat(\n`;
 
   for (let i = 0; i < imports.length; i++) {
-    exportCode += `    a${i}.getAssetNames(),\n`;
+    exportCode += `    a${i}?.getAssetNames?.() ?? [],\n`;
   }
 
   exportCode += '  );\n}\n\n';
@@ -191,7 +191,7 @@ function addTemplateExport(data: PostData, fixer: Fixer) {
   fixer.insert(
     `import * as template from '@blog/template-${data.template}'
 export function ${GetTemplateAssetMethodName}() {
-  return template.getAssetNames();
+  return template?.getAssetNames?.() ?? [];
 }\n\n`,
   );
 }
