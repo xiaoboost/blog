@@ -10,38 +10,21 @@ export function getSocketUrl() {
   return `${protocol}${location.host}/`;
 }
 
-function updateLinkElement(link: Element) {
-  const newLink = link.cloneNode() as Element;
-  const newHref = `${(link.getAttribute('href') ?? '').split('?')[0]}?${Date.now()}`;
-
-  newLink.setAttribute('href', newHref);
-  newLink.addEventListener('load', () => link.parentNode?.removeChild(link));
-
-  link.parentNode?.insertBefore(newLink, link.nextSibling);
-}
-
 export function reloadCSS(src: string) {
   debounce(() => {
-    const links = document.querySelectorAll('link[rel="stylesheet"]');
+    const link = document.querySelector(`link[href|="${src}"]`);
 
-    for (let i = 0; i < links.length; i++) {
-      const link = links[i];
-      const href = link.getAttribute('href')!;
-
-      if (!href || href.includes(src)) {
-        continue;
-      }
-
-      const servedFromHMRServer = getSocketUrl();
-      const absolute =
-        /^https?:\/\//i.test(href) &&
-        href.indexOf(window.location.origin) !== 0 &&
-        !servedFromHMRServer;
-
-      if (!absolute) {
-        updateLinkElement(link);
-      }
+    if (!link) {
+      return;
     }
+
+    const newLink = link.cloneNode() as Element;
+    const newHref = `${(link.getAttribute('href') ?? '').split('?')[0]}?${Date.now()}`;
+
+    newLink.setAttribute('href', newHref);
+    newLink.addEventListener('load', () => link.parentNode?.removeChild(link));
+
+    link.parentNode?.insertBefore(newLink, link.nextSibling);
   })();
 }
 
