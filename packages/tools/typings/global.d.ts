@@ -1,8 +1,10 @@
 declare function setGlobalVar(key: string, val: any): void;
 declare function getGlobalVar<T = any>(key: string): T | undefined;
 
+/** 卸载函数 */
 type unActive = () => void;
 
+/** 脚本模块 */
 interface ScriptModule {
   /** 当前模块地址 */
   currentScript: string;
@@ -15,6 +17,7 @@ interface ScriptModule {
   shouldReload?(): boolean;
 }
 
+/** 模块装载器 */
 interface ModuleLoader {
   /** 安装模块 */
   install(module: ScriptModule): void;
