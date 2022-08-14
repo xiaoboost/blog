@@ -10,8 +10,9 @@
     }
   },
   "scripts": {
-    "build": "tsc -p .",
-    "watch": "npm run build -- -w",
+    "clear": "rimraf ./dist",
+    "build": "npm run clear && tsc -p .",
+    "watch": "npm run clear && npm run build -- -w",
     "lint": "eslint --quiet --no-error-on-unmatched-pattern --config ../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}",
     "lint:fix": "eslint --fix --quiet --no-error-on-unmatched-pattern --config ../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}"
   },
@@ -26,6 +27,7 @@
     "@types/blog": "workspace:*",
     "@types/color": "3.0.3",
     "@types/node": "18.6.1",
+    "rimraf": "3.0.2",
     "tslib": "2.4.0",
     "typescript": "4.7.4"
   },

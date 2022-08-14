@@ -13,6 +13,7 @@
     "watch": "blog watch --mode=development",
     "build:builder": "pnpm run --filter @blog/builder... build",
     "watch:builder": "pnpm run --filter @blog/builder watch",
+    "test": "pnpm run -r --parallel test",
     "lint": "pnpm run -r --parallel lint",
     "lint:fix": "pnpm run -r --parallel lint:fix"
   },
