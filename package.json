@@ -11,7 +11,7 @@
   "scripts": {
     "build": "blog build --outDir=dist --mode=production",
     "watch": "blog watch --mode=development",
-    "build:builder": "pnpm run --filter @blog/builder... build",
+    "build:prepare": "pnpm run --filter @blog/builder... --filter @blog/tests... build",
     "watch:builder": "pnpm run --filter @blog/builder watch",
     "test": "pnpm run -r --parallel test",
     "lint": "pnpm run -r --parallel lint",
