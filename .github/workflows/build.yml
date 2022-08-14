@@ -40,6 +40,9 @@ jobs:
       - name: Check Code Style
         run: pnpm run lint
 
+      - name: Test Code
+        run: pnpm run test
+
       - name: Build Prepare
         run: pnpm run build:builder
 
