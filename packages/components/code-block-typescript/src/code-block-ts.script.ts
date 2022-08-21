@@ -109,4 +109,6 @@ if (process.env.NODE_ENV === 'development' && window.Module) {
     currentScript: getCurrentScriptSrc(),
     active,
   });
+} else {
+  active();
 }
