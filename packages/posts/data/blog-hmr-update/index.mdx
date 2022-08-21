@@ -154,7 +154,7 @@ export function transformServe() {
 
 前端的 WS 服务就只有两个操作，初始化和等待后端数据。初始化很好理解，就是创建 WS 服务并绑定更新数据的回调。这个前端有现成的`WebSocket`类，`new`一个就成，这里不再赘述，重点还是在更新数据的具体操作上。
 
-```ts
+```ts?platform=browser
 if ('WebSocket' in window) {
   console.log('Dev Server is running...');
 
@@ -186,8 +186,6 @@ if ('WebSocket' in window) {
         }
       }
     });
-
-  const 
 } else {
   console.log('WebSocket is not supported.');
 }

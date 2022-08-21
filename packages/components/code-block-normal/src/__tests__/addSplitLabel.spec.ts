@@ -4,7 +4,7 @@ import { addSplitLabel } from '../utils';
 describe('addSplitLabel', () => {
   it('one line have label by space', () => {
     const code = `    console.log('hello');`;
-    expect(addSplitLabel(code, 2, '|')).to.eq(`|  |  console.log('hello');`);
+    expect(addSplitLabel(code, 2, '|').join('\n')).to.eq(`|  |  console.log('hello');`);
   });
   it('code block', () => {
     const code = `
@@ -13,7 +13,7 @@ if (true) {
 }
     `.trim();
 
-    expect(addSplitLabel(code, 2, '|')).to.eq(
+    expect(addSplitLabel(code, 2, '|').join('\n')).to.eq(
       `
 if (true) {
 |  console.log('Hello');
@@ -29,7 +29,7 @@ if (true) {
 }
     `.trim();
 
-    expect(addSplitLabel(code, 2, '|')).to.eq(
+    expect(addSplitLabel(code, 2, '|').join('\n')).to.eq(
       `
 if (true) {
 |  console.log('Hello');
@@ -51,7 +51,7 @@ if (true) {
 }
     `.trim();
 
-    expect(addSplitLabel(code, 2, '|')).to.eq(
+    expect(addSplitLabel(code, 2, '|').join('\n')).to.eq(
       `
 if (true) {
 |  console.log('Hello');
@@ -79,7 +79,7 @@ new WebSocket('test', 'test')
 });
     `.trim();
 
-    expect(addSplitLabel(code, 2, '|')).to.eq(
+    expect(addSplitLabel(code, 2, '|').join('\n')).to.eq(
       `
 new WebSocket('test', 'test')
 |  .addEventListener('message', (event: MessageEvent<string>) => {
@@ -101,7 +101,7 @@ new WebSocket('test', 'test')
  */
       `.trim();
 
-    expect(addSplitLabel(code, 2, '|')).to.eq(
+    expect(addSplitLabel(code, 2, '|').join('\n')).to.eq(
       `
 /**
 | * 注释块
@@ -119,7 +119,7 @@ function abc() {
 }
         `.trim();
 
-    expect(addSplitLabel(code, 2, '|')).to.eq(
+    expect(addSplitLabel(code, 2, '|').join('\n')).to.eq(
       `
 function abc() {
 |  /**

@@ -18,6 +18,7 @@
     "@blog/mdx-code-block-normal": "workspace:*",
     "@blog/shared": "workspace:*",
     "@xiao-ai/utils": "1.6.0",
+    "html-escaper": "3.0.3",
     "look-it-up": "2.1.0",
     "react": "18.2.0",
     "typescript": "4.7.4",
@@ -27,6 +28,7 @@
   "devDependencies": {
     "@blog/tsconfig": "workspace:*",
     "@types/blog": "workspace:*",
+    "@types/html-escaper": "3.0.0",
     "@types/node": "18.6.1",
     "@types/react": "18.0.15",
     "eslint": "8.20.0",
