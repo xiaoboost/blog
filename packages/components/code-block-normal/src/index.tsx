@@ -5,14 +5,7 @@ import assets = require('./code-block.script');
 
 import { getAssetContents, getAssetPaths } from '@blog/shared/node';
 import { stringifyClass } from '@xiao-ai/utils';
-
-import {
-  getHighlightCode,
-  getMinSpaceWidth,
-  getLineSpaceWidth,
-  addSplitLabel,
-  getLangLabel,
-} from './utils';
+import { getHighlightCode, getMinSpaceWidth, addSplitLabel, getLangLabel } from './utils';
 
 export * from './utils';
 export { styles };
@@ -64,10 +57,7 @@ export interface CodeBlockProps {
 
 function renderCode(code: string, language: string, tabWidth: number) {
   const rendered = highlight.highlight(code, { language });
-  const lines = rendered.value.trim().split('\n');
-  return lines.map((line) => {
-    return getLineSpaceWidth(line) > 0 ? addSplitLabel(line, tabWidth) : line;
-  });
+  return addSplitLabel(rendered.value.trim(), tabWidth).split('\n');
 }
 
 export function CodeBlock({ lang, children }: React.PropsWithChildren<CodeBlockProps>) {
