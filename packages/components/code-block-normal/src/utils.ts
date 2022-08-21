@@ -137,10 +137,10 @@ function addSplitLabelInCode(code: string, tabWidth: number, label = splitTag) {
 }
 
 /** 代码添加分割线 */
-export function addSplitLabel(code: string, tabWidth: number, label = splitTag) {
+export function addSplitLabel(code: string | string[], tabWidth: number, label = splitTag) {
   let currentTab = 0;
 
-  const lines = code.split('\n');
+  const lines = Array.isArray(code) ? code : code.split('\n');
   const labeled = lines.map((line) => {
     const isSpace = line.trim().length === 0;
 
@@ -152,7 +152,7 @@ export function addSplitLabel(code: string, tabWidth: number, label = splitTag) 
     }
   });
 
-  return labeled.join('\n');
+  return labeled;
 }
 
 /** 获取当前代码 tab 宽度 */

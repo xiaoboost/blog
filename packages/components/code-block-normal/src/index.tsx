@@ -57,7 +57,7 @@ export interface CodeBlockProps {
 
 function renderCode(code: string, language: string, tabWidth: number) {
   const rendered = highlight.highlight(code, { language });
-  return addSplitLabel(rendered.value.trim(), tabWidth).split('\n');
+  return addSplitLabel(rendered.value.trim(), tabWidth);
 }
 
 export function CodeBlock({ lang, children }: React.PropsWithChildren<CodeBlockProps>) {
