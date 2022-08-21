@@ -61,10 +61,12 @@ importers:
       '@blog/shared': workspace:*
       '@blog/tsconfig': workspace:*
       '@types/blog': workspace:*
+      '@types/html-escaper': 3.0.0
       '@types/node': 18.6.1
       '@types/react': 18.0.15
       '@xiao-ai/utils': 1.6.0
       eslint: 8.20.0
+      html-escaper: 3.0.3
       look-it-up: 2.1.0
       react: 18.2.0
       tslib: 2.4.0
@@ -75,6 +77,7 @@ importers:
       '@blog/mdx-code-block-normal': link:../code-block-normal
       '@blog/shared': link:../../shared
       '@xiao-ai/utils': 1.6.0
+      html-escaper: 3.0.3
       look-it-up: 2.1.0
       react: 18.2.0
       typescript: 4.7.4
@@ -83,6 +86,7 @@ importers:
     devDependencies:
       '@blog/tsconfig': link:../../tools/tsconfig
       '@types/blog': link:../../tools/typings
+      '@types/html-escaper': 3.0.0
       '@types/node': 18.6.1
       '@types/react': 18.0.15
       eslint: 8.20.0
@@ -677,6 +681,10 @@ packages:
     dependencies:
       '@types/unist': 2.0.6
     dev: false
+
+  /@types/html-escaper/3.0.0:
+    resolution: {integrity: sha512-OcJcvP3Yk8mjYwf/IdXZtTE1tb/u0WF0qa29ER07ZHCYUBZXSN29Z1mBS+/96+kNMGTFUAbSz9X+pHmHpZrTCw==}
+    dev: true
 
   /@types/http-assert/1.5.3:
     resolution: {integrity: sha512-FyAOrDuQmBi8/or3ns4rwPno7/9tJTijVW6aQQjK02+kOQ8zmoNg2XJtAuQhvQcy1ASJq38wirX5//9J1EqoUA==}
@@ -2398,6 +2406,10 @@ packages:
   /highlight.js/11.6.0:
     resolution: {integrity: sha512-ig1eqDzJaB0pqEvlPVIpSSyMaO92bH1N2rJpLMN/nX396wTpDA4Eq0uK+7I/2XG17pFaaKE0kjV/XPeGt7Evjw==}
     engines: {node: '>=12.0.0'}
+    dev: false
+
+  /html-escaper/3.0.3:
+    resolution: {integrity: sha512-RuMffC89BOWQoY0WKGpIhn5gX3iI54O6nRA0yC124NYVtzjmFWBIiFd8M0x+ZdX0P9R4lADg1mgP8C7PxGOWuQ==}
     dev: false
 
   /http-assert/1.5.0:

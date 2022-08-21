@@ -11,6 +11,22 @@ const Brown = Color(0x986801);
 const Violet = Color(0xa626a4);
 const LightViolet = Color(0xda70d6);
 
+function addTsxSelector(selector: string) {
+  const selectorList = selector
+    .trim()
+    .split(',')
+    .map((item) => item.trim())
+    .filter(Boolean);
+
+  const len = selectorList.length;
+
+  for (let i = 0; i < len; i++) {
+    selectorList.push(selectorList[i].replace(/\.([a-zA-Z0-9-]+)/g, '.$1x'));
+  }
+
+  return selectorList.join(',');
+}
+
 export default createStyles({
   codeBlockLs: {
     [`&:hover [${lsInfoAttrName}]`]: {
@@ -22,52 +38,50 @@ export default createStyles({
       transition: 'border-color .3s',
     },
 
-    ['& [class*="lsp-keyword"], & [class*="lsp-storage-type"]']: {
+    '& [class*="lsp-keyword"], & [class*="lsp-storage-type"], & [class*="lsp-storage-modifier"]': {
       color: Violet.toString(),
     },
-    ['& [class*="lsp-keyword-operator"]']: {
+    '& [class*="lsp-keyword-operator"]': {
       color: '#0184BC',
     },
-    ['& [class*="lsp-string-quoted"]']: {
+    '& [class*="lsp-string-quoted"]': {
       color: Green.toString(),
     },
-    ['& [class*="lsp-comment"]']: {
+    '& [class*="lsp-comment"]': {
       color: '#A0A1A7',
       fontStyle: 'italic',
     },
-    ['& [class*="lsp-support-type"]']: {
+    '& [class*="lsp-support-type"]': {
       color: '#0184BC',
     },
-    '& .lsp-constant-numeric-decimal': {
+    [addTsxSelector('& .lsp-constant-numeric-decimal')]: {
       color: Brown.toString(),
     },
 
     // import 语句
-    '& .lsp-meta-import': {
-      [`
-        &.lsp-constant-language-import-export-all,
-        &.lsp-variable-other-readwrite-alias
-      `.trim()]: {
-        color: Red.toString(),
-      },
+    [addTsxSelector(`
+      & .lsp-meta-import.lsp-constant-language-import-export-all,
+      & .lsp-meta-import.lsp-variable-other-readwrite-alias,
+    `)]: {
+      color: Red.toString(),
     },
 
     // interface 语句
-    '& .lsp-meta-interface': {
-      '&.lsp-storage-modifier': {
+    [addTsxSelector('& .lsp-meta-interface')]: {
+      [addTsxSelector('&.lsp-storage-modifier')]: {
         color: Violet.toString(),
       },
-      [`
+      [addTsxSelector(`
         &.lsp-entity-name-type-interface,
         &.lsp-entity-other-inherited-class,
         &.lsp-entity-name-type
-      `.trim()]: {
+      `)]: {
         color: LightBrown.toString(),
       },
-      '&.lsp-entity-name-type-module': {
+      [addTsxSelector('&.lsp-entity-name-type-module')]: {
         color: Red.toString(),
       },
-      '&.lsp-meta-definition-method.lsp-entity-name-function': {
+      [addTsxSelector('&.lsp-meta-definition-method.lsp-entity-name-function')]: {
         color: Blue.toString(),
       },
       [`
@@ -79,23 +93,23 @@ export default createStyles({
     },
 
     // function 语句
-    '& .lsp-meta-function': {
-      '&.lsp-meta-definition-function.lsp-entity-name-function': {
+    [addTsxSelector('& .lsp-meta-function, & .lsp-meta-function-expression')]: {
+      [addTsxSelector('&.lsp-meta-definition-function.lsp-entity-name-function')]: {
         color: Blue.toString(),
       },
-      '&.lsp-entity-name-type-module': {
+      [addTsxSelector('&.lsp-entity-name-type-module')]: {
         color: Red.toString(),
       },
-      '&.lsp-entity-name-type': {
+      [addTsxSelector('&.lsp-entity-name-type')]: {
         color: LightBrown.toString(),
       },
-      '&.lsp-meta-type-function-return': {
+      [addTsxSelector('&.lsp-meta-type-function-return')]: {
         color: Violet.toString(),
       },
     },
 
     // 对象字面量
-    '& .lsp-meta-objectliteral': {
+    [addTsxSelector('& .lsp-meta-objectliteral')]: {
       [`
         &.lsp-meta-object-literal-key,
         &.lsp-variable-other-property,
@@ -105,26 +119,26 @@ export default createStyles({
     },
 
     // 数组字面量
-    '& .lsp-meta-array-literal': {
-      '&.lsp-meta-brace-square': {
+    [addTsxSelector('& .lsp-meta-array-literal')]: {
+      [addTsxSelector('&.lsp-meta-brace-square')]: {
         color: LighterBlue.toString(),
       },
     },
 
     // 变量/常量声明
-    '& .lsp-meta-var-expr': {
-      '&.lsp-meta-type-annotation': {
-        '&.lsp-entity-name-type': {
+    [addTsxSelector('& .lsp-meta-var-expr')]: {
+      [addTsxSelector('&.lsp-meta-type-annotation')]: {
+        [addTsxSelector('&.lsp-entity-name-type')]: {
           color: Brown.toString(),
         },
       },
-      '&.lsp-variable-other-constant': {
+      [addTsxSelector('&.lsp-variable-other-constant')]: {
         color: LightBrown.toString(),
       },
     },
 
     // 模板字符串
-    '& .lsp-string-template': {
+    [addTsxSelector('& .lsp-string-template')]: {
       color: Green.toString(),
 
       [`
@@ -135,8 +149,17 @@ export default createStyles({
     },
 
     // 正则表达式
-    '& .lsp-string-regexp': {
+    [addTsxSelector('& .lsp-string-regexp')]: {
       color: '#0184C4',
+    },
+
+    // tsx 标签
+    [addTsxSelector('& .lsp-entity-name-tag')]: {
+      color: Blue.toString(),
+    },
+    // tsx 标签属性
+    [addTsxSelector('& .lsp-entity-other-attribute-name')]: {
+      color: Brown.toString(),
     },
 
     [`
@@ -145,10 +168,10 @@ export default createStyles({
       color: Brown.toString(),
     },
 
-    '& .lsp-meta-function-call': {
+    [addTsxSelector('& .lsp-meta-function-call')]: {
       color: Blue.toString(),
 
-      '&.lsp-variable-other-object': {
+      [addTsxSelector('&.lsp-variable-other-object')]: {
         color: Black.toString(),
       },
     },
