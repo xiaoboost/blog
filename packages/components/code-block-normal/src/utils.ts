@@ -92,37 +92,67 @@ export function getLineSpaceWidth(str: string) {
 /** 分隔线元素 */
 export const splitTag = `<span class="${styles.classes.codeBlockSplit}"></span>`;
 
-/** 代码添加分割线 */
-export function addSplitLabel(line: string, tabWidth: number) {
-  let code = line;
-  let index = 0;
-  let realIndex = 0;
+/** 空行代码分割线 */
+function addSplitLabelInSpace(tabCount: number, tabWidth: number, label = splitTag) {
+  const space = Array(tabWidth).fill(' ').join('');
+  return Array(tabCount).fill(`${label}${space}`).join('').trim();
+}
 
-  if (line.trim().length === 0) {
-    return splitTag;
+/** 计算此行分割线数量 */
+function getTabCount(code: string, tabWidth: number) {
+  const space = /^ */.exec(code);
+
+  if (space) {
+    return Math.ceil(space[0].length / tabWidth);
+  } else {
+    return 0;
+  }
+}
+
+function addSplitLabelInCode(code: string, tabWidth: number, label = splitTag) {
+  const space = /^ */.exec(code);
+
+  if (!space) {
+    return code;
   }
 
-  while (realIndex < code.length) {
-    if (code[realIndex] !== ' ') {
-      break;
-    }
+  const chars = code.split('');
 
-    if (index % tabWidth !== 0) {
+  let index = 0;
+  let spaceIndex = 0;
+
+  while (chars[index] === ' ') {
+    if (index === 0 || spaceIndex === tabWidth) {
+      chars.splice(index, 0, label);
       index++;
-      realIndex++;
-      continue;
+      spaceIndex = 1;
+    } else {
+      spaceIndex++;
     }
-
-    const before = code.substring(0, realIndex);
-    const after = code.substring(realIndex);
-
-    code = before + splitTag + after;
 
     index++;
-    realIndex = realIndex + splitTag.length + 1;
   }
 
-  return code;
+  return chars.join('');
+}
+
+/** 代码添加分割线 */
+export function addSplitLabel(code: string, tabWidth: number, label = splitTag) {
+  let currentTab = 0;
+
+  const lines = code.split('\n');
+  const labeled = lines.map((line) => {
+    const isSpace = line.trim().length === 0;
+
+    if (isSpace) {
+      return addSplitLabelInSpace(currentTab, tabWidth, label);
+    } else {
+      currentTab = getTabCount(line, tabWidth);
+      return addSplitLabelInCode(line, tabWidth, label);
+    }
+  });
+
+  return labeled.join('\n');
 }
 
 /** 获取当前代码 tab 宽度 */
