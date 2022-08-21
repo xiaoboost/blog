@@ -143,7 +143,6 @@ export function transformServe() {
       charset: 'utf8',
     });
 
-    
     ctx.body = files[0].contents;
   };
 }
@@ -187,6 +186,8 @@ if ('WebSocket' in window) {
         }
       }
     });
+
+  const 
 } else {
   console.log('WebSocket is not supported.');
 }
