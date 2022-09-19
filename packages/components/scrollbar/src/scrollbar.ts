@@ -9,19 +9,25 @@ const { classes: cla } = styles;
 export class ScrollBar {
   /** 滚动条容器 */
   private readonly _container: HTMLElement | Window;
+
   /** 滚动条长条 */
   private readonly scrollbar: HTMLElement;
+
   /** 滚动条 */
   private readonly slider: HTMLElement;
+
   /** 滚动条宽度 */
   private readonly width: number = -1;
+
   /** 滚动条模式 */
   private readonly mode: ScrollMode = 'x';
 
   /** 鼠标正在移动 */
   private mouseMove = false;
+
   /** 鼠标当前偏移量 */
   private mouseOffset = -1;
+
   /** 鼠标上次偏移量 */
   private mouseLastOffset = -1;
 

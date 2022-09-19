@@ -1,13 +1,15 @@
-import styles from './index.jss';
-
 import { isString } from '@xiao-ai/utils';
+import { getCurrentScriptSrc } from '@blog/shared/web';
+
+import styles from './index.jss';
 import { DisplaySymbol } from './typescript';
 import { lsInfoAttrName } from './constant';
-import { getCurrentScriptSrc } from '@blog/shared/web';
 
 class InfoElement {
   private el: Element;
+
   private pre: Element;
+
   private list: HTMLElement[] = [];
 
   constructor() {

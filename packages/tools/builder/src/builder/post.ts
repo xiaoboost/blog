@@ -28,7 +28,7 @@ function getPostHtml(post: PostRendered) {
     pathname: post.pathname,
     author: site.author,
     description: post.description,
-    publicPath: publicPath,
+    publicPath,
     hmr: process.env.HMR,
     assets: getLayoutAssetNames().concat(
       post.getComponentAssetNames(),

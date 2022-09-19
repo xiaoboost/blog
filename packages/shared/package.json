@@ -13,8 +13,8 @@
     "clear": "rimraf ./dist",
     "build": "npm run clear && tsc -p .",
     "watch": "npm run clear && npm run build -- -w",
-    "lint": "eslint --quiet --no-error-on-unmatched-pattern --config ../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}",
-    "lint:fix": "eslint --fix --quiet --no-error-on-unmatched-pattern --config ../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}"
+    "lint": "eslint --quiet src/**/*.{ts,tsx,js,jsx}",
+    "lint:fix": "eslint --quiet --fix src/**/*.{ts,tsx,js,jsx}"
   },
   "author": "xiaoboost",
   "license": "MIT",
@@ -23,13 +23,14 @@
     "url": "https://github.com/xiaoboost/panda-manager"
   },
   "devDependencies": {
+    "@blog/eslint-config": "workspace:*",
     "@blog/tsconfig": "workspace:*",
     "@types/blog": "workspace:*",
     "@types/color": "3.0.3",
     "@types/node": "18.6.1",
     "rimraf": "3.0.2",
     "tslib": "2.4.0",
-    "typescript": "4.7.4"
+    "typescript": "4.8.3"
   },
   "dependencies": {
     "@xiao-ai/utils": "1.6.0",

@@ -13,6 +13,7 @@ export interface FixData {
 export class Fixer {
   /** 文本字符串 */
   private content: string;
+
   /** 修正数据 */
   private fixData: FixData[] = [];
 

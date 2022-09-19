@@ -1,7 +1,6 @@
-import { fadeIn, fadeOut } from '@blog/shared/web';
+import { fadeIn, fadeOut, getCurrentScriptSrc } from '@blog/shared/web';
 import { supportsPassive } from '@xiao-ai/utils/web';
 import { scrollTopLimit, fadeTime } from './constant';
-import { getCurrentScriptSrc } from '@blog/shared/web';
 
 import styles from './index.jss';
 

@@ -26,7 +26,7 @@ export function getShortSize(size: number) {
   let rank = 0;
 
   while (current > 1024) {
-    current = current / 1024;
+    current /= 1024;
     rank++;
   }
 
@@ -41,7 +41,7 @@ export function getShortTime(time: number) {
   let level = 0;
 
   while (current > ranks[level]) {
-    current = current / ranks[level];
+    current /= ranks[level];
     level++;
   }
 
