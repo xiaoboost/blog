@@ -5,6 +5,7 @@ import { getTsServer, ScriptKind, Platform, TsServer } from './host';
 
 import tsPlist from '../../tmLanguage/ts.plist';
 import tsxPlist from '../../tmLanguage/tsx.plist';
+// eslint-disable-next-line import/no-relative-packages
 import wasmBin from '../../node_modules/vscode-oniguruma/release/onig.wasm';
 
 let tsGrammar: vsctm.IGrammar;

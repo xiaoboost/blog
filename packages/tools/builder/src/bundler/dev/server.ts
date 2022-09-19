@@ -14,10 +14,13 @@ import { log } from '../../utils';
 export class DevServer {
   /** 文件系统 */
   private _vfs = new Map<string, Buffer>();
+
   /** 服务器选项 */
   private _option: Required<ServerOption>;
+
   /** 通信服务器 */
   private _server?: HTTPServer;
+
   /** WebSocket 连接 */
   private _sockets: WebSocket[] = [];
 

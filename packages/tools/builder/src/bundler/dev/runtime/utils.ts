@@ -44,6 +44,7 @@ export function reloadHTML(selector: string, content: string) {
 export function reloadJS(file: string, code: string) {
   module.uninstall(file);
   // TODO: 有时候会报 JSON 错误，需要再查
+  // eslint-disable-next-line no-eval
   (0, eval)(code);
 }
 

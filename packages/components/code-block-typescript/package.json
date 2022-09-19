@@ -7,8 +7,8 @@
   "source": "src/index.tsx",
   "types": "src/index.tsx",
   "scripts": {
-    "lint": "eslint --quiet --no-error-on-unmatched-pattern --config ../../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}",
-    "lint:fix": "eslint --fix --quiet --no-error-on-unmatched-pattern --config ../../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}"
+    "lint": "eslint --quiet src/**/*.{ts,tsx,js,jsx}",
+    "lint:fix": "eslint --quiet --fix src/**/*.{ts,tsx,js,jsx}"
   },
   "repository": {
     "type": "git",
@@ -21,11 +21,12 @@
     "html-escaper": "3.0.3",
     "look-it-up": "2.1.0",
     "react": "18.2.0",
-    "typescript": "4.7.4",
+    "typescript": "4.8.3",
     "vscode-oniguruma": "1.6.2",
     "vscode-textmate": "7.0.1"
   },
   "devDependencies": {
+    "@blog/eslint-config": "workspace:*",
     "@blog/tsconfig": "workspace:*",
     "@types/blog": "workspace:*",
     "@types/html-escaper": "3.0.0",

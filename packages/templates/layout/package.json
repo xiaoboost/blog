@@ -8,8 +8,8 @@
   "module": "src/index.ts",
   "types": "src/index.ts",
   "scripts": {
-    "lint": "eslint --quiet --no-error-on-unmatched-pattern --config ../../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}",
-    "lint:fix": "eslint --fix --quiet --no-error-on-unmatched-pattern --config ../../../.eslintrc.js src/**/*.{ts,tsx,js,jsx}"
+    "lint": "eslint --quiet src/**/*.{ts,tsx,js,jsx}",
+    "lint:fix": "eslint --quiet --fix src/**/*.{ts,tsx,js,jsx}"
   },
   "repository": {
     "type": "git",
@@ -24,11 +24,12 @@
     "tslib": "2.4.0"
   },
   "devDependencies": {
+    "@blog/eslint-config": "workspace:*",
     "@blog/tsconfig": "workspace:*",
     "@types/blog": "workspace:*",
     "@types/node": "18.6.1",
     "@types/react": "18.0.15",
     "eslint": "8.20.0",
-    "typescript": "4.7.4"
+    "typescript": "4.8.3"
   }
 }

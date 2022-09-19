@@ -71,7 +71,7 @@ export function getCurrentScript() {
     const ffStackRegExp = /@([^@]*):(\d+):(\d+)\s*$/gi;
     const stackDetails = ieStackRegExp.exec(err.stack) || ffStackRegExp.exec(err.stack);
     const scriptLocation = (stackDetails && stackDetails[1]) || false;
-    const line = stackDetails?.[2] ? Number.parseInt(stackDetails?.[2]) : 0;
+    const line = stackDetails?.[2] ? Number.parseInt(stackDetails?.[2], 10) : 0;
     const currentLocation = document.location.href.replace(document.location.hash, '');
     const scripts = document.getElementsByTagName('script');
 
@@ -92,7 +92,7 @@ export function getCurrentScript() {
     if (scriptLocation === currentLocation) {
       const pageSource = document.documentElement.outerHTML;
       const inlineScriptSourceRegExp = new RegExp(
-        '(?:[^\\n]+?\\n){0,' + (line - 2) + '}[^<]*<script>([\\d\\D]*?)<\\/script>[\\d\\D]*',
+        `(?:[^\\n]+?\\n){0,${line - 2}}[^<]*<script>([\\d\\D]*?)<\\/script>[\\d\\D]*`,
         'i',
       );
       const inlineScriptSource = pageSource.replace(inlineScriptSourceRegExp, '$1').trim();

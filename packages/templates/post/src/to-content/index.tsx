@@ -2,10 +2,10 @@ import React from 'react';
 import styles from './index.jss';
 
 import { toPinyin } from '@blog/shared/node';
-import { levelLimit } from './constant';
 import { stringifyClass } from '@xiao-ai/utils';
 import { Root, Heading, PhrasingContent } from 'mdast';
 import { Circle, CircleThin } from '@blog/icons';
+import { levelLimit } from './constant';
 
 export interface Props {
   data: Root;

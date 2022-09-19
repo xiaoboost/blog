@@ -1,4 +1,4 @@
-import { expect } from '@blog/tests';
+import { expect } from '@blog/test-toolkit';
 import { formatCode } from '../utils';
 
 describe('formatCode', () => {

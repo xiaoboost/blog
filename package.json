@@ -11,20 +11,13 @@
   "scripts": {
     "build": "blog build --outDir=dist --mode=production",
     "watch": "blog watch --mode=development",
-    "build:prepare": "pnpm run --filter @blog/builder... --filter @blog/tests... build",
+    "build:prepare": "pnpm run -r build",
     "watch:builder": "pnpm run --filter @blog/builder watch",
     "test": "pnpm run -r --parallel test",
-    "lint": "pnpm run -r --parallel lint",
-    "lint:fix": "pnpm run -r --parallel lint:fix"
+    "lint": "pnpm run -r --parallel lint --no-error-on-unmatched-pattern",
+    "lint:fix": "pnpm run -r --parallel lint:fix --no-error-on-unmatched-pattern"
   },
   "devDependencies": {
-    "@blog/builder": "workspace:*",
-    "@typescript-eslint/eslint-plugin": "5.31.0",
-    "@typescript-eslint/parser": "5.31.0",
-    "eslint": "8.20.0",
-    "eslint-plugin-prettier": "4.2.1",
-    "eslint-plugin-react": "7.30.1",
-    "prettier": "2.7.1",
-    "typescript": "4.7.4"
+    "@blog/builder": "workspace:*"
   }
 }
