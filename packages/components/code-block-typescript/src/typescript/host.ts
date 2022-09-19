@@ -66,14 +66,19 @@ function displayPartsToString(tokens: ts.SymbolDisplayPart[]) {
 export class TsServer {
   /** script 类型 */
   private readonly scriptKind: ScriptKind;
+
   /** 平台类型 */
   private readonly platform: Platform;
+
   /** 语言服务器 */
   private readonly server: ts.LanguageService;
+
   /** 包含的静态文件 */
   private readonly files = new Set<string>();
+
   /** 当前文件 */
   private current!: CodeFile;
+
   /** 当前项目版本 */
   private version = 0;
 
@@ -118,6 +123,9 @@ export class TsServer {
 
   private createLanguageServiceHost(): ts.LanguageServiceHost {
     return {
+      readFile: ts.sys.readFile,
+      fileExists: ts.sys.fileExists,
+      getDefaultLibFileName: ts.getDefaultLibFilePath,
       getCompilationSettings(): ts.CompilerOptions {
         return {
           strict: false,
@@ -182,7 +190,6 @@ export class TsServer {
       getNewLine: () => '\n',
       getCurrentDirectory: () => resolve(),
       useCaseSensitiveFileNames: () => true,
-      getDefaultLibFileName: ts.getDefaultLibFilePath,
     };
   }
 

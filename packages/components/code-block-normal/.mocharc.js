@@ -1,5 +1,5 @@
 const path = require('path');
-const { mochaOptions } = require('@blog/tests');
+const { mochaOptions } = require('@blog/test-toolkit');
 
 module.exports = {
   ...mochaOptions,

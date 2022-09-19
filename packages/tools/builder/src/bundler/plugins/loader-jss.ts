@@ -35,7 +35,7 @@ export function JssLoader({ extractCss = true }: Options = {}): FilePlugin {
   }
 
   return {
-    getFiles: getFiles,
+    getFiles,
     plugin: {
       name: 'loader-jss',
       setup(process: PluginBuild) {
@@ -124,7 +124,7 @@ export function JssLoader({ extractCss = true }: Options = {}): FilePlugin {
 
             if (originLocation.line) {
               errors.push({
-                pluginName: pluginName,
+                pluginName,
                 text: result.error.message,
                 location: {
                   file: originLocation.source ?? undefined,
@@ -135,7 +135,7 @@ export function JssLoader({ extractCss = true }: Options = {}): FilePlugin {
               });
             } else {
               errors.push({
-                pluginName: pluginName,
+                pluginName,
                 text: result.error.message,
               });
             }
@@ -147,7 +147,7 @@ export function JssLoader({ extractCss = true }: Options = {}): FilePlugin {
             });
           } else {
             errors.push({
-              pluginName: pluginName,
+              pluginName,
               text: 'default 应该导出 jss 实例',
             });
           }

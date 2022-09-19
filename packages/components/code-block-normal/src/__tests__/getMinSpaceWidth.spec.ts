@@ -1,4 +1,4 @@
-import { expect } from '@blog/tests';
+import { expect } from '@blog/test-toolkit';
 import { getMinSpaceWidth } from '../utils';
 
 describe('getMinSpaceWidth', () => {

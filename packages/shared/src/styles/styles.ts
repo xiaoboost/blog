@@ -1,9 +1,8 @@
+import type jssx from 'jss';
 import type { default as Jss, Styles, StyleSheet } from 'jss';
 
 import { hyphenate } from '@xiao-ai/utils';
 import { mediaPhone, mediaPc } from './constant';
-
-import type jssx from 'jss';
 
 export { jssx as jss };
 

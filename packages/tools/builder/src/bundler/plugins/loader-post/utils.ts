@@ -1,3 +1,5 @@
+/* eslint-disable no-eval */
+
 import * as fs from 'fs/promises';
 import * as yaml from 'yaml';
 import * as path from 'path';
