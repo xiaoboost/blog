@@ -30,7 +30,7 @@
     "@blog/tsconfig": "workspace:*",
     "@types/blog": "workspace:*",
     "@types/html-escaper": "3.0.0",
-    "@types/node": "18.7.8",
+    "@types/node": "16.11.7",
     "@types/react": "18.0.17",
     "eslint": "8.22.0",
     "tslib": "2.4.0"
