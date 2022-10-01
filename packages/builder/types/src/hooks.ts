@@ -1,51 +1,71 @@
-import type {
-  AsyncParallelHook,
-  AsyncSeriesHook,
-  AsyncSeriesBailHook,
-  AsyncSeriesWaterfallHook,
-} from 'tapable';
-
+import type { SyncHook, AsyncParallelHook, AsyncSeriesHook, AsyncSeriesBailHook } from 'tapable';
+import type { BuildOptions, OnResolveArgs, ResolveResult, OnLoadArgs, OnLoadResult } from 'esbuild';
+import type { PostUrlMap } from './types';
 import type { BuilderOptions } from './builder';
 
-/** 钩子接口 */
+/** 构造器钩子 */
 export interface BuilderHooks {
   /**
    * 初始化
-   *   - 配置读取完成，但还未应用到构建器中时
+   *   - 构建开始之前
    */
-  initialize: AsyncSeriesHook<[BuilderOptions]>;
+  initialization: AsyncSeriesHook<[Required<BuilderOptions>]>;
   /**
-   * 开始构建
-   *   - 初始化之后，构建开始之时
-   */
-  startBuild: AsyncSeriesHook<[]>;
-  /**
-   * 结束构建
+   * 此次编译结束
    *   - watch 模式下，每次编译结束均会触发
    */
   endBuild: AsyncSeriesHook<[]>;
   /**
-   * 此次编译结束
+   * 编译结束
    *   - watch 模式下，也只会在最后触发
    */
   done: AsyncSeriesHook<[]>;
-  /** 文件变更 */
-  watchChange: AsyncParallelHook<string[]>;
-  /** 路径路由 */
-  resolve: AsyncSeriesBailHook<[ResolveArgs], ResolveResult | undefined>;
-  /** 读取文件 */
-  load: AsyncSeriesBailHook<[ResolveArgs], ResolveResult | undefined>;
-  /** 转换文件 */
-  transform: AsyncSeriesWaterfallHook<[Source]>;
+  /**
+   * 构建失败
+   *   - 不会中断 watch 模式
+   */
+  fail: AsyncSeriesHook<[Error[]]>;
+  /**
+   * 文件变更
+   */
+  filesChange: AsyncParallelHook<string[]>;
+  /**
+   * 打包器创建后
+   *   - 运行打包之前
+   */
+  bundler: AsyncSeriesHook<[]>;
+  /**
+   * 运行器创建后
+   *   - 运行代码之前
+   */
+  runner: AsyncSeriesHook<[string]>;
+}
 
-  /** 模板初始化 */
-  templateInit: any;
-  /** 模板预构建 */
-  templatePreBuild: any;
-  /** 输出静态资源 */
+/** 打包器钩子 */
+export interface BundlerHooks {
+  /**
+   * 构建前生成配置
+   *   - 返回的所有配置将会被合并
+   */
+  configuration: SyncHook<[], BuildOptions | undefined>;
+  /** 路径路由 */
+  resolve: AsyncSeriesBailHook<[OnResolveArgs], ResolveResult | undefined>;
+  /** 读取文件 */
+  load: AsyncSeriesBailHook<[OnLoadArgs], OnLoadResult | undefined>;
 }
 
 /** 运行器钩子 */
 export interface RunnerHooks {
-  //..
+  /** 运行开始前 */
+  beforeStart: AsyncSeriesHook<[]>;
+  /** 组件编译前 */
+  beforeComponent: AsyncSeriesHook<[]>;
+  /** 组件编译后 */
+  afterComponent: AsyncSeriesHook<[]>;
+  /** 生成文章路径后 */
+  afterPostUrl: AsyncSeriesHook<[PostUrlMap]>;
+  /** 编译文章页面前 */
+  beforeEachPost: AsyncSeriesHook<[]>;
+  /** 编译文章页面后 */
+  afterEachPost: AsyncSeriesHook<[]>;
 }
