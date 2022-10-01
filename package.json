@@ -9,15 +9,14 @@
     "url": "https://github.com/xiaoboost/blog"
   },
   "scripts": {
+    "build:all": "pnpm run -r build",
     "build": "blog build --outDir=dist --mode=production",
     "watch": "blog watch --mode=development",
-    "build:prepare": "pnpm run -r build",
-    "watch:builder": "pnpm run --filter @blog/builder watch",
     "test": "pnpm run -r --parallel test",
     "lint": "pnpm run -r --parallel lint --no-error-on-unmatched-pattern",
     "lint:fix": "pnpm run -r --parallel lint:fix --no-error-on-unmatched-pattern"
   },
   "devDependencies": {
-    "@blog/builder": "workspace:*"
+    "@blog/cli": "workspace:*"
   }
 }
