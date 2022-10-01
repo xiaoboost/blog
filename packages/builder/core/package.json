@@ -1,6 +1,6 @@
 {
-  "name": "@blog/types",
-  "description": "blog's builder of types",
+  "name": "@blog/core",
+  "description": "blog's builder core code",
   "version": "1.0.0",
   "author": "xiaoboost",
   "license": "MIT",
@@ -18,8 +18,11 @@
     "url": "https://github.com/xiaoboost/blog"
   },
   "dependencies": {
+    "@blog/types": "workspace:*",
     "esbuild": "0.15.5",
-    "tapable": "2.2.1"
+    "chokidar": "3.5.3",
+    "tapable": "2.2.1",
+    "tslib": "2.4.0"
   },
   "devDependencies": {
     "@blog/eslint-config": "workspace:*",
@@ -27,7 +30,6 @@
     "@types/node": "16.11.7",
     "eslint": "8.22.0",
     "rimraf": "3.0.2",
-    "tslib": "2.4.0",
     "typescript": "4.8.3"
   }
 }
