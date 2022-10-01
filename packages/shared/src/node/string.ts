@@ -31,7 +31,7 @@ export function parseQuery(input: string) {
   const searchParams = new URLSearchParams(rawQuery);
   const query: Query = {};
 
-  for (const [key, value] of searchParams.entries()) {
+  searchParams.forEach((value, key) => {
     if (value.length === 0 || value === 'true') {
       query[key] = true;
     } else if (value === 'false') {
@@ -39,7 +39,7 @@ export function parseQuery(input: string) {
     } else {
       query[key] = value;
     }
-  }
+  });
 
   return {
     base,

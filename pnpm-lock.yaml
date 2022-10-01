@@ -4,9 +4,109 @@ importers:
 
   .:
     specifiers:
-      '@blog/builder': workspace:*
+      '@blog/cli': workspace:*
     devDependencies:
-      '@blog/builder': link:packages/tools/builder
+      '@blog/cli': link:packages/builder/cli
+
+  packages/builder/cli:
+    specifiers:
+      '@blog/core': workspace:*
+      '@blog/eslint-config': workspace:*
+      '@blog/tsconfig': workspace:*
+      '@blog/types': workspace:*
+      '@types/node': 16.11.7
+      '@types/yargs': 17.0.11
+      eslint: 8.22.0
+      rimraf: 3.0.2
+      tslib: 2.4.0
+      typescript: 4.8.3
+      yargs: 17.5.1
+    dependencies:
+      '@blog/core': link:../core
+      '@blog/types': link:../types
+      tslib: 2.4.0
+      yargs: 17.5.1
+    devDependencies:
+      '@blog/eslint-config': link:../../tools/eslint-config
+      '@blog/tsconfig': link:../../tools/tsconfig
+      '@types/node': 16.11.7
+      '@types/yargs': 17.0.11
+      eslint: 8.22.0
+      rimraf: 3.0.2
+      typescript: 4.8.3
+
+  packages/builder/context:
+    specifiers:
+      '@blog/eslint-config': workspace:*
+      '@blog/tsconfig': workspace:*
+      '@types/node': 16.11.7
+      chokidar: 3.5.3
+      esbuild: 0.15.5
+      eslint: 8.22.0
+      tapable: 2.2.1
+      tslib: 2.4.0
+      typescript: 4.8.3
+    dependencies:
+      chokidar: 3.5.3
+      esbuild: 0.15.5
+      tapable: 2.2.1
+    devDependencies:
+      '@blog/eslint-config': link:../../tools/eslint-config
+      '@blog/tsconfig': link:../../tools/tsconfig
+      '@types/node': 16.11.7
+      eslint: 8.22.0
+      tslib: 2.4.0
+      typescript: 4.8.3
+
+  packages/builder/core:
+    specifiers:
+      '@blog/eslint-config': workspace:*
+      '@blog/tsconfig': workspace:*
+      '@blog/types': workspace:*
+      '@types/node': 16.11.7
+      chokidar: 3.5.3
+      esbuild: 0.15.5
+      eslint: 8.22.0
+      rimraf: 3.0.2
+      tapable: 2.2.1
+      tslib: 2.4.0
+      typescript: 4.8.3
+    dependencies:
+      '@blog/types': link:../types
+      chokidar: 3.5.3
+      esbuild: 0.15.5
+      tapable: 2.2.1
+      tslib: 2.4.0
+    devDependencies:
+      '@blog/eslint-config': link:../../tools/eslint-config
+      '@blog/tsconfig': link:../../tools/tsconfig
+      '@types/node': 16.11.7
+      eslint: 8.22.0
+      rimraf: 3.0.2
+      typescript: 4.8.3
+
+  packages/builder/types:
+    specifiers:
+      '@blog/eslint-config': workspace:*
+      '@blog/tsconfig': workspace:*
+      '@types/node': 16.11.7
+      esbuild: 0.15.5
+      eslint: 8.22.0
+      rimraf: 3.0.2
+      tapable: 2.2.1
+      tslib: 2.4.0
+      typescript: 4.8.3
+    dependencies:
+      esbuild: 0.15.5
+      tapable: 2.2.1
+    devDependencies:
+      '@blog/eslint-config': link:../../tools/eslint-config
+      '@blog/tsconfig': link:../../tools/tsconfig
+      '@types/node': 16.11.7
+      eslint: 8.22.0
+      rimraf: 3.0.2
+      tslib: 2.4.0
+      typescript: 4.8.3
 
   packages/components/code-block-normal:
     specifiers:
@@ -16,7 +116,7 @@ importers:
       '@blog/tsconfig': workspace:*
       '@types/blog': workspace:*
       '@types/mocha': 9.1.1
-      '@types/node': 18.7.8
+      '@types/node': 16.11.7
       '@types/react': 18.0.17
       '@xiao-ai/utils': 1.6.0
       eslint: 8.22.0
@@ -36,7 +136,7 @@ importers:
       '@blog/tsconfig': link:../../tools/tsconfig
       '@types/blog': link:../../tools/typings
       '@types/mocha': 9.1.1
-      '@types/node': 18.7.8
+      '@types/node': 16.11.7
       '@types/react': 18.0.17
       eslint: 8.22.0
       mocha: 10.0.0
@@ -51,7 +151,7 @@ importers:
       '@blog/tsconfig': workspace:*
       '@types/blog': workspace:*
       '@types/html-escaper': 3.0.0
-      '@types/node': 18.7.8
+      '@types/node': 16.11.7
       '@types/react': 18.0.17
       '@xiao-ai/utils': 1.6.0
       eslint: 8.22.0
@@ -77,7 +177,7 @@ importers:
       '@blog/tsconfig': link:../../tools/tsconfig
       '@types/blog': link:../../tools/typings
       '@types/html-escaper': 3.0.0
-      '@types/node': 18.7.8
+      '@types/node': 16.11.7
       '@types/react': 18.0.17
       eslint: 8.22.0
       tslib: 2.4.0
@@ -88,7 +188,7 @@ importers:
       '@blog/shared': workspace:*
       '@blog/tsconfig': workspace:*
       '@types/blog': workspace:*
-      '@types/node': 18.7.8
+      '@types/node': 16.11.7
       '@types/react': 18.0.17
       '@xiao-ai/utils': 1.6.0
       eslint: 8.22.0
@@ -103,7 +203,7 @@ importers:
       '@blog/eslint-config': link:../../tools/eslint-config
       '@blog/tsconfig': link:../../tools/tsconfig
       '@types/blog': link:../../tools/typings
-      '@types/node': 18.7.8
+      '@types/node': 16.11.7
       '@types/react': 18.0.17
       eslint: 8.22.0
       tslib: 2.4.0
@@ -116,7 +216,7 @@ importers:
       '@blog/tsconfig': workspace:*
       '@types/blog': workspace:*
       '@types/katex': 0.14.0
-      '@types/node': 18.7.8
+      '@types/node': 16.11.7
       '@types/react': 18.0.17
       eslint: 8.22.0
       katex: 0.16.0
@@ -132,7 +232,7 @@ importers:
       '@blog/tsconfig': link:../../tools/tsconfig
       '@types/blog': link:../../tools/typings
       '@types/katex': 0.14.0
-      '@types/node': 18.7.8
+      '@types/node': 16.11.7
       '@types/react': 18.0.17
       eslint: 8.22.0
       tslib: 2.4.0
@@ -144,7 +244,7 @@ importers:
       '@blog/shared': workspace:*
       '@blog/tsconfig': workspace:*
       '@types/blog': workspace:*
-      '@types/node': 18.7.8
+      '@types/node': 16.11.7
       '@types/react': 18.0.17
       '@xiao-ai/utils': 1.6.0
       eslint: 8.22.0
@@ -159,7 +259,7 @@ importers:
       '@blog/eslint-config': link:../../tools/eslint-config
       '@blog/tsconfig': link:../../tools/tsconfig
       '@types/blog': link:../../tools/typings
-      '@types/node': 18.7.8
+      '@types/node': 16.11.7
       '@types/react': 18.0.17
       eslint: 8.22.0
       tslib: 2.4.0
@@ -179,7 +279,7 @@ importers:
       '@blog/tsconfig': workspace:*
       '@types/blog': workspace:*
       '@types/color': 3.0.3
-      '@types/node': 18.7.8
+      '@types/node': 16.11.7
       '@xiao-ai/utils': 1.6.0
       color: 4.2.3
       jss: 10.9.2
@@ -197,7 +297,7 @@ importers:
       '@blog/tsconfig': link:../tools/tsconfig
       '@types/blog': link:../tools/typings
       '@types/color': 3.0.3
-      '@types/node': 18.7.8
+      '@types/node': 16.11.7
       rimraf: 3.0.2
       tslib: 2.4.0
       typescript: 4.8.3
@@ -209,7 +309,7 @@ importers:
       '@blog/shared': workspace:*
       '@blog/tsconfig': workspace:*
       '@types/blog': workspace:*
-      '@types/node': 18.7.8
+      '@types/node': 16.11.7
       '@types/react': 18.0.17
       '@xiao-ai/utils': 1.6.0
       eslint: 8.22.0
@@ -228,7 +328,7 @@ importers:
       '@blog/eslint-config': link:../../tools/eslint-config
       '@blog/tsconfig': link:../../tools/tsconfig
       '@types/blog': link:../../tools/typings
-      '@types/node': 18.7.8
+      '@types/node': 16.11.7
       '@types/react': 18.0.17
       eslint: 8.22.0
       typescript: 4.8.3
@@ -246,7 +346,7 @@ importers:
       '@types/blog': workspace:*
       '@types/mdast': 3.0.10
       '@types/mdx-js__react': 1.5.5
-      '@types/node': 18.7.8
+      '@types/node': 16.11.7
       '@types/react': 18.0.17
       '@xiao-ai/utils': 1.6.0
       eslint: 8.22.0
@@ -271,7 +371,7 @@ importers:
       '@types/blog': link:../../tools/typings
       '@types/mdast': 3.0.10
       '@types/mdx-js__react': 1.5.5
-      '@types/node': 18.7.8
+      '@types/node': 16.11.7
       '@types/react': 18.0.17
       eslint: 8.22.0
       typescript: 4.8.3
@@ -298,7 +398,7 @@ importers:
       '@types/md5': 2.3.2
       '@types/mdast': 3.0.10
       '@types/mime': 3.0.1
-      '@types/node': 18.7.8
+      '@types/node': 16.11.7
       '@types/react': 18.0.17
       '@types/react-dom': 18.0.6
       '@types/ws': 8.5.3
@@ -382,7 +482,7 @@ importers:
       '@types/md5': 2.3.2
       '@types/mdast': 3.0.10
       '@types/mime': 3.0.1
-      '@types/node': 18.7.8
+      '@types/node': 16.11.7
       '@types/react': 18.0.17
       '@types/react-dom': 18.0.6
       '@types/ws': 8.5.3
@@ -426,7 +526,7 @@ importers:
       '@types/blog': workspace:*
       '@types/chai': 4.3.3
       '@types/mocha': 9.1.1
-      '@types/node': 18.7.8
+      '@types/node': 16.11.7
       '@xiao-ai/utils': 1.6.0
       chai: 4.3.6
       eslint: 8.22.0
@@ -446,7 +546,7 @@ importers:
       '@types/blog': link:../typings
       '@types/chai': 4.3.3
       '@types/mocha': 9.1.1
-      '@types/node': 18.7.8
+      '@types/node': 16.11.7
       chai: 4.3.6
       eslint: 8.22.0
       rimraf: 3.0.2
@@ -829,6 +929,10 @@ packages:
   /@types/ms/0.7.31:
     resolution: {integrity: sha512-iiUgKzV9AuaEkZqkOLDIvlQiL6ltuZd9tGcW3gwpnX8JbuiuhFlEGmmFXEXkN50Cvq7Os88IY2v0dkDqXYWVgA==}
     dev: false
+
+  /@types/node/16.11.7:
+    resolution: {integrity: sha512-QB5D2sqfSjCmTuWcBWyJ+/44bcjO7VbjSbOE0ucoVbAsSNQc4Lt6QkgkVXkTDwkL4z/beecZNDvVX15D4P8Jbw==}
+    dev: true
 
   /@types/node/18.7.8:
     resolution: {integrity: sha512-/YP55EMK2341JkODUb8DM9O0x1SIz2aBvyF33Uf1c76St3VpsMXEIW0nxuKkq/5cxnbz0RD9cfwNZHEAZQD3ag==}

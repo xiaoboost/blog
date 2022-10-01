@@ -27,7 +27,7 @@
     "@blog/tsconfig": "workspace:*",
     "@types/blog": "workspace:*",
     "@types/mocha": "9.1.1",
-    "@types/node": "18.7.8",
+    "@types/node": "16.11.7",
     "@types/react": "18.0.17",
     "eslint": "8.22.0",
     "mocha": "10.0.0",
