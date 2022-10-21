@@ -1,7 +1,7 @@
 import type { SyncHook, AsyncParallelHook, AsyncSeriesHook, AsyncSeriesBailHook } from 'tapable';
 import type { BuildOptions, OnResolveArgs, ResolveResult, OnLoadArgs, OnLoadResult } from 'esbuild';
 import type { PostUrlMap } from './types';
-import type { BuilderOptions } from './builder';
+import type { BuilderOptions, BundlerInstance } from './builder';
 
 /** 构造器钩子 */
 export interface BuilderHooks {
@@ -33,12 +33,16 @@ export interface BuilderHooks {
    * 打包器创建后
    *   - 运行打包之前
    */
-  bundler: AsyncSeriesHook<[]>;
+  bundler: AsyncSeriesHook<[BundlerInstance]>;
+  /**
+   * 代码打包后
+   */
+  afterBundle: AsyncSeriesHook<[string]>;
   /**
    * 运行器创建后
    *   - 运行代码之前
    */
-  runner: AsyncSeriesHook<[string]>;
+  runner: AsyncSeriesHook<[]>;
 }
 
 /** 打包器钩子 */
