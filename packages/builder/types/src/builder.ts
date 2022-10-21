@@ -14,6 +14,8 @@ export interface BuildWatcher {
 
 /** 构建器实例 */
 export interface BuilderInstance {
+  /** 根路径 */
+  root: string;
   /** 钩子数据 */
   hooks: BuilderHooks;
   /** 构建选项 */

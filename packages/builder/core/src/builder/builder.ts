@@ -1,6 +1,7 @@
 import { BuilderHooks, BuilderInstance, BuilderOptions } from '@blog/types';
 import { AsyncSeriesHook, AsyncParallelHook } from 'tapable';
 import { applyPlugin } from './plugin';
+import { Bundler } from '../bundler';
 
 export class Builder implements BuilderInstance {
   static async create(opt: BuilderOptions) {
@@ -14,7 +15,13 @@ export class Builder implements BuilderInstance {
 
   hooks: BuilderHooks;
 
+  root: string;
+
+  private bundler: Bundler;
+
   constructor(opt: BuilderOptions) {
+    this.root = process.cwd();
+    this.bundler = new Bundler(this);
     this.options = {
       outDir: opt.outDir ?? 'dist',
       mode: opt.mode === 'production' ? 'production' : 'development',
@@ -26,14 +33,15 @@ export class Builder implements BuilderInstance {
       done: new AsyncSeriesHook<[]>(),
       fail: new AsyncSeriesHook<[Error[]]>(['errors']),
       filesChange: new AsyncParallelHook<string[]>(['files']),
-      bundler: new AsyncSeriesHook<[]>(),
-      runner: new AsyncSeriesHook<[string]>(['code']),
+      bundler: new AsyncSeriesHook<[Bundler]>(['bundler']),
+      runner: new AsyncSeriesHook<[]>([]),
+      afterBundle: new AsyncSeriesHook<[string]>(['code']),
     };
   }
 
   private async _build() {
     try {
-      await this.hooks.bundler.promise();
+      await this.hooks.bundler.promise(this.bundler);
     } catch (e: any) {
       console.log(e);
     }

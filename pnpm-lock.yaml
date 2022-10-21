@@ -67,6 +67,7 @@ importers:
       chokidar: 3.5.3
       esbuild: 0.15.5
       eslint: 8.22.0
+      look-it-up: 2.1.0
       rimraf: 3.0.2
       tapable: 2.2.1
       tslib: 2.4.0
@@ -75,6 +76,7 @@ importers:
       '@blog/types': link:../types
       chokidar: 3.5.3
       esbuild: 0.15.5
+      look-it-up: 2.1.0
       tapable: 2.2.1
       tslib: 2.4.0
     devDependencies:
