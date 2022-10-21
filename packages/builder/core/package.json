@@ -19,8 +19,9 @@
   },
   "dependencies": {
     "@blog/types": "workspace:*",
-    "esbuild": "0.15.5",
     "chokidar": "3.5.3",
+    "esbuild": "0.15.5",
+    "look-it-up": "2.1.0",
     "tapable": "2.2.1",
     "tslib": "2.4.0"
   },
