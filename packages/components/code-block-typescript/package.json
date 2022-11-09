@@ -26,8 +26,8 @@
     "vscode-textmate": "7.0.1"
   },
   "devDependencies": {
-    "@blog/eslint-config": "workspace:*",
-    "@blog/tsconfig": "workspace:*",
+    "@xiao-ai/eslint-config": "1.0.1",
+    "@xiao-ai/tsconfig": "1.0.0",
     "@types/blog": "workspace:*",
     "@types/html-escaper": "3.0.0",
     "@types/node": "16.11.7",

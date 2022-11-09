@@ -22,9 +22,9 @@
     "react": "18.2.0"
   },
   "devDependencies": {
-    "@blog/eslint-config": "workspace:*",
+    "@xiao-ai/eslint-config": "1.0.1",
     "@blog/test-toolkit": "workspace:*",
-    "@blog/tsconfig": "workspace:*",
+    "@xiao-ai/tsconfig": "1.0.0",
     "@types/blog": "workspace:*",
     "@types/mocha": "9.1.1",
     "@types/node": "16.11.7",
