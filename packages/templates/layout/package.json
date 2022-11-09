@@ -24,8 +24,8 @@
     "tslib": "2.4.0"
   },
   "devDependencies": {
-    "@blog/eslint-config": "workspace:*",
-    "@blog/tsconfig": "workspace:*",
+    "@xiao-ai/eslint-config": "1.0.1",
+    "@xiao-ai/tsconfig": "1.0.0",
     "@types/blog": "workspace:*",
     "@types/node": "16.11.7",
     "@types/react": "18.0.17",

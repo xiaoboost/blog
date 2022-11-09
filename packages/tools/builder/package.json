@@ -56,8 +56,8 @@
     "yargs": "17.5.1"
   },
   "devDependencies": {
-    "@blog/eslint-config": "workspace:*",
-    "@blog/tsconfig": "workspace:*",
+    "@xiao-ai/eslint-config": "1.0.1",
+    "@xiao-ai/tsconfig": "1.0.0",
     "@types/babel__code-frame": "7.0.3",
     "@types/blog": "workspace:*",
     "@types/estree": "1.0.0",

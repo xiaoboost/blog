@@ -28,8 +28,8 @@
     "tslib": "2.4.0"
   },
   "devDependencies": {
-    "@blog/eslint-config": "workspace:*",
-    "@blog/tsconfig": "workspace:*",
+    "@xiao-ai/eslint-config": "1.0.1",
+    "@xiao-ai/tsconfig": "1.0.0",
     "@types/blog": "workspace:*",
     "@types/mdast": "3.0.10",
     "@types/mdx-js__react": "1.5.5",
