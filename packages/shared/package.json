@@ -23,8 +23,8 @@
     "url": "https://github.com/xiaoboost/panda-manager"
   },
   "devDependencies": {
-    "@blog/eslint-config": "workspace:*",
-    "@blog/tsconfig": "workspace:*",
+    "@xiao-ai/eslint-config": "1.0.1",
+    "@xiao-ai/tsconfig": "1.0.0",
     "@types/blog": "workspace:*",
     "@types/color": "3.0.3",
     "@types/node": "16.11.7",
