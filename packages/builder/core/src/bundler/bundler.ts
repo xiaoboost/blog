@@ -9,9 +9,11 @@ import {
   build as esbuild,
 } from 'esbuild';
 import { join } from 'path';
-import { BundleResult, BundlerHooks, BundlerInstance, BuilderInstance } from '@blog/types';
-import { AsyncSeriesBailHook, SyncHook } from 'tapable';
+import { BundlerHooks, BundlerInstance, BuilderInstance } from '@blog/types';
+import { AsyncSeriesBailHook } from 'tapable';
 import { getRoot } from '../utils';
+import { BridgePlugin } from './bridge';
+import { outputFileName } from './constant';
 
 export class Bundler implements BundlerInstance {
   private builder: BuilderInstance;
@@ -23,24 +25,29 @@ export class Bundler implements BundlerInstance {
   constructor(builder: BuilderInstance) {
     this.builder = builder;
     this.hooks = {
-      configuration: new SyncHook<[], BuildOptions | undefined>(),
       resolve: new AsyncSeriesBailHook<[OnResolveArgs], ResolveResult | undefined>(['resolveArgs']),
       load: new AsyncSeriesBailHook<[OnLoadArgs], OnLoadResult | undefined>(['loadArgs']),
     };
   }
 
-  private async build(): Promise<BuildIncremental> {
+  private report(err: any) {
+    debugger;
+  }
+
+  async bundle(): Promise<BuildIncremental> {
     // 有实例，则直接重新构建
     if (this.instance) {
       this.instance = await this.instance.rebuild();
       return this.instance;
     }
 
+    debugger;
     const { options: opt, root } = this.builder;
     const isProduction = opt.mode === 'production';
     const esbuildConfig: BuildOptions = {
       entryPoints: [join(getRoot(), 'src/bundler/source/index.ts')],
       outdir: join(root, opt.outDir),
+      outfile: outputFileName,
       metafile: false,
       bundle: true,
       format: 'cjs',
@@ -68,34 +75,39 @@ export class Bundler implements BundlerInstance {
         '.woff2': 'file',
         '.svg': 'file',
       },
+      plugins: [BridgePlugin(this)],
     };
 
     try {
       this.instance = (await esbuild(esbuildConfig)) as BuildIncremental;
       return this.instance;
     } catch (error: any) {
-      await this.report(error);
+      debugger;
+      this.report(error);
 
-      if (compiler.config.watch) {
-        const rebuild: BuildInvalidate = () => this.build();
+      if (opt.isWatch) {
+        const rebuild: BuildInvalidate = () => this.bundle();
         rebuild.dispose = () => void 0;
         this.instance = {
           errors: [],
           warnings: [],
-          rebuild: rebuild as BuildInvalidate,
+          rebuild,
         };
       }
     }
 
-    return this.instance;
+    return this.instance!;
+  }
+
+  getBundledCode() {
+    const output = this.instance?.outputFiles ?? [];
+    debugger;
+    const codeFile = output.find((item) => item.path.endsWith('.js'));
+    return codeFile?.text ?? '';
   }
 
   dispose() {
     this.instance?.stop?.();
     this.instance?.rebuild.dispose();
-  }
-
-  async bundle(): Promise<BundleResult> {
-    return {} as Promise<BundleResult>;
   }
 }

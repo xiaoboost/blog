@@ -2,30 +2,34 @@ import { BuilderHooks, BuilderInstance, BuilderOptions } from '@blog/types';
 import { AsyncSeriesHook, AsyncParallelHook } from 'tapable';
 import { applyPlugin } from './plugin';
 import { Bundler } from '../bundler';
+import { Runner } from '../runner';
 
 export class Builder implements BuilderInstance {
   static async create(opt: BuilderOptions) {
-    debugger;
     const builder = new Builder(opt);
     await builder.init();
     return builder;
   }
 
-  options: Required<BuilderOptions>;
+  private bundler: Bundler;
 
-  hooks: BuilderHooks;
+  private runner: Runner;
 
   root: string;
 
-  private bundler: Bundler;
+  hooks: BuilderHooks;
+
+  options: Required<BuilderOptions>;
 
   constructor(opt: BuilderOptions) {
     this.root = process.cwd();
     this.bundler = new Bundler(this);
+    this.runner = new Runner(this);
     this.options = {
       outDir: opt.outDir ?? 'dist',
       mode: opt.mode === 'production' ? 'production' : 'development',
       hmr: opt.hmr ?? false,
+      isWatch: false,
     };
     this.hooks = {
       initialization: new AsyncSeriesHook<[Required<BuilderOptions>]>(['options']),
@@ -33,32 +37,35 @@ export class Builder implements BuilderInstance {
       done: new AsyncSeriesHook<[]>(),
       fail: new AsyncSeriesHook<[Error[]]>(['errors']),
       filesChange: new AsyncParallelHook<string[]>(['files']),
-      bundler: new AsyncSeriesHook<[Bundler]>(['bundler']),
-      runner: new AsyncSeriesHook<[]>([]),
-      afterBundle: new AsyncSeriesHook<[string]>(['code']),
+      bundler: new AsyncSeriesHook<[Bundler]>(['Bundler']),
+      runner: new AsyncSeriesHook<[Runner]>(['Runner']),
     };
-  }
-
-  private async _build() {
-    try {
-      await this.hooks.bundler.promise(this.bundler);
-    } catch (e: any) {
-      console.log(e);
-    }
   }
 
   async init() {
     applyPlugin(this);
     await this.hooks.initialization.promise({ ...this.options });
+    await this.hooks.bundler.promise(this.bundler);
+    await this.hooks.runner.promise(this.runner);
   }
 
-  watch() {
-    return Promise.resolve({
-      stop: () => void 0,
-    });
+  async stop() {
+    await this.bundler.dispose();
+    await this.hooks.done.promise();
   }
 
-  build() {
-    return this._build();
+  async watch() {
+    this.options.isWatch = true;
+    await this.build();
+  }
+
+  async build() {
+    try {
+      await this.bundler.bundle();
+      await this.runner.run(this.bundler.getBundledCode());
+    } catch (e: any) {
+      debugger;
+      console.log(e);
+    }
   }
 }

@@ -1,3 +1,4 @@
+import type { BuildIncremental } from 'esbuild';
 import type { BuilderHooks, BundlerHooks, RunnerHooks } from './hooks';
 
 /** 构建器选项 */
@@ -5,11 +6,7 @@ export interface BuilderOptions {
   outDir?: string;
   mode?: string;
   hmr?: boolean;
-}
-
-/** 监听构建实例 */
-export interface BuildWatcher {
-  stop(): void | Promise<void>;
+  isWatch?: boolean;
 }
 
 /** 构建器实例 */
@@ -25,15 +22,9 @@ export interface BuilderInstance {
   /** 构建 */
   build(): Promise<void>;
   /** 监听 */
-  watch(): Promise<BuildWatcher>;
-}
-
-/** 打包代码结果 */
-export interface BundleResult {
-  /** 打包代码 */
-  code: string;
-  /** 所有文件 */
-  files: string;
+  watch(): Promise<void>;
+  /** 停止监听 */
+  stop(): Promise<void>;
 }
 
 /** 打包器实例 */
@@ -41,10 +32,15 @@ export interface BundlerInstance {
   /** 钩子数据 */
   hooks: BundlerHooks;
   /** 打包代码 */
-  bundle(): Promise<BundleResult>;
+  bundle(): Promise<BuildIncremental>;
+  /** 获取打包后的代码 */
+  getBundledCode(): string;
 }
 
 /** 运行器实例 */
 export interface RunnerInstance {
+  /** 钩子数据 */
   hooks: RunnerHooks;
+  /** 运行代码 */
+  run(code: string): Promise<void>;
 }
