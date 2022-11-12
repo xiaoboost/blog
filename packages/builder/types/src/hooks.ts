@@ -1,7 +1,7 @@
-import type { SyncHook, AsyncParallelHook, AsyncSeriesHook, AsyncSeriesBailHook } from 'tapable';
-import type { BuildOptions, OnResolveArgs, ResolveResult, OnLoadArgs, OnLoadResult } from 'esbuild';
+import type { AsyncParallelHook, AsyncSeriesHook, AsyncSeriesBailHook } from 'tapable';
+import type { OnResolveArgs, ResolveResult, OnLoadArgs, OnLoadResult } from 'esbuild';
+import type { BuilderOptions, BundlerInstance, RunnerInstance } from './builder';
 import type { PostUrlMap } from './types';
-import type { BuilderOptions, BundlerInstance } from './builder';
 
 /** 构造器钩子 */
 export interface BuilderHooks {
@@ -35,23 +35,14 @@ export interface BuilderHooks {
    */
   bundler: AsyncSeriesHook<[BundlerInstance]>;
   /**
-   * 代码打包后
-   */
-  afterBundle: AsyncSeriesHook<[string]>;
-  /**
    * 运行器创建后
    *   - 运行代码之前
    */
-  runner: AsyncSeriesHook<[]>;
+  runner: AsyncSeriesHook<[RunnerInstance]>;
 }
 
 /** 打包器钩子 */
 export interface BundlerHooks {
-  /**
-   * 构建前生成配置
-   *   - 返回的所有配置将会被合并
-   */
-  configuration: SyncHook<[], BuildOptions | undefined>;
   /** 路径路由 */
   resolve: AsyncSeriesBailHook<[OnResolveArgs], ResolveResult | undefined>;
   /** 读取文件 */
