@@ -1,5 +1,5 @@
 import type { AsyncParallelHook, AsyncSeriesHook, AsyncSeriesBailHook } from 'tapable';
-import type { OnResolveArgs, ResolveResult, OnLoadArgs, OnLoadResult } from 'esbuild';
+import type { OnResolveArgs, OnResolveResult, OnLoadResult, OnLoadArgs } from 'esbuild';
 import type { BuilderOptions, BundlerInstance, RunnerInstance } from './builder';
 import type { PostUrlMap } from './types';
 
@@ -44,7 +44,7 @@ export interface BuilderHooks {
 /** 打包器钩子 */
 export interface BundlerHooks {
   /** 路径路由 */
-  resolve: AsyncSeriesBailHook<[OnResolveArgs], ResolveResult | undefined>;
+  resolve: AsyncSeriesBailHook<[OnResolveArgs], OnResolveResult | undefined>;
   /** 读取文件 */
   load: AsyncSeriesBailHook<[OnLoadArgs], OnLoadResult | undefined>;
 }
