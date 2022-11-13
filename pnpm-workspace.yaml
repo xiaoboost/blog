@@ -3,4 +3,5 @@ packages:
   - packages/components/*
   - packages/templates/*
   - packages/tools/*
+  - packages/utils/*
   - packages/builder/*
