@@ -1,0 +1,25 @@
+{
+  "name": "@blog/web",
+  "version": "1.0.0",
+  "description": "blog web lib",
+  "main": "dist/index.js",
+  "module": "src/index.ts",
+  "source": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "lint": "eslint --quiet src/**/*.{ts,tsx,js,jsx}",
+    "lint:fix": "eslint --quiet --fix src/**/*.{ts,tsx,js,jsx}"
+  },
+  "devDependencies": {
+    "@xiao-ai/eslint-config": "1.0.1",
+    "@xiao-ai/tsconfig": "1.0.0",
+    "@types/blog": "workspace:*",
+    "@types/node": "16.11.7",
+    "eslint": "8.22.0",
+    "typescript": "4.8.3"
+  },
+  "dependencies": {
+    "@xiao-ai/utils": "1.6.0",
+    "tslib": "2.4.0"
+  }
+}

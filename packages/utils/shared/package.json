@@ -2,13 +2,10 @@
   "name": "@blog/shared",
   "version": "1.0.0",
   "description": "blog shared lib",
-  "exports": {
-    "./*": {
-      "require": "./dist/*/index.js",
-      "import": "./src/*/index.ts",
-      "types": "./src/*/index.ts"
-    }
-  },
+  "main": "dist/index.js",
+  "module": "src/index.ts",
+  "source": "src/index.ts",
+  "types": "src/index.ts",
   "scripts": {
     "clear": "rimraf ./dist",
     "build": "npm run clear && tsc -p .",
@@ -16,26 +13,16 @@
     "lint": "eslint --quiet src/**/*.{ts,tsx,js,jsx}",
     "lint:fix": "eslint --quiet --fix src/**/*.{ts,tsx,js,jsx}"
   },
-  "author": "xiaoboost",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/xiaoboost/panda-manager"
-  },
   "devDependencies": {
     "@xiao-ai/eslint-config": "1.0.1",
     "@xiao-ai/tsconfig": "1.0.0",
     "@types/blog": "workspace:*",
-    "@types/color": "3.0.3",
     "@types/node": "16.11.7",
+    "eslint": "8.22.0",
     "rimraf": "3.0.2",
-    "tslib": "2.4.0",
     "typescript": "4.8.3"
   },
   "dependencies": {
-    "@xiao-ai/utils": "1.6.0",
-    "color": "4.2.3",
-    "jss": "10.9.2",
-    "pinyin-pro": "3.11.0"
+    "tslib": "2.4.0"
   }
 }

@@ -1,7 +1,7 @@
 import type { PluginBuild, Plugin } from 'esbuild';
 import { builtinModules } from 'module';
-import { getExternalPkg } from '../utils';
 import { normalize } from '@blog/shared/node';
+import { getExternalPkg } from '../utils';
 
 import * as path from 'path';
 
