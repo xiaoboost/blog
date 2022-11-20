@@ -1,7 +1,7 @@
 import {
   BuildOptions,
   OnResolveArgs,
-  ResolveResult,
+  OnResolveResult,
   OnLoadArgs,
   OnLoadResult,
   BuildIncremental,
@@ -25,7 +25,9 @@ export class Bundler implements BundlerInstance {
   constructor(builder: BuilderInstance) {
     this.builder = builder;
     this.hooks = {
-      resolve: new AsyncSeriesBailHook<[OnResolveArgs], ResolveResult | undefined>(['resolveArgs']),
+      resolve: new AsyncSeriesBailHook<[OnResolveArgs], OnResolveResult | undefined>([
+        'resolveArgs',
+      ]),
       load: new AsyncSeriesBailHook<[OnLoadArgs], OnLoadResult | undefined>(['loadArgs']),
     };
   }

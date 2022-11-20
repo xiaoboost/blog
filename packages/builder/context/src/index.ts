@@ -1,1 +1,2 @@
-console.log('hello');
+export * from './accessor';
+export * from './types';

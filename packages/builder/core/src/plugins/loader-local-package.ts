@@ -1,22 +1,47 @@
 import type { BuilderPlugin } from '@blog/types';
-import { dirname } from 'path';
+
+import { dirname, isAbsolute } from 'path';
+import { builtinModules } from 'module';
+import { readFileSync } from 'fs';
 import { normalize } from '@blog/node';
+import { lookItUpSync } from 'look-it-up';
 
 const pluginName = 'local-package-plugin';
 const requireSuffix = 'require';
 const moduleSuffix = 'local-module';
 const namespace = 'local-package';
+const externals: string[] = [];
 
-async function isExternal(file: string) {
-  const externals = (await getExternalPkg()).concat(builtinModules);
+function getExternalPkg() {
+  if (externals.length > 0) {
+    return externals.slice();
+  }
 
+  const packagePath = lookItUpSync('package.json', __dirname) ?? '';
+  const content = readFileSync(packagePath, 'utf-8');
+  const data = JSON.parse(content);
+
+  externals.push(
+    ...Object.keys(data.dependencies)
+      .filter((key) => !data.dependencies[key].startsWith('workspace') || key === '@blog/shared')
+      .concat(
+        Object.keys(data.devDependencies).filter(
+          (key) => !data.devDependencies[key].startsWith('workspace'),
+        ),
+      ),
+  );
+
+  return externals.slice();
+}
+
+function isExternal(file: string) {
   // monorepo
   if (file.startsWith('@blog')) {
     return false;
   }
 
   // 相对路径和绝对路径
-  if (file.startsWith('.') || path.isAbsolute(file)) {
+  if (file.startsWith('.') || isAbsolute(file)) {
     return false;
   }
 
@@ -25,7 +50,9 @@ async function isExternal(file: string) {
     return false;
   }
 
+  const externals = getExternalPkg().concat(builtinModules);
   const [packageName] = file.split('/');
+
   return !externals.includes(packageName);
 }
 
@@ -58,8 +85,8 @@ export const LocalPackagePlugin = (): BuilderPlugin => ({
     const moduleSuffixMatcher = new RegExp(`\\_${moduleSuffix}$`);
 
     builder.hooks.bundler.tap(pluginName, (bundler) => {
-      bundler.hooks.resolve.tapPromise(pluginName, async (args) => {
-        if (!(await isExternal(args.path))) {
+      bundler.hooks.resolve.tap(pluginName, (args) => {
+        if (!isExternal(args.path)) {
           return;
         }
 
@@ -75,17 +102,31 @@ export const LocalPackagePlugin = (): BuilderPlugin => ({
           namespace,
         };
       });
-      bundler.hooks.load.tap(pluginName, (args) => {
-        if (args.namespace === namespace) {
-          const [file, moduleName] = parsePathFromModulePath(args.path);
 
+      bundler.hooks.load.tap(pluginName, (args) => {
+        if (args.namespace !== namespace) {
+          return;
+        }
+
+        if (requireSuffixMatcher.test(args.path)) {
+          const file = parsePathFromRequirePath(args.path);
           return {
             resolveDir: dirname(file),
             loader: 'ts',
             contents: `
-              import localRequire from '${file}_${requireSuffix}';
-              export = localRequire('${moduleName}');
+              import { createRequire } from "module";
+              export default createRequire("${file}");
             `,
+          };
+        } else if (moduleSuffixMatcher.test(args.path)) {
+          const [file, moduleName] = parsePathFromModulePath(args.path);
+          return {
+            resolveDir: dirname(file),
+            loader: 'ts',
+            contents: `
+            import localRequire from '${file}_${requireSuffix}';
+            export = localRequire('${moduleName}');
+          `,
           };
         }
       });
