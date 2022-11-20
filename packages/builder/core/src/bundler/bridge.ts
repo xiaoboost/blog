@@ -5,13 +5,11 @@ export const BridgePlugin = (bundler: Bundler): Plugin => {
   return {
     name: 'bridge-plugin',
     setup: (esbuild: PluginBuild) => {
-      esbuild.onResolve({ filter: /.*/ }, (options) => {
-        debugger;
-        return null;
+      esbuild.onResolve({ filter: /.*/ }, (resolveArgs) => {
+        return bundler.hooks.resolve.promise(resolveArgs);
       });
-      esbuild.onLoad({ filter: /.*/ }, (options) => {
-        debugger;
-        return null;
+      esbuild.onLoad({ filter: /.*/ }, (loadArgs) => {
+        return bundler.hooks.load.promise(loadArgs);
       });
     },
   };
