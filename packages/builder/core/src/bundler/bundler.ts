@@ -13,7 +13,6 @@ import { BundlerHooks, BundlerInstance, BuilderInstance } from '@blog/types';
 import { AsyncSeriesBailHook } from 'tapable';
 import { getRoot } from '../utils';
 import { BridgePlugin } from './bridge';
-import { outputFileName } from './constant';
 
 export class Bundler implements BundlerInstance {
   private builder: BuilderInstance;
@@ -25,10 +24,10 @@ export class Bundler implements BundlerInstance {
   constructor(builder: BuilderInstance) {
     this.builder = builder;
     this.hooks = {
-      resolve: new AsyncSeriesBailHook<[OnResolveArgs], OnResolveResult | undefined>([
+      resolve: new AsyncSeriesBailHook<[OnResolveArgs], OnResolveResult | undefined | null>([
         'resolveArgs',
       ]),
-      load: new AsyncSeriesBailHook<[OnLoadArgs], OnLoadResult | undefined>(['loadArgs']),
+      load: new AsyncSeriesBailHook<[OnLoadArgs], OnLoadResult | undefined | null>(['loadArgs']),
     };
   }
 
@@ -43,13 +42,11 @@ export class Bundler implements BundlerInstance {
       return this.instance;
     }
 
-    debugger;
     const { options: opt, root } = this.builder;
     const isProduction = opt.mode === 'production';
     const esbuildConfig: BuildOptions = {
       entryPoints: [join(getRoot(), 'src/bundler/source/index.ts')],
       outdir: join(root, opt.outDir),
-      outfile: outputFileName,
       metafile: false,
       bundle: true,
       format: 'cjs',
@@ -60,23 +57,16 @@ export class Bundler implements BundlerInstance {
       minify: isProduction,
       mainFields: ['source', 'module', 'main'],
       resolveExtensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
-      publicPath: '/',
+      publicPath: opt.publicPath,
+      assetNames: opt.assetNames,
       splitting: false,
       watch: false,
       charset: 'utf8',
       incremental: true,
       logLimit: 5,
       platform: 'node',
-      define: {
-        'process.env.NODE_ENV': isProduction ? '"production"' : '"development"',
-        'process.env.HMR': opt.hmr ? 'true' : 'false',
-      },
-      loader: {
-        '.ttf': 'file',
-        '.woff': 'file',
-        '.woff2': 'file',
-        '.svg': 'file',
-      },
+      define: opt.defined,
+      loader: opt.loader,
       plugins: [BridgePlugin(this)],
     };
 

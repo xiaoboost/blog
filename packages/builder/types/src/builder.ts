@@ -1,8 +1,17 @@
-import type { BuildIncremental } from 'esbuild';
+import type { BuildIncremental, Loader } from 'esbuild';
 import type { BuilderHooks, BundlerHooks, RunnerHooks } from './hooks';
 
 /** 构建器选项 */
-export interface BuilderOptions {
+export interface BuilderOptions extends Required<CommandOptions> {
+  publicPath: string;
+  assetNames: string;
+  defined: Record<string, string>;
+  loader: Record<string, Loader>;
+  cacheFilesExts: string[];
+}
+
+/** 命令行选项 */
+export interface CommandOptions {
   outDir?: string;
   mode?: string;
   hmr?: boolean;

@@ -8,7 +8,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "clear": "rimraf ./dist",
-    "build": "npm run clear && tsc -p .",
+    "build": "npm run clear && tsc -p ./tsconfig.build.json",
     "watch": "npm run build -- -w",
     "lint": "eslint --quiet src/**/*.{ts,tsx,js,jsx}",
     "lint:fix": "eslint --quiet --fix src/**/*.{ts,tsx,js,jsx}"
@@ -18,18 +18,22 @@
     "url": "https://github.com/xiaoboost/blog"
   },
   "dependencies": {
+    "@blog/context": "workspace:*",
     "@blog/node": "workspace:*",
     "@blog/shared": "workspace:*",
     "@blog/types": "workspace:*",
+    "chalk": "4.1.2",
     "chokidar": "3.5.3",
     "esbuild": "0.15.5",
     "look-it-up": "2.1.0",
+    "md5": "2.3.0",
     "moment": "2.29.4",
     "ora": "5.4.1",
     "tapable": "2.2.1",
     "tslib": "2.4.0"
   },
   "devDependencies": {
+    "@types/md5": "2.3.2",
     "@types/node": "16.11.7",
     "@xiao-ai/eslint-config": "1.0.1",
     "@xiao-ai/tsconfig": "1.0.0",

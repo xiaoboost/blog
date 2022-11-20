@@ -6,7 +6,7 @@ import { readFileSync } from 'fs';
 import { normalize } from '@blog/node';
 import { lookItUpSync } from 'look-it-up';
 
-const pluginName = 'local-package-plugin';
+const pluginName = 'local-package';
 const requireSuffix = 'require';
 const moduleSuffix = 'local-module';
 const namespace = 'local-package';
@@ -78,7 +78,7 @@ function parsePathFromRequirePath(path: string) {
   return result[1];
 }
 
-export const LocalPackagePlugin = (): BuilderPlugin => ({
+export const LocalPackageRequirer = (): BuilderPlugin => ({
   name: pluginName,
   apply(builder) {
     const requireSuffixMatcher = new RegExp(`\\_${requireSuffix}$`);
