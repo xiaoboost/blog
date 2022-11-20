@@ -1,11 +1,11 @@
-import { BuilderHooks, BuilderInstance, BuilderOptions } from '@blog/types';
+import { BuilderHooks, BuilderInstance, CommandOptions, BuilderOptions } from '@blog/types';
 import { AsyncSeriesHook, AsyncParallelHook } from 'tapable';
-import { applyPlugin } from './plugin';
+import { applyPlugin, normalizeOptions } from './options';
 import { Bundler } from '../bundler';
 import { Runner } from '../runner';
 
 export class Builder implements BuilderInstance {
-  static async create(opt: BuilderOptions) {
+  static async create(opt: CommandOptions) {
     const builder = new Builder(opt);
     await builder.init();
     return builder;
@@ -21,16 +21,11 @@ export class Builder implements BuilderInstance {
 
   options: Required<BuilderOptions>;
 
-  constructor(opt: BuilderOptions) {
+  constructor(opt: CommandOptions) {
     this.root = process.cwd();
     this.bundler = new Bundler(this);
     this.runner = new Runner(this);
-    this.options = {
-      outDir: opt.outDir ?? 'dist',
-      mode: opt.mode === 'production' ? 'production' : 'development',
-      hmr: opt.hmr ?? false,
-      isWatch: false,
-    };
+    this.options = normalizeOptions(opt);
     this.hooks = {
       initialization: new AsyncSeriesHook<[Required<BuilderOptions>]>(['options']),
       endBuild: new AsyncSeriesHook<[]>(),
@@ -45,8 +40,6 @@ export class Builder implements BuilderInstance {
   async init() {
     applyPlugin(this);
     await this.hooks.initialization.promise({ ...this.options });
-    await this.hooks.bundler.promise(this.bundler);
-    await this.hooks.runner.promise(this.runner);
   }
 
   async stop() {
@@ -61,7 +54,9 @@ export class Builder implements BuilderInstance {
 
   async build() {
     try {
+      await this.hooks.bundler.promise(this.bundler);
       await this.bundler.bundle();
+      await this.hooks.runner.promise(this.runner);
       await this.runner.run(this.bundler.getBundledCode());
     } catch (e: any) {
       debugger;

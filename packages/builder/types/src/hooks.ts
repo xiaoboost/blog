@@ -44,9 +44,9 @@ export interface BuilderHooks {
 /** 打包器钩子 */
 export interface BundlerHooks {
   /** 路径路由 */
-  resolve: AsyncSeriesBailHook<[OnResolveArgs], OnResolveResult | undefined>;
+  resolve: AsyncSeriesBailHook<[OnResolveArgs], OnResolveResult | undefined | null>;
   /** 读取文件 */
-  load: AsyncSeriesBailHook<[OnLoadArgs], OnLoadResult | undefined>;
+  load: AsyncSeriesBailHook<[OnLoadArgs], OnLoadResult | undefined | null>;
 }
 
 /** 运行器钩子 */
