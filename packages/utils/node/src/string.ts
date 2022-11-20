@@ -1,5 +1,6 @@
 import { pinyin } from 'pinyin-pro';
 import { AnyObject } from '@xiao-ai/utils';
+import { URLSearchParams } from 'url';
 
 /** 汉字转换为拼音 */
 export function toPinyin(str: string) {

@@ -18,9 +18,8 @@
     "url": "https://github.com/xiaoboost/blog"
   },
   "dependencies": {
-    "esbuild": "0.15.5",
-    "chokidar": "3.5.3",
-    "tapable": "2.2.1",
+    "jss": "10.9.2",
+    "jss-preset-default": "10.9.2",
     "tslib": "2.4.0"
   },
   "devDependencies": {
