@@ -15,15 +15,15 @@
   },
   "devDependencies": {
     "@xiao-ai/eslint-config": "1.0.1",
-    "@xiao-ai/tsconfig": "1.0.0",
+    "@xiao-ai/tsconfig": "1.0.1",
     "@types/blog": "workspace:*",
     "@types/node": "16.11.7",
     "eslint": "8.22.0",
     "rimraf": "3.0.2",
-    "typescript": "4.8.3"
+    "typescript": "4.9.3"
   },
   "dependencies": {
-    "@xiao-ai/utils": "1.6.0",
+    "@xiao-ai/utils": "1.6.3",
     "pinyin-pro": "3.11.0",
     "tslib": "2.4.0"
   }
