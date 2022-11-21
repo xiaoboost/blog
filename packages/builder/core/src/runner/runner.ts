@@ -1,16 +1,28 @@
-import { join } from 'path';
 import { RunnerInstance, RunnerHooks, BuilderInstance, PostUrlMap } from '@blog/types';
+import { getContext, InjectRunnerHooks, AssetData } from '@blog/context';
 import { AsyncSeriesHook } from 'tapable';
+import { runScript, RunError } from '@xiao-ai/utils/node';
 
 export class Runner implements RunnerInstance {
-  private builder: BuilderInstance;
+  private _builder: BuilderInstance;
 
   private _code = '';
 
-  hooks: RunnerHooks;
+  private _assets: AssetData[] = [];
+
+  private _error: RunError | undefined;
+
+  hooks!: RunnerHooks;
 
   constructor(builder: BuilderInstance) {
-    this.builder = builder;
+    this._builder = builder;
+    this.init('');
+  }
+
+  private init(code?: string) {
+    this._code = code ?? '';
+    this._assets = [];
+    this._error = undefined;
     this.hooks = {
       beforeStart: new AsyncSeriesHook<[]>(),
       beforeComponent: new AsyncSeriesHook<[]>(),
@@ -21,7 +33,40 @@ export class Runner implements RunnerInstance {
     };
   }
 
-  run(code: string): Promise<void> {
-    return Promise.resolve();
+  private getContext() {
+    const wrapHook = Object.keys(this.hooks).reduce((ans, item) => {
+      ans[item] = () => this.hooks[item].promise();
+      return ans;
+    }, {} as InjectRunnerHooks);
+
+    return getContext(this._builder, wrapHook);
+  }
+
+  getResult() {
+    return {
+      assets: this._assets.slice(),
+      error: this._error,
+    };
+  }
+
+  async run(code: string): Promise<void> {
+    this.init(code);
+
+    const result = runScript<() => Promise<AssetData[]>>(this._code, {
+      dirname: __dirname,
+      globalParams: {
+        ...this.getContext(),
+        process,
+        Buffer,
+      },
+    });
+
+    this._error = result.error;
+
+    try {
+      this._assets = await result.output();
+    } catch (err: any) {
+      this._error = err;
+    }
   }
 }
