@@ -27,7 +27,7 @@
     "@blog/template-layout": "workspace:*",
     "@blog/template-post": "workspace:*",
     "@mdx-js/mdx": "2.1.3",
-    "@xiao-ai/utils": "1.6.3",
+    "@xiao-ai/utils": "1.6.4",
     "chalk": "4.1.2",
     "chokidar": "3.5.3",
     "esbuild": "0.15.5",
