@@ -1,15 +1,14 @@
-import jss from 'jss';
-import preset from 'jss-preset-default';
+import { StyleContext } from './styles';
+import { MemoryContext } from './accessor';
+import { getBuilderContext } from './builder';
 
-import * as styles from './styles';
-import * as accessor from './accessor';
+type ContextParameters = Parameters<typeof getBuilderContext>;
 
-jss.setup(preset());
-
-/** 运行上下文 */
-export const RunContext = {
-  [styles.JssKey]: jss,
-  [accessor.MemoryKey]: accessor.Memory,
-  Buffer,
-  process,
-};
+/** 运行器上下文 */
+export function getContext(...args: ContextParameters) {
+  return {
+    ...StyleContext,
+    ...MemoryContext,
+    ...getBuilderContext(...args),
+  };
+}

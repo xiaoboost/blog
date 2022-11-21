@@ -1,9 +1,13 @@
 import { Accessor, FileAccessor } from './types';
 
-export const Memory = new Map<string, any>();
+const Memory = new Map<string, any>();
 
-/** 全局缓存变量名称 */
-export const MemoryKey = '_Memory';
+const MemoryKey = '_Memory';
+
+/** 缓存变量上下文 */
+export const MemoryContext = {
+  [MemoryKey]: Memory,
+};
 
 /** 全局访问器 */
 export function getAccessor<T = any>(name: string): Accessor<T> {
@@ -20,6 +24,7 @@ export function getAccessor<T = any>(name: string): Accessor<T> {
 /** 文件访问器 */
 export function getFileAccessor(path: string, content: Buffer): FileAccessor {
   const cacheKey = `file::${path}`;
+
   Memory.set(cacheKey, content);
 
   return {

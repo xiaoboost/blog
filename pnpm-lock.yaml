@@ -37,6 +37,7 @@ importers:
 
   packages/builder/context:
     specifiers:
+      '@blog/types': workspace:*
       '@types/node': 16.11.7
       '@xiao-ai/eslint-config': 1.0.1
       '@xiao-ai/tsconfig': 1.0.1
@@ -47,6 +48,7 @@ importers:
       tslib: 2.4.0
       typescript: 4.9.3
     dependencies:
+      '@blog/types': link:../types
       jss: 10.9.2
       jss-preset-default: 10.9.2
       tslib: 2.4.0
@@ -68,7 +70,7 @@ importers:
       '@types/node': 16.11.7
       '@xiao-ai/eslint-config': 1.0.1
       '@xiao-ai/tsconfig': 1.0.1
-      '@xiao-ai/utils': 1.6.3
+      '@xiao-ai/utils': 1.6.4
       chalk: 4.1.2
       chokidar: 3.5.3
       esbuild: 0.15.5
@@ -86,7 +88,7 @@ importers:
       '@blog/node': link:../../utils/node
       '@blog/shared': link:../../utils/shared
       '@blog/types': link:../types
-      '@xiao-ai/utils': 1.6.3
+      '@xiao-ai/utils': 1.6.4
       chalk: 4.1.2
       chokidar: 3.5.3
       esbuild: 0.15.5
@@ -138,7 +140,7 @@ importers:
       '@types/react': 18.0.17
       '@xiao-ai/eslint-config': 1.0.1
       '@xiao-ai/tsconfig': 1.0.1
-      '@xiao-ai/utils': 1.6.3
+      '@xiao-ai/utils': 1.6.4
       eslint: 8.22.0
       highlight.js: 11.6.0
       mocha: 10.0.0
@@ -147,7 +149,7 @@ importers:
       typescript: 4.9.3
     dependencies:
       '@blog/shared': link:../../utils/shared
-      '@xiao-ai/utils': 1.6.3
+      '@xiao-ai/utils': 1.6.4
       highlight.js: 11.6.0
       react: 18.2.0
     devDependencies:
@@ -173,7 +175,7 @@ importers:
       '@types/react': 18.0.17
       '@xiao-ai/eslint-config': 1.0.1
       '@xiao-ai/tsconfig': 1.0.1
-      '@xiao-ai/utils': 1.6.3
+      '@xiao-ai/utils': 1.6.4
       eslint: 8.22.0
       html-escaper: 3.0.3
       look-it-up: 2.1.0
@@ -185,7 +187,7 @@ importers:
     dependencies:
       '@blog/mdx-code-block-normal': link:../code-block-normal
       '@blog/shared': link:../../utils/shared
-      '@xiao-ai/utils': 1.6.3
+      '@xiao-ai/utils': 1.6.4
       html-escaper: 3.0.3
       look-it-up: 2.1.0
       react: 18.2.0
@@ -210,14 +212,14 @@ importers:
       '@types/react': 18.0.17
       '@xiao-ai/eslint-config': 1.0.1
       '@xiao-ai/tsconfig': 1.0.1
-      '@xiao-ai/utils': 1.6.3
+      '@xiao-ai/utils': 1.6.4
       eslint: 8.22.0
       react: 18.2.0
       tslib: 2.4.0
       typescript: 4.9.3
     dependencies:
       '@blog/shared': link:../../utils/shared
-      '@xiao-ai/utils': 1.6.3
+      '@xiao-ai/utils': 1.6.4
       react: 18.2.0
     devDependencies:
       '@types/blog': link:../../tools/typings
@@ -266,14 +268,14 @@ importers:
       '@types/react': 18.0.17
       '@xiao-ai/eslint-config': 1.0.1
       '@xiao-ai/tsconfig': 1.0.1
-      '@xiao-ai/utils': 1.6.3
+      '@xiao-ai/utils': 1.6.4
       eslint: 8.22.0
       react: 18.2.0
       tslib: 2.4.0
       typescript: 4.9.3
     dependencies:
       '@blog/shared': link:../../utils/shared
-      '@xiao-ai/utils': 1.6.3
+      '@xiao-ai/utils': 1.6.4
       react: 18.2.0
     devDependencies:
       '@types/blog': link:../../tools/typings
@@ -302,7 +304,7 @@ importers:
       '@types/react': 18.0.17
       '@xiao-ai/eslint-config': 1.0.1
       '@xiao-ai/tsconfig': 1.0.1
-      '@xiao-ai/utils': 1.6.3
+      '@xiao-ai/utils': 1.6.4
       eslint: 8.22.0
       moment: 2.29.4
       react: 18.2.0
@@ -311,7 +313,7 @@ importers:
     dependencies:
       '@blog/component-scrollbar': link:../../components/scrollbar
       '@blog/shared': link:../../utils/shared
-      '@xiao-ai/utils': 1.6.3
+      '@xiao-ai/utils': 1.6.4
       moment: 2.29.4
       react: 18.2.0
       tslib: 2.4.0
@@ -339,7 +341,7 @@ importers:
       '@types/react': 18.0.17
       '@xiao-ai/eslint-config': 1.0.1
       '@xiao-ai/tsconfig': 1.0.1
-      '@xiao-ai/utils': 1.6.3
+      '@xiao-ai/utils': 1.6.4
       eslint: 8.22.0
       moment: 2.29.4
       react: 18.2.0
@@ -352,7 +354,7 @@ importers:
       '@blog/shared': link:../../utils/shared
       '@blog/template-layout': link:../layout
       '@mdx-js/react': 2.1.3_react@18.2.0
-      '@xiao-ai/utils': 1.6.3
+      '@xiao-ai/utils': 1.6.4
       moment: 2.29.4
       react: 18.2.0
       tslib: 2.4.0
@@ -394,7 +396,7 @@ importers:
       '@types/yargs': 17.0.11
       '@xiao-ai/eslint-config': 1.0.1
       '@xiao-ai/tsconfig': 1.0.1
-      '@xiao-ai/utils': 1.6.3
+      '@xiao-ai/utils': 1.6.4
       chalk: 4.1.2
       chokidar: 3.5.3
       esbuild: 0.15.5
@@ -434,7 +436,7 @@ importers:
       '@blog/template-layout': link:../../templates/layout
       '@blog/template-post': link:../../templates/post
       '@mdx-js/mdx': 2.1.3
-      '@xiao-ai/utils': 1.6.3
+      '@xiao-ai/utils': 1.6.4
       chalk: 4.1.2
       chokidar: 3.5.3
       esbuild: 0.15.5
@@ -490,7 +492,7 @@ importers:
       '@types/node': 16.11.7
       '@xiao-ai/eslint-config': 1.0.1
       '@xiao-ai/tsconfig': 1.0.1
-      '@xiao-ai/utils': 1.6.3
+      '@xiao-ai/utils': 1.6.4
       chai: 4.3.6
       eslint: 8.22.0
       jss: 10.9.2
@@ -500,7 +502,7 @@ importers:
       tsx: 3.8.2
       typescript: 4.9.3
     dependencies:
-      '@xiao-ai/utils': 1.6.3
+      '@xiao-ai/utils': 1.6.4
       jss: 10.9.2
       jss-preset-default: 10.9.2
     devDependencies:
@@ -526,14 +528,14 @@ importers:
       '@types/node': 16.11.7
       '@xiao-ai/eslint-config': 1.0.1
       '@xiao-ai/tsconfig': 1.0.1
-      '@xiao-ai/utils': 1.6.3
+      '@xiao-ai/utils': 1.6.4
       eslint: 8.22.0
       pinyin-pro: 3.11.0
       rimraf: 3.0.2
       tslib: 2.4.0
       typescript: 4.9.3
     dependencies:
-      '@xiao-ai/utils': 1.6.3
+      '@xiao-ai/utils': 1.6.4
       pinyin-pro: 3.11.0
       tslib: 2.4.0
     devDependencies:
@@ -573,7 +575,7 @@ importers:
       '@types/node': 16.11.7
       '@xiao-ai/eslint-config': 1.0.1
       '@xiao-ai/tsconfig': 1.0.1
-      '@xiao-ai/utils': 1.6.3
+      '@xiao-ai/utils': 1.6.4
       color: 4.2.3
       eslint: 8.22.0
       jss: 10.9.2
@@ -581,7 +583,7 @@ importers:
       tslib: 2.4.0
       typescript: 4.9.3
     dependencies:
-      '@xiao-ai/utils': 1.6.3
+      '@xiao-ai/utils': 1.6.4
       color: 4.2.3
       jss: 10.9.2
       tslib: 2.4.0
@@ -601,12 +603,12 @@ importers:
       '@types/node': 16.11.7
       '@xiao-ai/eslint-config': 1.0.1
       '@xiao-ai/tsconfig': 1.0.1
-      '@xiao-ai/utils': 1.6.3
+      '@xiao-ai/utils': 1.6.4
       eslint: 8.22.0
       tslib: 2.4.0
       typescript: 4.9.3
     dependencies:
-      '@xiao-ai/utils': 1.6.3
+      '@xiao-ai/utils': 1.6.4
       tslib: 2.4.0
     devDependencies:
       '@types/blog': link:../../tools/typings
@@ -1205,8 +1207,8 @@ packages:
     resolution: {integrity: sha512-EG8u3CvbuDcZTOejH8CMyoKbNGd9zxJ3bwv0bCuA2r7HBrDVQ3N9rpKZg1xrdG8SYmYp0hdKTRM5pOBCwy4Ucg==}
     dev: true
 
-  /@xiao-ai/utils/1.6.3:
-    resolution: {integrity: sha512-5hgLNAyrYcQxuCMOpz6D4qNFX+g1ap5eJcX6TzuZtka1Dj9YqX/amBu499DEjCVwiDUctVmJ0z9VfXQoA7SJPA==}
+  /@xiao-ai/utils/1.6.4:
+    resolution: {integrity: sha512-jJ6h+5YoDsGMvq1r2PMij3N+CNs0hdmCvwA5SXDnVbHDvGWdLgivWc2txwrh+q/bpfh5TF5DK5wmxPNj/iEw6Q==}
     dependencies:
       tslib: 2.4.0
     dev: false
