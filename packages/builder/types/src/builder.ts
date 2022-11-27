@@ -1,5 +1,5 @@
 import type { BuildIncremental, Loader } from 'esbuild';
-import type { BuilderHooks, BundlerHooks, RunnerHooks } from './hooks';
+import type { BuilderHooks, BundlerHooks } from './hooks';
 
 /** 构建器选项 */
 export interface BuilderOptions extends Required<CommandOptions> {
@@ -48,8 +48,6 @@ export interface BundlerInstance {
 
 /** 运行器实例 */
 export interface RunnerInstance {
-  /** 钩子数据 */
-  hooks: RunnerHooks;
   /** 运行代码 */
   run(code: string): Promise<void>;
 }

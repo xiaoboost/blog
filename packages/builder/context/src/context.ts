@@ -1,14 +1,18 @@
-import { StyleContext } from './styles';
-import { MemoryContext } from './accessor';
-import { getBuilderContext } from './builder';
+import Jss from 'jss';
+import preset from 'jss-preset-default';
 
-type ContextParameters = Parameters<typeof getBuilderContext>;
+import type { BuilderInstance } from '@blog/types';
+
+import { GlobalKey } from './types';
+import { Memory } from './accessor';
+
+Jss.setup(preset());
 
 /** 运行器上下文 */
-export function getContext(...args: ContextParameters) {
+export function getContext(builder: BuilderInstance) {
   return {
-    ...StyleContext,
-    ...MemoryContext,
-    ...getBuilderContext(...args),
+    [GlobalKey.Memory]: Memory,
+    [GlobalKey.JSS]: Jss,
+    [GlobalKey.Builder]: builder,
   };
 }

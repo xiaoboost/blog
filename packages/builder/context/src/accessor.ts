@@ -1,25 +1,7 @@
-import { Accessor, FileAccessor } from './types';
+import type { FileAccessor } from '@blog/types';
+import { GlobalKey } from './types';
 
-const Memory = new Map<string, any>();
-
-const MemoryKey = '_Memory';
-
-/** 缓存变量上下文 */
-export const MemoryContext = {
-  [MemoryKey]: Memory,
-};
-
-/** 全局访问器 */
-export function getAccessor<T = any>(name: string): Accessor<T> {
-  return {
-    get() {
-      return Memory.get(name);
-    },
-    set(val) {
-      Memory.set(name, val);
-    },
-  };
-}
+export const Memory = new Map<string, any>();
 
 /** 文件访问器 */
 export function getFileAccessor(path: string, content: Buffer): FileAccessor {
@@ -35,7 +17,7 @@ export function getFileAccessor(path: string, content: Buffer): FileAccessor {
       return `
       export default {
         path,
-        content: ${MemoryKey}.get(${JSON.stringify(cacheKey)}),
+        content: globalThis[${GlobalKey.Memory}].get(${JSON.stringify(cacheKey)}),
       };
       `;
     },

@@ -93,8 +93,7 @@ export class Bundler implements BundlerInstance {
 
   getBundledCode() {
     const output = this.instance?.outputFiles ?? [];
-    debugger;
-    const codeFile = output.find((item) => item.path.endsWith('.js'));
+    const codeFile = output.find((item) => item.path.endsWith('index.js'));
     return codeFile?.text ?? '';
   }
 
