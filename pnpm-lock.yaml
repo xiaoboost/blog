@@ -41,16 +41,20 @@ importers:
       '@types/node': 16.11.7
       '@xiao-ai/eslint-config': 1.0.1
       '@xiao-ai/tsconfig': 1.0.1
+      '@xiao-ai/utils': 1.6.4
       eslint: 8.22.0
       jss: 10.9.2
       jss-preset-default: 10.9.2
       rimraf: 3.0.2
+      tapable: 2.2.1
       tslib: 2.4.0
       typescript: 4.9.3
     dependencies:
       '@blog/types': link:../types
+      '@xiao-ai/utils': 1.6.4
       jss: 10.9.2
       jss-preset-default: 10.9.2
+      tapable: 2.2.1
       tslib: 2.4.0
     devDependencies:
       '@types/node': 16.11.7

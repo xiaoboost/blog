@@ -6,10 +6,26 @@
   "license": "MIT",
   "main": "dist/index.js",
   "types": "src/index.ts",
+  "exports": {
+    "*": {
+      "require": "./dist/cjs",
+      "import": "./dist/esm"
+    },
+    "runtime": {
+      "require": "./dist/cjs/runtime",
+      "import": "./dist/esm/runtime"
+    },
+    "web": {
+      "require": "./dist/cjs/web",
+      "import": "./dist/esm/web"
+    }
+  },
   "scripts": {
     "clear": "rimraf ./dist",
-    "build": "npm run clear && tsc -p .",
-    "watch": "npm run build -- -w",
+    "build:cjs": "tsc -p . --module CommonJS --outDir dist/cjs",
+    "build:esm": "tsc -p . --module ESNext --outDir dist/esm",
+    "build": "npm run clear && npm run build:cjs && npm run build:esm",
+    "watch": "npm run build:cjs -- -w",
     "lint": "eslint --quiet src/**/*.{ts,tsx,js,jsx}",
     "lint:fix": "eslint --quiet --fix src/**/*.{ts,tsx,js,jsx}"
   },
@@ -19,8 +35,10 @@
   },
   "dependencies": {
     "@blog/types": "workspace:*",
+    "@xiao-ai/utils": "1.6.4",
     "jss": "10.9.2",
     "jss-preset-default": "10.9.2",
+    "tapable": "2.2.1",
     "tslib": "2.4.0"
   },
   "devDependencies": {

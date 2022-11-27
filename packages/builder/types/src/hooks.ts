@@ -50,7 +50,7 @@ export interface BundlerHooks {
 }
 
 /** 运行器钩子 */
-export interface RunnerHooks {
+export interface RuntimeHooks {
   /** 运行开始前 */
   beforeStart: AsyncSeriesHook<[]>;
   /** 组件编译前 */

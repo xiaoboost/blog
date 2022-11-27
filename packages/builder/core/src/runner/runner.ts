@@ -62,11 +62,6 @@ export class Runner implements RunnerInstance {
     });
 
     this._error = result.error;
-
-    try {
-      this._assets = await result.output();
-    } catch (err: any) {
-      this._error = err;
-    }
+    this._assets = await result.output();
   }
 }
