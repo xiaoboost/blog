@@ -2,37 +2,12 @@ import type { BuilderPlugin } from '@blog/types';
 
 import { dirname, isAbsolute } from 'path';
 import { builtinModules } from 'module';
-import { readFileSync } from 'fs';
 import { normalize } from '@blog/node';
-import { lookItUpSync } from 'look-it-up';
 
 const pluginName = 'local-package';
 const requireSuffix = 'require';
 const moduleSuffix = 'local-module';
 const namespace = 'local-package';
-const externals: string[] = [];
-
-function getExternalPkg() {
-  if (externals.length > 0) {
-    return externals.slice();
-  }
-
-  const packagePath = lookItUpSync('package.json', __dirname) ?? '';
-  const content = readFileSync(packagePath, 'utf-8');
-  const data = JSON.parse(content);
-
-  externals.push(
-    ...Object.keys(data.dependencies)
-      .filter((key) => !data.dependencies[key].startsWith('workspace') || key === '@blog/shared')
-      .concat(
-        Object.keys(data.devDependencies).filter(
-          (key) => !data.devDependencies[key].startsWith('workspace'),
-        ),
-      ),
-  );
-
-  return externals.slice();
-}
 
 function isExternal(file: string) {
   // monorepo
@@ -45,15 +20,12 @@ function isExternal(file: string) {
     return false;
   }
 
-  // 特殊库
-  if (file.startsWith('@xiao-ai/utils')) {
+  // node 内置模块
+  if (builtinModules.includes(file)) {
     return false;
   }
 
-  const externals = getExternalPkg().concat(builtinModules);
-  const [packageName] = file.split('/');
-
-  return !externals.includes(packageName);
+  return true;
 }
 
 function parsePathFromModulePath(path: string) {
@@ -86,21 +58,19 @@ export const LocalPackageRequirer = (): BuilderPlugin => ({
 
     builder.hooks.bundler.tap(pluginName, (bundler) => {
       bundler.hooks.resolve.tap(pluginName, (args) => {
-        if (!isExternal(args.path)) {
-          return;
-        }
-
-        if (requireSuffixMatcher.test(args.path) && args.namespace === namespace) {
+        if (args.namespace === namespace) {
+          if (requireSuffixMatcher.test(args.path)) {
+            return {
+              path: args.path,
+              namespace,
+            };
+          }
+        } else if (isExternal(args.path)) {
           return {
-            path: args.path,
+            path: `${normalize(args.importer)}_${args.path}_${moduleSuffix}`,
             namespace,
           };
         }
-
-        return {
-          path: `${normalize(args.importer)}_${args.path}_${moduleSuffix}`,
-          namespace,
-        };
       });
 
       bundler.hooks.load.tap(pluginName, (args) => {

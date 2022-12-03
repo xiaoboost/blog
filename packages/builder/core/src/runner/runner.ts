@@ -1,6 +1,5 @@
-import { RunnerInstance, RunnerHooks, BuilderInstance, PostUrlMap } from '@blog/types';
-import { getContext, InjectRunnerHooks, AssetData } from '@blog/context';
-import { AsyncSeriesHook } from 'tapable';
+import { RunnerInstance, BuilderInstance, AssetData } from '@blog/types';
+import { getContext } from '@blog/context';
 import { runScript, RunError } from '@xiao-ai/utils/node';
 
 export class Runner implements RunnerInstance {
@@ -12,8 +11,6 @@ export class Runner implements RunnerInstance {
 
   private _error: RunError | undefined;
 
-  hooks!: RunnerHooks;
-
   constructor(builder: BuilderInstance) {
     this._builder = builder;
     this.init('');
@@ -23,23 +20,28 @@ export class Runner implements RunnerInstance {
     this._code = code ?? '';
     this._assets = [];
     this._error = undefined;
-    this.hooks = {
-      beforeStart: new AsyncSeriesHook<[]>(),
-      beforeComponent: new AsyncSeriesHook<[]>(),
-      afterComponent: new AsyncSeriesHook<[]>(),
-      afterPostUrl: new AsyncSeriesHook<[PostUrlMap]>(['PostUrlMap']),
-      beforeEachPost: new AsyncSeriesHook<[]>(),
-      afterEachPost: new AsyncSeriesHook<[]>(),
-    };
   }
 
   private getContext() {
-    const wrapHook = Object.keys(this.hooks).reduce((ans, item) => {
-      ans[item] = () => this.hooks[item].promise();
-      return ans;
-    }, {} as InjectRunnerHooks);
+    const runtimeConsole: Console = {
+      ...console,
+      log(...args: any[]) {
+        console.log('[Runtime]', ...args);
+      },
+    };
 
-    return getContext(this._builder, wrapHook);
+    return {
+      ...getContext(this._builder),
+      process,
+      Buffer,
+      setTimeout,
+      setImmediate,
+      setInterval,
+      clearImmediate,
+      clearInterval,
+      clearTimeout,
+      console: runtimeConsole,
+    };
   }
 
   getResult() {
@@ -54,13 +56,10 @@ export class Runner implements RunnerInstance {
 
     const result = runScript<() => Promise<AssetData[]>>(this._code, {
       dirname: __dirname,
-      globalParams: {
-        ...this.getContext(),
-        process,
-        Buffer,
-      },
+      globalParams: this.getContext(),
     });
 
+    debugger;
     this._error = result.error;
     this._assets = await result.output();
   }
