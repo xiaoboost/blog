@@ -41,11 +41,11 @@ setTimeout(() => {
     hooks,
   };
 
-  forEachStack.forEach((item) => item(runtimeData, builder));
-
   if (isFirstRun.get()) {
     forOnceStack.forEach((item) => item(runtimeData, builder));
   }
+
+  forEachStack.forEach((item) => item(runtimeData, builder));
 
   // 初始化完成
   readySwitch();

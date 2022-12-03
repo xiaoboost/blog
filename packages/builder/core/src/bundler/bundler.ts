@@ -9,6 +9,7 @@ import {
   build as esbuild,
 } from 'esbuild';
 import { join } from 'path';
+import { builtinModules } from 'module';
 import { BundlerHooks, BundlerInstance, BuilderInstance } from '@blog/types';
 import { AsyncSeriesBailHook } from 'tapable';
 import { getRoot } from '../utils';
@@ -59,6 +60,7 @@ export class Bundler implements BundlerInstance {
       resolveExtensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
       publicPath: opt.publicPath,
       assetNames: opt.assetNames,
+      external: builtinModules,
       splitting: false,
       watch: false,
       charset: 'utf8',
