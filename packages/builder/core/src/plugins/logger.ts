@@ -31,7 +31,7 @@ function getShortTime(time: number) {
 }
 
 function log(...args: any[]) {
-  console.log(`[${Moment().format('hh:mm:ss')}]`, ...args);
+  console.log(`[${Moment().format('HH:mm:ss')}]`, ...args);
 }
 
 export const LoggerPlugin = (): BuilderPlugin => ({
