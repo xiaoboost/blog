@@ -84,9 +84,9 @@ export const LocalPackageRequirer = (): BuilderPlugin => ({
             resolveDir: dirname(file),
             loader: 'ts',
             contents: `
-              import { createRequire } from "module";
-              export default createRequire("${file}");
-            `,
+import { createRequire } from "module";
+export default createRequire("${file}");
+            `.trim(),
           };
         } else if (moduleSuffixMatcher.test(args.path)) {
           const [file, moduleName] = parsePathFromModulePath(args.path);
@@ -94,9 +94,9 @@ export const LocalPackageRequirer = (): BuilderPlugin => ({
             resolveDir: dirname(file),
             loader: 'ts',
             contents: `
-            import localRequire from '${file}_${requireSuffix}';
-            export = localRequire('${moduleName}');
-          `,
+import localRequire from '${file}_${requireSuffix}';
+export = localRequire('${moduleName}');
+          `.trim(),
           };
         }
       });
