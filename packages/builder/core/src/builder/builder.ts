@@ -52,6 +52,8 @@ export class Builder implements BuilderInstance {
     } catch (e: any) {
       await this.hooks.fail.promise(e);
     }
+
+    await this.hooks.endBuild.promise();
   }
 
   async init() {

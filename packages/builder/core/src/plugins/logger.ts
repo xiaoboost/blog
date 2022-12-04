@@ -3,6 +3,8 @@ import type { BuilderPlugin } from '@blog/types';
 import Moment from 'moment';
 import createSpinner from 'ora';
 
+import { getPrefixConsole } from '../utils';
+
 const pluginName = 'logger';
 
 function getShortString(current: number, unit: string) {
@@ -30,9 +32,7 @@ function getShortTime(time: number) {
   return getShortString(current, units[level]);
 }
 
-function log(...args: any[]) {
-  console.log(`[${Moment().format('HH:mm:ss')}]`, ...args);
-}
+const printer = getPrefixConsole(() => `[${Moment().format('HH:mm:ss')}]`);
 
 export const LoggerPlugin = (): BuilderPlugin => ({
   name: 'logger',
@@ -52,7 +52,7 @@ export const LoggerPlugin = (): BuilderPlugin => ({
     builder.hooks.runner.tap(pluginName, () => {
       const now = Date.now();
       spinner.clear();
-      log(`打包耗时 ${getShortTime(now - timer)}`);
+      printer.log(`打包耗时 ${getShortTime(now - timer)}`);
       timer = now;
       spinner.text = '运行构建...';
     });
@@ -60,7 +60,7 @@ export const LoggerPlugin = (): BuilderPlugin => ({
     builder.hooks.endBuild.tap(pluginName, () => {
       spinner.clear();
       spinner.stop();
-      log(`构建耗时 ${getShortTime(Date.now() - timer)}`);
+      printer.log(`构建耗时 ${getShortTime(Date.now() - timer)}`);
     });
 
     builder.hooks.fail.tap(pluginName, () => {
