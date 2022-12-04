@@ -1,5 +1,6 @@
 import type { AsyncParallelHook, AsyncSeriesHook, AsyncSeriesBailHook } from 'tapable';
 import type { OnResolveArgs, OnResolveResult, OnLoadResult, OnLoadArgs } from 'esbuild';
+import type { FSWatcher } from 'chokidar';
 import type { BuilderOptions, BundlerInstance, RunnerInstance } from './builder';
 import type { PostUrlMap } from './types';
 
@@ -28,7 +29,11 @@ export interface BuilderHooks {
   /**
    * 文件变更
    */
-  filesChange: AsyncParallelHook<string[]>;
+  filesChange: AsyncParallelHook<[string[]]>;
+  /**
+   * 监听器创建后
+   */
+  watcher: AsyncSeriesHook<[FSWatcher]>;
   /**
    * 打包器创建后
    *   - 运行打包之前
