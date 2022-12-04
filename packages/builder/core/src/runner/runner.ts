@@ -6,6 +6,7 @@ import { readFile } from 'fs/promises';
 import { SourceMapConsumer } from 'source-map';
 import { isFunc } from '@xiao-ai/utils';
 import { runScript, RunError } from '@xiao-ai/utils/node';
+import { getPrefixConsole } from '../utils';
 
 export class Runner implements RunnerInstance {
   private _builder: BuilderInstance;
@@ -31,24 +32,17 @@ export class Runner implements RunnerInstance {
   }
 
   private getContext() {
-    const runtimeConsole: Console = {
-      ...console,
-      log(...args: any[]) {
-        console.log('[Runtime]', ...args);
-      },
-    };
-
     return {
       ...getContext(this._builder),
       process,
       Buffer,
-      // setTimeout,
-      // setImmediate,
-      // setInterval,
-      // clearImmediate,
-      // clearInterval,
-      // clearTimeout,
-      // console: runtimeConsole,
+      setTimeout,
+      setImmediate,
+      setInterval,
+      clearImmediate,
+      clearInterval,
+      clearTimeout,
+      console: getPrefixConsole('[Runtime]'),
     };
   }
 
