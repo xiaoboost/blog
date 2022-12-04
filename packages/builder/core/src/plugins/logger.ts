@@ -1,5 +1,6 @@
 import type { BuilderPlugin } from '@blog/types';
 import { Instance } from 'chalk';
+import { relative } from 'path';
 
 import Moment from 'moment';
 import createSpinner from 'ora';
@@ -36,7 +37,8 @@ function getShortTime(time: number) {
 export const Logger = (): BuilderPlugin => ({
   name: pluginName,
   apply(builder) {
-    const { terminalColor: color } = builder.options;
+    const { options, root } = builder;
+    const { terminalColor: color } = options;
     const printer = new Instance({ level: color ? 3 : 0 });
     const logger = getPrefixConsole(() => printer.green(`[${Moment().format('HH:mm:ss')}]`));
     const spinner = createSpinner({
@@ -67,7 +69,9 @@ export const Logger = (): BuilderPlugin => ({
     });
 
     builder.hooks.filesChange.tap(pluginName, (files) => {
-      // ..
+      for (const file of files) {
+        logger.log(`${printer.yellow('[文件变更]')}`, relative(root, file));
+      }
     });
 
     builder.hooks.fail.tap(pluginName, () => {
