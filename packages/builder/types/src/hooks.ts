@@ -24,7 +24,7 @@ export interface BuilderHooks {
    * 构建失败
    *   - 不会中断 watch 模式
    */
-  fail: AsyncSeriesHook<[Error[]]>;
+  fail: AsyncSeriesHook<[any]>;
   /**
    * 文件变更
    */

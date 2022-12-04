@@ -6,3 +6,5 @@ export * from './module-loader';
 export * from './asset';
 export * from './accessor';
 export * from './template';
+export * from './types';
+export * from './error';

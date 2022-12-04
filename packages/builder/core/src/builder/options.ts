@@ -3,6 +3,7 @@ import type { Builder } from './builder';
 import { LoggerPlugin } from '../plugins/logger';
 import { LocalPackageRequirer } from '../plugins/local-package-requirer';
 import { FilesCache } from '../plugins/files-cache';
+import { ErrorPrinter } from '../plugins/error-printer/index';
 
 export function applyPlugin(builder: Builder) {
   const { options: opt } = builder;
@@ -10,6 +11,7 @@ export function applyPlugin(builder: Builder) {
   LoggerPlugin().apply(builder);
   LocalPackageRequirer().apply(builder);
   FilesCache({ exts: opt.cacheFilesExts }).apply(builder);
+  ErrorPrinter().apply(builder);
 }
 
 export function normalizeOptions(opt: CommandOptions): BuilderOptions {
@@ -22,7 +24,7 @@ export function normalizeOptions(opt: CommandOptions): BuilderOptions {
     isWatch: false,
     publicPath: '/',
     assetNames: isProduction ? 'assets/[name].[hash]' : 'assets/[name]',
-    cacheFilesExts: ['.plist', '.wasm'],
+    cacheFilesExts: ['.plist', '.wasm', '.ico'],
     defined: {
       'process.env.NODE_ENV': isProduction ? '"production"' : '"development"',
       'process.env.HMR': opt.hmr ? 'true' : 'false',
