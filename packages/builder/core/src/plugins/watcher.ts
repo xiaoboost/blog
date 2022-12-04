@@ -1,5 +1,6 @@
 import type { BuilderPlugin, BuilderInstance } from '@blog/types';
 import type { FSWatcher } from 'chokidar';
+import { isAbsolute, join } from 'path';
 
 const pluginName = 'watcher-plugin';
 
@@ -16,35 +17,30 @@ export function getWatcher(builder: BuilderInstance) {
 export const Watcher = (): BuilderPlugin => ({
   name: pluginName,
   apply(builder) {
-    const { terminalColor: color } = builder.options;
+    const { watch } = builder.options;
+
+    if (!watch) {
+      return;
+    }
+
     const watcherTemp = getWatcher(builder);
+    const files = new Set<string>();
 
     builder.hooks.watcher.tap(pluginName, (watcher) => {
       let ready = false;
 
-      const addHandler = (files: string[]) => {
-        debugger;
-      };
-      const removeHandler = (files: string[]) => {
-        debugger;
-      };
-      const changeHandler = async (files: string[]) => {
-        debugger;
-        await builder.hooks.filesChange.promise(files);
+      const changeHandler = async (file: string) => {
+        const fullPath = join(watcherTemp()!.options.cwd!, file);
+        await builder.hooks.filesChange.promise([fullPath]);
         await builder.build();
       };
 
-      debugger;
       watcher
         .on('ready', () => {
-          debugger;
-          if (ready) {
-            return;
+          if (!ready) {
+            ready = true;
+            watcher.on('change', changeHandler);
           }
-
-          ready = true;
-
-          watcher.on('change', changeHandler).on('add', addHandler).on('unlink', removeHandler);
         })
         .once('restart', () => {
           ready = false;
@@ -53,6 +49,17 @@ export const Watcher = (): BuilderPlugin => ({
             .removeAllListeners('add')
             .removeAllListeners('unlink');
         });
+    });
+
+    builder.hooks.bundler.tap(pluginName, (bundler) => {
+      bundler.hooks.load.tap(pluginName, ({ path: filePath }) => {
+        if (isAbsolute(filePath) && !files.has(filePath)) {
+          files.add(filePath);
+          watcherTemp()!.add(filePath);
+        }
+
+        return null;
+      });
     });
 
     builder.hooks.done.tap(pluginName, () => {
