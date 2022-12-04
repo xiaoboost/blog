@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@blog/shared": "workspace:*",
-    "@xiao-ai/utils": "1.6.4",
+    "@xiao-ai/utils": "1.6.6",
     "highlight.js": "11.6.0",
     "react": "18.2.0"
   },

@@ -36,6 +36,12 @@ export interface BuilderInstance {
   stop(): Promise<void>;
 }
 
+/** 代码打包结果 */
+export interface BundlerResult {
+  source: string;
+  sourceMap?: string;
+}
+
 /** 打包器实例 */
 export interface BundlerInstance {
   /** 钩子数据 */
@@ -43,11 +49,11 @@ export interface BundlerInstance {
   /** 打包代码 */
   bundle(): Promise<BuildIncremental>;
   /** 获取打包后的代码 */
-  getBundledCode(): string;
+  getBundledCode(): BundlerResult;
 }
 
 /** 运行器实例 */
 export interface RunnerInstance {
   /** 运行代码 */
-  run(code: string): Promise<void>;
+  run(source: BundlerResult): Promise<void>;
 }

@@ -19,7 +19,7 @@
     "typescript": "4.9.3"
   },
   "dependencies": {
-    "@xiao-ai/utils": "1.6.4",
+    "@xiao-ai/utils": "1.6.6",
     "tslib": "2.4.0"
   }
 }

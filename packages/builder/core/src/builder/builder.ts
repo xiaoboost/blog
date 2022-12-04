@@ -37,6 +37,23 @@ export class Builder implements BuilderInstance {
     };
   }
 
+  private async _build() {
+    try {
+      await this.hooks.bundler.promise(this.bundler);
+      await this.bundler.bundle();
+      await this.hooks.runner.promise(this.runner);
+      await this.runner.run(this.bundler.getBundledCode());
+
+      const { error } = this.runner.getResult();
+
+      if (error) {
+        await this.hooks.fail.promise(error);
+      }
+    } catch (e: any) {
+      await this.hooks.fail.promise(e);
+    }
+  }
+
   async init() {
     applyPlugin(this);
     await this.hooks.initialization.promise({ ...this.options });
@@ -53,14 +70,8 @@ export class Builder implements BuilderInstance {
   }
 
   async build() {
-    try {
-      await this.hooks.bundler.promise(this.bundler);
-      await this.bundler.bundle();
-      await this.hooks.runner.promise(this.runner);
-      await this.runner.run(this.bundler.getBundledCode());
-    } catch (e: any) {
-      debugger;
-      console.log(e);
-    }
+    this.options.isWatch = false;
+    await this._build();
+    await this.stop();
   }
 }

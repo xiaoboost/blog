@@ -54,7 +54,7 @@ export class Bundler implements BundlerInstance {
       target: 'esnext',
       write: false,
       logLevel: 'silent',
-      sourcemap: isProduction ? false : 'inline',
+      sourcemap: isProduction ? false : 'external',
       minify: isProduction,
       mainFields: ['source', 'module', 'main'],
       resolveExtensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
@@ -95,8 +95,13 @@ export class Bundler implements BundlerInstance {
 
   getBundledCode() {
     const output = this.instance?.outputFiles ?? [];
-    const codeFile = output.find((item) => item.path.endsWith('index.js'));
-    return codeFile?.text ?? '';
+    const source = output.find((item) => item.path.endsWith('index.js'));
+    const sourceMap = output.find((item) => item.path.endsWith('index.js.map'));
+
+    return {
+      source: source?.text ?? '',
+      sourceMap: sourceMap?.text ?? '',
+    };
   }
 
   dispose() {
