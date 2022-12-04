@@ -22,7 +22,7 @@
     "@blog/shared": "workspace:*",
     "@blog/template-layout": "workspace:*",
     "@mdx-js/react": "2.1.3",
-    "@xiao-ai/utils": "1.6.4",
+    "@xiao-ai/utils": "1.6.6",
     "moment": "2.29.4",
     "react": "18.2.0",
     "tslib": "2.4.0"

@@ -62,5 +62,10 @@ export const LoggerPlugin = (): BuilderPlugin => ({
       spinner.stop();
       log(`构建耗时 ${getShortTime(Date.now() - timer)}`);
     });
+
+    builder.hooks.fail.tap(pluginName, () => {
+      spinner.stop();
+      spinner.clear();
+    });
   },
 });
