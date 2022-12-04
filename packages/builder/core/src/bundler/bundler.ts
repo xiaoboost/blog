@@ -79,7 +79,7 @@ export class Bundler implements BundlerInstance {
       debugger;
       this.report(error);
 
-      if (opt.isWatch) {
+      if (opt.watch) {
         const rebuild: BuildInvalidate = () => this.bundle();
         rebuild.dispose = () => void 0;
         this.instance = {

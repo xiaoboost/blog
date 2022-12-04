@@ -1,5 +1,6 @@
 import { BuilderHooks, BuilderInstance, CommandOptions, BuilderOptions } from '@blog/types';
 import { AsyncSeriesHook, AsyncParallelHook } from 'tapable';
+import { FSWatcher } from 'chokidar';
 import { applyPlugin, normalizeOptions } from './options';
 import { Bundler } from '../bundler';
 import { Runner } from '../runner';
@@ -14,6 +15,8 @@ export class Builder implements BuilderInstance {
   private bundler: Bundler;
 
   private runner: Runner;
+
+  private watcher?: FSWatcher;
 
   root: string;
 
@@ -31,7 +34,8 @@ export class Builder implements BuilderInstance {
       endBuild: new AsyncSeriesHook<[]>(),
       done: new AsyncSeriesHook<[]>(),
       fail: new AsyncSeriesHook<[Error[]]>(['errors']),
-      filesChange: new AsyncParallelHook<string[]>(['files']),
+      filesChange: new AsyncParallelHook<[string[]]>(['files']),
+      watcher: new AsyncSeriesHook<[FSWatcher]>(['watcher']),
       bundler: new AsyncSeriesHook<[Bundler]>(['Bundler']),
       runner: new AsyncSeriesHook<[Runner]>(['Runner']),
     };
@@ -56,9 +60,25 @@ export class Builder implements BuilderInstance {
     await this.hooks.endBuild.promise();
   }
 
+  reportError(error: any): void {
+    // ..
+  }
+
   async init() {
-    applyPlugin(this);
+    const { options, root } = this;
+    const { watch, outDir } = options;
+
     await this.hooks.initialization.promise({ ...this.options });
+    await applyPlugin(this);
+
+    if (watch) {
+      this.watcher = new FSWatcher({
+        ignored: ['node_modules', '.git', '.gitignore', outDir],
+        cwd: root,
+      });
+
+      await this.hooks.watcher.promise(this.watcher);
+    }
   }
 
   async stop() {
@@ -66,14 +86,11 @@ export class Builder implements BuilderInstance {
     await this.hooks.done.promise();
   }
 
-  async watch() {
-    this.options.isWatch = true;
-    await this.build();
-  }
-
   async build() {
-    this.options.isWatch = false;
     await this._build();
-    await this.stop();
+
+    if (!this.options.watch) {
+      await this.stop();
+    }
   }
 }

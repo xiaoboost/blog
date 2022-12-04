@@ -1,5 +1,6 @@
 import { RunnerInstance, BuilderInstance, AssetData, BundlerResult, ErrorData } from '@blog/types';
 import { getContext } from '@blog/context';
+import { Instance } from 'chalk';
 import { lookItUp } from 'look-it-up';
 import { isAbsolute, relative } from 'path';
 import { readFile } from 'fs/promises';
@@ -32,6 +33,9 @@ export class Runner implements RunnerInstance {
   }
 
   private getContext() {
+    const { terminalColor: color } = this._builder.options;
+    const printer = new Instance({ level: color ? 3 : 0 });
+
     return {
       ...getContext(this._builder),
       process,
@@ -42,7 +46,7 @@ export class Runner implements RunnerInstance {
       clearImmediate,
       clearInterval,
       clearTimeout,
-      console: getPrefixConsole('[Runtime]'),
+      console: getPrefixConsole(printer.blue('[Runtime]')),
     };
   }
 
