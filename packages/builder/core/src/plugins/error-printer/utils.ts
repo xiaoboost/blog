@@ -1,17 +1,15 @@
 import type { ErrorData } from '@blog/types';
 import { isObject } from '@xiao-ai/utils';
-import { Instance } from 'chalk';
+import { Chalk } from 'chalk';
 import { codeFrameColumns } from '@babel/code-frame';
 
-const print = new Instance({ level: 3 });
-
-export function toString(data: ErrorData) {
+export function toString(data: ErrorData, printer: Chalk) {
   const { name, message: msg, codeFrame } = data;
 
   let message = '';
 
-  message += `${print.red(`\n[${name}]`)} ${msg}\n\n`;
-  message += `${print.bgRed('File:')} ${codeFrame.path}:${codeFrame.range.start.line}\n`;
+  message += `${printer.red(`\n[${name}]`)} ${msg}\n\n`;
+  message += `${printer.bgRed('File:')} ${codeFrame.path}:${codeFrame.range.start.line}\n`;
   message += codeFrameColumns(codeFrame.content, codeFrame.range, {
     highlightCode: true,
   });

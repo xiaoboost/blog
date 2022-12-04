@@ -12,10 +12,16 @@ export interface BuilderOptions extends Required<CommandOptions> {
 
 /** 命令行选项 */
 export interface CommandOptions {
+  /** 输出目录 */
   outDir?: string;
+  /** 构建模式 */
   mode?: string;
+  /** 是否启用 HMR */
   hmr?: boolean;
-  isWatch?: boolean;
+  /** 监听模式 */
+  watch?: boolean;
+  /** 命令行输出带颜色 */
+  terminalColor?: boolean;
 }
 
 /** 构建器实例 */
@@ -30,10 +36,11 @@ export interface BuilderInstance {
   init(): Promise<void>;
   /** 构建 */
   build(): Promise<void>;
-  /** 监听 */
-  watch(): Promise<void>;
   /** 停止监听 */
   stop(): Promise<void>;
+
+  /** 报告错误数据 */
+  reportError(error: any): void;
 }
 
 /** 代码打包结果 */

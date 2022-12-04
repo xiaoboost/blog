@@ -1,12 +1,21 @@
 import yargs from 'yargs';
 
-export const buildOptions: Record<string, yargs.Options> = {
+const baseOptions: Record<string, yargs.Options> = {
   mode: {
     type: 'string',
     describe: '编译模式',
     choices: ['development', 'production'],
     default: 'production',
   },
+  terminalColor: {
+    type: 'boolean',
+    describe: '命令行输出颜色',
+    default: true,
+  },
+};
+
+export const buildOptions: Record<string, yargs.Options> = {
+  ...baseOptions,
   outDir: {
     type: 'string',
     describe: '输出文件夹',
@@ -15,12 +24,7 @@ export const buildOptions: Record<string, yargs.Options> = {
 };
 
 export const watchOptions: Record<string, yargs.Options> = {
-  mode: {
-    type: 'string',
-    describe: '编译模式',
-    choices: ['development', 'production'],
-    default: 'development',
-  },
+  ...baseOptions,
   hmr: {
     type: 'boolean',
     describe: '是否启用热更新',
