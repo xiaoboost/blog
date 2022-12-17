@@ -1,8 +1,15 @@
-import type { AsyncParallelHook, AsyncSeriesHook, AsyncSeriesBailHook } from 'tapable';
+import type {
+  AsyncParallelHook,
+  AsyncSeriesHook,
+  AsyncSeriesBailHook,
+  AsyncSeriesWaterfallHook,
+} from 'tapable';
 import type { OnResolveArgs, OnResolveResult, OnLoadResult, OnLoadArgs } from 'esbuild';
 import type { FSWatcher } from 'chokidar';
 import type { BuilderOptions, BundlerInstance, RunnerInstance } from './builder';
 import type { PostUrlMap } from './types';
+import type { ErrorData } from './error';
+import type { AssetData } from './asset';
 
 /** 构造器钩子 */
 export interface BuilderHooks {
@@ -14,8 +21,9 @@ export interface BuilderHooks {
   /**
    * 此次编译结束
    *   - watch 模式下，每次编译结束均会触发
+   *   - 两个参数分别是**产物数据**和**错误数据**
    */
-  endBuild: AsyncSeriesHook<[]>;
+  endBuild: AsyncSeriesHook<[AssetData[], ErrorData[]]>;
   /**
    * 编译结束
    *   - watch 模式下，也只会在最后触发
@@ -25,7 +33,16 @@ export interface BuilderHooks {
    * 构建失败
    *   - 不会中断 watch 模式
    */
-  fail: AsyncSeriesHook<[any]>;
+  failed: AsyncSeriesHook<[ErrorData[]]>;
+  /**
+   * 处理资源
+   *   - 两个参数分别是打包器输出的资源和运行器输出的资源
+   */
+  processAssets: AsyncSeriesHook<[AssetData[], AssetData[]]>;
+  /**
+   * 优化资源
+   */
+  optimizeAssets: AsyncSeriesWaterfallHook<[AssetData[]]>;
   /**
    * 文件变更
    */
@@ -52,6 +69,8 @@ export interface BundlerHooks {
   resolve: AsyncSeriesBailHook<[OnResolveArgs], OnResolveResult | undefined | null>;
   /** 读取文件 */
   load: AsyncSeriesBailHook<[OnLoadArgs], OnLoadResult | undefined | null>;
+  /** 读取资源 */
+  loadAsset: AsyncSeriesBailHook<[OnLoadArgs], Buffer | undefined | null>;
 }
 
 /** 运行器钩子 */
