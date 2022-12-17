@@ -15,7 +15,20 @@ export interface CodeFrameData {
 }
 
 export interface ErrorData {
-  message: string;
+  /** 项目名称 */
+  project: string;
+  /** 错误名称 */
   name: string;
-  codeFrame: CodeFrameData;
+  /** 错误信息 */
+  message: string;
+  /** 代码提示 */
+  codeFrame?: CodeFrameData;
+}
+
+/** 原始错误 */
+export interface OriginError {
+  /** 原始数据 */
+  error: any;
+  /** 映射数据 */
+  sourceMap?: string;
 }

@@ -1,13 +1,33 @@
-import type { BuildIncremental, Loader } from 'esbuild';
+import type { BuildIncremental, Loader as esBuildLoader } from 'esbuild';
 import type { BuilderHooks, BundlerHooks } from './hooks';
+import type { ErrorData } from './error';
+import type { AssetData } from './asset';
 
 /** 构建器选项 */
-export interface BuilderOptions extends Required<CommandOptions> {
-  publicPath: string;
-  assetNames: string;
-  defined: Record<string, string>;
-  loader: Record<string, Loader>;
-  cacheFilesExts: string[];
+export type BuilderOptions = ExtendOptions & CommandOptions;
+
+/**
+ * 加载器
+ *   - `'path'`加载器，获得文件原始路径，并且此文件并不会被打包
+ */
+export type Loader = esBuildLoader | 'path';
+
+/** 扩展配置 */
+export interface ExtendOptions {
+  /** 构建器名称 */
+  name?: string;
+  /** 根路径 */
+  root?: string;
+  /** 写入硬盘 */
+  write?: boolean;
+  /** 资源公共路径 */
+  publicPath?: string;
+  /** 资源命名 */
+  assetNames?: string;
+  /** 变量定义 */
+  defined?: Record<string, string>;
+  /** 加载器配置 */
+  loader?: Record<string, Loader>;
 }
 
 /** 命令行选项 */
@@ -26,6 +46,8 @@ export interface CommandOptions {
 
 /** 构建器实例 */
 export interface BuilderInstance {
+  /** 构建器名称 */
+  name: string;
   /** 根路径 */
   root: string;
   /** 钩子数据 */
@@ -38,9 +60,18 @@ export interface BuilderInstance {
   build(): Promise<void>;
   /** 停止监听 */
   stop(): Promise<void>;
-
-  /** 报告错误数据 */
-  reportError(error: any): void;
+  /** 是否是子构建器 */
+  isChild(): boolean;
+  /** 创建子构建器 */
+  createChild(opt?: BuilderOptions): Promise<BuilderInstance>;
+  /** 添加监听文件 */
+  addWatchFiles(...files: string[]): void;
+  /** 是否是监听文件 */
+  isWatchFiles(...files: string[]): boolean;
+  /** 获取错误数据 */
+  getErrors(): ErrorData[];
+  /** 获取产物文数据 */
+  getAssets(): AssetData[];
 }
 
 /** 代码打包结果 */
