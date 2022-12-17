@@ -5,3 +5,6 @@ export enum GlobalKey {
   Builder = '__Builder',
   ModuleLoader = '__ModuleLoader',
 }
+
+/** 缓存类型 */
+export type Memory = Map<string, any>;

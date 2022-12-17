@@ -74,9 +74,17 @@ export const Logger = (): BuilderPlugin => ({
       }
     });
 
-    builder.hooks.fail.tap(pluginName, () => {
+    builder.hooks.failed.tap(pluginName, () => {
       spinner.stop();
       spinner.clear();
+    });
+
+    builder.hooks.endBuild.tap(pluginName, (assets, errors) => {
+      if (errors.length > 0) {
+        // ..
+      } else {
+        // ..
+      }
     });
   },
 });

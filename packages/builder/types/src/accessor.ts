@@ -7,9 +7,7 @@ export interface Accessor<T> {
 }
 
 /** 文件访问器 */
-export interface FileAccessor {
+export interface AccessorGetter<T> {
   /** 获取资源本身 */
-  get(): Buffer;
-  /** 获取“获取资源”代码 */
-  getCode(): string;
+  get(): T;
 }

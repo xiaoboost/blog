@@ -1,44 +1,60 @@
-import { BuilderHooks, BuilderInstance, CommandOptions, BuilderOptions } from '@blog/types';
-import { AsyncSeriesHook, AsyncParallelHook } from 'tapable';
+import { BuilderHooks, BuilderInstance, BuilderOptions, AssetData } from '@blog/types';
+import { AsyncSeriesHook, AsyncParallelHook, AsyncSeriesWaterfallHook } from 'tapable';
 import { FSWatcher } from 'chokidar';
+import { BuilderError } from '../utils';
 import { applyPlugin, normalizeOptions } from './options';
 import { Bundler } from '../bundler';
 import { Runner } from '../runner';
 
 export class Builder implements BuilderInstance {
-  static async create(opt: CommandOptions) {
-    const builder = new Builder(opt);
-    await builder.init();
-    return builder;
-  }
-
   private bundler: Bundler;
 
   private runner: Runner;
 
   private watcher?: FSWatcher;
 
-  root: string;
+  private watchFiles = new Set<string>();
+
+  private parent?: Builder;
+
+  private errors: BuilderError[] = [];
+
+  private assets: AssetData[] = [];
+
+  private children: Builder[] = [];
 
   hooks: BuilderHooks;
 
   options: Required<BuilderOptions>;
 
-  constructor(opt: CommandOptions) {
-    this.root = process.cwd();
+  constructor(opt: BuilderOptions, parent?: Builder) {
+    this.parent = parent;
     this.bundler = new Bundler(this);
     this.runner = new Runner(this);
     this.options = normalizeOptions(opt);
     this.hooks = {
-      initialization: new AsyncSeriesHook<[Required<BuilderOptions>]>(['options']),
-      endBuild: new AsyncSeriesHook<[]>(),
+      initialization: new AsyncSeriesHook<[Required<BuilderOptions>]>(['Options']),
+      endBuild: new AsyncSeriesHook<[AssetData[], BuilderError[]]>(['Assets', 'Errors']),
       done: new AsyncSeriesHook<[]>(),
-      fail: new AsyncSeriesHook<[Error[]]>(['errors']),
-      filesChange: new AsyncParallelHook<[string[]]>(['files']),
-      watcher: new AsyncSeriesHook<[FSWatcher]>(['watcher']),
+      failed: new AsyncSeriesHook<[BuilderError[]]>(['Errors']),
+      filesChange: new AsyncParallelHook<[string[]]>(['Files']),
+      watcher: new AsyncSeriesHook<[FSWatcher]>(['Watcher']),
       bundler: new AsyncSeriesHook<[Bundler]>(['Bundler']),
       runner: new AsyncSeriesHook<[Runner]>(['Runner']),
+      processAssets: new AsyncSeriesHook<[AssetData[], AssetData[]]>([
+        'BundlerAssets',
+        'RunnerAssets',
+      ]),
+      optimizeAssets: new AsyncSeriesWaterfallHook<[AssetData[]]>(['Assets']),
     };
+  }
+
+  get root() {
+    return this.options.root;
+  }
+
+  get name() {
+    return this.options.name;
   }
 
   private async _build() {
@@ -48,20 +64,37 @@ export class Builder implements BuilderInstance {
       await this.hooks.runner.promise(this.runner);
       await this.runner.run(this.bundler.getBundledCode());
 
-      const { error } = this.runner.getResult();
+      // const { error } = this.runner.getResult();
 
-      if (error) {
-        await this.hooks.fail.promise(error);
-      }
+      // if (error) {
+      //   this.reportError(error);
+      // }
     } catch (e: any) {
-      await this.hooks.fail.promise(e);
+      // this.reportError(e);
     }
 
-    await this.hooks.endBuild.promise();
+    // if (this.errors.length > 0) {
+    //   await this.hooks.fail.promise(this.errors);
+    // }
+
+    await this.hooks.endBuild.promise(this.getAssets(), this.getErrors());
   }
 
-  reportError(error: any): void {
-    // ..
+  async createChild(opt?: BuilderOptions): Promise<BuilderInstance> {
+    const builder = new Builder(
+      {
+        root: this.root,
+        name: opt?.name ?? `Child:${this.name}`,
+        ...opt,
+        hmr: false,
+        write: false,
+      },
+      this,
+    );
+
+    await builder.init();
+
+    return builder;
   }
 
   async init() {
@@ -81,7 +114,34 @@ export class Builder implements BuilderInstance {
     }
   }
 
+  isChild() {
+    return Boolean(this.parent);
+  }
+
+  addWatchFiles(...files: string[]) {
+    files.forEach((file) => this.watchFiles.add(file));
+  }
+
+  isWatchFiles(...files: string[]) {
+    return files.some((file) => this.watchFiles.has(file));
+  }
+
+  getErrors(): BuilderError[] {
+    return this.children
+      .map((child) => child.getErrors())
+      .reduce((ans, item) => ans.concat(item), [] as BuilderError[])
+      .concat(this.errors.slice());
+  }
+
+  getAssets(): AssetData[] {
+    return this.children
+      .map((child) => child.getAssets())
+      .reduce((ans, item) => ans.concat(item), [] as AssetData[])
+      .concat(this.assets.slice());
+  }
+
   async stop() {
+    await Promise.all(this.children.map((child) => child.stop()));
     await this.bundler.dispose();
     await this.hooks.done.promise();
   }
