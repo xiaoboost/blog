@@ -19,30 +19,25 @@ export interface BuilderHooks {
    */
   initialization: AsyncSeriesHook<[Required<BuilderOptions>]>;
   /**
-   * 此次编译结束
-   *   - watch 模式下，每次编译结束均会触发
-   *   - 两个参数分别是**产物数据**和**错误数据**
-   */
-  endBuild: AsyncSeriesHook<[AssetData[], ErrorData[]]>;
-  /**
    * 编译结束
    *   - watch 模式下，也只会在最后触发
    */
   done: AsyncSeriesHook<[]>;
   /**
+   * 构建成功
+   *   - `watch`模式下，每次成功的构建均会触发
+   */
+  success: AsyncSeriesHook<[AssetData[]]>;
+  /**
    * 构建失败
-   *   - 不会中断 watch 模式
+   *   - `watch`模式下，每次失败的构建均会触发
    */
   failed: AsyncSeriesHook<[ErrorData[]]>;
   /**
    * 处理资源
-   *   - 两个参数分别是打包器输出的资源和运行器输出的资源
+   *   - 返回资源列表数组
    */
-  processAssets: AsyncSeriesHook<[AssetData[], AssetData[]]>;
-  /**
-   * 优化资源
-   */
-  optimizeAssets: AsyncSeriesWaterfallHook<[AssetData[]]>;
+  processAssets: AsyncSeriesWaterfallHook<[AssetData[]]>;
   /**
    * 文件变更
    */
@@ -69,8 +64,11 @@ export interface BundlerHooks {
   resolve: AsyncSeriesBailHook<[OnResolveArgs], OnResolveResult | undefined | null>;
   /** 读取文件 */
   load: AsyncSeriesBailHook<[OnLoadArgs], OnLoadResult | undefined | null>;
-  /** 读取资源 */
-  loadAsset: AsyncSeriesBailHook<[OnLoadArgs], Buffer | undefined | null>;
+  /**
+   * 处理资源
+   *   - 返回资源列表数组
+   */
+  processAssets: AsyncSeriesWaterfallHook<[AssetData[]]>;
 }
 
 /** 运行器钩子 */

@@ -25,6 +25,8 @@ export interface ErrorData {
   codeFrame?: CodeFrameData;
 }
 
+export type ErrorParam = Partial<Pick<ErrorData, 'project' | 'codeFrame'>>;
+
 /** 原始错误 */
 export interface OriginError {
   /** 原始数据 */

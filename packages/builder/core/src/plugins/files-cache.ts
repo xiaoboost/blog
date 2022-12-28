@@ -3,7 +3,7 @@ import path from 'path';
 
 import type { BuilderPlugin } from '@blog/types';
 import { normalize, getNameCreator } from '@blog/node';
-import { getFileAccessor } from '@blog/context';
+// import { getFileAccessor } from '@blog/context';
 import { promises as fs } from 'fs';
 
 export interface Options {
@@ -51,10 +51,11 @@ export const FilesCache = (loaderOpt: Options): BuilderPlugin => ({
           return {
             loader: 'js',
             watchFiles: [args.path],
-            contents: getFileAccessor(
-              normalize(path.join(publicPath, assetPath)),
-              content,
-            ).getCode(),
+            contents: '',
+            // contents: getFileAccessor(
+            //   normalize(path.join(publicPath, assetPath)),
+            //   content,
+            // ).getCode(),
           };
         }
       });

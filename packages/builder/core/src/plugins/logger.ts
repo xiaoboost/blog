@@ -7,7 +7,7 @@ import createSpinner from 'ora';
 
 import { getPrefixConsole } from '../utils';
 
-const pluginName = 'logger-plugin';
+const pluginName = 'logger';
 
 function getShortString(current: number, unit: string) {
   if (current > 100) {
@@ -62,29 +62,23 @@ export const Logger = (): BuilderPlugin => ({
       spinner.text = '运行构建...';
     });
 
-    builder.hooks.endBuild.tap(pluginName, () => {
-      spinner.clear();
-      spinner.stop();
-      logger.log(`构建耗时 ${getShortTime(Date.now() - timer)}`);
-    });
-
     builder.hooks.filesChange.tap(pluginName, (files) => {
       for (const file of files) {
         logger.log(`${printer.yellow('[文件变更]')}`, relative(root, file));
       }
     });
 
-    builder.hooks.failed.tap(pluginName, () => {
-      spinner.stop();
+    builder.hooks.success.tap(pluginName, (assets) => {
       spinner.clear();
+      spinner.stop();
+      logger.log(`构建耗时 ${getShortTime(Date.now() - timer)}`);
+      // TODO: 文件体积
     });
 
-    builder.hooks.endBuild.tap(pluginName, (assets, errors) => {
-      if (errors.length > 0) {
-        // ..
-      } else {
-        // ..
-      }
+    builder.hooks.failed.tap(pluginName, (errors) => {
+      spinner.stop();
+      spinner.clear();
+      // TODO: 构建错误
     });
   },
 });
