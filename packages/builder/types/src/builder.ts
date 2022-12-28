@@ -1,4 +1,5 @@
 import type { Loader as EsBuildLoader } from 'esbuild';
+import type { FSWatcher } from 'chokidar';
 import type { BuilderHooks, BundlerHooks } from './hooks';
 import type { ErrorData } from './error';
 import type { AssetData } from './asset';
@@ -54,6 +55,14 @@ export interface BuilderInstance {
   hooks: BuilderHooks;
   /** 构建选项 */
   options: Required<BuilderOptions>;
+
+  /** 打包器 */
+  bundler: BundlerInstance;
+  /** 运行器 */
+  runner: RunnerInstance;
+  /** 监听器 */
+  watcher?: FSWatcher;
+
   /** 初始化 */
   init(): Promise<void>;
   /** 构建 */
