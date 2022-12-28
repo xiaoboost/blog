@@ -2,9 +2,9 @@ import type { BuilderPlugin } from '@blog/types';
 import { join } from 'path';
 import { writeFile } from 'fs/promises';
 
-const pluginName = 'dist-writer';
+const pluginName = 'assets-writer';
 
-export const DiskWriter = (): BuilderPlugin => ({
+export const AssetsWriter = (): BuilderPlugin => ({
   name: pluginName,
   apply(builder) {
     const { root } = builder;

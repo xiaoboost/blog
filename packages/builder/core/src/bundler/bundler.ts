@@ -9,7 +9,13 @@ import {
 } from 'esbuild';
 import { join } from 'path';
 import { builtinModules } from 'module';
-import { BundlerHooks, BundlerInstance, BuilderInstance, AssetData } from '@blog/types';
+import {
+  BundlerHooks,
+  BundlerInstance,
+  BuilderInstance,
+  AssetData,
+  BundlerResult,
+} from '@blog/types';
 import { AsyncSeriesBailHook, AsyncSeriesWaterfallHook } from 'tapable';
 import { getRoot } from '../utils';
 import { BridgePlugin } from './bridge';
@@ -79,7 +85,7 @@ export class Bundler implements BundlerInstance {
     return this.assets.slice();
   }
 
-  getBundledCode() {
+  getBundledCode(): BundlerResult {
     const output = this.instance?.outputFiles ?? [];
     const source = output.find((item) => item.path.endsWith('index.js'));
     const sourceMap = output.find((item) => item.path.endsWith('index.js.map'));
