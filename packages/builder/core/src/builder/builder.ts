@@ -7,12 +7,6 @@ import { Bundler } from '../bundler';
 import { Runner } from '../runner';
 
 export class Builder implements BuilderInstance {
-  private bundler: Bundler;
-
-  private runner: Runner;
-
-  private watcher?: FSWatcher;
-
   private watchFiles = new Set<string>();
 
   private parent?: Builder;
@@ -26,6 +20,12 @@ export class Builder implements BuilderInstance {
   hooks: BuilderHooks;
 
   options: Required<BuilderOptions>;
+
+  bundler: Bundler;
+
+  runner: Runner;
+
+  watcher?: FSWatcher;
 
   constructor(opt: BuilderOptions, parent?: Builder) {
     this.parent = parent;

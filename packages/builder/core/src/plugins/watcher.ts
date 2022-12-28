@@ -1,18 +1,7 @@
-import type { BuilderPlugin, BuilderInstance } from '@blog/types';
-import type { FSWatcher } from 'chokidar';
-import { isAbsolute, join } from 'path';
+import type { BuilderPlugin } from '@blog/types';
+import { join } from 'path';
 
 const pluginName = 'watcher-plugin';
-
-export function getWatcher(builder: BuilderInstance) {
-  let watcherTemp: FSWatcher | undefined;
-
-  builder.hooks.watcher.tap(pluginName, (watcher) => {
-    watcherTemp = watcher;
-  });
-
-  return () => watcherTemp;
-}
 
 export const Watcher = (): BuilderPlugin => ({
   name: pluginName,
@@ -23,14 +12,11 @@ export const Watcher = (): BuilderPlugin => ({
       return;
     }
 
-    const watcherTemp = getWatcher(builder);
-    const files = new Set<string>();
-
     builder.hooks.watcher.tap(pluginName, (watcher) => {
       let ready = false;
 
       const changeHandler = async (file: string) => {
-        const fullPath = join(watcherTemp()!.options.cwd!, file);
+        const fullPath = join(watcher.options.cwd!, file);
         await builder.hooks.filesChange.promise([fullPath]);
         await builder.build();
       };
@@ -52,18 +38,14 @@ export const Watcher = (): BuilderPlugin => ({
     });
 
     builder.hooks.bundler.tap(pluginName, (bundler) => {
-      bundler.hooks.load.tap(pluginName, ({ path: filePath }) => {
-        if (isAbsolute(filePath) && !files.has(filePath)) {
-          files.add(filePath);
-          watcherTemp()!.add(filePath);
-        }
-
+      bundler.hooks.load.tap(pluginName, ({ path }) => {
+        builder.addWatchFiles(path);
         return null;
       });
     });
 
     builder.hooks.done.tap(pluginName, () => {
-      const watcher = watcherTemp();
+      const { watcher } = builder;
 
       if (watcher) {
         watcher.close();

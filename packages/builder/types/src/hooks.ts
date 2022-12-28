@@ -60,7 +60,10 @@ export interface BuilderHooks {
 
 /** 打包器钩子 */
 export interface BundlerHooks {
-  /** 路径路由 */
+  /**
+   * 路径路由
+   *   - TODO: 新增 watch 选项，用来判断是不是要 watch，这里还需要新增一个处理多余选项的钩子
+   */
   resolve: AsyncSeriesBailHook<[OnResolveArgs], OnResolveResult | undefined | null>;
   /** 读取文件 */
   load: AsyncSeriesBailHook<[OnLoadArgs], OnLoadResult | undefined | null>;

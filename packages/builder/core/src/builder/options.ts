@@ -1,16 +1,16 @@
 import type { BuilderOptions } from '@blog/types';
 import { join } from 'path';
 import type { Builder } from './builder';
+
 import { Logger } from '../plugins/logger';
 import { LocalPackageRequirer } from '../plugins/local-package-requirer';
-// import { FilesCache } from '../plugins/files-cache';
+import { AssetsMerger } from '../plugins/assets-merger';
 
 export async function applyPlugin(builder: Builder) {
   const { options: opt } = builder;
 
   Logger().apply(builder);
   LocalPackageRequirer().apply(builder);
-  // FilesCache({ exts: opt.cacheFilesExts }).apply(builder);
 
   if (opt.watch) {
     const { Watcher } = await import('../plugins/watcher.js');
@@ -18,8 +18,13 @@ export async function applyPlugin(builder: Builder) {
   }
 
   if (opt.write) {
-    const { DiskWriter } = await import('../plugins/disk-writer.js');
-    DiskWriter().apply(builder);
+    const { AssetsWriter } = await import('../plugins/assets-writer.js');
+    AssetsWriter().apply(builder);
+  }
+
+  // 主构建器特有插件
+  if (!builder.isChild()) {
+    AssetsMerger().apply(builder);
   }
 }
 
