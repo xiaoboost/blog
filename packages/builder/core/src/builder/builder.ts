@@ -34,18 +34,14 @@ export class Builder implements BuilderInstance {
     this.options = normalizeOptions(opt);
     this.hooks = {
       initialization: new AsyncSeriesHook<[Required<BuilderOptions>]>(['Options']),
-      endBuild: new AsyncSeriesHook<[AssetData[], BuilderError[]]>(['Assets', 'Errors']),
+      success: new AsyncSeriesHook<[AssetData[]]>(['Assets']),
       done: new AsyncSeriesHook<[]>(),
       failed: new AsyncSeriesHook<[BuilderError[]]>(['Errors']),
       filesChange: new AsyncParallelHook<[string[]]>(['Files']),
       watcher: new AsyncSeriesHook<[FSWatcher]>(['Watcher']),
       bundler: new AsyncSeriesHook<[Bundler]>(['Bundler']),
       runner: new AsyncSeriesHook<[Runner]>(['Runner']),
-      processAssets: new AsyncSeriesHook<[AssetData[], AssetData[]]>([
-        'BundlerAssets',
-        'RunnerAssets',
-      ]),
-      optimizeAssets: new AsyncSeriesWaterfallHook<[AssetData[]]>(['Assets']),
+      processAssets: new AsyncSeriesWaterfallHook<[AssetData[]]>(['Assets']),
     };
   }
 
@@ -63,21 +59,17 @@ export class Builder implements BuilderInstance {
       await this.bundler.bundle();
       await this.hooks.runner.promise(this.runner);
       await this.runner.run(this.bundler.getBundledCode());
-
-      // const { error } = this.runner.getResult();
-
-      // if (error) {
-      //   this.reportError(error);
-      // }
+      this.assets = await this.hooks.processAssets.promise(this.getAssets());
+      await this.hooks.success.promise(this.getAssets());
     } catch (e: any) {
-      // this.reportError(e);
+      this.errors = this._reportError(e);
+      await this.hooks.failed.promise(this.getErrors());
     }
+  }
 
-    // if (this.errors.length > 0) {
-    //   await this.hooks.fail.promise(this.errors);
-    // }
-
-    await this.hooks.endBuild.promise(this.getAssets(), this.getErrors());
+  private _reportError(err: any) {
+    // TODO: 错误数据转换
+    return [] as BuilderError[];
   }
 
   async createChild(opt?: BuilderOptions): Promise<BuilderInstance> {

@@ -1,4 +1,4 @@
-import type { BuildIncremental, Loader as esBuildLoader } from 'esbuild';
+import type { Loader as EsBuildLoader } from 'esbuild';
 import type { BuilderHooks, BundlerHooks } from './hooks';
 import type { ErrorData } from './error';
 import type { AssetData } from './asset';
@@ -10,7 +10,7 @@ export type BuilderOptions = ExtendOptions & CommandOptions;
  * 加载器
  *   - `'path'`加载器，获得文件原始路径，并且此文件并不会被打包
  */
-export type Loader = esBuildLoader | 'path';
+export type Loader = EsBuildLoader | 'path';
 
 /** 扩展配置 */
 export interface ExtendOptions {
@@ -70,7 +70,7 @@ export interface BuilderInstance {
   isWatchFiles(...files: string[]): boolean;
   /** 获取错误数据 */
   getErrors(): ErrorData[];
-  /** 获取产物文数据 */
+  /** 获取产物数据 */
   getAssets(): AssetData[];
 }
 
@@ -85,13 +85,19 @@ export interface BundlerInstance {
   /** 钩子数据 */
   hooks: BundlerHooks;
   /** 打包代码 */
-  bundle(): Promise<BuildIncremental>;
+  bundle(): Promise<void>;
+  /** 获取产物数据 */
+  getAssets(): AssetData[];
   /** 获取打包后的代码 */
   getBundledCode(): BundlerResult;
+  /** 停止运行 */
+  dispose(): void | Promise<void>;
 }
 
 /** 运行器实例 */
 export interface RunnerInstance {
   /** 运行代码 */
   run(source: BundlerResult): Promise<void>;
+  /** 获取产物数据 */
+  getAssets(): AssetData[];
 }

@@ -1,43 +1,36 @@
 import { RunnerInstance, BuilderInstance, AssetData, BundlerResult, ErrorData } from '@blog/types';
 import { getContext } from '@blog/context';
 import { Instance } from 'chalk';
-import { lookItUp } from 'look-it-up';
-import { isAbsolute, relative } from 'path';
-import { readFile } from 'fs/promises';
-import { SourceMapConsumer } from 'source-map';
 import { isFunc } from '@xiao-ai/utils';
 import { runScript, RunError } from '@xiao-ai/utils/node';
-import { getPrefixConsole } from '../utils';
+import { getPrefixConsole, getOriginCodeFrame } from '../utils';
 
 export class Runner implements RunnerInstance {
-  private _builder: BuilderInstance;
+  private builder: BuilderInstance;
 
-  private _code = '';
+  private code = '';
 
-  private _sourceMap = '';
+  private sourceMap = '';
 
-  private _assets: AssetData[] = [];
-
-  private _error: Error | undefined;
+  private assets: AssetData[] = [];
 
   constructor(builder: BuilderInstance) {
-    this._builder = builder;
+    this.builder = builder;
     this.init('');
   }
 
   private init(code?: string, sourceMap?: string) {
-    this._code = code ?? '';
-    this._sourceMap = sourceMap ?? '';
-    this._assets = [];
-    this._error = undefined;
+    this.code = code ?? '';
+    this.sourceMap = sourceMap ?? '';
+    this.assets = [];
   }
 
   private getContext() {
-    const { terminalColor: color } = this._builder.options;
+    const { terminalColor: color } = this.builder.options;
     const printer = new Instance({ level: color ? 3 : 0 });
 
     return {
-      ...getContext(this._builder),
+      ...getContext(this.builder),
       process,
       Buffer,
       setTimeout,
@@ -55,78 +48,46 @@ export class Runner implements RunnerInstance {
       return err;
     }
 
-    const sourceMap = await new SourceMapConsumer(this._sourceMap);
-    const { location: transformLoc, name, message } = err;
-    const originLoc = sourceMap.originalPositionFor({
-      line: transformLoc.line,
-      column: transformLoc.column ?? 0,
-    });
-
-    if (!originLoc.line || !originLoc.source) {
-      return err;
-    }
-
-    const filePath = await (async () => {
-      if (!originLoc.source || isAbsolute(originLoc.source)) {
-        return transformLoc.filePath;
-      }
-
-      const search = await lookItUp(originLoc.source!, __dirname);
-
-      if (search) {
-        return search;
-      }
-
-      return transformLoc.filePath;
-    })();
-    const fileContent =
-      originLoc.source && sourceMap.sourceContentFor(originLoc.source)
-        ? sourceMap.sourceContentFor(originLoc.source)!
-        : await readFile(filePath, 'utf-8');
-
+    const { location, name, message } = err;
+    const { builder, sourceMap } = this;
+    const range = {
+      start: {
+        line: location.line,
+        column: location.column ?? 0,
+      },
+      end: {
+        line: location.line,
+        column: (location.column ?? 0) + (location.length ?? 0),
+      },
+    };
     const data: ErrorData = {
       message,
       name,
-      codeFrame: {
-        path: relative(this._builder.root, filePath),
-        content: fileContent,
-        range: {
-          start: {
-            line: originLoc.line,
-            column: originLoc.column ?? 0,
-          },
-          end: {
-            line: originLoc.line,
-            column: (originLoc.column ?? 0) + (err.location.length ?? 0),
-          },
-        },
-      },
+      project: builder.name,
+      codeFrame: await getOriginCodeFrame(range, sourceMap),
     };
 
     return data;
   }
 
-  getResult() {
-    return {
-      assets: this._assets.slice(),
-      error: this._error,
-    };
+  getAssets() {
+    return this.assets.slice();
   }
 
   async run({ source, sourceMap }: BundlerResult): Promise<void> {
     this.init(source, sourceMap);
 
-    const result = runScript<() => Promise<AssetData[]>>(this._code, {
+    const result = runScript<() => Promise<AssetData[]>>(this.code, {
       dirname: __dirname,
       globalParams: this.getContext(),
     });
 
-    if (result.error) {
-      this._error = await this.parseError(result.error);
+    if (isFunc(result.output)) {
+      this.assets = (await result.output()) ?? [];
     }
 
-    if (isFunc(result.output)) {
-      this._assets = (await result.output()) ?? [];
+    if (result.error) {
+      throw await this.parseError(result.error);
     }
   }
 }

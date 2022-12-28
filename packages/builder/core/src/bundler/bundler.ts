@@ -5,13 +5,12 @@ import {
   OnLoadArgs,
   OnLoadResult,
   BuildIncremental,
-  BuildInvalidate,
   build as esbuild,
 } from 'esbuild';
 import { join } from 'path';
 import { builtinModules } from 'module';
-import { BundlerHooks, BundlerInstance, BuilderInstance } from '@blog/types';
-import { AsyncSeriesBailHook } from 'tapable';
+import { BundlerHooks, BundlerInstance, BuilderInstance, AssetData } from '@blog/types';
+import { AsyncSeriesBailHook, AsyncSeriesWaterfallHook } from 'tapable';
 import { getRoot } from '../utils';
 import { BridgePlugin } from './bridge';
 
@@ -19,6 +18,8 @@ export class Bundler implements BundlerInstance {
   private builder: BuilderInstance;
 
   private instance?: BuildIncremental;
+
+  private assets: AssetData[] = [];
 
   hooks: BundlerHooks;
 
@@ -29,18 +30,17 @@ export class Bundler implements BundlerInstance {
         'resolveArgs',
       ]),
       load: new AsyncSeriesBailHook<[OnLoadArgs], OnLoadResult | undefined | null>(['loadArgs']),
+      processAssets: new AsyncSeriesWaterfallHook<[AssetData[]]>(['Assets']),
     };
   }
 
-  private report(err: any) {
-    debugger;
-  }
+  async bundle() {
+    // 初始化
+    this.assets = [];
 
-  async bundle(): Promise<BuildIncremental> {
     // 有实例，则直接重新构建
     if (this.instance) {
       this.instance = await this.instance.rebuild();
-      return this.instance;
     }
 
     const { options: opt, root } = this.builder;
@@ -64,33 +64,19 @@ export class Bundler implements BundlerInstance {
       splitting: false,
       watch: false,
       charset: 'utf8',
-      incremental: true,
+      incremental: opt.watch,
       logLimit: 5,
       platform: 'node',
       define: opt.defined,
-      loader: opt.loader,
       plugins: [BridgePlugin(this)],
     };
 
-    try {
-      this.instance = (await esbuild(esbuildConfig)) as BuildIncremental;
-      return this.instance;
-    } catch (error: any) {
-      debugger;
-      this.report(error);
+    this.instance = (await esbuild(esbuildConfig)) as BuildIncremental;
+    this.assets = await this.hooks.processAssets.promise(this.getAssets());
+  }
 
-      if (opt.watch) {
-        const rebuild: BuildInvalidate = () => this.bundle();
-        rebuild.dispose = () => void 0;
-        this.instance = {
-          errors: [],
-          warnings: [],
-          rebuild,
-        };
-      }
-    }
-
-    return this.instance!;
+  getAssets(): AssetData[] {
+    return this.assets.slice();
   }
 
   getBundledCode() {

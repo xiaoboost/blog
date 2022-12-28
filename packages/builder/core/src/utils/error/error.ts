@@ -1,8 +1,17 @@
-import type { CodeFrameData, ErrorData } from '@blog/types';
+import type { CodeFrameData, ErrorData, ErrorParam } from '@blog/types';
 import { default as chalk, Chalk } from 'chalk';
 import { codeFrameColumns } from '@babel/code-frame';
+import { transform } from './transform';
 
 export class BuilderError extends Error implements ErrorData {
+  static from(err: any, opt?: ErrorParam) {
+    if (err instanceof BuilderError) {
+      return err;
+    }
+
+    return transform(err, opt);
+  }
+
   project: string;
 
   codeFrame?: CodeFrameData | undefined;
