@@ -2,15 +2,25 @@ import type { BuilderOptions } from '@blog/types';
 import { join } from 'path';
 import type { Builder } from './builder';
 
+import { parseLoader } from '../utils';
 import { Logger } from '../plugins/logger';
 import { LocalPackageRequirer } from '../plugins/local-package-requirer';
 import { AssetsMerger } from '../plugins/assets-merger';
+import { FileLoader } from '../plugins/file-loader';
+import { PathLoader } from '../plugins/path-loader';
 
 export async function applyPlugin(builder: Builder) {
   const { options: opt } = builder;
+  const loaderData = parseLoader(opt.loader);
 
   Logger().apply(builder);
   LocalPackageRequirer().apply(builder);
+  PathLoader({ exts: loaderData.paths }).apply(builder);
+  FileLoader({
+    exts: loaderData.files,
+    publicPath: opt.publicPath,
+    assetNames: opt.assetNames,
+  }).apply(builder);
 
   if (opt.watch) {
     const { Watcher } = await import('../plugins/watcher.js');

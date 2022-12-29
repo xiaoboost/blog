@@ -56,13 +56,6 @@ export interface BuilderInstance {
   /** 构建选项 */
   options: Required<BuilderOptions>;
 
-  /** 打包器 */
-  bundler: BundlerInstance;
-  /** 运行器 */
-  runner: RunnerInstance;
-  /** 监听器 */
-  watcher?: FSWatcher;
-
   /** 初始化 */
   init(): Promise<void>;
   /** 构建 */

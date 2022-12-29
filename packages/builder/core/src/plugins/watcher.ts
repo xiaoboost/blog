@@ -44,9 +44,7 @@ export const Watcher = (): BuilderPlugin => ({
       });
     });
 
-    builder.hooks.done.tap(pluginName, () => {
-      const { watcher } = builder;
-
+    builder.hooks.done.tap(pluginName, ({ watcher }) => {
       if (watcher) {
         watcher.close();
       }

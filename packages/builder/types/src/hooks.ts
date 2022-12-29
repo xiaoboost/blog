@@ -11,6 +11,16 @@ import type { PostUrlMap } from './types';
 import type { ErrorData } from './error';
 import type { AssetData } from './asset';
 
+/** 钩子上下文数据 */
+export interface BuilderHookContext {
+  /** 打包器 */
+  bundler: BundlerInstance;
+  /** 运行器 */
+  runner: RunnerInstance;
+  /** 监听器 */
+  watcher?: FSWatcher;
+}
+
 /** 构造器钩子 */
 export interface BuilderHooks {
   /**
@@ -19,10 +29,16 @@ export interface BuilderHooks {
    */
   initialization: AsyncSeriesHook<[Required<BuilderOptions>]>;
   /**
+   * 开始构建
+   *   - 初始化之后
+   *   - `watch`模式时每次构建之初
+   */
+  start: AsyncSeriesHook<[]>;
+  /**
    * 编译结束
    *   - watch 模式下，也只会在最后触发
    */
-  done: AsyncSeriesHook<[]>;
+  done: AsyncSeriesHook<[BuilderHookContext]>;
   /**
    * 构建成功
    *   - `watch`模式下，每次成功的构建均会触发
@@ -64,14 +80,9 @@ export interface BundlerHooks {
    * 路径路由
    *   - TODO: 新增 watch 选项，用来判断是不是要 watch，这里还需要新增一个处理多余选项的钩子
    */
-  resolve: AsyncSeriesBailHook<[OnResolveArgs], OnResolveResult | undefined | null>;
+  resolve: AsyncSeriesBailHook<[OnResolveArgs], OnResolveResult | undefined | null | void>;
   /** 读取文件 */
-  load: AsyncSeriesBailHook<[OnLoadArgs], OnLoadResult | undefined | null>;
-  /**
-   * 处理资源
-   *   - 返回资源列表数组
-   */
-  processAssets: AsyncSeriesWaterfallHook<[AssetData[]]>;
+  load: AsyncSeriesBailHook<[OnLoadArgs], OnLoadResult | undefined | null | void>;
 }
 
 /** 运行器钩子 */

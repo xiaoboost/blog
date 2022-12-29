@@ -16,8 +16,8 @@ import {
   AssetData,
   BundlerResult,
 } from '@blog/types';
-import { AsyncSeriesBailHook, AsyncSeriesWaterfallHook } from 'tapable';
-import { getRoot } from '../utils';
+import { AsyncSeriesBailHook } from 'tapable';
+import { getRoot, parseLoader } from '../utils';
 import { BridgePlugin } from './bridge';
 
 export class Bundler implements BundlerInstance {
@@ -36,7 +36,6 @@ export class Bundler implements BundlerInstance {
         'resolveArgs',
       ]),
       load: new AsyncSeriesBailHook<[OnLoadArgs], OnLoadResult | undefined | null>(['loadArgs']),
-      processAssets: new AsyncSeriesWaterfallHook<[AssetData[]]>(['Assets']),
     };
   }
 
@@ -74,11 +73,11 @@ export class Bundler implements BundlerInstance {
       logLimit: 5,
       platform: 'node',
       define: opt.defined,
+      loader: parseLoader(opt.loader).loader,
       plugins: [BridgePlugin(this)],
     };
 
     this.instance = (await esbuild(esbuildConfig)) as BuildIncremental;
-    this.assets = await this.hooks.processAssets.promise(this.getAssets());
   }
 
   getAssets(): AssetData[] {
