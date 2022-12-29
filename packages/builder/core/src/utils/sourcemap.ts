@@ -4,21 +4,12 @@ import { lookItUp } from 'look-it-up';
 import { isAbsolute } from 'path';
 import { readFile } from 'fs/promises';
 
-const mapStore = new Map<string, SourceMapConsumer>();
-
 export async function getOriginCodeFrame(
   position: Range,
   rawSourceMap: string,
 ): Promise<CodeFrameData | undefined> {
   debugger;
-  const sourceMap = mapStore.has(rawSourceMap)
-    ? mapStore.get(rawSourceMap)!
-    : await new SourceMapConsumer(rawSourceMap);
-
-  if (!mapStore.has(rawSourceMap)) {
-    mapStore.set(rawSourceMap, sourceMap);
-  }
-
+  const sourceMap = await new SourceMapConsumer(rawSourceMap);
   const startLoc = sourceMap.originalPositionFor({
     line: position.start.line,
     column: position.start.column,
