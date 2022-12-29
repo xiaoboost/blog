@@ -1,4 +1,10 @@
-import { BuilderHooks, BuilderInstance, BuilderOptions, AssetData } from '@blog/types';
+import {
+  BuilderHooks,
+  BuilderInstance,
+  BuilderOptions,
+  AssetData,
+  BuilderHookContext,
+} from '@blog/types';
 import { AsyncSeriesHook, AsyncParallelHook, AsyncSeriesWaterfallHook } from 'tapable';
 import { FSWatcher } from 'chokidar';
 import { BuilderError } from '../utils';
@@ -7,6 +13,12 @@ import { Bundler } from '../bundler';
 import { Runner } from '../runner';
 
 export class Builder implements BuilderInstance {
+  private bundler: Bundler;
+
+  private runner: Runner;
+
+  private watcher?: FSWatcher;
+
   private watchFiles = new Set<string>();
 
   private parent?: Builder;
@@ -21,12 +33,6 @@ export class Builder implements BuilderInstance {
 
   options: Required<BuilderOptions>;
 
-  bundler: Bundler;
-
-  runner: Runner;
-
-  watcher?: FSWatcher;
-
   constructor(opt: BuilderOptions, parent?: Builder) {
     this.parent = parent;
     this.bundler = new Bundler(this);
@@ -34,8 +40,9 @@ export class Builder implements BuilderInstance {
     this.options = normalizeOptions(opt);
     this.hooks = {
       initialization: new AsyncSeriesHook<[Required<BuilderOptions>]>(['Options']),
+      start: new AsyncSeriesHook<[]>(),
       success: new AsyncSeriesHook<[AssetData[]]>(['Assets']),
-      done: new AsyncSeriesHook<[]>(),
+      done: new AsyncSeriesHook<[BuilderHookContext]>(['Context']),
       failed: new AsyncSeriesHook<[BuilderError[]]>(['Errors']),
       filesChange: new AsyncParallelHook<[string[]]>(['Files']),
       watcher: new AsyncSeriesHook<[FSWatcher]>(['Watcher']),
@@ -53,8 +60,17 @@ export class Builder implements BuilderInstance {
     return this.options.name;
   }
 
+  private _getHookContext() {
+    return {
+      bundler: this.bundler,
+      runner: this.runner,
+      watcher: this.watcher,
+    };
+  }
+
   private async _build() {
     try {
+      await this.hooks.start.promise();
       await this.hooks.bundler.promise(this.bundler);
       await this.bundler.bundle();
       await this.hooks.runner.promise(this.runner);
@@ -68,8 +84,12 @@ export class Builder implements BuilderInstance {
   }
 
   private _reportError(err: any) {
-    // TODO: 错误数据转换
-    return [] as BuilderError[];
+    const errors = 'errors' in err ? err.errors : Array.isArray(err) ? err : [err];
+    return errors.map((er: any) =>
+      BuilderError.from(er, {
+        project: this.name,
+      }),
+    );
   }
 
   async createChild(opt?: BuilderOptions): Promise<BuilderInstance> {
@@ -111,7 +131,12 @@ export class Builder implements BuilderInstance {
   }
 
   addWatchFiles(...files: string[]) {
-    files.forEach((file) => this.watchFiles.add(file));
+    files.forEach((file) => {
+      if (!this.watchFiles.has(file)) {
+        this.watchFiles.add(file);
+        this.watcher?.add(file);
+      }
+    });
   }
 
   isWatchFiles(...files: string[]) {
@@ -135,7 +160,7 @@ export class Builder implements BuilderInstance {
   async stop() {
     await Promise.all(this.children.map((child) => child.stop()));
     await this.bundler.dispose();
-    await this.hooks.done.promise();
+    await this.hooks.done.promise(this._getHookContext());
   }
 
   async build() {
