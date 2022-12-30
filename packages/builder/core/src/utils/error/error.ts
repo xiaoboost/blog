@@ -31,10 +31,10 @@ export class BuilderError extends Error implements ErrorData {
 
     let message = '';
 
-    message += `${printer.red(`\n[${project}]`)} ${printer.blue(name)}: ${msg}\n\n`;
+    message += `${printer.red(`[${project}]`)} ${printer.blue(name)}: ${msg}`;
 
     if (codeFrame) {
-      message += `${printer.bgRed('File:')} ${codeFrame.path}:${codeFrame.range.start.line}\n`;
+      message += `\n\n${printer.bgRed('File:')} ${codeFrame.path}:${codeFrame.range.start.line}\n`;
       message += codeFrameColumns(codeFrame.content, codeFrame.range, {
         highlightCode: true,
       });

@@ -86,7 +86,6 @@ export class Builder implements BuilderInstance {
   }
 
   private _reportError(err: any) {
-    debugger;
     const errors = 'errors' in err ? err.errors : Array.isArray(err) ? err : [err];
     return errors.map((er: any) =>
       BuilderError.from(er, {

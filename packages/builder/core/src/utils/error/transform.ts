@@ -18,7 +18,12 @@ function isEsbuildError(err: any): err is EsbuildError {
 
 function transformEsbuildError(err: any, opt?: ErrorParam): BuilderError | void {
   if (isEsbuildError(err)) {
-    // ..
+    if (err.detail) {
+      return transform(err.detail, opt);
+    } else {
+      debugger;
+      // TODO:
+    }
   }
 }
 
@@ -41,6 +46,18 @@ function transformRunError(err: any): BuilderError | void {
   }
 }
 
+function transformErrorData(err: any, opt?: ErrorParam): BuilderError | void {
+  if (isErrorData(err)) {
+    return new BuilderError({
+      ...opt,
+      project: opt?.project ?? err.project ?? 'UNKNOWN_PROJECT',
+      name: err.name ?? err.name ?? 'UNKNOWN_ERROR',
+      message: err.message,
+      codeFrame: err.codeFrame,
+    });
+  }
+}
+
 function defaultError(err: any, opt?: ErrorParam) {
   return new BuilderError({
     ...opt,
@@ -50,9 +67,14 @@ function defaultError(err: any, opt?: ErrorParam) {
   });
 }
 
-export function transform(err: any, opt?: ErrorParam) {
-  const transformers = [transformEsbuildError, transformRunError, transformNormalError];
+const transformers = [
+  transformEsbuildError,
+  transformRunError,
+  transformNormalError,
+  transformErrorData,
+];
 
+export function transform(err: any, opt?: ErrorParam) {
   for (const fn of transformers) {
     const result = fn(err, opt);
 
