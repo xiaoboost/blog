@@ -15,7 +15,6 @@ export const Resolver = (): BuilderPlugin => ({
 
     builder.hooks.bundler.tap(pluginName, (bundler) => {
       bundler.hooks.resolve.tap({ name: pluginName, stage: 999 }, (args) => {
-        debugger;
         return resolve(args.path, args);
       });
     });
