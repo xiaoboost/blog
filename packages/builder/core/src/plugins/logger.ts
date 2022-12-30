@@ -1,4 +1,4 @@
-import type { BuilderPlugin } from '@blog/types';
+import type { BuilderPlugin, AssetData } from '@blog/types';
 import { Instance } from 'chalk';
 import { relative } from 'path';
 
@@ -32,6 +32,24 @@ function getShortTime(time: number) {
   }
 
   return getShortString(current, units[level]);
+}
+
+function getShortSize(size: number) {
+  const units = ['B', 'kB', 'MB', 'GB'];
+
+  let current = size;
+  let rank = 0;
+
+  while (current > 1024) {
+    current /= 1024;
+    rank++;
+  }
+
+  return getShortString(current, units[rank]);
+}
+
+function getSize(assets: AssetData[]) {
+  return assets.reduce((ans, item) => ans + item.content.byteLength, 0);
 }
 
 export const Logger = (): BuilderPlugin => ({
@@ -71,8 +89,13 @@ export const Logger = (): BuilderPlugin => ({
     builder.hooks.success.tap(pluginName, (assets) => {
       spinner.clear();
       spinner.stop();
-      logger.log(`构建完成，共耗时 ${getShortTime(Date.now() - timer)}`);
-      // TODO: 文件体积
+
+      logger.log(
+        '构建完成，' +
+          `耗时 ${printer.blue(getShortTime(Date.now() - timer))}，` +
+          `文件 ${printer.yellow(`${assets.length} 个`)}，` +
+          `总大小 ${printer.green(getShortSize(getSize(assets)))}`,
+      );
     });
 
     builder.hooks.failed.tap(pluginName, (errors) => {
