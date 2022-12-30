@@ -11,6 +11,24 @@ import type { PostUrlMap } from './types';
 import type { ErrorData } from './error';
 import type { AssetData } from './asset';
 
+export { OnResolveArgs, OnResolveResult, OnLoadResult, OnLoadArgs } from 'esbuild';
+
+/** resolve 回调返回参数 */
+export type OnResolveCallbackResult =
+  | OnResolveResult
+  | null
+  | undefined
+  | void
+  | Promise<OnResolveResult | null | undefined | void>;
+
+/** load 回调返回参数 */
+export type OnLoadCallbackResult =
+  | OnLoadResult
+  | null
+  | undefined
+  | void
+  | Promise<OnLoadResult | null | undefined | void>;
+
 /** 钩子上下文数据 */
 export interface BuilderHookContext {
   /** 打包器 */
@@ -76,13 +94,14 @@ export interface BuilderHooks {
 
 /** 打包器钩子 */
 export interface BundlerHooks {
-  /**
-   * 路径路由
-   *   - TODO: 新增 watch 选项，用来判断是不是要 watch，这里还需要新增一个处理多余选项的钩子
-   */
-  resolve: AsyncSeriesBailHook<[OnResolveArgs], OnResolveResult | undefined | null | void>;
+  /** 路径请求 */
+  resolve: AsyncSeriesBailHook<[OnResolveArgs], OnResolveCallbackResult>;
   /** 读取文件 */
-  load: AsyncSeriesBailHook<[OnLoadArgs], OnLoadResult | undefined | null | void>;
+  load: AsyncSeriesBailHook<[OnLoadArgs], OnLoadCallbackResult>;
+  /** 路径请求结果 */
+  resolveResult: AsyncSeriesHook<[OnResolveResult]>;
+  /** 读取文件结果 */
+  loadResult: AsyncSeriesHook<[OnLoadResult]>;
 }
 
 /** 运行器钩子 */

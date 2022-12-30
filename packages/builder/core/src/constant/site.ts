@@ -2,7 +2,6 @@
 export const site = {
   title: "Dreaming Cat's",
   author: 'xiao',
-  cname: 'www.dreamingcat.me',
   description: 'xiao 的个人博客',
   github: 'https://github.com/xiaoboost',
 };
@@ -17,6 +16,9 @@ export const pageConfig = {
   index: 10,
   archive: 30,
 };
+
+/** 网站 cname */
+export const cname = 'www.dreamingcat.me';
 
 /** 公共资源公共路径 */
 export const publicPath = '/';

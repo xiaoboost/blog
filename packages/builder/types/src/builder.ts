@@ -1,8 +1,8 @@
 import type { Loader as EsBuildLoader } from 'esbuild';
-import type { FSWatcher } from 'chokidar';
 import type { BuilderHooks, BundlerHooks } from './hooks';
 import type { ErrorData } from './error';
 import type { AssetData } from './asset';
+import type { Resolver } from './resolve';
 
 /** 构建器选项 */
 export type BuilderOptions = ExtendOptions & CommandOptions;
@@ -55,6 +55,8 @@ export interface BuilderInstance {
   hooks: BuilderHooks;
   /** 构建选项 */
   options: Required<BuilderOptions>;
+  /** 获取路径 */
+  resolve: Resolver;
 
   /** 初始化 */
   init(): Promise<void>;

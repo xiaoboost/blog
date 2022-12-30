@@ -4,6 +4,8 @@ import {
   BuilderOptions,
   AssetData,
   BuilderHookContext,
+  ResolveOptions,
+  ResolveResult,
 } from '@blog/types';
 import { AsyncSeriesHook, AsyncParallelHook, AsyncSeriesWaterfallHook } from 'tapable';
 import { FSWatcher } from 'chokidar';
@@ -84,6 +86,7 @@ export class Builder implements BuilderInstance {
   }
 
   private _reportError(err: any) {
+    debugger;
     const errors = 'errors' in err ? err.errors : Array.isArray(err) ? err : [err];
     return errors.map((er: any) =>
       BuilderError.from(er, {
@@ -128,6 +131,14 @@ export class Builder implements BuilderInstance {
 
   isChild() {
     return Boolean(this.parent);
+  }
+
+  resolve(request: string, opt?: ResolveOptions): ResolveResult {
+    throw new BuilderError({
+      project: this.name,
+      name: 'RESOLVE_NOT_INIT',
+      message: 'resolve 方法没有初始化',
+    });
   }
 
   addWatchFiles(...files: string[]) {

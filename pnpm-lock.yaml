@@ -79,6 +79,7 @@ importers:
       '@xiao-ai/utils': 1.6.6
       chalk: 4.1.2
       chokidar: 3.5.3
+      enhanced-resolve: 5.12.0
       esbuild: 0.15.15
       eslint: 8.22.0
       look-it-up: 2.1.0
@@ -99,6 +100,7 @@ importers:
       '@xiao-ai/utils': 1.6.6
       chalk: 4.1.2
       chokidar: 3.5.3
+      enhanced-resolve: 5.12.0
       esbuild: 0.15.15
       look-it-up: 2.1.0
       md5: 2.3.0
@@ -125,7 +127,6 @@ importers:
       chokidar: 3.5.3
       esbuild: 0.15.15
       eslint: 8.22.0
-      rimraf: 3.0.2
       tapable: 2.2.1
       tslib: 2.4.0
       typescript: 4.9.3
@@ -138,7 +139,6 @@ importers:
       '@xiao-ai/eslint-config': 1.0.1
       '@xiao-ai/tsconfig': 1.0.1
       eslint: 8.22.0
-      rimraf: 3.0.2
       tslib: 2.4.0
       typescript: 4.9.3
 
@@ -1766,13 +1766,12 @@ packages:
     engines: {node: '>= 0.8'}
     dev: false
 
-  /enhanced-resolve/5.10.0:
-    resolution: {integrity: sha512-T0yTFjdpldGY8PmuXXR0PyQ1ufZpEGiHVrp7zHKB7jdR4qlmZHhONVM5AQOAWXuF/w3dnHbEQVrNptJgt7F+cQ==}
+  /enhanced-resolve/5.12.0:
+    resolution: {integrity: sha512-QHTXI/sZQmko1cbDoNAa3mJ5qhWUUNAq3vR0/YiD379fWQrcfuoX1+HW2S0MTt7XmoPLapdaDKUtelUSPic7hQ==}
     engines: {node: '>=10.13.0'}
     dependencies:
       graceful-fs: 4.2.10
       tapable: 2.2.1
-    dev: true
 
   /es-abstract/1.20.1:
     resolution: {integrity: sha512-WEm2oBhfoI2sImeM4OF2zE2V3BYdSF+KnSi9Sidz51fQHd7+JuF8Xgcj9/0o+OWeIeIS/MiuNnlruQrJf16GQA==}
@@ -2301,7 +2300,7 @@ packages:
       eslint-plugin-import: '*'
     dependencies:
       debug: 4.3.4
-      enhanced-resolve: 5.10.0
+      enhanced-resolve: 5.12.0
       eslint: 8.23.1
       eslint-plugin-import: 2.26.0_u326u625ts5gpc5hrhiyuhtfla
       get-tsconfig: 4.2.0
