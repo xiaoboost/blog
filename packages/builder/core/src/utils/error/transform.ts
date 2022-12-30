@@ -27,16 +27,13 @@ function transformEsbuildError(err: any, opt?: ErrorParam): BuilderError | void 
   }
 }
 
-function transformNormalError(err: any): BuilderError | void {
+function transformNormalError(err: any, opt?: ErrorParam): BuilderError | void {
   if (err instanceof Error) {
-    // const stacks = stackParse(err);
-    // return new CodeHelperError(err.name, clearMessage(err.message), {
-    //   ...opt,
-    //   codeFrame: {
-    //     filePath: stacks[0].getFileName(),
-    //   },
-    //   stack: err.stack && clearStack(err.stack),
-    // });
+    return new BuilderError({
+      project: opt?.project ?? 'UNKNOWN_PROJECT',
+      message: err.message,
+      name: err.name,
+    });
   }
 }
 

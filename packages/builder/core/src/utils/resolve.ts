@@ -1,7 +1,7 @@
 import {
   CachedInputFileSystem,
-  ResolverFactory,
   ResolveOptions as EnhancedResolveOptions,
+  create,
 } from 'enhanced-resolve';
 import type { Resolver, ResolveCreatorOptions, ResolveOptions, Query, PathData } from '@blog/types';
 import fs from 'fs';
@@ -42,17 +42,16 @@ export function createResolver(options: ResolveCreatorOptions): Resolver {
   const externals = builtinModules.concat(options?.external ?? []);
   const resolveOptions: EnhancedResolveOptions = {
     fileSystem: new CachedInputFileSystem(fs, 4000),
-    conditionNames: ['node', 'import', 'module', 'require'],
+    conditionNames: ['import', 'require', 'node'],
     mainFields: ['source', 'module', 'main'],
-    mainFiles: ['index'],
     ...options,
   };
-  const jsResolver = ResolverFactory.createResolver({
+  const jsResolver = create.sync({
     ...resolveOptions,
     extensions: ['.jsx', '.tsx', '.js', '.ts', '.json'],
     preferRelative: false,
   });
-  const cssResolver = ResolverFactory.createResolver({
+  const cssResolver = create.sync({
     ...resolveOptions,
     extensions: ['.css'],
     preferRelative: true,
@@ -70,7 +69,7 @@ export function createResolver(options: ResolveCreatorOptions): Resolver {
       ? `${pathSplitted[0]}/${pathSplitted[1]}`
       : pathSplitted[0];
 
-    return externals.includes(request);
+    return externals.includes(pkgName);
   };
   const resolver = (request: string, opt?: ResolveOptions) => {
     const cacheKey = `${request}:${opt?.importer}:${opt?.kind}`;
@@ -83,8 +82,8 @@ export function createResolver(options: ResolveCreatorOptions): Resolver {
       const resolveDir = getResolveDir(opt);
       const result =
         opt?.kind === 'import-rule' || opt?.kind === 'url-token'
-          ? cssResolver.resolveSync({}, resolveDir, request)
-          : jsResolver.resolveSync({}, resolveDir, request);
+          ? cssResolver({}, resolveDir, request)
+          : jsResolver({}, resolveDir, request);
 
       if (!result) {
         throw new BuilderError({
