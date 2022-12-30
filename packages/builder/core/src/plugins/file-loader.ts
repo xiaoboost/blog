@@ -22,11 +22,11 @@ export const FileLoader = (opt: FileLoaderOption): BuilderPlugin => ({
 
     builder.hooks.bundler.tap(pluginName, (bundler) => {
       bundler.hooks.resolve.tap(pluginName, (args) => {
-        return null;
+        // ..
       });
 
       bundler.hooks.load.tap(pluginName, (args) => {
-        return null;
+        // ..
       });
     });
 

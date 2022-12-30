@@ -6,6 +6,10 @@ import { transform } from './transform';
 export class BuilderError extends Error implements ErrorData {
   static from(err: any, opt?: ErrorParam) {
     if (err instanceof BuilderError) {
+      if (opt?.project) {
+        err.project = opt.project;
+      }
+
       return err;
     }
 

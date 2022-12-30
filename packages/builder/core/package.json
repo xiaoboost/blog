@@ -26,6 +26,7 @@
     "@xiao-ai/utils": "1.6.6",
     "chalk": "4.1.2",
     "chokidar": "3.5.3",
+    "enhanced-resolve": "5.12.0",
     "esbuild": "0.15.15",
     "look-it-up": "2.1.0",
     "md5": "2.3.0",

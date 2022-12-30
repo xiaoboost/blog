@@ -8,6 +8,7 @@ import { LocalPackageRequirer } from '../plugins/local-package-requirer';
 import { AssetsMerger } from '../plugins/assets-merger';
 import { FileLoader } from '../plugins/file-loader';
 import { PathLoader } from '../plugins/path-loader';
+import { Resolver } from '../plugins/resolver';
 
 export async function applyPlugin(builder: Builder) {
   const { options: opt } = builder;
@@ -15,6 +16,7 @@ export async function applyPlugin(builder: Builder) {
 
   Logger().apply(builder);
   LocalPackageRequirer().apply(builder);
+  Resolver().apply(builder);
   PathLoader({ exts: loaderData.paths }).apply(builder);
   FileLoader({
     exts: loaderData.files,
@@ -29,7 +31,9 @@ export async function applyPlugin(builder: Builder) {
 
   if (opt.write) {
     const { AssetsWriter } = await import('../plugins/assets-writer.js');
+    const { Cleaner } = await import('../plugins/cleaner.js');
     AssetsWriter().apply(builder);
+    Cleaner().apply(builder);
   }
 
   // 主构建器特有插件
@@ -53,7 +57,6 @@ export function normalizeOptions(opt: BuilderOptions): Required<BuilderOptions> 
     publicPath: opt.publicPath ?? '/',
     terminalColor: opt.terminalColor ?? true,
     assetNames: opt.assetNames ?? (isProduction ? 'assets/[name].[hash]' : 'assets/[name]'),
-    // cacheFilesExts: opt.cacheFilesExts ?? ['.plist', '.wasm', '.ico'],
     defined: {
       ...opt.defined,
       'process.env.NODE_ENV': isProduction ? '"production"' : '"development"',
@@ -68,6 +71,8 @@ export function normalizeOptions(opt: BuilderOptions): Required<BuilderOptions> 
       '.jpg': 'file',
       '.png': 'file',
       '.ico': 'file',
+      '.plist': 'path',
+      '.wasm': 'path',
     },
   };
 }

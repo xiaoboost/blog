@@ -1,12 +1,4 @@
-import {
-  BuildOptions,
-  OnResolveArgs,
-  OnResolveResult,
-  OnLoadArgs,
-  OnLoadResult,
-  BuildIncremental,
-  build as esbuild,
-} from 'esbuild';
+import { BuildOptions, BuildIncremental, build as esbuild, OnLoadResult } from 'esbuild';
 import { join } from 'path';
 import { builtinModules } from 'module';
 import {
@@ -15,8 +7,13 @@ import {
   BuilderInstance,
   AssetData,
   BundlerResult,
+  OnResolveResult,
+  OnResolveArgs,
+  OnLoadArgs,
+  OnResolveCallbackResult,
+  OnLoadCallbackResult,
 } from '@blog/types';
-import { AsyncSeriesBailHook } from 'tapable';
+import { AsyncSeriesBailHook, AsyncSeriesHook } from 'tapable';
 import { getRoot, parseLoader } from '../utils';
 import { BridgePlugin } from './bridge';
 
@@ -32,10 +29,10 @@ export class Bundler implements BundlerInstance {
   constructor(builder: BuilderInstance) {
     this.builder = builder;
     this.hooks = {
-      resolve: new AsyncSeriesBailHook<[OnResolveArgs], OnResolveResult | undefined | null>([
-        'resolveArgs',
-      ]),
-      load: new AsyncSeriesBailHook<[OnLoadArgs], OnLoadResult | undefined | null>(['loadArgs']),
+      resolve: new AsyncSeriesBailHook<[OnResolveArgs], OnResolveCallbackResult>(['resolveArgs']),
+      load: new AsyncSeriesBailHook<[OnLoadArgs], OnLoadCallbackResult>(['loadArgs']),
+      resolveResult: new AsyncSeriesHook<[OnResolveResult]>(['resolveResult']),
+      loadResult: new AsyncSeriesHook<[OnLoadResult]>(['loadResult']),
     };
   }
 

@@ -8,3 +8,4 @@ export * from './accessor';
 export * from './template';
 export * from './types';
 export * from './error';
+export * from './resolve';
