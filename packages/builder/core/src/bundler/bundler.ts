@@ -100,6 +100,6 @@ export class Bundler implements BundlerInstance {
 
   dispose() {
     this.instance?.stop?.();
-    this.instance?.rebuild.dispose();
+    this.instance?.rebuild?.dispose?.();
   }
 }

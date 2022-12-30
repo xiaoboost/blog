@@ -14,20 +14,10 @@ import type { AssetData } from './asset';
 export { OnResolveArgs, OnResolveResult, OnLoadResult, OnLoadArgs } from 'esbuild';
 
 /** resolve 回调返回参数 */
-export type OnResolveCallbackResult =
-  | OnResolveResult
-  | null
-  | undefined
-  | void
-  | Promise<OnResolveResult | null | undefined | void>;
+export type OnResolveCallbackResult = OnResolveResult | null | undefined | void;
 
 /** load 回调返回参数 */
-export type OnLoadCallbackResult =
-  | OnLoadResult
-  | null
-  | undefined
-  | void
-  | Promise<OnLoadResult | null | undefined | void>;
+export type OnLoadCallbackResult = OnLoadResult | null | undefined | void;
 
 /** 钩子上下文数据 */
 export interface BuilderHookContext {
