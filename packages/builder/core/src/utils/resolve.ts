@@ -3,6 +3,7 @@ import {
   ResolveOptions as EnhancedResolveOptions,
   create,
 } from 'enhanced-resolve';
+import type { ImportKind } from 'esbuild';
 import type { Resolver, ResolveCreatorOptions, ResolveOptions, Query, PathData } from '@blog/types';
 import fs from 'fs';
 import { parse } from 'querystring';
@@ -18,6 +19,10 @@ const DATAURL_PATTERNS = /^data:/;
 const HASH_PATTERNS = /#[^#]+$/;
 const isUrl = (source: string) =>
   HTTP_PATTERNS.test(source) || DATAURL_PATTERNS.test(source) || HASH_PATTERNS.test(source);
+
+export function isCssImport(kind?: ImportKind) {
+  return kind === 'import-rule' || kind === 'url-token';
+}
 
 export function parsePath(original: string): PathData {
   const [basic, rawQuery] = original.split('?');
@@ -80,10 +85,9 @@ export function createResolver(options: ResolveCreatorOptions): Resolver {
 
     try {
       const resolveDir = getResolveDir(opt);
-      const result =
-        opt?.kind === 'import-rule' || opt?.kind === 'url-token'
-          ? cssResolver({}, resolveDir, request)
-          : jsResolver({}, resolveDir, request);
+      const result = isCssImport(opt?.kind)
+        ? cssResolver({}, resolveDir, request)
+        : jsResolver({}, resolveDir, request);
 
       if (!result) {
         throw new BuilderError({
