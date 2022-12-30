@@ -18,6 +18,9 @@ import { getRoot, parseLoader } from '../utils';
 import { BridgePlugin } from './bridge';
 
 export class Bundler implements BundlerInstance {
+  /** 打包产物文件名称 */
+  static BundleFileName = '__bundleFile.js';
+
   private builder: BuilderInstance;
 
   private instance?: BuildIncremental;
@@ -46,18 +49,17 @@ export class Bundler implements BundlerInstance {
     }
 
     const { options: opt, root } = this.builder;
-    const isProduction = opt.mode === 'production';
     const esbuildConfig: BuildOptions = {
       entryPoints: [join(getRoot(), 'src/bundler/source/index.ts')],
-      outdir: join(root, opt.outDir),
+      outfile: join(root, 'virtual', Bundler.BundleFileName),
       metafile: false,
       bundle: true,
       format: 'cjs',
       target: 'esnext',
       write: false,
       logLevel: 'silent',
-      sourcemap: isProduction ? false : 'external',
-      minify: isProduction,
+      sourcemap: 'external',
+      minify: false,
       mainFields: ['source', 'module', 'main'],
       resolveExtensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
       publicPath: opt.publicPath,
@@ -75,6 +77,10 @@ export class Bundler implements BundlerInstance {
     };
 
     this.instance = (await esbuild(esbuildConfig)) as BuildIncremental;
+    this.assets = (this.instance.outputFiles ?? []).map((file) => ({
+      path: file.path,
+      content: Buffer.from(file.contents),
+    }));
   }
 
   getAssets(): AssetData[] {
@@ -83,8 +89,8 @@ export class Bundler implements BundlerInstance {
 
   getBundledCode(): BundlerResult {
     const output = this.instance?.outputFiles ?? [];
-    const source = output.find((item) => item.path.endsWith('index.js'));
-    const sourceMap = output.find((item) => item.path.endsWith('index.js.map'));
+    const source = output.find((item) => item.path.endsWith(Bundler.BundleFileName));
+    const sourceMap = output.find((item) => item.path.endsWith(`${Bundler.BundleFileName}.map`));
 
     return {
       source: source?.text ?? '',
