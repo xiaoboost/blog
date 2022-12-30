@@ -71,14 +71,19 @@ export const Logger = (): BuilderPlugin => ({
     builder.hooks.success.tap(pluginName, (assets) => {
       spinner.clear();
       spinner.stop();
-      logger.log(`构建耗时 ${getShortTime(Date.now() - timer)}`);
+      logger.log(`构建完成，共耗时 ${getShortTime(Date.now() - timer)}`);
       // TODO: 文件体积
     });
 
     builder.hooks.failed.tap(pluginName, (errors) => {
       spinner.stop();
       spinner.clear();
-      // TODO: 构建错误
+
+      logger.log(`构建失败，发现了 ${printer.bold(errors.length)} 个错误：`);
+
+      for (const err of errors) {
+        logger.error(err.toString());
+      }
     });
   },
 });

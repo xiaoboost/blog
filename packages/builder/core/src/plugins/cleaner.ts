@@ -1,5 +1,5 @@
 import type { BuilderPlugin } from '@blog/types';
-import { rmdir } from 'fs/promises';
+import { rm } from 'fs/promises';
 
 const pluginName = 'cleaner';
 
@@ -12,7 +12,7 @@ export const Cleaner = (): BuilderPlugin => ({
 
     builder.hooks.start.tapPromise(pluginName, async () => {
       try {
-        await rmdir(outDir, { recursive: true });
+        await rm(outDir, { recursive: true });
       } catch (err: any) {
         if (err.code !== 'ENOENT') {
           throw err;
