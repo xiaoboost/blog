@@ -1,21 +1,23 @@
-import { defineUtils, forEach, forOnce, waitReady, callHook } from '@blog/context/runtime';
+// import { defineUtils, forEach, forOnce, waitReady, callHook } from '@blog/context/runtime';
 
-forOnce(() => {
-  console.log('forOnce');
-});
+// forOnce(() => {
+//   console.log('forOnce');
+// });
 
-forEach((runtime) => {
-  console.log('forEach');
+// forEach((runtime) => {
+//   console.log('forEach');
 
-  runtime.hooks.beforeStart.tap('test', () => {
-    console.log('beforeStart');
-  });
-});
+//   runtime.hooks.beforeStart.tap('test', () => {
+//     console.log('beforeStart');
+//   });
+// });
 
-console.log('start');
+// export default async () => {
+//   await waitReady;
+//   await callHook('beforeStart');
+//   console.log('end');
+// };
 
-export default async () => {
-  await waitReady;
-  await callHook('beforeStart');
-  console.log('end');
-};
+import { CodeBlock } from '@blog/mdx-code-block-normal';
+
+CodeBlock;

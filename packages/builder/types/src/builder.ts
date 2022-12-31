@@ -3,6 +3,7 @@ import type { BuilderHooks, BundlerHooks } from './hooks';
 import type { ErrorData } from './error';
 import type { AssetData } from './asset';
 import type { Resolver } from './resolve';
+import type { BuilderPlugin } from './plugin';
 
 /** 构建器选项 */
 export type BuilderOptions = ExtendOptions & CommandOptions;
@@ -13,12 +14,25 @@ export type BuilderOptions = ExtendOptions & CommandOptions;
  */
 export type Loader = EsBuildLoader | 'path';
 
+/** 日志等级字符串 */
+export type LogLevel = keyof typeof LogLevelEnum;
+
+/** 日志等级 */
+export enum LogLevelEnum {
+  Debug,
+  Info,
+  Error,
+  Silence,
+}
+
 /** 扩展配置 */
 export interface ExtendOptions {
   /** 构建器名称 */
   name?: string;
   /** 根路径 */
   root?: string;
+  /** 入口文件 */
+  entry?: string;
   /** 写入硬盘 */
   write?: boolean;
   /** 资源公共路径 */
@@ -29,6 +43,8 @@ export interface ExtendOptions {
   defined?: Record<string, string>;
   /** 加载器配置 */
   loader?: Record<string, Loader>;
+  /** 插件列表 */
+  plugin?: BuilderPlugin[];
 }
 
 /** 命令行选项 */
@@ -43,14 +59,19 @@ export interface CommandOptions {
   watch?: boolean;
   /** 命令行输出带颜色 */
   terminalColor?: boolean;
+  /** 日志输出等级 */
+  logLevel?: LogLevel;
 }
 
 /** 构建器实例 */
 export interface BuilderInstance {
   /** 构建器名称 */
-  name: string;
+  readonly name: string;
   /** 根路径 */
-  root: string;
+  readonly root: string;
+  /** 编译中标志位 */
+  readonly building: Promise<void>;
+
   /** 钩子数据 */
   hooks: BuilderHooks;
   /** 构建选项 */
@@ -102,6 +123,6 @@ export interface BundlerInstance {
 export interface RunnerInstance {
   /** 运行代码 */
   run(source: BundlerResult): Promise<void>;
-  /** 获取产物数据 */
-  getAssets(): AssetData[];
+  /** 获取运行结果 */
+  getOutput(): any;
 }

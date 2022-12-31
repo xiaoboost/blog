@@ -3,11 +3,11 @@ import type { BuilderPlugin } from '@blog/types';
 import { dirname, isAbsolute } from 'path';
 import { builtinModules } from 'module';
 import { normalize } from '@blog/node';
+import { isCssImport } from '../utils';
 
 const pluginName = 'local-package';
 const requireSuffix = 'require';
 const moduleSuffix = 'local-module';
-const namespace = 'local-package';
 
 function isExternal(file: string) {
   // monorepo
@@ -58,23 +58,27 @@ export const LocalPackageRequirer = (): BuilderPlugin => ({
 
     builder.hooks.bundler.tap(pluginName, (bundler) => {
       bundler.hooks.resolve.tap(pluginName, (args) => {
-        if (args.namespace === namespace) {
+        if (isCssImport(args.kind)) {
+          return;
+        }
+
+        if (args.namespace === pluginName) {
           if (requireSuffixMatcher.test(args.path)) {
             return {
               path: args.path,
-              namespace,
+              namespace: pluginName,
             };
           }
         } else if (isExternal(args.path)) {
           return {
             path: `${normalize(args.importer)}_${args.path}_${moduleSuffix}`,
-            namespace,
+            namespace: pluginName,
           };
         }
       });
 
       bundler.hooks.load.tap(pluginName, (args) => {
-        if (args.namespace !== namespace) {
+        if (args.namespace !== pluginName) {
           return;
         }
 

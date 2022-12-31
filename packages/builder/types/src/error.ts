@@ -23,6 +23,8 @@ export interface ErrorData {
   message: string;
   /** 代码提示 */
   codeFrame?: CodeFrameData;
+  /** 错误堆栈 */
+  stack?: string;
 }
 
 export type ErrorParam = Partial<Pick<ErrorData, 'project' | 'codeFrame'>>;

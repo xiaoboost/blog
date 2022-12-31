@@ -37,9 +37,14 @@ function transformNormalError(err: any, opt?: ErrorParam): BuilderError | void {
   }
 }
 
-function transformRunError(err: any): BuilderError | void {
+function transformRunError(err: any, opt?: ErrorParam): BuilderError | void {
   if (isRunError(err)) {
-    // ..
+    return new BuilderError({
+      ...opt,
+      name: err.name,
+      message: err.message,
+      project: opt?.project ?? 'UNKNOWN_PROJECT',
+    });
   }
 }
 

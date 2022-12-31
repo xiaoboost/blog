@@ -14,7 +14,7 @@ import {
   OnLoadCallbackResult,
 } from '@blog/types';
 import { AsyncSeriesBailHook, AsyncSeriesHook } from 'tapable';
-import { getRoot, parseLoader } from '../utils';
+import { getCoreRoot, parseLoader } from '../utils';
 import { BridgePlugin } from './bridge';
 
 export class Bundler implements BundlerInstance {
@@ -50,7 +50,7 @@ export class Bundler implements BundlerInstance {
 
     const { options: opt, root } = this.builder;
     const esbuildConfig: BuildOptions = {
-      entryPoints: [join(getRoot(), 'src/bundler/source/index.ts')],
+      entryPoints: [opt.entry],
       outfile: join(root, 'virtual', Bundler.BundleFileName),
       metafile: false,
       bundle: true,
