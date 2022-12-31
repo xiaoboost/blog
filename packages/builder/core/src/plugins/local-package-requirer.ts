@@ -58,6 +58,7 @@ export const LocalPackageRequirer = (): BuilderPlugin => ({
 
     builder.hooks.bundler.tap(pluginName, (bundler) => {
       bundler.hooks.resolve.tap(pluginName, (args) => {
+        // 排除 css 引用
         if (isCssImport(args.kind)) {
           return;
         }

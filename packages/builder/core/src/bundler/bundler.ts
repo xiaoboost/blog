@@ -13,7 +13,7 @@ import {
   OnResolveCallbackResult,
   OnLoadCallbackResult,
 } from '@blog/types';
-import { AsyncSeriesBailHook, AsyncSeriesHook } from 'tapable';
+import { AsyncSeriesBailHook, AsyncSeriesHook, SyncWaterfallHook } from 'tapable';
 import { getCoreRoot, parseLoader } from '../utils';
 import { BridgePlugin } from './bridge';
 
@@ -32,6 +32,7 @@ export class Bundler implements BundlerInstance {
   constructor(builder: BuilderInstance) {
     this.builder = builder;
     this.hooks = {
+      initialization: new SyncWaterfallHook<[BuildOptions]>(['options']),
       resolve: new AsyncSeriesBailHook<[OnResolveArgs], OnResolveCallbackResult>(['resolveArgs']),
       load: new AsyncSeriesBailHook<[OnLoadArgs], OnLoadCallbackResult>(['loadArgs']),
       resolveResult: new AsyncSeriesHook<[OnResolveResult]>(['resolveResult']),
@@ -48,8 +49,9 @@ export class Bundler implements BundlerInstance {
       this.instance = await this.instance.rebuild();
     }
 
-    const { options: opt, root } = this.builder;
-    const esbuildConfig: BuildOptions = {
+    const { builder, hooks } = this;
+    const { options: opt, root } = builder;
+    const esbuildConfig: BuildOptions = hooks.initialization.call({
       entryPoints: [opt.entry],
       outfile: join(root, 'virtual', Bundler.BundleFileName),
       metafile: false,
@@ -74,7 +76,7 @@ export class Bundler implements BundlerInstance {
       define: opt.defined,
       loader: parseLoader(opt.loader).loader,
       plugins: [BridgePlugin(this)],
-    };
+    });
 
     this.instance = (await esbuild(esbuildConfig)) as BuildIncremental;
     this.assets = (this.instance.outputFiles ?? []).map((file) => ({
