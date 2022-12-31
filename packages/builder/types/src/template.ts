@@ -8,6 +8,6 @@ export interface RuntimeData {
 
 /** 模板辅助函数 */
 export interface TemplateUtils {
-  createAssets(): Promise<AssetData[]>;
+  createAssets(): AssetData[] | Promise<AssetData[]>;
   getAssetNames(): string[];
 }

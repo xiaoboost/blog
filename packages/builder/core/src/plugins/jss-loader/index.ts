@@ -82,10 +82,6 @@ export const JssLoader = ({ extractCss = true }: JssLoaderOptions = {}): Builder
           jssLoaderCache.set(args.path, childBuilder);
         }
 
-        /**
-         *  TODO: 重复构建时如何加速
-         * 比如 jss 和 script 里面同时有一个相同的入口，但是只是一个要 extract css 一个不需要，但是它们作为子进程的 build 是一样的
-         */
         await childBuilder.build();
 
         const { cssCode, classes } = extractor.getOutput();

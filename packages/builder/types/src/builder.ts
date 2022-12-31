@@ -69,8 +69,6 @@ export interface BuilderInstance {
   readonly name: string;
   /** 根路径 */
   readonly root: string;
-  /** 编译中标志位 */
-  readonly building: Promise<void>;
 
   /** 钩子数据 */
   hooks: BuilderHooks;
