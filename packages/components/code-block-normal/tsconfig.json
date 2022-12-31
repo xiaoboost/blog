@@ -6,6 +6,7 @@
     "baseUrl": ".",
     "outDir": "./dist",
     "declaration": false,
-    "declarationMap": false
+    "declarationMap": false,
+    "types": ["highlight.js/types/index.d.ts"]
   }
 }

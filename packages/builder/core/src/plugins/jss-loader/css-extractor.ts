@@ -15,8 +15,13 @@ function isJssObject(obj: unknown) {
   return isObject(obj) && 'attached' in obj && 'classes' in obj && 'rules' in obj;
 }
 
+const defaultOutput = {
+  classes: {},
+  toString: (args: any) => '',
+};
+
 export const CssExtractor = (): CssExtractorData => {
-  let output: any;
+  let output = { ...defaultOutput };
 
   return {
     getOutput() {
@@ -32,10 +37,7 @@ export const CssExtractor = (): CssExtractorData => {
       name: pluginName,
       apply(builder) {
         builder.hooks.start.tap(pluginName, () => {
-          output = {
-            classes: {},
-            toString: () => '',
-          };
+          output = { ...defaultOutput };
         });
 
         builder.hooks.success.tap(pluginName, (_, { runner }) => {

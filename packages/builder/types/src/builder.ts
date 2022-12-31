@@ -39,6 +39,12 @@ export interface ExtendOptions {
   publicPath?: string;
   /** 资源命名 */
   assetNames?: string;
+  // /**
+  //  * 资源命名
+  //  *   - 为对象时，键名表示特定的命名规则，键值表示特定的文件后缀
+  //  *   - 键值为`'default'`表示其余特定文件之后的全部文件
+  //  */
+  // assetNames?: string | Record<string, string | string[]>;
   /** 变量定义 */
   defined?: Record<string, string>;
   /** 加载器配置 */

@@ -40,6 +40,8 @@ export class BuilderError extends Error implements ErrorData {
       message += codeFrameColumns(codeFrame.content, codeFrame.range, {
         highlightCode: true,
       });
+    } else if (this.stack) {
+      message += `\n${this.stack}`;
     }
 
     return message;
