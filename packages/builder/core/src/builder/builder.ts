@@ -31,19 +31,22 @@ export class Builder implements BuilderInstance {
 
   private children: Builder[] = [];
 
+  private isBuilded = false;
+
+  // private buildEndSwitch
+
   hooks: BuilderHooks;
 
   options: Required<BuilderOptions>;
 
   constructor(opt: BuilderOptions, parent?: Builder) {
-    this.parent = parent;
     this.bundler = new Bundler(this);
     this.runner = new Runner(this);
     this.options = normalizeOptions(opt);
     this.hooks = {
       initialization: new AsyncSeriesHook<[Required<BuilderOptions>]>(['Options']),
       start: new AsyncSeriesHook<[]>(),
-      success: new AsyncSeriesHook<[AssetData[]]>(['Assets']),
+      success: new AsyncSeriesHook<[AssetData[], BuilderHookContext]>(['Assets', 'Context']),
       done: new AsyncSeriesHook<[BuilderHookContext]>(['Context']),
       failed: new AsyncSeriesHook<[BuilderError[]]>(['Errors']),
       filesChange: new AsyncParallelHook<[string[]]>(['Files']),
@@ -52,6 +55,11 @@ export class Builder implements BuilderInstance {
       runner: new AsyncSeriesHook<[Runner]>(['Runner']),
       processAssets: new AsyncSeriesWaterfallHook<[AssetData[]]>(['Assets']),
     };
+
+    if (parent) {
+      this.parent = parent;
+      parent.children.push(this);
+    }
   }
 
   get root() {
@@ -60,6 +68,11 @@ export class Builder implements BuilderInstance {
 
   get name() {
     return this.options.name;
+  }
+
+  get building() {
+    // return this.isBuilded as Promise<void>;
+    return Promise.resolve();
   }
 
   private _getHookContext() {
@@ -78,7 +91,14 @@ export class Builder implements BuilderInstance {
       await this.hooks.runner.promise(this.runner);
       await this.runner.run(this.bundler.getBundledCode());
       this.assets = await this.hooks.processAssets.promise(this.getAssets());
-      await this.hooks.success.promise(this.getAssets());
+
+      const errors = this.getErrors();
+
+      if (errors.length > 0) {
+        await this.hooks.failed.promise(errors);
+      } else {
+        await this.hooks.success.promise(this.getAssets(), this._getHookContext());
+      }
     } catch (e: any) {
       this.errors = this._reportError(e);
       await this.hooks.failed.promise(this.getErrors());

@@ -12,6 +12,12 @@ const baseOptions: Record<string, yargs.Options> = {
     describe: '命令行输出颜色',
     default: true,
   },
+  logLevel: {
+    type: 'string',
+    describe: '输出日志等级',
+    default: 'info',
+    choices: ['debug', 'info', 'error'],
+  },
 };
 
 export const buildOptions: Record<string, yargs.Options> = {

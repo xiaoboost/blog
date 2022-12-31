@@ -5,7 +5,7 @@ import { relative } from 'path';
 import Moment from 'moment';
 import createSpinner from 'ora';
 
-import { getPrefixConsole } from '../utils';
+import { Logger as Console } from '../utils';
 
 const pluginName = 'logger';
 
@@ -56,9 +56,9 @@ export const Logger = (): BuilderPlugin => ({
   name: pluginName,
   apply(builder) {
     const { options, root } = builder;
-    const { terminalColor: color } = options;
+    const { terminalColor: color, logLevel } = options;
     const printer = new Instance({ level: color ? 3 : 0 });
-    const logger = getPrefixConsole(() => printer.green(`[${Moment().format('HH:mm:ss')}]`));
+    const logger = new Console(() => printer.green(`[${Moment().format('HH:mm:ss')}]`), logLevel);
     const spinner = createSpinner({
       interval: 200,
       color: color ? 'blue' : undefined,
@@ -82,7 +82,7 @@ export const Logger = (): BuilderPlugin => ({
 
     builder.hooks.filesChange.tap(pluginName, (files) => {
       for (const file of files) {
-        logger.log(`${printer.yellow('[文件变更]')}`, relative(root, file));
+        logger.info(`${printer.yellow('[文件变更]')}`, relative(root, file));
       }
     });
 
@@ -90,7 +90,7 @@ export const Logger = (): BuilderPlugin => ({
       spinner.clear();
       spinner.stop();
 
-      logger.log(
+      logger.info(
         '构建完成，' +
           `耗时 ${printer.blue(getShortTime(Date.now() - timer))}，` +
           `文件 ${printer.yellow(`${assets.length} 个`)}，` +
@@ -102,10 +102,10 @@ export const Logger = (): BuilderPlugin => ({
       spinner.stop();
       spinner.clear();
 
-      logger.log(`构建失败，发现了 ${printer.bold(errors.length)} 个错误：`);
+      logger.info(`构建失败，发现了 ${printer.bold(errors.length)} 个错误：`);
 
       for (const err of errors) {
-        logger.error(err.toString());
+        logger.error(`${err.toString()}\n`);
       }
     });
   },

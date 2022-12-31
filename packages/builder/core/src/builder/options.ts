@@ -2,13 +2,14 @@ import type { BuilderOptions } from '@blog/types';
 import { join } from 'path';
 import type { Builder } from './builder';
 
-import { parseLoader } from '../utils';
+import { parseLoader, getCoreRoot } from '../utils';
 import { Logger } from '../plugins/logger';
 import { LocalPackageRequirer } from '../plugins/local-package-requirer';
 import { AssetsMerger } from '../plugins/assets-merger';
 import { FileLoader } from '../plugins/file-loader';
 import { PathLoader } from '../plugins/path-loader';
 import { Resolver } from '../plugins/resolver';
+import { JssLoader } from '../plugins/jss-loader';
 
 export async function applyPlugin(builder: Builder) {
   const { options: opt } = builder;
@@ -23,6 +24,7 @@ export async function applyPlugin(builder: Builder) {
     publicPath: opt.publicPath,
     assetNames: opt.assetNames,
   }).apply(builder);
+  JssLoader({ extractCss: false }).apply(builder);
 
   if (opt.watch) {
     const { Watcher } = await import('../plugins/watcher.js');
@@ -40,6 +42,9 @@ export async function applyPlugin(builder: Builder) {
   if (!builder.isChild()) {
     AssetsMerger().apply(builder);
   }
+
+  // 应用外部插件
+  opt.plugin.forEach((item) => item.apply(builder));
 }
 
 export function normalizeOptions(opt: BuilderOptions): Required<BuilderOptions> {
@@ -48,6 +53,7 @@ export function normalizeOptions(opt: BuilderOptions): Required<BuilderOptions> 
 
   return {
     root,
+    entry: opt.entry ?? join(getCoreRoot(), 'src/bundler/source/index.ts'),
     name: opt.name ?? 'Main',
     outDir: join(root, opt.outDir ?? 'dist'),
     mode: isProduction ? 'production' : 'development',
@@ -57,6 +63,8 @@ export function normalizeOptions(opt: BuilderOptions): Required<BuilderOptions> 
     publicPath: opt.publicPath ?? '/',
     terminalColor: opt.terminalColor ?? true,
     assetNames: opt.assetNames ?? (isProduction ? 'assets/[name].[hash]' : 'assets/[name]'),
+    plugin: opt.plugin ?? [],
+    logLevel: opt.logLevel ?? 'Info',
     defined: {
       ...opt.defined,
       'process.env.NODE_ENV': isProduction ? '"production"' : '"development"',

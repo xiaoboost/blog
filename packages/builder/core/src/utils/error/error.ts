@@ -23,7 +23,9 @@ export class BuilderError extends Error implements ErrorData {
   constructor(opt: ErrorData) {
     super(opt.message);
     this.name = opt.name;
+    this.stack = opt.stack;
     this.project = opt.project;
+    this.codeFrame = opt.codeFrame;
   }
 
   toString(printer: Chalk = chalk) {
@@ -34,7 +36,7 @@ export class BuilderError extends Error implements ErrorData {
     message += `${printer.red(`[${project}]`)} ${printer.blue(name)}: ${msg}`;
 
     if (codeFrame) {
-      message += `\n\n${printer.bgRed('File:')} ${codeFrame.path}:${codeFrame.range.start.line}\n`;
+      message += `\n${printer.bgRed('File:')} ${codeFrame.path}:${codeFrame.range.start.line}\n`;
       message += codeFrameColumns(codeFrame.content, codeFrame.range, {
         highlightCode: true,
       });

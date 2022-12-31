@@ -51,7 +51,7 @@ export interface BuilderHooks {
    * 构建成功
    *   - `watch`模式下，每次成功的构建均会触发
    */
-  success: AsyncSeriesHook<[AssetData[]]>;
+  success: AsyncSeriesHook<[AssetData[], BuilderHookContext]>;
   /**
    * 构建失败
    *   - `watch`模式下，每次失败的构建均会触发

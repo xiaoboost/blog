@@ -1,23 +1,14 @@
-import type jssx from 'jss';
-import type { default as Jss, Styles, StyleSheet } from 'jss';
-
+import { jss, StyleSheet, Styles } from '@blog/context/runtime';
 import { hyphenate } from '@xiao-ai/utils';
 import { mediaPhone, mediaPc } from './constant';
 
-export { jssx as jss };
-
-/** 外部注入虚拟 jss 变量 */
-declare const jss: typeof Jss;
-
 type JssStyle<C extends string | number = string> = Pick<StyleSheet<C>, 'classes'>;
-
-export { JssStyle, Styles };
 
 export function createStyles<C extends string = string>(styles: Styles<C>): JssStyle<C> {
   return jss.createStyleSheet(styles, {
     link: false,
     index: 0,
-    generateId: (rule) => {
+    generateId: (rule: any) => {
       return typeof rule.key === 'string' ? hyphenate(rule.key ?? '') : '';
     },
   });
