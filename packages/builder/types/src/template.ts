@@ -1,5 +1,4 @@
 import type { RuntimeHooks } from './hooks';
-import type { AssetData } from './asset';
 
 /** 运行时数据 */
 export interface RuntimeData {
@@ -8,6 +7,10 @@ export interface RuntimeData {
 
 /** 模板辅助函数 */
 export interface TemplateUtils {
-  createAssets(): AssetData[] | Promise<AssetData[]>;
+  /** 获取所有资源 */
   getAssetNames(): string[];
+  /** 获取样式资源 */
+  getStyleNames(): string[];
+  /** 获取脚本资源 */
+  getScriptNames(): string[];
 }

@@ -14,7 +14,7 @@ import {
   OnLoadCallbackResult,
 } from '@blog/types';
 import { AsyncSeriesBailHook, AsyncSeriesHook, SyncWaterfallHook } from 'tapable';
-import { getCoreRoot, parseLoader } from '../utils';
+import { parseLoader } from '../utils';
 import { BridgePlugin } from './bridge';
 
 export class Bundler implements BundlerInstance {

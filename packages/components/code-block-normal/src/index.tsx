@@ -1,15 +1,17 @@
 import React from 'react';
 import highlight from 'highlight.js';
 import { stringifyClass } from '@xiao-ai/utils';
+import { defineUtils } from '@blog/context/runtime';
 
 import styles from './index.jss';
-// import assets = require('./code-block.script');
+import script from './code-block.script';
 
-// import { getAssetContents, getAssetPaths } from '@blog/node';
 import { getHighlightCode, getMinSpaceWidth, addSplitLabel, getLangLabel } from './utils';
 
 export * from './utils';
 export { styles };
+
+export const utils = defineUtils(script);
 
 export interface WrapperProps {
   /** 代码语言 */
@@ -86,11 +88,3 @@ export function CodeBlock({ lang, children }: React.PropsWithChildren<CodeBlockP
     </CodeBlockWrapper>
   );
 }
-
-// export const createAssets: CreateAssets = () => {
-//   return getAssetContents(assets);
-// };
-
-// export const getAssetNames: GetAssetNames = () => {
-//   return getAssetPaths(assets);
-// };
