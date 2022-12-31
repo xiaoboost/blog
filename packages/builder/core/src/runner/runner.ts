@@ -1,9 +1,8 @@
 import { RunnerInstance, BuilderInstance, AssetData, BundlerResult, ErrorData } from '@blog/types';
 import { getContext } from '@blog/context';
 import { Instance } from 'chalk';
-import { isFunc } from '@xiao-ai/utils';
 import { runScript, RunError } from '@xiao-ai/utils/node';
-import { getPrefixConsole, getOriginCodeFrame } from '../utils';
+import { Logger, getOriginCodeFrame } from '../utils';
 
 export class Runner implements RunnerInstance {
   private builder: BuilderInstance;
@@ -12,7 +11,7 @@ export class Runner implements RunnerInstance {
 
   private sourceMap = '';
 
-  private assets: AssetData[] = [];
+  private output: any;
 
   constructor(builder: BuilderInstance) {
     this.builder = builder;
@@ -22,11 +21,11 @@ export class Runner implements RunnerInstance {
   private init(code?: string, sourceMap?: string) {
     this.code = code ?? '';
     this.sourceMap = sourceMap ?? '';
-    this.assets = [];
+    this.output = undefined;
   }
 
   private getContext() {
-    const { terminalColor: color } = this.builder.options;
+    const { terminalColor: color, logLevel } = this.builder.options;
     const printer = new Instance({ level: color ? 3 : 0 });
 
     return {
@@ -39,7 +38,7 @@ export class Runner implements RunnerInstance {
       clearImmediate,
       clearInterval,
       clearTimeout,
-      console: getPrefixConsole(printer.blue('[Runtime]')),
+      console: new Logger(printer.blue('[Runtime]'), logLevel),
     };
   }
 
@@ -53,11 +52,11 @@ export class Runner implements RunnerInstance {
     const range = {
       start: {
         line: location.line,
-        column: location.column ?? 0,
+        column: location.column ?? 1,
       },
       end: {
         line: location.line,
-        column: (location.column ?? 0) + (location.length ?? 0),
+        column: (location.column ?? 1) + (location.length ?? 0),
       },
     };
     const data: ErrorData = {
@@ -70,8 +69,8 @@ export class Runner implements RunnerInstance {
     return data;
   }
 
-  getAssets() {
-    return this.assets.slice();
+  getOutput() {
+    return this.output;
   }
 
   async run({ source, sourceMap }: BundlerResult): Promise<void> {
@@ -82,8 +81,8 @@ export class Runner implements RunnerInstance {
       globalParams: this.getContext(),
     });
 
-    if (isFunc(result.output)) {
-      this.assets = (await result.output()) ?? [];
+    if (result.output) {
+      this.output = result.output;
     }
 
     if (result.error) {

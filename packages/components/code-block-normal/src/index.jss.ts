@@ -7,7 +7,7 @@ import {
   BlackExtraLight,
   mediaPhone,
   Color,
-} from '@blog/shared/styles';
+} from '@blog/styles';
 
 const CodeColor = Color(BlackLight);
 const CodeBgColor = Color(WhiteBg);

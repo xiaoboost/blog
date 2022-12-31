@@ -26,3 +26,8 @@ export function parseUrl(...paths: string[]) {
 
   return str;
 }
+
+export function replaceExt(file: string, ext: string) {
+  const oldExt = path.extname(file);
+  return normalize(file.replace(oldExt, ext));
+}

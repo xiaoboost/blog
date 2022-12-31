@@ -1,4 +1,5 @@
-import type { BuilderPlugin, BundlerInstance, RunnerInstance } from '@blog/types';
+import type { BuilderPlugin, BundlerInstance, RunnerInstance, AssetData } from '@blog/types';
+import { isFunc } from '@xiao-ai/utils';
 import { Bundler } from '../bundler';
 
 const pluginName = 'assets-merger';
@@ -17,11 +18,13 @@ export const AssetsMerger = (): BuilderPlugin => ({
       runner = _runner;
     });
 
-    builder.hooks.processAssets.tap(pluginName, (assets) => {
-      const runnerAssets = runner.getAssets();
+    builder.hooks.processAssets.tapPromise(pluginName, async (assets) => {
       const bundlerAssets = bundler
         .getAssets()
         .filter((item) => !item.path.includes(Bundler.BundleFileName));
+
+      const runnerOutput = runner.getOutput() as () => Promise<AssetData[]>;
+      const runnerAssets = isFunc(runnerOutput) ? (await runnerOutput()) ?? [] : [];
 
       return assets.concat(bundlerAssets, runnerAssets);
     });

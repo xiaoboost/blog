@@ -39,11 +39,11 @@ export const Watcher = (): BuilderPlugin => ({
 
     builder.hooks.bundler.tap(pluginName, (bundler) => {
       bundler.hooks.resolveResult.tap(pluginName, ({ path, watchFiles }) => {
-        if (path) {
+        if (watchFiles) {
+          watchFiles.forEach((file) => builder.addWatchFiles(file));
+        } else if (path) {
           builder.addWatchFiles(path);
         }
-
-        watchFiles?.forEach((file) => builder.addWatchFiles(file));
       });
       bundler.hooks.loadResult.tap(pluginName, ({ watchFiles }) => {
         watchFiles?.forEach((file) => builder.addWatchFiles(file));

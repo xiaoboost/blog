@@ -4,11 +4,24 @@ import { lookItUp } from 'look-it-up';
 import { isAbsolute } from 'path';
 import { readFile } from 'fs/promises';
 
+function getSource(sourceMap: SourceMapConsumer, raw: string, fullPath: string) {
+  try {
+    const result = sourceMap.sourceContentFor(raw);
+
+    if (result) {
+      return result;
+    }
+  } catch (e) {
+    // ..
+  }
+
+  return readFile(fullPath, 'utf-8');
+}
+
 export async function getOriginCodeFrame(
   position: Range,
   rawSourceMap: string,
 ): Promise<CodeFrameData | undefined> {
-  debugger;
   const sourceMap = await new SourceMapConsumer(rawSourceMap);
   const startLoc = sourceMap.originalPositionFor({
     line: position.start.line,
@@ -32,10 +45,7 @@ export async function getOriginCodeFrame(
   }
 
   const filePath = isAbsolute(rawFilePath) ? rawFilePath : await lookItUp(rawFilePath, __dirname);
-  const fileContent =
-    filePath && sourceMap.sourceContentFor(filePath)
-      ? sourceMap.sourceContentFor(filePath)
-      : await readFile(filePath!, 'utf-8');
+  const fileContent = filePath && (await getSource(sourceMap, rawFilePath, filePath));
 
   if (!filePath || !fileContent) {
     return;
@@ -47,11 +57,11 @@ export async function getOriginCodeFrame(
     range: {
       start: {
         line: startLoc.line,
-        column: startLoc.column ?? 0,
+        column: (startLoc.column ?? 0) + 1,
       },
       end: {
         line: endLoc.line,
-        column: endLoc.column ?? 0,
+        column: endLoc.column ?? 1,
       },
     },
   };
