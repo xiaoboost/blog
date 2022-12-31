@@ -3,8 +3,15 @@ import type {
   AsyncSeriesHook,
   AsyncSeriesBailHook,
   AsyncSeriesWaterfallHook,
+  SyncWaterfallHook,
 } from 'tapable';
-import type { OnResolveArgs, OnResolveResult, OnLoadResult, OnLoadArgs } from 'esbuild';
+import type {
+  OnResolveArgs,
+  OnResolveResult,
+  OnLoadResult,
+  OnLoadArgs,
+  BuildOptions,
+} from 'esbuild';
 import type { FSWatcher } from 'chokidar';
 import type { BuilderOptions, BundlerInstance, RunnerInstance } from './builder';
 import type { PostUrlMap } from './types';
@@ -84,6 +91,11 @@ export interface BuilderHooks {
 
 /** 打包器钩子 */
 export interface BundlerHooks {
+  /**
+   * 初始化
+   *   - 构建开始之前
+   */
+  initialization: SyncWaterfallHook<[BuildOptions]>;
   /** 路径请求 */
   resolve: AsyncSeriesBailHook<[OnResolveArgs], OnResolveCallbackResult>;
   /** 读取文件 */

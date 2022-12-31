@@ -8,6 +8,7 @@ import {
   ResolveResult,
 } from '@blog/types';
 import { AsyncSeriesHook, AsyncParallelHook, AsyncSeriesWaterfallHook } from 'tapable';
+import { Watcher } from '@xiao-ai/utils';
 import { FSWatcher } from 'chokidar';
 import { BuilderError } from '../utils';
 import { applyPlugin, normalizeOptions } from './options';
@@ -31,9 +32,7 @@ export class Builder implements BuilderInstance {
 
   private children: Builder[] = [];
 
-  private isBuilded = false;
-
-  // private buildEndSwitch
+  private buildStatus = new Watcher(false);
 
   hooks: BuilderHooks;
 
@@ -70,11 +69,6 @@ export class Builder implements BuilderInstance {
     return this.options.name;
   }
 
-  get building() {
-    // return this.isBuilded as Promise<void>;
-    return Promise.resolve();
-  }
-
   private _getHookContext() {
     return {
       bundler: this.bundler,
@@ -84,6 +78,13 @@ export class Builder implements BuilderInstance {
   }
 
   private async _build() {
+    // 如果已经在构建则等待构建完成
+    if (this.buildStatus.data) {
+      return this.buildStatus.once(false);
+    }
+
+    this.buildStatus.setData(true);
+
     try {
       await this.hooks.start.promise();
       await this.hooks.bundler.promise(this.bundler);
@@ -103,6 +104,8 @@ export class Builder implements BuilderInstance {
       this.errors = this._reportError(e);
       await this.hooks.failed.promise(this.getErrors());
     }
+
+    this.buildStatus.setData(false);
   }
 
   private _reportError(err: any) {

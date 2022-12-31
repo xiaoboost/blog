@@ -14,9 +14,9 @@ export function callHook<T extends keyof RuntimeHooks>(
 }
 
 /** 定义工具函数 */
-export function defineUtils(data: Partial<TemplateUtils>): TemplateUtils {
+export function defineUtils(data?: Partial<TemplateUtils>): TemplateUtils {
   return {
-    getAssetNames: data.getAssetNames ?? (() => []),
-    createAssets: data.createAssets ?? (() => Promise.resolve([])),
+    getAssetNames: data?.getAssetNames ?? (() => []),
+    createAssets: data?.createAssets ?? (() => Promise.resolve([])),
   };
 }
