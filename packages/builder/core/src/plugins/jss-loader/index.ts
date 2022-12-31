@@ -1,4 +1,4 @@
-import type { BuilderPlugin, BuilderInstance, ErrorData } from '@blog/types';
+import type { BuilderPlugin, ErrorData } from '@blog/types';
 import { replaceExt } from '@blog/node';
 import { dirname } from 'path';
 import { CssExtractor } from './css-extractor';
@@ -8,7 +8,6 @@ export interface JssLoaderOptions {
 }
 
 const pluginName = 'jss-loader';
-const jssLoaderCache = new Map<string, BuilderInstance>();
 const cssCodeCache = new Map<string, string>();
 
 export const JssLoader = ({ extractCss = true }: JssLoaderOptions = {}): BuilderPlugin => ({
@@ -67,20 +66,14 @@ export const JssLoader = ({ extractCss = true }: JssLoaderOptions = {}): Builder
           return;
         }
 
-        const childBuilder = jssLoaderCache.has(args.path)
-          ? jssLoaderCache.get(args.path)!
-          : await builder.createChild({
-              entry: args.path,
-              name: 'JSS',
-              watch: options.watch,
-              write: false,
-              plugin: [extractor.plugin],
-              logLevel: 'Silence',
-            });
-
-        if (!jssLoaderCache.has(args.path)) {
-          jssLoaderCache.set(args.path, childBuilder);
-        }
+        const childBuilder = await builder.createChild({
+          entry: args.path,
+          name: 'JSS',
+          watch: options.watch,
+          write: false,
+          plugin: [extractor.plugin],
+          logLevel: 'Silence',
+        });
 
         await childBuilder.build();
 
@@ -105,7 +98,6 @@ export const JssLoader = ({ extractCss = true }: JssLoaderOptions = {}): Builder
     });
 
     builder.hooks.done.tap(pluginName, () => {
-      jssLoaderCache.clear();
       cssCodeCache.clear();
     });
   },

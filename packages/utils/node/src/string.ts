@@ -1,6 +1,7 @@
 import { pinyin } from 'pinyin-pro';
 import { AnyObject } from '@xiao-ai/utils';
 import { URLSearchParams } from 'url';
+import { normalize } from './path';
 
 /** 汉字转换为拼音 */
 export function toPinyin(str: string) {
@@ -21,7 +22,7 @@ export function getNameCreator(origin: string) {
       text = text.replace(new RegExp(`\\[${key}\\]`, 'g'), opt[key]);
     }
 
-    return text;
+    return normalize(text);
   };
 }
 

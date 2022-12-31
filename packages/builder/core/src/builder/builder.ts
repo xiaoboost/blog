@@ -15,7 +15,11 @@ import { applyPlugin, normalizeOptions } from './options';
 import { Bundler } from '../bundler';
 import { Runner } from '../runner';
 
+let _id = 1;
+
 export class Builder implements BuilderInstance {
+  private readonly id = _id++;
+
   private bundler: Bundler;
 
   private runner: Runner;
@@ -78,9 +82,20 @@ export class Builder implements BuilderInstance {
   }
 
   private async _build() {
+    const endCompile = async () => {
+      const errors = this.getErrors();
+
+      if (errors.length > 0) {
+        await this.hooks.failed.promise(errors);
+      } else {
+        await this.hooks.success.promise(this.getAssets(), this._getHookContext());
+      }
+    };
+
     // 如果已经在构建则等待构建完成
     if (this.buildStatus.data) {
-      return this.buildStatus.once(false);
+      await this.buildStatus.once(false);
+      await endCompile();
     }
 
     this.buildStatus.setData(true);
@@ -92,19 +107,11 @@ export class Builder implements BuilderInstance {
       await this.hooks.runner.promise(this.runner);
       await this.runner.run(this.bundler.getBundledCode());
       this.assets = await this.hooks.processAssets.promise(this.getAssets());
-
-      const errors = this.getErrors();
-
-      if (errors.length > 0) {
-        await this.hooks.failed.promise(errors);
-      } else {
-        await this.hooks.success.promise(this.getAssets(), this._getHookContext());
-      }
     } catch (e: any) {
       this.errors = this._reportError(e);
-      await this.hooks.failed.promise(this.getErrors());
     }
 
+    await endCompile();
     this.buildStatus.setData(false);
   }
 
