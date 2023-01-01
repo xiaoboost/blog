@@ -8,7 +8,7 @@ import {
   ResolveResult,
 } from '@blog/types';
 import { AsyncSeriesHook, AsyncParallelHook, AsyncSeriesWaterfallHook } from 'tapable';
-import { Watcher } from '@xiao-ai/utils';
+import { Watcher, unique } from '@xiao-ai/utils';
 import { FSWatcher } from 'chokidar';
 import { BuilderError } from '../utils';
 import { applyPlugin, normalizeOptions } from './options';
@@ -191,10 +191,13 @@ export class Builder implements BuilderInstance {
   }
 
   getAssets(): AssetData[] {
-    return this.children
-      .map((child) => child.getAssets())
-      .reduce((ans, item) => ans.concat(item), [] as AssetData[])
-      .concat(this.assets.slice());
+    return unique(
+      this.children
+        .map((child) => child.getAssets())
+        .reduce((ans, item) => ans.concat(item), [] as AssetData[])
+        .concat(this.assets.slice()),
+      (asset) => asset.path,
+    );
   }
 
   async stop() {

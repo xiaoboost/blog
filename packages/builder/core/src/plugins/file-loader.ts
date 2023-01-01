@@ -3,18 +3,16 @@ import md5 from 'md5';
 import path from 'path';
 import { readFile } from 'fs/promises';
 import { isDef } from '@xiao-ai/utils';
-import { normalize, getNameCreator } from '@blog/node';
+import { getPathFormatter } from '@blog/node';
 import { isCssImport } from '../utils';
 
 const pluginName = 'file-loader';
 
 export interface FileLoaderOption {
-  /** 文件后缀 */
-  exts: string[];
+  /** 文件匹配 */
+  test: RegExp;
   /** 资源名称 */
-  assetNames?: string;
-  /** 资源公共路径 */
-  publicPath?: string;
+  name?: string;
 }
 
 export const FileLoader = (opt: FileLoaderOption): BuilderPlugin => ({
@@ -23,10 +21,9 @@ export const FileLoader = (opt: FileLoaderOption): BuilderPlugin => ({
     const assets: AssetData[] = [];
     const fileCache = new Map<string, Buffer>();
     const filePathMap = new Map<string, ResolveResult>();
-    const { exts, assetNames, publicPath } = opt;
-    const fileExts = exts.map((name) => name.replace(/^\.+/, '')).join('|');
-    const fileMatcher = new RegExp(`\\.(${fileExts})$`);
-    const getName = getNameCreator(path.join(publicPath ?? '/', assetNames ?? '[name]'));
+    const { publicPath } = builder.options;
+    const { test: fileMatcher, name } = opt;
+    const getName = getPathFormatter(path.join(publicPath, name ?? '[name][ext]'));
 
     builder.hooks.start.tap(pluginName, () => {
       assets.length = 0;
@@ -42,13 +39,7 @@ export const FileLoader = (opt: FileLoaderOption): BuilderPlugin => ({
         const resolved = builder.resolve(args.path, args);
         const fileContent = await readFile(resolved.path);
         const nameOpt = path.parse(resolved.path);
-        const assetName = getName({ name: nameOpt.name, hash: md5(fileContent) });
-        const assetPath = normalize(
-          path.format({
-            name: assetName,
-            ext: nameOpt.ext,
-          }),
-        );
+        const assetPath = getName({ name: nameOpt.name, hash: md5(fileContent), ext: nameOpt.ext });
 
         fileCache.set(resolved.path, fileContent);
         filePathMap.set(assetPath, resolved);
@@ -79,7 +70,7 @@ export const FileLoader = (opt: FileLoaderOption): BuilderPlugin => ({
     });
 
     builder.hooks.processAssets.tap(pluginName, (assets) => {
-      const files = Array.from(filePathMap.entries())
+      const externalFiles = Array.from(filePathMap.entries())
         .map(([key, val]) => {
           const cache = fileCache.get(val.path);
 
@@ -94,7 +85,15 @@ export const FileLoader = (opt: FileLoaderOption): BuilderPlugin => ({
         })
         .filter(isDef);
 
-      return assets.concat(files);
+      const internalFiles = assets.map((asset) => {
+        if (!fileMatcher.test(asset.path)) {
+          return asset;
+        }
+
+        return asset;
+      });
+
+      return internalFiles.concat(externalFiles);
     });
   },
 });
