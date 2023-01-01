@@ -14,7 +14,6 @@ import {
   OnLoadCallbackResult,
 } from '@blog/types';
 import { AsyncSeriesBailHook, AsyncSeriesHook, SyncWaterfallHook } from 'tapable';
-import { parseLoader } from '../utils';
 import { BridgePlugin } from './bridge';
 
 export class Bundler implements BundlerInstance {
@@ -65,7 +64,6 @@ export class Bundler implements BundlerInstance {
       mainFields: ['source', 'module', 'main'],
       resolveExtensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
       publicPath: opt.publicPath,
-      assetNames: opt.assetNames,
       external: builtinModules,
       splitting: false,
       watch: false,
@@ -74,7 +72,6 @@ export class Bundler implements BundlerInstance {
       logLimit: 5,
       platform: 'node',
       define: opt.defined,
-      loader: parseLoader(opt.loader).loader,
       plugins: [BridgePlugin(this)],
     });
 

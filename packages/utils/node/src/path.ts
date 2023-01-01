@@ -1,4 +1,5 @@
 import path from 'path';
+import { AnyObject } from '@xiao-ai/utils';
 
 /** 标准化路径 */
 export function normalize(str: string) {
@@ -30,4 +31,16 @@ export function parseUrl(...paths: string[]) {
 export function replaceExt(file: string, ext: string) {
   const oldExt = path.extname(file);
   return normalize(file.replace(oldExt, ext));
+}
+
+export function getPathFormatter(formatStr: string) {
+  return function formatter(opt: AnyObject) {
+    let text = formatStr;
+
+    for (const key of Object.keys(opt)) {
+      text = text.replace(new RegExp(`\\[${key}\\]`, 'g'), opt[key]);
+    }
+
+    return normalize(text);
+  };
 }
