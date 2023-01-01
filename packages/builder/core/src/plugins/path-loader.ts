@@ -6,29 +6,28 @@ import { isCssImport } from '../utils';
 const pluginName = 'path-loader';
 
 export interface PathLoaderOption {
-  /** 文件后缀 */
-  exts: string[];
+  /** 文件匹配 */
+  test: RegExp;
 }
 
 /** 注入原始路径 */
-export const PathLoader = ({ exts }: PathLoaderOption): BuilderPlugin => ({
+export const PathLoader = ({ test }: PathLoaderOption): BuilderPlugin => ({
   name: pluginName,
   apply(builder) {
-    const fileExts = exts.map((name) => name.replace(/^\.+/, '')).join('|');
-    const fileMatcher = new RegExp(`\\.(${fileExts})$`);
-
     builder.hooks.bundler.tap(pluginName, (bundler) => {
       bundler.hooks.resolve.tap(pluginName, (args) => {
-        if (args.namespace !== 'file' || !fileMatcher.test(args.path)) {
+        if (args.namespace !== 'file' || !test.test(args.path)) {
           return;
         }
 
         const resolved = builder.resolve(args.path, args);
+        const path = normalize(resolved.path);
 
         return {
           ...resolved,
+          path,
           external: isCssImport(args.kind),
-          watchFiles: [resolved.path],
+          watchFiles: [path],
           namespace: pluginName,
         };
       });
@@ -39,7 +38,7 @@ export const PathLoader = ({ exts }: PathLoaderOption): BuilderPlugin => ({
         }
 
         return {
-          contents: `export default '${normalize(args.path)}';`,
+          contents: `export default '${args.path}';`,
           loader: 'js',
           resolveDir: dirname(args.path),
         };

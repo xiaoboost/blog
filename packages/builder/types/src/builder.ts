@@ -8,12 +8,6 @@ import type { BuilderPlugin } from './plugin';
 /** 构建器选项 */
 export type BuilderOptions = ExtendOptions & CommandOptions;
 
-/**
- * 加载器
- *   - `'path'`加载器，获得文件原始路径，并且此文件并不会被打包
- */
-export type Loader = EsBuildLoader | 'path';
-
 /** 日志等级字符串 */
 export type LogLevel = keyof typeof LogLevelEnum;
 
@@ -37,18 +31,8 @@ export interface ExtendOptions {
   write?: boolean;
   /** 资源公共路径 */
   publicPath?: string;
-  /** 资源命名 */
-  assetNames?: string;
-  // /**
-  //  * 资源命名
-  //  *   - 为对象时，键名表示特定的命名规则，键值表示特定的文件后缀
-  //  *   - 键值为`'default'`表示其余特定文件之后的全部文件
-  //  */
-  // assetNames?: string | Record<string, string | string[]>;
   /** 变量定义 */
   defined?: Record<string, string>;
-  /** 加载器配置 */
-  loader?: Record<string, Loader>;
   /** 插件列表 */
   plugin?: BuilderPlugin[];
 }
