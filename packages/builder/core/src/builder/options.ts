@@ -11,6 +11,7 @@ import { JssLoader } from '../plugins/jss-loader';
 import { ScriptLoader } from '../plugins/script-loader';
 import { PostLoader } from '../plugins/post-loader';
 import { AssetExtractor } from '../plugins/asset-extractor';
+import { Cname } from '../plugins/cname';
 
 export async function applyPlugin(builder: Builder) {
   const { options: opt } = builder;
@@ -46,6 +47,7 @@ export async function applyPlugin(builder: Builder) {
 
   // 主构建器插件
   if (!builder.isChild()) {
+    Cname().apply(builder);
     AssetExtractor().apply(builder);
     ScriptLoader().apply(builder);
     JssLoader({ extractCss: false }).apply(builder);
