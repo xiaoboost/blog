@@ -9,6 +9,7 @@ import { PathLoader } from '../plugins/path-loader';
 import { Resolver } from '../plugins/resolver';
 import { JssLoader } from '../plugins/jss-loader';
 import { ScriptLoader } from '../plugins/script-loader';
+import { PostLoader } from '../plugins/post-loader';
 import { AssetExtractor } from '../plugins/asset-extractor';
 
 export async function applyPlugin(builder: Builder) {
@@ -17,6 +18,7 @@ export async function applyPlugin(builder: Builder) {
 
   LocalPackageRequirer().apply(builder);
   Resolver().apply(builder);
+  PostLoader().apply(builder);
   PathLoader({ test: /\.(plist|wasm)$/ }).apply(builder);
   FileLoader({ test: /\.(woff|woff2|ttf)$/, name: getAssetNames('fonts', isProduction) }).apply(
     builder,

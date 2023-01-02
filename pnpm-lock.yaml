@@ -70,6 +70,7 @@ importers:
       '@blog/context': workspace:*
       '@blog/mdx-code-block-normal': workspace:*
       '@blog/node': workspace:*
+      '@blog/parser': workspace:*
       '@blog/shared': workspace:*
       '@blog/types': workspace:*
       '@types/babel__code-frame': 7.0.3
@@ -83,6 +84,7 @@ importers:
       enhanced-resolve: 5.12.0
       esbuild: 0.15.15
       eslint: 8.22.0
+      fast-glob: 3.2.11
       look-it-up: 2.1.0
       md5: 2.3.0
       moment: 2.29.4
@@ -97,6 +99,7 @@ importers:
       '@blog/context': link:../context
       '@blog/mdx-code-block-normal': link:../../components/code-block-normal
       '@blog/node': link:../../utils/node
+      '@blog/parser': link:../parser
       '@blog/shared': link:../../utils/shared
       '@blog/types': link:../types
       '@xiao-ai/utils': 1.6.6
@@ -104,6 +107,7 @@ importers:
       chokidar: 3.5.3
       enhanced-resolve: 5.12.0
       esbuild: 0.15.15
+      fast-glob: 3.2.11
       look-it-up: 2.1.0
       md5: 2.3.0
       moment: 2.29.4
@@ -121,9 +125,55 @@ importers:
       rimraf: 3.0.2
       typescript: 4.9.3
 
+  packages/builder/parser:
+    specifiers:
+      '@blog/node': workspace:*
+      '@blog/shared': workspace:*
+      '@blog/types': workspace:*
+      '@mdx-js/mdx': 2.1.3
+      '@types/estree': 1.0.0
+      '@types/mdast': 3.0.10
+      '@types/node': 16.11.7
+      '@xiao-ai/eslint-config': 1.0.1
+      '@xiao-ai/tsconfig': 1.0.1
+      eslint: 8.22.0
+      remark-gfm: 3.0.1
+      remark-mdx: 2.1.3
+      remark-parse: 10.0.1
+      remark-stringify: 10.0.2
+      rimraf: 3.0.2
+      tslib: 2.4.0
+      typescript: 4.9.3
+      unified: 10.1.2
+      yaml: 2.1.1
+    dependencies:
+      '@blog/node': link:../../utils/node
+      '@blog/shared': link:../../utils/shared
+      '@blog/types': link:../types
+      '@mdx-js/mdx': 2.1.3
+      remark-gfm: 3.0.1
+      remark-mdx: 2.1.3
+      remark-parse: 10.0.1
+      remark-stringify: 10.0.2
+      tslib: 2.4.0
+      unified: 10.1.2
+      yaml: 2.1.1
+    devDependencies:
+      '@types/estree': 1.0.0
+      '@types/mdast': 3.0.10
+      '@types/node': 16.11.7
+      '@xiao-ai/eslint-config': 1.0.1
+      '@xiao-ai/tsconfig': 1.0.1
+      eslint: 8.22.0
+      rimraf: 3.0.2
+      typescript: 4.9.3
+
   packages/builder/types:
     specifiers:
+      '@types/estree': 1.0.0
+      '@types/mdast': 3.0.10
       '@types/node': 16.11.7
+      '@types/react': 18.0.17
       '@xiao-ai/eslint-config': 1.0.1
       '@xiao-ai/tsconfig': 1.0.1
       chokidar: 3.5.3
@@ -133,6 +183,9 @@ importers:
       tslib: 2.4.0
       typescript: 4.9.3
     dependencies:
+      '@types/estree': 1.0.0
+      '@types/mdast': 3.0.10
+      '@types/react': 18.0.17
       chokidar: 3.5.3
       esbuild: 0.15.15
       tapable: 2.2.1
@@ -307,9 +360,12 @@ importers:
     specifiers:
       '@blog/mdx-code-block-typescript': workspace:*
       '@blog/template-post': workspace:*
+      '@blog/types': workspace:*
     dependencies:
       '@blog/mdx-code-block-typescript': link:../components/code-block-typescript
       '@blog/template-post': link:../templates/post
+    devDependencies:
+      '@blog/types': link:../builder/types
 
   packages/templates/layout:
     specifiers:

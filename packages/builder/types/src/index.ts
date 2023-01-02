@@ -9,3 +9,4 @@ export * from './template';
 export * from './types';
 export * from './error';
 export * from './resolve';
+export * from './post';
