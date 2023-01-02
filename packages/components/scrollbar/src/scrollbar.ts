@@ -1,5 +1,5 @@
 import { supportsPassive, addClassName, removeClassName, MouseButtons } from '@xiao-ai/utils/web';
-import { getScrollContainer, getDataFromEl } from '@blog/shared/web';
+import { getScrollContainer, getDataFromEl } from '@blog/web';
 import { ScrollMode } from './constant';
 
 import styles from './index.jss';

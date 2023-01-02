@@ -1,4 +1,4 @@
-import { createStyles } from '@blog/shared/styles';
+import { createStyles } from '@blog/styles';
 
 export default createStyles({
   invisible: {},
