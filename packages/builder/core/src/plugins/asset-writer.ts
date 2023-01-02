@@ -2,9 +2,9 @@ import type { BuilderPlugin } from '@blog/types';
 import { join, dirname } from 'path';
 import { writeFile, mkdir } from 'fs/promises';
 
-const pluginName = 'assets-writer';
+const pluginName = 'asset-writer';
 
-export const AssetsWriter = (): BuilderPlugin => ({
+export const AssetWriter = (): BuilderPlugin => ({
   name: pluginName,
   apply(builder) {
     const {

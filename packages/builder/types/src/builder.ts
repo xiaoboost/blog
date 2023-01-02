@@ -1,4 +1,3 @@
-import type { Loader as EsBuildLoader } from 'esbuild';
 import type { BuilderHooks, BundlerHooks } from './hooks';
 import type { ErrorData } from './error';
 import type { AssetData } from './asset';
@@ -34,7 +33,7 @@ export interface ExtendOptions {
   /** 变量定义 */
   defined?: Record<string, string>;
   /** 插件列表 */
-  plugin?: BuilderPlugin[];
+  plugins?: BuilderPlugin[];
 }
 
 /** 命令行选项 */
@@ -81,6 +80,11 @@ export interface BuilderInstance {
   addWatchFiles(...files: string[]): void;
   /** 是否是监听文件 */
   isWatchFiles(...files: string[]): boolean;
+  /**
+   * 添加资源文件
+   *   - 路径重复时，旧资源将会被覆盖
+   */
+  emitAsset(file: AssetData): void;
   /** 获取错误数据 */
   getErrors(): ErrorData[];
   /** 获取产物数据 */

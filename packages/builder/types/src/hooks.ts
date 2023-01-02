@@ -83,10 +83,18 @@ export interface BuilderHooks {
    */
   bundler: AsyncSeriesHook<[BundlerInstance]>;
   /**
+   * 打包代码完成
+   */
+  afterBundler: AsyncSeriesHook<[BuilderHookContext]>;
+  /**
    * 运行器创建后
    *   - 运行代码之前
    */
   runner: AsyncSeriesHook<[RunnerInstance]>;
+  /**
+   * 运行代码完成
+   */
+  afterRunner: AsyncSeriesHook<[BuilderHookContext]>;
 }
 
 /** 打包器钩子 */
