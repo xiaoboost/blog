@@ -5,6 +5,7 @@
   "author": "xiaoboost",
   "license": "MIT",
   "main": "data/**/*.{md,mdx}",
+  "types": "types/index.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/xiaoboost/blog"
@@ -12,5 +13,8 @@
   "dependencies": {
     "@blog/mdx-code-block-typescript": "workspace:*",
     "@blog/template-post": "workspace:*"
+  },
+  "devDependencies": {
+    "@blog/types": "workspace:*"
   }
 }
