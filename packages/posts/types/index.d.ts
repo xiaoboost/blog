@@ -1,5 +1,5 @@
-import { PostExportDataWithComponent } from '@blog/types';
+import { PostsExportType } from '@blog/types';
 
-declare const posts: PostExportDataWithComponent[];
+declare const posts: PostsExportType;
 
 export default posts;
