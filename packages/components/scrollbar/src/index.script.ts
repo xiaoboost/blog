@@ -1,7 +1,9 @@
+import { ModuleLoader } from '@blog/context/web';
+import { getCurrentScriptSrc } from '@blog/web';
+
 import styles from './index.jss';
 
 import { ScrollBar } from './scrollbar';
-import { getCurrentScriptSrc } from '@blog/shared/web';
 
 function active() {
   const scrollBars = Array.from(document.querySelectorAll(`.${styles.classes.scrollbar}`)).map(
@@ -13,8 +15,8 @@ function active() {
   };
 }
 
-if (process.env.NODE_ENV === 'development' && window.Module) {
-  window.Module.install({
+if (process.env.NODE_ENV === 'development') {
+  ModuleLoader.install({
     currentScript: getCurrentScriptSrc(),
     active,
   });
