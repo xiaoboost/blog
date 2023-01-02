@@ -1,5 +1,6 @@
 import { Root } from 'mdast';
 import { FC } from 'react';
+import { TemplateUtils } from './template';
 
 export * as Mdx from 'mdast';
 export * as EsTree from 'estree';
@@ -60,16 +61,10 @@ export interface PostData extends PostBasicData {
 
 /** 文章导出数据 */
 export interface PostExportData {
-  /** 渲染函数 */
-  Component: React.FC<Record<string, any>>;
-  /** 获取组件资源名称 */
-  getComponentAssetNames(): string[];
-  /** 获取模板资源名称 */
-  getTemplateAssetNames(): string[];
-  /** 获取文章资源名称 */
-  getPostAssetNames(): string[];
   /** 文章数据 */
   data: PostBasicData;
+  /** 文章工具方法 */
+  utils: TemplateUtils;
 }
 
 /** 包含渲染函数的文章导出数据 */
@@ -79,7 +74,7 @@ export interface PostExportDataWithComponent extends PostExportData {
 }
 
 /** 列表导出的文章数据 */
-export type ExportPostsType = PostExportDataWithComponent[];
+export type PostsExportType = PostExportDataWithComponent[];
 
 /** 解析器类型 */
 export interface Parser {

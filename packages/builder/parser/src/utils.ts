@@ -1,17 +1,11 @@
 import { PostData, Mdx, EsTree } from '@blog/types';
 import { Fixer } from '@blog/shared';
 
-import {
-  GetComponentAssetMethodName,
-  GetTemplateAssetMethodName,
-  GetPostAssetMethodName,
-} from './constant';
-
 interface VisitNode {
   type: string;
 }
 
-export function visit(root: Mdx.Root, cb: (node: VisitNode) => void) {
+function visit(root: Mdx.Root, cb: (node: VisitNode) => void) {
   cb(root as any);
 
   for (const no of root.children ?? []) {
@@ -19,7 +13,7 @@ export function visit(root: Mdx.Root, cb: (node: VisitNode) => void) {
   }
 }
 
-export function getImportComponentNode(ast: Mdx.Root) {
+function getImportComponentNode(ast: Mdx.Root) {
   const importSet = new Set<string>();
 
   // 只会在首层存在
@@ -50,37 +44,19 @@ export function getImportComponentNode(ast: Mdx.Root) {
   return importSet;
 }
 
-export function addComponentExport(data: PostData, fixer: Fixer) {
-  const importSet = getImportComponentNode(data.ast);
-  const imports = Array.from(importSet.values());
+function getImages(ast: Mdx.Root) {
+  const images: Mdx.Image[] = [];
 
-  let exportCode = '';
+  visit(ast, (node) => {
+    if (node.type === 'image') {
+      images.push(node as Mdx.Image);
+    }
+  });
 
-  for (let i = 0; i < imports.length; i++) {
-    exportCode += `import * as a${i} from '${imports[0]}'\n`;
-  }
-
-  exportCode += `export function ${GetComponentAssetMethodName}() {\n  return [].concat(\n`;
-
-  for (let i = 0; i < imports.length; i++) {
-    exportCode += `    a${i}?.getAssetNames?.() ?? [],\n`;
-  }
-
-  exportCode += '  );\n}\n\n';
-
-  fixer.insert(exportCode);
+  return images;
 }
 
-export function addTemplateExport(data: PostData, fixer: Fixer) {
-  fixer.insert(
-    `import * as template from '@blog/template-${data.template}'
-export function ${GetTemplateAssetMethodName}() {
-  return template?.getAssetNames?.() ?? [];
-}\n\n`,
-  );
-}
-
-export function addPostAssetExport(data: PostData, fixer: Fixer) {
+function addPostAssetVar(data: PostData, fixer: Fixer) {
   const images: Mdx.Image[] = [];
 
   visit(data.ast, (node) => {
@@ -129,4 +105,35 @@ export function addPostAssetExport(data: PostData, fixer: Fixer) {
 
   fixer.insert(importCode);
   fixer.insert(exportCode);
+}
+
+/** 将文章的资源引用转为 import 语句 */
+export function addPostAssetImport(data: PostData, fixer: Fixer) {
+  const images = getImages(data.ast);
+
+  // TODO:
+}
+
+/** 为文章添加 templateUtils 方法的导出 */
+export function addTemplateUtilsExport(data: PostData, fixer: Fixer) {
+  const components = Array.from(getImportComponentNode(data.ast).values());
+  const templateName = `@blog/template-${data.template}`;
+
+  let code = '';
+
+  // 添加组件引用语句
+  code += components.map((name, i) => `import { utils as c${i} } from '${name}';\n`).join('');
+
+  // 添加模板引用语句
+  code += `import { utils as template } from '${templateName}';\n`;
+
+  // 添加工具函数
+  code += `import { defineUtils } from '@blog/context/runtime';\n`;
+
+  // 添加导出语句
+  code += `export const utils = defineUtils(template.getAssetNames().concat([\n
+    ${components.map((_, i) => `  c${i}.getAssetNames(),\n`).join('')}
+  ]));\n\n`;
+
+  fixer.insert(code);
 }
