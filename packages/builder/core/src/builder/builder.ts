@@ -8,7 +8,8 @@ import {
   ResolveResult,
 } from '@blog/types';
 import { AsyncSeriesHook, AsyncParallelHook, AsyncSeriesWaterfallHook } from 'tapable';
-import { Watcher, unique } from '@xiao-ai/utils';
+import { normalize } from '@blog/node';
+import { Watcher } from '@xiao-ai/utils';
 import { FSWatcher } from 'chokidar';
 import { BuilderError } from '../utils';
 import { applyPlugin, normalizeOptions } from './options';
@@ -56,6 +57,8 @@ export class Builder implements BuilderInstance {
       watcher: new AsyncSeriesHook<[FSWatcher]>(['Watcher']),
       bundler: new AsyncSeriesHook<[Bundler]>(['Bundler']),
       runner: new AsyncSeriesHook<[Runner]>(['Runner']),
+      afterBundler: new AsyncSeriesHook<[BuilderHookContext]>(['Context']),
+      afterRunner: new AsyncSeriesHook<[BuilderHookContext]>(['Context']),
       processAssets: new AsyncSeriesWaterfallHook<[AssetData[]]>(['Assets']),
     };
 
@@ -104,9 +107,10 @@ export class Builder implements BuilderInstance {
       await this.hooks.start.promise();
       await this.hooks.bundler.promise(this.bundler);
       await this.bundler.bundle();
+      await this.hooks.afterBundler.promise(this._getHookContext());
       await this.hooks.runner.promise(this.runner);
       await this.runner.run(this.bundler.getBundledCode());
-      this.assets = await this.hooks.processAssets.promise(this.getAssets());
+      await this.hooks.afterRunner.promise(this._getHookContext());
     } catch (e: any) {
       this.errors = this._reportError(e);
     }
@@ -127,6 +131,7 @@ export class Builder implements BuilderInstance {
   async createChild(opt?: BuilderOptions): Promise<BuilderInstance> {
     const builder = new Builder(
       {
+        ...this.options,
         root: this.root,
         name: opt?.name ?? `Child:${this.name}`,
         ...opt,
@@ -190,14 +195,22 @@ export class Builder implements BuilderInstance {
       .concat(this.errors.slice());
   }
 
+  emitAsset(file: AssetData) {
+    const assetPath = normalize(file.path);
+    const oldAsset = this.assets.find((item) => item.path === assetPath);
+
+    if (oldAsset) {
+      oldAsset.content = file.content;
+    } else {
+      this.assets.push({
+        path: assetPath,
+        content: file.content,
+      });
+    }
+  }
+
   getAssets(): AssetData[] {
-    return unique(
-      this.children
-        .map((child) => child.getAssets())
-        .reduce((ans, item) => ans.concat(item), [] as AssetData[])
-        .concat(this.assets.slice()),
-      (asset) => asset.path,
-    );
+    return this.assets.slice();
   }
 
   async stop() {

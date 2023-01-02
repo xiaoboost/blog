@@ -1,13 +1,10 @@
 import type { BuilderPlugin } from '@blog/types';
 import { readFile } from 'fs/promises';
 import { dirname } from 'path';
+
 import * as ts from 'typescript';
 
 const pluginName = 'script-transformer';
-
-export interface TransformerOptions {
-  minify?: boolean;
-}
 
 function findExportDefault(sourceFile: ts.SourceFile) {
   const range = [0, 0] as [number, number];
@@ -22,21 +19,46 @@ function findExportDefault(sourceFile: ts.SourceFile) {
       return range;
     }
   }
-
-  (sourceFile as any).statements = sourceFile.statements.filter((node: ts.Statement) => {
-    return !ts.isExportAssignment(node) || (node.expression as any).text.trim() !== 'assets';
-  });
 }
 
-function replaceText(content: string, range: [number, number], newText = '') {
-  const leftText = content.substring(0, range[0]);
-  const rightText = content.substring(range[1], content.length);
-  return `${leftText}${newText}${rightText}`;
+function replaceByText(content: string) {
+  const matcher = /export +default +assets;/;
+  const result = content.match(matcher);
+
+  if (!result) {
+    return;
+  }
+
+  const oldText = result[0];
+  return content.replace(oldText, ' '.repeat(oldText.length));
 }
 
-export const Transformer = ({ minify = false }: TransformerOptions = {}): BuilderPlugin => ({
+function replaceByAST(content: string) {
+  const sourceFile = ts.createSourceFile(
+    'test.ts',
+    content,
+    ts.ScriptTarget.Latest,
+    undefined,
+    ts.ScriptKind.TSX,
+  );
+  const replaceRange = findExportDefault(sourceFile);
+
+  if (!replaceRange) {
+    return content;
+  }
+
+  const oldSegment = content.substring(...replaceRange);
+  const newSegment = oldSegment.replace(/[^\n]/g, ' ');
+  const newContent = content.replace(oldSegment, newSegment);
+
+  return newContent;
+}
+
+export const Transformer = (): BuilderPlugin => ({
   name: pluginName,
   apply(builder) {
+    const minify = builder.options.mode === 'production';
+
     builder.hooks.bundler.tap(pluginName, (bundler) => {
       bundler.hooks.initialization.tap(pluginName, (options) => ({
         ...options,
@@ -52,15 +74,7 @@ export const Transformer = ({ minify = false }: TransformerOptions = {}): Builde
         }
 
         const content = await readFile(args.path, 'utf-8');
-        const sourceFile = ts.createSourceFile(
-          'test.ts',
-          content,
-          ts.ScriptTarget.Latest,
-          undefined,
-          ts.ScriptKind.TSX,
-        );
-        const replaceRange = findExportDefault(sourceFile);
-        const newContent = replaceRange ? replaceText(content, replaceRange) : content;
+        const newContent = replaceByText(content) ?? replaceByAST(content);
 
         return {
           contents: newContent,

@@ -1,6 +1,6 @@
 import type { BuilderInstance } from '@blog/types';
 
-/** 后缀匹配 */
-export const EntrySuffix = /\.script\.(t|j)s/;
-/** Script 构建器缓存 */
+/** CSS 代码缓存 */
+export const cssCodeCache = new Map<string, string>();
+/** JSS 构建器缓存 */
 export const builderCache = new Map<string, BuilderInstance>();
