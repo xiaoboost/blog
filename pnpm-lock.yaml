@@ -341,7 +341,9 @@ importers:
 
   packages/components/scrollbar:
     specifiers:
-      '@blog/shared': workspace:*
+      '@blog/context': workspace:*
+      '@blog/styles': workspace:*
+      '@blog/web': workspace:*
       '@types/blog': workspace:*
       '@types/node': 16.11.7
       '@types/react': 18.0.17
@@ -353,7 +355,9 @@ importers:
       tslib: 2.4.0
       typescript: 4.9.3
     dependencies:
-      '@blog/shared': link:../../utils/shared
+      '@blog/context': link:../../builder/context
+      '@blog/styles': link:../../utils/styles
+      '@blog/web': link:../../utils/web
       '@xiao-ai/utils': 1.6.6
       react: 18.2.0
     devDependencies:
