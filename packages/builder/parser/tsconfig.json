@@ -1,0 +1,10 @@
+{
+  "extends": "@xiao-ai/tsconfig",
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "module": "CommonJS",
+    "outDir": "dist"
+  }
+}
