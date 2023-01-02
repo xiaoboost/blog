@@ -7,7 +7,7 @@ import {
   mainWidth,
   FontTitle,
   FontDefault,
-} from '@blog/shared/styles';
+} from '@blog/styles';
 
 export default createStyles({
   mainTitle: {},

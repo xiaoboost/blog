@@ -1,15 +1,24 @@
-import type { RuntimeHooks, RuntimeData, PostUrlMap, BuilderInstance } from '@blog/types';
+import type {
+  RuntimeHooks,
+  RuntimeData,
+  PostUrlMap,
+  BuilderInstance,
+  AssetData,
+  PostData,
+} from '@blog/types';
 import { AsyncSeriesHook } from 'tapable';
 import { getAccessor } from '../accessor';
 import { GlobalKey } from '../../types';
 
 export const hooks: RuntimeHooks = {
   beforeStart: new AsyncSeriesHook<[]>(),
-  beforeComponent: new AsyncSeriesHook<[]>(),
-  afterComponent: new AsyncSeriesHook<[]>(),
+  afterComponentReady: new AsyncSeriesHook<[]>(),
   afterPostUrl: new AsyncSeriesHook<[PostUrlMap]>(['PostUrlMap']),
-  beforeEachPost: new AsyncSeriesHook<[]>(),
-  afterEachPost: new AsyncSeriesHook<[]>(),
+  beforeEachPost: new AsyncSeriesHook<[PostData]>(['postData']),
+  afterEachPost: new AsyncSeriesHook<[AssetData]>(['asset']),
+  beforeEachList: new AsyncSeriesHook<[PostData[]]>(['postsData']),
+  afterEachList: new AsyncSeriesHook<[AssetData]>(['asset']),
+  afterBuild: new AsyncSeriesHook<[AssetData[]]>(['assets']),
 };
 
 export type SetupHook = (runtime: RuntimeData, builder: BuilderInstance) => void;

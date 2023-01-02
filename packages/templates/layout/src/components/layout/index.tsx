@@ -1,16 +1,16 @@
 import React from 'react';
 
 import { PropsWithChildren } from 'react';
-import { parseUrl } from '@blog/shared/node';
+import { parseUrl } from '@blog/node';
 
+import { ScrollBar } from '@blog/component-scrollbar';
+import { HMRClientScriptPath } from '@blog/shared';
 import { Header, HeaderProps } from '../header';
 import { Footer } from '../footer';
 import { Article } from '../article';
 import { GotoTop } from '../goto-top';
-import { ScrollBar } from '@blog/component-scrollbar';
-import { HMRClientScriptPath } from '@blog/shared/shared';
 
-import { favicon } from '../../utils';
+import favicon from '../assets/image/favicon.ico';
 
 export interface LayoutProps extends HeaderProps {
   /** 网站标题 */
@@ -52,7 +52,7 @@ export function Layout(props: PropsWithChildren<LayoutProps>) {
         <meta name='renderer' content='webkit' />
         <meta name='force-rendering' content='webkit' />
         <meta httpEquiv='X-UA-Compatible' content='IE=edge,chrome=1' />
-        <link rel='short icon' href={favicon.path} />
+        <link rel='short icon' href={favicon} />
         {props.hmr ? <script type='text/javascript' src={HMRClientScriptPath} /> : ''}
         {styles.map((pathname, i) => (
           <link key={i} rel='stylesheet' type='text/css' href={parseUrl(publicPath, pathname)} />

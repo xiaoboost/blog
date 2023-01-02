@@ -5,7 +5,7 @@ import {
   createMediaStyles,
   Black,
   RedLight,
-} from '@blog/shared/styles';
+} from '@blog/styles';
 
 export default createStyles({
   mainFooter: {

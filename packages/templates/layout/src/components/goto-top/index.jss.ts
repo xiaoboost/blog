@@ -1,4 +1,4 @@
-import { createStyles, BlackLight, WhiteBg, Gray } from '@blog/shared/styles';
+import { createStyles, BlackLight, WhiteBg, Gray } from '@blog/styles';
 import { fadeTime } from './constant';
 
 export default createStyles({

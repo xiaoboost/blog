@@ -17,6 +17,7 @@ import type { BuilderOptions, BundlerInstance, RunnerInstance } from './builder'
 import type { PostUrlMap } from './types';
 import type { ErrorData } from './error';
 import type { AssetData } from './asset';
+import type { PostData } from './post';
 
 export { OnResolveArgs, OnResolveResult, OnLoadResult, OnLoadArgs } from 'esbuild';
 
@@ -118,14 +119,27 @@ export interface BundlerHooks {
 export interface RuntimeHooks {
   /** 运行开始前 */
   beforeStart: AsyncSeriesHook<[]>;
-  /** 组件编译前 */
-  beforeComponent: AsyncSeriesHook<[]>;
-  /** 组件编译后 */
-  afterComponent: AsyncSeriesHook<[]>;
-  /** 生成文章路径后 */
+  /**
+   * 组件预备
+   *   - 部分组件需要在
+   */
+  afterComponentReady: AsyncSeriesHook<[]>;
+  /**
+   * 生成文章网址后
+   *   - 文章路径到网址的映射
+   */
   afterPostUrl: AsyncSeriesHook<[PostUrlMap]>;
   /** 编译文章页面前 */
-  beforeEachPost: AsyncSeriesHook<[]>;
+  beforeEachPost: AsyncSeriesHook<[PostData]>;
   /** 编译文章页面后 */
-  afterEachPost: AsyncSeriesHook<[]>;
+  afterEachPost: AsyncSeriesHook<[AssetData]>;
+  /** 编译列表页面前 */
+  beforeEachList: AsyncSeriesHook<[PostData[]]>;
+  /** 编译列表页面后 */
+  afterEachList: AsyncSeriesHook<[AssetData]>;
+  /**
+   * 完成构建
+   *   - 资源数组
+   */
+  afterBuild: AsyncSeriesHook<[AssetData[]]>;
 }

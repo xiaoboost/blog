@@ -1,23 +1,29 @@
-/* eslint-disable @typescript-eslint/triple-slash-reference */
-
-/// <reference path="./types.d.ts" />
-
 declare module '*.ttf' {
-  const data: AssetImportData;
-  export default data;
+  const path: string;
+  export default path;
+}
+
+declare module '*.woff' {
+  const path: string;
+  export default path;
+}
+
+declare module '*.woff2' {
+  const path: string;
+  export default path;
 }
 
 declare module '*.ico' {
-  const data: AssetImportData;
-  export default data;
+  const path: string;
+  export default path;
 }
 
 declare module '*.plist' {
-  const data: AssetImportData;
-  export default data;
+  const path: string;
+  export default path;
 }
 
 declare module '*.wasm' {
-  const data: AssetImportData;
-  export default data;
+  const path: string;
+  export default path;
 }

@@ -1,8 +1,9 @@
 import React from 'react';
-import styles from './index.jss';
 
-import { parseUrl } from '@blog/shared/node';
+import { parseUrl } from '@blog/node';
 import { stringifyClass } from '@xiao-ai/utils';
+
+import styles from './index.jss';
 
 export interface HeaderProps {
   /** 当前页面网址 */
