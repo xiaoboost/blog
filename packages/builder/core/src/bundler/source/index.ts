@@ -1,23 +1,34 @@
-// import { defineUtils, forEach, forOnce, waitReady, callHook } from '@blog/context/runtime';
+import { callHook, waitReady } from '@blog/context/runtime';
 
-// forOnce(() => {
-//   console.log('forOnce');
-// });
+export default async function main() {
+  await waitReady;
+  await callHook('beforeStart');
 
-// forEach((runtime) => {
-//   console.log('forEach');
+  // 文章空编译
 
-//   runtime.hooks.beforeStart.tap('test', () => {
-//     console.log('beforeStart');
-//   });
-// });
+  await callHook('afterComponentReady');
 
-// export default async () => {
-//   await waitReady;
-//   await callHook('beforeStart');
-//   console.log('end');
-// };
+  // 获取文章路径到网址的映射
+  await callHook('afterPostUrl', new Map());
 
-import { CodeBlock } from '@blog/mdx-code-block-normal';
+  for (const item of []) {
+    // 编译文章前
+    await callHook('beforeEachPost', {} as any);
+    // 编译文章
+    // 编译文章后
+    await callHook('afterEachPost', {} as any);
+  }
 
-CodeBlock;
+  for (const item of []) {
+    // 编译列表前
+    await callHook('beforeEachList', {} as any);
+    // 编译列表页面
+    // 编译列表后
+    await callHook('afterEachList', {} as any);
+  }
+
+  await callHook('afterBuild', []);
+
+  // 返回所有资源
+  return [];
+}

@@ -1,5 +1,5 @@
 import { levelLimit } from './constant';
-import { headerBodyMargin } from '@blog/shared/styles/constant';
+import { headerBodyMargin } from '@blog/styles/constant';
 import { getCurrentScriptSrc } from '@blog/shared/web';
 import { supportsPassive, addClassName, removeClassName } from '@xiao-ai/utils/web';
 

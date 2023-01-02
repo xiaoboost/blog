@@ -1,10 +1,11 @@
 import React from 'react';
 import Moment from 'moment';
-import styles from './index.jss';
+import { parseUrl } from '@blog/node';
 
 // import { Tags } from '../../components/icons';
 import { Layout, LayoutProps } from '../../components/layout';
-import { parseUrl } from '@blog/shared/node';
+
+import styles from './index.jss';
 
 interface PostProps {
   title: string;

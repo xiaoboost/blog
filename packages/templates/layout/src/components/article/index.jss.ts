@@ -1,4 +1,4 @@
-import { createStyles, mainWidth, mediaPhone, headerBodyMargin } from '@blog/shared/styles';
+import { createStyles, mainWidth, mediaPhone, headerBodyMargin } from '@blog/styles';
 
 export default createStyles({
   mainArticle: {},
