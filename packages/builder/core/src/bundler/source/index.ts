@@ -1,11 +1,12 @@
 import { callHook, waitReady } from '@blog/context/runtime';
 
+import { componentReady } from './component';
+import { renderPost } from './post';
+
 export default async function main() {
   await waitReady;
   await callHook('beforeStart');
-
-  // 文章空编译
-
+  await componentReady();
   await callHook('afterComponentReady');
 
   // 获取文章路径到网址的映射

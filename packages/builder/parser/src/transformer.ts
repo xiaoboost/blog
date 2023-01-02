@@ -6,7 +6,7 @@ import { stat } from 'fs/promises';
 import { join } from 'path';
 
 import { parse, compile } from './parser';
-import { addComponentExport, addTemplateExport, addPostAssetExport } from './utils';
+import { addTemplateUtilsExport, addPostAssetImport } from './utils';
 
 let i = 0;
 
@@ -59,12 +59,10 @@ async function getPostData(content: string, fileName: string) {
         .slice(0, 200)
         .replace(/[\n\r]/g, ''),
   };
-
   const fixer = new Fixer(data.content);
 
-  addComponentExport(data, fixer);
-  addTemplateExport(data, fixer);
-  addPostAssetExport(data, fixer);
+  addPostAssetImport(data, fixer);
+  addTemplateUtilsExport(data, fixer);
 
   data.content = fixer.apply();
   data.ast = await parse(`${fileName}.js`, data.content);

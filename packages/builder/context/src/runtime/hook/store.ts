@@ -21,10 +21,11 @@ export const hooks: RuntimeHooks = {
   afterBuild: new AsyncSeriesHook<[AssetData[]]>(['assets']),
 };
 
-export type SetupHook = (runtime: RuntimeData, builder: BuilderInstance) => void;
+export type EachSetupHook = (runtime: RuntimeData) => void;
+export type OnceSetupHook = (runtime: RuntimeData, builder: BuilderInstance) => void;
 
-export const forEachStack: SetupHook[] = [];
-export const forOnceStack: SetupHook[] = [];
+export const forEachStack: EachSetupHook[] = [];
+export const forOnceStack: OnceSetupHook[] = [];
 
 /** 是否是首次运行 */
 export const isFirstRun = getAccessor<boolean>('isFirstRun', true);
@@ -54,7 +55,7 @@ setTimeout(() => {
     forOnceStack.forEach((item) => item(runtimeData, builder));
   }
 
-  forEachStack.forEach((item) => item(runtimeData, builder));
+  forEachStack.forEach((item) => item(runtimeData));
 
   // 初始化完成
   readySwitch();
