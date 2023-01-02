@@ -2,7 +2,6 @@ import type { AssetData, BuilderPlugin, ResolveResult } from '@blog/types';
 import md5 from 'md5';
 import path from 'path';
 import { readFile } from 'fs/promises';
-import { isDef } from '@xiao-ai/utils';
 import { getPathFormatter } from '@blog/node';
 import { isCssImport } from '../utils';
 
@@ -14,6 +13,9 @@ export interface FileLoaderOption {
   /** 资源名称 */
   name?: string;
 }
+
+export const getAssetNames = (name: string, isProduction: boolean) =>
+  isProduction ? `${name}/[name].[hash][ext]` : `${name}/[name][ext]`;
 
 export const FileLoader = (opt: FileLoaderOption): BuilderPlugin => ({
   name: pluginName,
@@ -69,31 +71,34 @@ export const FileLoader = (opt: FileLoaderOption): BuilderPlugin => ({
       });
     });
 
-    builder.hooks.processAssets.tap(pluginName, (assets) => {
-      const externalFiles = Array.from(filePathMap.entries())
-        .map(([key, val]) => {
-          const cache = fileCache.get(val.path);
-
-          if (!cache) {
-            return;
-          }
-
-          return {
-            path: key,
+    builder.hooks.afterBundler.tap(pluginName, ({ bundler }) => {
+      // 外部资源
+      for (const [path, val] of filePathMap.entries()) {
+        const cache = fileCache.get(val.path);
+        if (cache) {
+          builder.emitAsset({
+            path,
             content: cache,
-          };
-        })
-        .filter(isDef);
-
-      const internalFiles = assets.map((asset) => {
-        if (!fileMatcher.test(asset.path)) {
-          return asset;
+          });
         }
+      }
 
-        return asset;
-      });
+      // bundler 资源
+      for (const { path: original, content } of bundler.getAssets()) {
+        if (fileMatcher.test(original)) {
+          const nameOpt = path.parse(original);
+          const assetPath = getName({
+            name: nameOpt.name,
+            hash: md5(content),
+            ext: nameOpt.ext,
+          });
 
-      return internalFiles.concat(externalFiles);
+          builder.emitAsset({
+            path: assetPath,
+            content,
+          });
+        }
+      }
     });
   },
 });

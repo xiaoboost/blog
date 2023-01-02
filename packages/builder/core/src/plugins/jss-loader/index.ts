@@ -1,24 +1,24 @@
 import type { BuilderPlugin, ErrorData } from '@blog/types';
 import { replaceExt } from '@blog/node';
 import { dirname } from 'path';
-import { CssExtractor } from './css-extractor';
+import { cssCodeCache, builderCache } from './store';
+import { getJssBuilder, cssClassesName, cssFileName } from './builder';
 
 export interface JssLoaderOptions {
   extractCss?: boolean;
 }
 
 const pluginName = 'jss-loader';
-const cssCodeCache = new Map<string, string>();
 
 export const JssLoader = ({ extractCss = true }: JssLoaderOptions = {}): BuilderPlugin => ({
   name: pluginName,
   apply(builder) {
-    const { options } = builder;
-    const minify = options.mode === 'production';
-    const extractor = CssExtractor();
-
-    builder.hooks.bundler.tap(pluginName, (bundler) => {
-      if (extractCss) {
+    /**
+     * 提取 CSS 文件
+     *   - 加载生成 css 文件，并重命名生成的文件
+     */
+    if (extractCss) {
+      builder.hooks.bundler.tap(pluginName, (bundler) => {
         bundler.hooks.resolve.tap(pluginName, (args) => {
           if (args.namespace === 'file' && /\.jss\.css$/.test(args.path)) {
             return {
@@ -54,41 +54,42 @@ export const JssLoader = ({ extractCss = true }: JssLoaderOptions = {}): Builder
                 ],
           };
         });
-      }
+      });
+    }
 
+    builder.hooks.bundler.tap(pluginName, (bundler) => {
       bundler.hooks.load.tapPromise(pluginName, async (args) => {
         if (args.namespace !== 'file' || !/\.jss\.(t|j)s$/.test(args.path)) {
           return;
         }
 
         // 入口则跳过
-        if (args.path === options.entry) {
+        if (args.path === builder.options.entry) {
           return;
         }
 
-        const childBuilder = await builder.createChild({
-          entry: args.path,
-          name: 'JSS',
-          watch: options.watch,
-          write: false,
-          plugin: [extractor.plugin],
-          logLevel: 'Silence',
-        });
+        const jssBuilder = await getJssBuilder(args.path, builder);
+        const cssFilePath = replaceExt(args.path, '.css');
 
-        await childBuilder.build();
+        let classesCode = '{}';
 
-        const { cssCode, classes } = extractor.getOutput();
-        const cssPath = replaceExt(args.path, '.css');
-        const classesCode = minify
-          ? JSON.stringify(classes ?? {})
-          : JSON.stringify(classes ?? {}, null, 2);
+        for (const asset of jssBuilder.getAssets()) {
+          if (asset.path === cssClassesName) {
+            classesCode = asset.content.toString('utf-8');
+          }
 
-        cssCodeCache.set(cssPath, cssCode);
+          if (asset.path === cssFileName) {
+            cssCodeCache.set(cssFilePath, asset.content.toString('utf-8'));
+          }
+
+          // 其余资源上报
+          builder.emitAsset(asset);
+        }
 
         return {
           loader: 'js',
           contents: `
-            ${extractCss ? `import '${cssPath}';` : ''}
+            ${extractCss ? `import '${cssFilePath}';` : ''}
             export default {
               classes: ${classesCode},
             };
@@ -99,6 +100,7 @@ export const JssLoader = ({ extractCss = true }: JssLoaderOptions = {}): Builder
 
     builder.hooks.done.tap(pluginName, () => {
       cssCodeCache.clear();
+      builderCache.clear();
     });
   },
 });

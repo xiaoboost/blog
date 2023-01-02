@@ -4,26 +4,26 @@ import type { Builder } from './builder';
 
 import { getCoreRoot } from '../utils';
 import { LocalPackageRequirer } from '../plugins/local-package-requirer';
-import { AssetsMerger } from '../plugins/assets-merger';
-import { FileLoader } from '../plugins/file-loader';
+import { FileLoader, getAssetNames } from '../plugins/file-loader';
 import { PathLoader } from '../plugins/path-loader';
 import { Resolver } from '../plugins/resolver';
 import { JssLoader } from '../plugins/jss-loader';
 import { ScriptLoader } from '../plugins/script-loader';
+import { AssetExtractor } from '../plugins/asset-extractor';
 
 export async function applyPlugin(builder: Builder) {
   const { options: opt } = builder;
-  const isProduction = builder.options.mode === 'production';
-  const getAssetNames = (name: string) =>
-    isProduction ? `${name}/[name].[hash][ext]` : `${name}/[name][ext]`;
+  const isProduction = opt.mode === 'production';
 
   LocalPackageRequirer().apply(builder);
   Resolver().apply(builder);
   PathLoader({ test: /\.(plist|wasm)$/ }).apply(builder);
-  FileLoader({ test: /\.(woff|woff2|ttf)$/, name: getAssetNames('fonts') }).apply(builder);
-  FileLoader({ test: /\.(svg|jpg|png|ico)$/, name: getAssetNames('images') }).apply(builder);
-  FileLoader({ test: /\.css$/, name: getAssetNames('styles') }).apply(builder);
-  FileLoader({ test: /\.js$/, name: getAssetNames('scripts') }).apply(builder);
+  FileLoader({ test: /\.(woff|woff2|ttf)$/, name: getAssetNames('fonts', isProduction) }).apply(
+    builder,
+  );
+  FileLoader({ test: /\.(svg|jpg|png|ico)$/, name: getAssetNames('images', isProduction) }).apply(
+    builder,
+  );
 
   if (opt.watch) {
     const { Watcher } = await import('../plugins/watcher.js');
@@ -31,9 +31,9 @@ export async function applyPlugin(builder: Builder) {
   }
 
   if (opt.write) {
-    const { AssetsWriter } = await import('../plugins/assets-writer.js');
+    const { AssetWriter } = await import('../plugins/asset-writer.js');
     const { Cleaner } = await import('../plugins/cleaner.js');
-    AssetsWriter().apply(builder);
+    AssetWriter().apply(builder);
     Cleaner().apply(builder);
   }
 
@@ -44,13 +44,13 @@ export async function applyPlugin(builder: Builder) {
 
   // 主构建器插件
   if (!builder.isChild()) {
-    AssetsMerger().apply(builder);
+    AssetExtractor().apply(builder);
     ScriptLoader().apply(builder);
     JssLoader({ extractCss: false }).apply(builder);
   }
 
   // 应用外部插件
-  opt.plugin.forEach((item) => item.apply(builder));
+  opt.plugins.forEach((item) => item.apply(builder));
 }
 
 export function normalizeOptions(opt: BuilderOptions): Required<BuilderOptions> {
@@ -68,7 +68,7 @@ export function normalizeOptions(opt: BuilderOptions): Required<BuilderOptions> 
     write: opt.write ?? false,
     publicPath: opt.publicPath ?? '/',
     terminalColor: opt.terminalColor ?? true,
-    plugin: opt.plugin ?? [],
+    plugins: opt.plugins ?? [],
     logLevel: opt.logLevel ?? 'Info',
     defined: {
       ...opt.defined,
