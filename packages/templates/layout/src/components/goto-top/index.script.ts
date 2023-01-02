@@ -1,4 +1,5 @@
-import { fadeIn, fadeOut, getCurrentScriptSrc } from '@blog/shared/web';
+import { fadeIn, fadeOut, getCurrentScriptSrc } from '@blog/web';
+import { ModuleLoader } from '@blog/context/web';
 import { supportsPassive } from '@xiao-ai/utils/web';
 import { scrollTopLimit, fadeTime } from './constant';
 
@@ -67,8 +68,8 @@ function active() {
   };
 }
 
-if (process.env.NODE_ENV === 'development' && window.Module) {
-  window.Module.install({
+if (process.env.NODE_ENV === 'development') {
+  ModuleLoader.install({
     currentScript: getCurrentScriptSrc(),
     active,
   });

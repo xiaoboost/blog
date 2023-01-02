@@ -1,7 +1,6 @@
-import scriptAssets = require('./layout.script');
+import { defineUtils } from '@blog/context/runtime';
 
-import { favicon } from './utils';
-import { getAssetContents, getAssetPaths } from '@blog/shared/node';
+import assets from './layout.script';
 
 export * from './components/layout';
 export * from './views/main-index';
@@ -9,12 +8,4 @@ export * from './views/post-list';
 // export * from './views/tag-list';
 // export * from './views/year-list';
 
-const assets = [scriptAssets, [favicon]];
-
-export const createAssets: CreateAssets = () => {
-  return getAssetContents(...assets);
-};
-
-export const getAssetNames: GetAssetNames = () => {
-  return getAssetPaths(...assets);
-};
+export const utils = defineUtils(assets);

@@ -1,4 +1,4 @@
-import { createFontFaceStyles, mergeStyles, CustomFont } from '@blog/shared/styles';
+import { createFontFaceStyles, mergeStyles, CustomFont } from '@blog/styles';
 
 function getFontPath(name: string, subName?: string) {
   return subName ? `../assets/font/${name}/${name}-${subName}` : `../assets/font/${name}/${name}`;

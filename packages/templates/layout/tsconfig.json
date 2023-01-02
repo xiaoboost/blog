@@ -4,6 +4,9 @@
   "exclude": ["node_modules", "dist"],
   "compilerOptions": {
     "baseUrl": ".",
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "declaration": false,
+    "declarationMap": false,
+    "lib": ["DOM", "ESNext"]
   }
 }
