@@ -9,7 +9,7 @@ export const BridgePlugin = (bundler: Bundler): Plugin => {
         const result = await bundler.hooks.resolve.promise(resolveArgs);
 
         if (result) {
-          await bundler.hooks.resolveResult.promise(result);
+          await bundler.hooks.resolveResult.promise(result, resolveArgs);
         }
 
         return result ?? null;
@@ -18,7 +18,7 @@ export const BridgePlugin = (bundler: Bundler): Plugin => {
         const result = await bundler.hooks.load.promise(loadArgs);
 
         if (result) {
-          await bundler.hooks.loadResult.promise(result);
+          await bundler.hooks.loadResult.promise(result, loadArgs);
         }
 
         return result ?? null;
