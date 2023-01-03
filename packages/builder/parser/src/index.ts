@@ -1,2 +1,2 @@
-export * from './parser';
-export * from './transformer';
+export { parse, compile } from './parser';
+export { getImportCode, transform } from './transformer';
