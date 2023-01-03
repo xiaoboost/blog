@@ -11,7 +11,7 @@ import { addTemplateUtilsExport, addPostAssetImport } from './utils';
 let i = 0;
 
 /** 获取文章数据 */
-async function getPostData(content: string, fileName: string) {
+export async function getPostData(content: string, fileName: string) {
   const result = content.match(/^---([\d\D]+?)---([\d\D]*)$/);
 
   if (!result) {
@@ -86,6 +86,6 @@ import post_${index}, * as post_${index}_utils from '${path}';
 const ${exportName} = {
   Component: post_${index},
   ...post_${index}_utils,
-};\n
+};
 `.trimStart();
 }
