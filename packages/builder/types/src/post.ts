@@ -1,9 +1,12 @@
 import { Root } from 'mdast';
 import { FC } from 'react';
+
+import type * as Mdx from 'mdast';
+import type * as EsTree from 'estree';
+
 import { TemplateUtils } from './template';
 
-export * as Mdx from 'mdast';
-export * as EsTree from 'estree';
+export type { Mdx, EsTree };
 
 /** 文章原始数据 */
 export interface PostMeta {

@@ -24,7 +24,6 @@ export const ScriptLoader = (): BuilderPlugin => ({
         const scriptBuilder = await getScriptBuilder(args.path, builder);
         const assets = scriptBuilder.getAssets();
 
-        debugger;
         return {
           contents: `export default [\n  ${assets.map((item) => item.path).join(',\n  ')},\n]`,
           loader: 'js',

@@ -1,5 +1,5 @@
 import { PostData, Mdx, EsTree } from '@blog/types';
-import { Fixer } from '@blog/shared';
+import { Fixer, isUrl } from '@blog/shared';
 
 interface VisitNode {
   type: string;
@@ -44,41 +44,24 @@ function getImportComponentNode(ast: Mdx.Root) {
   return importSet;
 }
 
-function getImages(ast: Mdx.Root) {
+function addImageImport(ast: Mdx.Root, fixer: Fixer) {
   const images: Mdx.Image[] = [];
 
+  // 查询 Image 节点
   visit(ast, (node) => {
     if (node.type === 'image') {
       images.push(node as Mdx.Image);
     }
   });
 
-  return images;
-}
+  let importCode = '';
 
-function addPostAssetVar(data: PostData, fixer: Fixer) {
-  const images: Mdx.Image[] = [];
-
-  visit(data.ast, (node) => {
-    if (node.type === 'image') {
-      images.push(node as Mdx.Image);
-    }
-  });
-
-  // 没有静态资源时，插入空函数
-  if (images.length === 0) {
-    fixer.insert(`export function ${GetPostAssetMethodName}() {\n  return [];\n}\n\n`);
-    return;
-  }
-
-  let importCode = `import { getAssetContents } from '@blog/shared/node'\n`;
-  let exportCode = `export function ${GetPostAssetMethodName}() {\n  return getAssetContents([\n`;
-
+  // 迭代 Image 节点
   for (let i = 0; i < images.length; i++) {
     const img = images[i];
 
     // 跳过链接
-    if (/^https?:\/\//.test(img.url)) {
+    if (isUrl(img.url)) {
       continue;
     }
 
@@ -87,7 +70,6 @@ function addPostAssetVar(data: PostData, fixer: Fixer) {
     }
 
     importCode += `import img${i} from '${img.url}'\n`;
-    exportCode += `    img${i},\n`;
 
     // 虚拟模板字符串
     const imgCode = img.title
@@ -101,20 +83,15 @@ function addPostAssetVar(data: PostData, fixer: Fixer) {
     });
   }
 
-  exportCode += '  ]);\n}\n\n';
-
   fixer.insert(importCode);
-  fixer.insert(exportCode);
 }
 
-/** 将文章的资源引用转为 import 语句 */
+/** 引用资源添加 import 语句 */
 export function addPostAssetImport(data: PostData, fixer: Fixer) {
-  const images = getImages(data.ast);
-
-  // TODO:
+  addImageImport(data.ast, fixer);
 }
 
-/** 为文章添加 templateUtils 方法的导出 */
+/** 导出 templateUtils 方法 */
 export function addTemplateUtilsExport(data: PostData, fixer: Fixer) {
   const components = Array.from(getImportComponentNode(data.ast).values());
   const templateName = `@blog/template-${data.template}`;
