@@ -5,6 +5,7 @@ import {
 } from 'enhanced-resolve';
 import type { ImportKind } from 'esbuild';
 import type { Resolver, ResolveCreatorOptions, ResolveOptions, Query, PathData } from '@blog/types';
+import { isUrl } from '@blog/shared';
 import fs from 'fs';
 import { parse } from 'querystring';
 import { dirname, isAbsolute } from 'path';
@@ -14,11 +15,6 @@ import { BuilderError } from './error';
 // TODO: tsconfig-paths 可能需要另外处理
 
 const ErrorCode = 'RESOLVE_FAILED';
-const HTTP_PATTERNS = /^(https?:)?\/\//;
-const DATAURL_PATTERNS = /^data:/;
-const HASH_PATTERNS = /#[^#]+$/;
-const isUrl = (source: string) =>
-  HTTP_PATTERNS.test(source) || DATAURL_PATTERNS.test(source) || HASH_PATTERNS.test(source);
 
 export function isCssImport(kind?: ImportKind) {
   return kind === 'import-rule' || kind === 'url-token';
