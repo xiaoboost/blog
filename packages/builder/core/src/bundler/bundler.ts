@@ -34,8 +34,8 @@ export class Bundler implements BundlerInstance {
       initialization: new SyncWaterfallHook<[BuildOptions]>(['options']),
       resolve: new AsyncSeriesBailHook<[OnResolveArgs], OnResolveCallbackResult>(['resolveArgs']),
       load: new AsyncSeriesBailHook<[OnLoadArgs], OnLoadCallbackResult>(['loadArgs']),
-      resolveResult: new AsyncSeriesHook<[OnResolveResult]>(['resolveResult']),
-      loadResult: new AsyncSeriesHook<[OnLoadResult]>(['loadResult']),
+      resolveResult: new AsyncSeriesHook<[OnResolveResult, OnResolveArgs]>(['result', 'args']),
+      loadResult: new AsyncSeriesHook<[OnLoadResult, OnLoadArgs]>(['result', 'args']),
     };
   }
 

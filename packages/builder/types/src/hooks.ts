@@ -110,9 +110,9 @@ export interface BundlerHooks {
   /** 读取文件 */
   load: AsyncSeriesBailHook<[OnLoadArgs], OnLoadCallbackResult>;
   /** 路径请求结果 */
-  resolveResult: AsyncSeriesHook<[OnResolveResult]>;
+  resolveResult: AsyncSeriesHook<[OnResolveResult, OnResolveArgs]>;
   /** 读取文件结果 */
-  loadResult: AsyncSeriesHook<[OnLoadResult]>;
+  loadResult: AsyncSeriesHook<[OnLoadResult, OnLoadArgs]>;
 }
 
 /** 运行器钩子 */

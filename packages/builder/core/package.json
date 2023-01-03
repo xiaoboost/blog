@@ -44,7 +44,8 @@
     "react-dom": "18.2.0",
     "source-map": "0.7.4",
     "tapable": "2.2.1",
-    "tslib": "2.4.0"
+    "tslib": "2.4.0",
+    "vite-esbuild-typescript-checker": "^1.0.0"
   },
   "devDependencies": {
     "@types/babel__code-frame": "7.0.3",
