@@ -664,7 +664,6 @@ importers:
       '@xiao-ai/eslint-config': 1.0.1
       '@xiao-ai/tsconfig': 1.0.1
       eslint: 8.22.0
-      rimraf: 3.0.2
       tslib: 2.4.0
       typescript: 4.9.3
     dependencies:
@@ -675,7 +674,6 @@ importers:
       '@xiao-ai/eslint-config': 1.0.1
       '@xiao-ai/tsconfig': 1.0.1
       eslint: 8.22.0
-      rimraf: 3.0.2
       typescript: 4.9.3
 
   packages/utils/styles:

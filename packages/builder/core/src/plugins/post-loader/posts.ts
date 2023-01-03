@@ -16,15 +16,14 @@ function getPostsInputCode(posts: string[]) {
   }
 
   code += `\nconst posts = [
-    ${Array(posts.length)
-      .fill(0)
-      .map((_, i) => `post_${i}`)
-      .join(', ')}
-  ]
-    .sort((pre, next) => pre.create > next.create ? -1 : 1);
+  ${Array(posts.length)
+    .fill(0)
+    .map((_, i) => `post_${i}`)
+    .join(', ')}
+].sort((pre, next) => pre.create > next.create ? -1 : 1);
 
-  export default posts;
-  `;
+export default posts;
+`;
 
   return code;
 }
