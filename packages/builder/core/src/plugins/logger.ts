@@ -72,12 +72,19 @@ export const Logger = (): BuilderPlugin => ({
       spinner.start();
     });
 
-    builder.hooks.runner.tap(pluginName, () => {
-      const now = Date.now();
+    builder.hooks.afterBundler.tap(pluginName, () => {
       spinner.clear();
-      logger.log(`打包耗时 ${getShortTime(now - timer)}`);
-      timer = now;
+      logger.log(`打包完成，耗时 ${getShortTime(Date.now() - timer)}`);
+    });
+
+    builder.hooks.runner.tap(pluginName, () => {
+      timer = Date.now();
       spinner.text = '运行构建...';
+    });
+
+    builder.hooks.afterRunner.tap(pluginName, () => {
+      spinner.clear();
+      logger.log(`构建完成，耗时 ${getShortTime(Date.now() - timer)}`);
     });
 
     builder.hooks.filesChange.tap(pluginName, (files) => {
@@ -87,12 +94,10 @@ export const Logger = (): BuilderPlugin => ({
     });
 
     builder.hooks.success.tap(pluginName, (assets) => {
-      spinner.clear();
       spinner.stop();
 
       logger.info(
-        '构建完成，' +
-          `耗时 ${printer.blue(getShortTime(Date.now() - timer))}，` +
+        '网站已生成，' +
           `文件 ${printer.yellow(`${assets.length} 个`)}，` +
           `总大小 ${printer.green(getShortSize(getSize(assets)))}`,
       );

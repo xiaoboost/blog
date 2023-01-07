@@ -19,7 +19,6 @@ export default async function main() {
   const postUrlMap = getPostUrlMap(posts);
   await callHook('afterPostUrl', postUrlMap);
 
-  debugger;
   // 生成文章页面
   for (const post of posts) {
     await callHook('beforeEachPost', post);
