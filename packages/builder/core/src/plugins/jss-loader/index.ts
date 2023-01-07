@@ -1,4 +1,4 @@
-import type { BuilderPlugin, ErrorData } from '@blog/types';
+import type { BuilderPlugin, ErrorData, BuilderInstance } from '@blog/types';
 import { replaceExt } from '@blog/node';
 import { dirname } from 'path';
 import { cssCodeCache } from './store';
@@ -13,6 +13,11 @@ const pluginName = 'jss-loader';
 export const JssLoader = ({ extractCss = true }: JssLoaderOptions = {}): BuilderPlugin => ({
   name: pluginName,
   apply(builder) {
+    const {
+      options: { entry: parentEntry },
+    } = builder;
+    const builderCache = new Map<string, BuilderInstance>();
+
     /**
      * 提取 CSS 文件
      *   - 加载生成 css 文件，并重命名生成的文件
@@ -64,12 +69,18 @@ export const JssLoader = ({ extractCss = true }: JssLoaderOptions = {}): Builder
         }
 
         // 入口则跳过
-        if (args.path === builder.options.entry) {
+        if (args.path === parentEntry) {
           return;
         }
 
-        const jssBuilder = await getJssBuilder(args.path, builder);
+        const jssBuilder = builderCache.has(args.path)
+          ? builderCache.get(args.path)!
+          : await getJssBuilder(args.path, builder);
         const cssFilePath = replaceExt(args.path, '.css');
+
+        if (!builderCache.has(args.path)) {
+          builderCache.set(args.path, jssBuilder);
+        }
 
         let classesCode = '{}';
 
@@ -98,6 +109,10 @@ export const JssLoader = ({ extractCss = true }: JssLoaderOptions = {}): Builder
           `,
         };
       });
+    });
+
+    builder.hooks.done.tap(pluginName, () => {
+      builderCache.clear();
     });
   },
 });

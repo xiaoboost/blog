@@ -17,7 +17,6 @@ export async function applyPlugin(builder: Builder) {
   const { options: opt } = builder;
   const isProduction = opt.mode === 'production';
 
-  LocalPackageRequirer().apply(builder);
   Resolver().apply(builder);
   PathLoader({ test: /\.(plist|wasm)$/ }).apply(builder);
   FileLoader({ test: /\.(woff|woff2|ttf)$/, name: getAssetNames('fonts', isProduction) }).apply(
@@ -48,6 +47,7 @@ export async function applyPlugin(builder: Builder) {
   if (!builder.isChild()) {
     Cname().apply(builder);
     AssetExtractor().apply(builder);
+    LocalPackageRequirer().apply(builder);
     PostLoader().apply(builder);
     ScriptLoader().apply(builder);
     JssLoader({ extractCss: false }).apply(builder);
