@@ -3,11 +3,14 @@ import type { MochaOptions } from 'mocha';
 import jss from 'jss';
 import preset from 'jss-preset-default';
 
+import { GlobalKey } from '@blog/context';
+
 jss.setup(preset());
 
-(globalThis as any).jss = jss;
+globalThis[GlobalKey.JSS] = jss;
 
 export { expect, assert } from 'chai';
+export { describe, it } from 'mocha';
 
 export const mochaOptions: MochaOptions = {
   require: [require.resolve('tsx')],

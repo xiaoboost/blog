@@ -1,4 +1,4 @@
-import { expect } from '@blog/test-toolkit';
+import { expect, describe, it } from '@blog/test-toolkit';
 import { getPostData as origin } from '../transformer';
 
 const fileName = '/test/test.md';
