@@ -1,8 +1,9 @@
 import React from 'react';
 import Katex, { KatexOptions } from 'katex';
+import { defineUtils } from '@blog/context/runtime';
+
 import styles from './index.jss';
-import assets = require('./katex.script');
-import { getAssetContents, getAssetPaths } from '@blog/shared/node';
+import assets from './katex.script';
 
 interface Props {
   children: string;
@@ -44,10 +45,4 @@ export function MathInline({ children, options }: Props) {
   );
 }
 
-export const createAssets: CreateAssets = () => {
-  return getAssetContents(assets);
-};
-
-export const getAssetNames: GetAssetNames = () => {
-  return getAssetPaths(assets);
-};
+export const utils = defineUtils(assets);

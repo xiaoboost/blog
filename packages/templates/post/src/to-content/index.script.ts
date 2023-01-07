@@ -1,10 +1,11 @@
-import { levelLimit } from './constant';
-import { headerBodyMargin } from '@blog/styles/constant';
-import { getCurrentScriptSrc } from '@blog/shared/web';
+import { headerBodyMargin } from '@blog/styles';
+import { getCurrentScriptSrc } from '@blog/web';
+import { ModuleLoader } from '@blog/context/web';
 import { supportsPassive, addClassName, removeClassName } from '@xiao-ai/utils/web';
 
 import tocStyles from './index.jss';
 import postStyles from '../post/index.jss';
+import { levelLimit } from './constant';
 
 const enum Status {
   Init,
@@ -111,8 +112,8 @@ function active() {
   };
 }
 
-if (process.env.NODE_ENV === 'development' && window.Module) {
-  window.Module.install({
+if (process.env.NODE_ENV === 'development') {
+  ModuleLoader.install({
     currentScript: getCurrentScriptSrc(),
     active,
   });

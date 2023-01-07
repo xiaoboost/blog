@@ -1,18 +1,18 @@
 import * as vsctm from 'vscode-textmate';
 import * as oniguruma from 'vscode-oniguruma';
 
+import { readFile } from 'fs/promises';
+import { getAccessor, forEach } from '@blog/context/runtime';
 import { getTsServer, ScriptKind, Platform, TsServer } from './host';
+import { ComponentName } from '../constant';
 
-import tsPlist from '../../tmLanguage/ts.plist';
-import tsxPlist from '../../tmLanguage/tsx.plist';
+import tsPlistPath from '../../tmLanguage/ts.plist';
+import tsxPlistPath from '../../tmLanguage/tsx.plist';
 // eslint-disable-next-line import/no-relative-packages
-import wasmBin from '../../node_modules/vscode-oniguruma/release/onig.wasm';
+import wasmBinPath from '../../node_modules/vscode-oniguruma/release/onig.wasm';
 
-let tsGrammar: vsctm.IGrammar;
-let tsxGrammar: vsctm.IGrammar;
-
-const tsGrammarCacheKey = 'tsGrammar';
-const tsxGrammarCacheKey = 'tsxGrammar';
+const tsGrammar = getAccessor<vsctm.IGrammar>('tsGrammar');
+const tsxGrammar = getAccessor<vsctm.IGrammar>('tsxGrammar');
 
 interface Token extends vsctm.IToken {
   /** 距离整个代码开头的偏移 */
@@ -26,16 +26,11 @@ interface Token extends vsctm.IToken {
 }
 
 async function getGrammar() {
-  const cacheTsGrammar = getGlobalVar(tsGrammarCacheKey);
-  const cacheTsxGrammar = getGlobalVar(tsxGrammarCacheKey);
-
-  if (cacheTsGrammar && cacheTsxGrammar) {
-    tsGrammar = cacheTsGrammar;
-    tsxGrammar = cacheTsxGrammar;
+  if (tsGrammar.get() && tsxGrammar.get()) {
     return;
   }
 
-  const wasmContent = await wasmBin.getContent();
+  const wasmContent = await readFile(wasmBinPath);
   const vscodeOnigurumaLib: Promise<vsctm.IOnigLib> = oniguruma.loadWASM(wasmContent.buffer).then(
     () =>
       ({
@@ -48,20 +43,24 @@ async function getGrammar() {
     onigLib: vscodeOnigurumaLib,
     loadGrammar: async (scopeName) => {
       if (scopeName === 'source.ts') {
-        return vsctm.parseRawGrammar((await tsPlist.getContent()).toString('utf-8'));
+        return vsctm.parseRawGrammar((await readFile(tsPlistPath)).toString('utf-8'));
       } else if (scopeName === 'source.tsx') {
-        return vsctm.parseRawGrammar((await tsxPlist.getContent()).toString('utf-8'));
+        return vsctm.parseRawGrammar((await readFile(tsxPlistPath)).toString('utf-8'));
       } else {
         throw new Error(`Unknown scopeName: ${scopeName}.`);
       }
     },
   });
 
-  tsGrammar = (await registry.loadGrammar('source.ts'))!;
-  tsxGrammar = (await registry.loadGrammar('source.tsx'))!;
+  const tsGrammarInstance = await registry.loadGrammar('source.ts');
+  const tsxGrammarInstance = await registry.loadGrammar('source.tsx');
 
-  setGlobalVar(tsGrammarCacheKey, tsGrammar);
-  setGlobalVar(tsxGrammarCacheKey, tsxGrammar);
+  if (!tsGrammarInstance || !tsxGrammarInstance) {
+    throw new Error('语法器加载失败');
+  }
+
+  tsGrammar.set(tsGrammarInstance);
+  tsxGrammar.set(tsxGrammarInstance);
 }
 
 /** 不需要获取语法提示的字符 */
@@ -137,13 +136,20 @@ function getInfo(server: TsServer, token: Token) {
   return info;
 }
 
-export const ready: Promise<void> = getGrammar().then(() => void 0);
+// 全局钩子
+forEach((runtime) => {
+  runtime.hooks.beforeStart.tapPromise(ComponentName, () => getGrammar());
+});
 
 export function tokenize(code: string, lang: ScriptKind = 'ts', platform: Platform = 'browser') {
   const server = getTsServer(lang, platform);
-  const grammar = /^(j|t)s$/.test(lang) ? tsGrammar : tsxGrammar;
+  const grammar = /^(j|t)s$/.test(lang) ? tsGrammar.get() : tsxGrammar.get();
   const lines = code.split(/[\n\r]/);
   const linesToken: Token[][] = [];
+
+  if (!grammar) {
+    throw new Error('语法器加载失败');
+  }
 
   server.setFile(code);
 

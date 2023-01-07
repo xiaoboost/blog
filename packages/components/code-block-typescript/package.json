@@ -15,8 +15,10 @@
     "url": "https://github.com/xiaoboost/blog"
   },
   "dependencies": {
+    "@blog/context": "workspace:*",
     "@blog/mdx-code-block-normal": "workspace:*",
     "@blog/shared": "workspace:*",
+    "@blog/web": "workspace:*",
     "@xiao-ai/utils": "1.6.6",
     "html-escaper": "3.0.3",
     "look-it-up": "2.1.0",
@@ -26,12 +28,12 @@
     "vscode-textmate": "7.0.1"
   },
   "devDependencies": {
-    "@xiao-ai/eslint-config": "1.0.1",
-    "@xiao-ai/tsconfig": "1.0.1",
     "@types/blog": "workspace:*",
     "@types/html-escaper": "3.0.0",
     "@types/node": "16.11.7",
     "@types/react": "18.0.17",
+    "@xiao-ai/eslint-config": "1.0.1",
+    "@xiao-ai/tsconfig": "1.0.1",
     "eslint": "8.22.0",
     "tslib": "2.4.0"
   }

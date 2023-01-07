@@ -1,11 +1,12 @@
 import React from 'react';
 import Moment from 'moment';
+import { stringifyClass } from '@xiao-ai/utils';
+import { Layout, LayoutProps } from '@blog/template-layout';
+import type { Mdx } from '@blog/types';
+
 import styles from './index.jss';
 
 import { ToContent } from '../to-content';
-import { stringifyClass } from '@xiao-ai/utils';
-import { Layout, LayoutProps } from '@blog/template-layout';
-import { Root } from 'mdast';
 
 import * as title from './title';
 import * as code from './code';
@@ -16,7 +17,7 @@ interface PostData {
   title: string;
   create: number;
   toc: any;
-  ast: Root;
+  ast: Mdx.Root;
   Component: (props: any) => JSX.Element;
 }
 

@@ -1,6 +1,7 @@
 import ts from 'typescript';
 import path from 'path';
 
+import { getAccessor } from '@blog/context/runtime';
 import { toBoolMap, isString } from '@xiao-ai/utils';
 import { lookItUpSync } from 'look-it-up';
 
@@ -8,21 +9,15 @@ export type ScriptKind = 'ts' | 'tsx';
 export type Platform = 'browser' | 'node' | 'none';
 export type DisplaySymbol = string | [string, string];
 
-/** 全局缓存名称 */
-const globalCacheKey = 'TsServer';
 /** 语言服务器缓存 */
-const serverCache: Record<string, TsServer> = getGlobalVar(globalCacheKey) ?? {};
+const serverCache = getAccessor<Record<string, TsServer>>('TsServer', {});
 /** 公共静态文件缓存 */
 const cache: Record<string, CodeFile> = {};
 /** 项目根目录 */
 const modulesPath = lookItUpSync('node_modules', __dirname);
 
-if (!getGlobalVar(globalCacheKey)) {
-  setGlobalVar(globalCacheKey, serverCache);
-}
-
 if (!modulesPath) {
-  throw new Error(`未找到包含 node_modules 目录的上级路径，起始路径为：${__dirname}`);
+  throw new Error(`未找到包含\`node_modules\`目录的上级路径，起始路径为：${__dirname}`);
 }
 
 /**
@@ -222,12 +217,13 @@ export class TsServer {
 
 export function getTsServer(kind: ScriptKind, platform: Platform) {
   const key = `${kind}-${platform}`;
+  const cache = serverCache.get();
 
-  if (serverCache[key]) {
-    return serverCache[key];
+  if (cache[key]) {
+    return cache[key];
   } else {
     const server = new TsServer(kind, platform);
-    serverCache[key] = server;
+    cache[key] = server;
     return server;
   }
 }

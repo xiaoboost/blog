@@ -1,5 +1,6 @@
 import { isString } from '@xiao-ai/utils';
-import { getCurrentScriptSrc } from '@blog/shared/web';
+import { getCurrentScriptSrc } from '@blog/web';
+import { ModuleLoader, assets } from '@blog/context/web';
 
 import styles from './index.jss';
 import { DisplaySymbol } from './typescript';
@@ -106,11 +107,13 @@ function active() {
   };
 }
 
-if (process.env.NODE_ENV === 'development' && window.Module) {
-  window.Module.install({
+if (process.env.NODE_ENV === 'development') {
+  ModuleLoader.install({
     currentScript: getCurrentScriptSrc(),
     active,
   });
 } else {
   active();
 }
+
+export default assets;
