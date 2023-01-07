@@ -10,10 +10,17 @@ const pluginName = 'asset-extractor';
 export const AssetExtractor = (): BuilderPlugin => ({
   name: pluginName,
   apply(builder) {
-    const isProduction = builder.options.mode === 'production';
-    const getStyleNames = getPathFormatter(getAssetNames('styles', isProduction));
-    const getScriptNames = getPathFormatter(getAssetNames('scripts', isProduction));
-    const chunkName = path.basename(builder.options.entry).replace(EntrySuffix, '');
+    const {
+      options: { mode, publicPath, entry },
+    } = builder;
+    const isProduction = mode === 'production';
+    const getStyleNames = getPathFormatter(
+      path.join(publicPath, getAssetNames('styles', isProduction)),
+    );
+    const getScriptNames = getPathFormatter(
+      path.join(publicPath, getAssetNames('scripts', isProduction)),
+    );
+    const chunkName = path.basename(entry).replace(EntrySuffix, '');
 
     builder.hooks.runner.tap(pluginName, (runner) => {
       // 忽略运行器

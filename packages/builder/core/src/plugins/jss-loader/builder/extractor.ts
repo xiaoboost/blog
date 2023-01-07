@@ -23,6 +23,7 @@ export const AssetExtractor = (): BuilderPlugin => ({
         const data: ErrorData = {
           name: 'JSS',
           project: 'JSS',
+          filePath: options.entry,
           message: 'style 文件的默认导出应该是 jss 实例',
         };
 

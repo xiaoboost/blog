@@ -21,7 +21,7 @@ function getSource(sourceMap: SourceMapConsumer, raw: string, fullPath: string) 
 export async function getOriginCodeFrame(
   position: Range,
   rawSourceMap: string,
-): Promise<CodeFrameData | undefined> {
+): Promise<(CodeFrameData & { path: string }) | undefined> {
   const sourceMap = await new SourceMapConsumer(rawSourceMap);
   const startLoc = sourceMap.originalPositionFor({
     line: position.start.line,

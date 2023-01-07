@@ -89,6 +89,7 @@ export function createResolver(options: ResolveCreatorOptions): Resolver {
         throw new BuilderError({
           project: 'Unknown',
           name: ErrorCode,
+          filePath: opt?.importer,
           message: `Can't resolve '${request}'.`,
         });
       }
@@ -100,6 +101,7 @@ export function createResolver(options: ResolveCreatorOptions): Resolver {
       throw new BuilderError({
         project: 'Unknown',
         name: ErrorCode,
+        filePath: opt?.importer,
         message: err.message,
       });
     }

@@ -1,14 +1,15 @@
 import React from 'react';
-import styles from './index.jss';
 
-import { toPinyin } from '@blog/shared/node';
+import { toPinyin } from '@blog/node';
 import { stringifyClass } from '@xiao-ai/utils';
-import { Root, Heading, PhrasingContent } from 'mdast';
+import { Mdx } from '@blog/types';
 import { Circle, CircleThin } from '@blog/icons';
 import { levelLimit } from './constant';
 
+import styles from './index.jss';
+
 export interface Props {
-  data: Root;
+  data: Mdx.Root;
 }
 
 export interface NavTitleData {
@@ -23,7 +24,7 @@ export interface NavTitleProps {
   titles: NavTitleData[];
 }
 
-function getContext(node: Heading | PhrasingContent): string {
+function getContext(node: Mdx.Heading | Mdx.PhrasingContent): string {
   if ('children' in node) {
     return node.children.map(getContext).join('');
   } else if ('value' in node) {
@@ -33,7 +34,7 @@ function getContext(node: Heading | PhrasingContent): string {
   }
 }
 
-function createNavFromAst(ast: Root, limit: number): NavTitleData[] {
+function createNavFromAst(ast: Mdx.Root, limit: number): NavTitleData[] {
   const root: NavTitleData = {
     content: 'root',
     hash: '',

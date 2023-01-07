@@ -2,6 +2,8 @@ import type { ErrorData, ErrorParam } from '@blog/types';
 import type { Message as EsbuildError } from 'esbuild';
 import { isObject } from '@xiao-ai/utils';
 import { RunError } from '@xiao-ai/utils/node';
+import { readFileSync } from 'fs';
+import { platform } from 'os';
 import { BuilderError } from './error';
 
 function isRunError(data: unknown): data is RunError {
@@ -9,11 +11,35 @@ function isRunError(data: unknown): data is RunError {
 }
 
 function isErrorData(data: unknown): data is ErrorData {
-  return isObject(data) && 'codeFrame' in data && 'message' in data && 'name' in data;
+  return (
+    isObject(data) &&
+    ('codeFrame' in data || 'project' in data) &&
+    'message' in data &&
+    'name' in data
+  );
 }
 
 function isEsbuildError(err: any): err is EsbuildError {
   return 'pluginName' in err && 'text' in err && 'location' in err;
+}
+
+function transformFile(file?: string) {
+  if (!file) {
+    return;
+  }
+
+  const prefixMatcher = /^[^:]+:/;
+  const prefix = prefixMatcher.exec(file);
+
+  if (!prefix) {
+    return file;
+  }
+
+  if (platform() === 'win32' && /^[A-Z]:/.test(prefix[0].toUpperCase())) {
+    return file;
+  }
+
+  return file.replace(prefixMatcher, '');
 }
 
 function transformEsbuildError(err: any, opt?: ErrorParam): BuilderError | void {
@@ -21,8 +47,31 @@ function transformEsbuildError(err: any, opt?: ErrorParam): BuilderError | void 
     if (err.detail) {
       return transform(err.detail, opt);
     } else {
-      debugger;
-      // TODO:
+      const { text: message, location } = err;
+      const filePath = location?.file ? transformFile(location.file)! : undefined;
+      const codeFrame = filePath
+        ? {
+            content: readFileSync(filePath).toString('utf-8'),
+            range: {
+              start: {
+                line: location!.line,
+                column: location!.column + 1,
+              },
+              end: {
+                line: location!.line,
+                column: location!.column + location!.length + 1,
+              },
+            },
+          }
+        : undefined;
+
+      return new BuilderError({
+        project: opt?.project ?? 'UNKNOWN_PROJECT',
+        message,
+        name: 'ESBUILD',
+        filePath,
+        codeFrame,
+      });
     }
   }
 }

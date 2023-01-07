@@ -2,16 +2,18 @@ import type { BuilderPlugin } from '@blog/types';
 import { dirname } from 'path';
 import { readFile } from 'fs/promises';
 import { transform } from '@blog/parser';
-import { mdxMatcher, mdxCache } from './utils';
+import { mdxMatcher } from './utils';
 
 const pluginName = 'mdx-loader';
 
 export const MdxLoader = (): BuilderPlugin => ({
   name: pluginName,
   apply(builder) {
+    const mdxCache = new Map<string, string>();
+
     builder.hooks.bundler.tap(pluginName, (bundler) => {
       bundler.hooks.resolve.tap(pluginName, (args) => {
-        if (args.namespace === 'file' && mdxMatcher.test(args.path)) {
+        if (mdxMatcher.test(args.path)) {
           return {
             namespace: pluginName,
             sideEffects: false,
@@ -48,6 +50,10 @@ export const MdxLoader = (): BuilderPlugin => ({
         return {
           ...basicResult,
           contents: code,
+          loader: 'jsx',
+          pluginData: {
+            transformed: code,
+          },
         };
       });
     });
