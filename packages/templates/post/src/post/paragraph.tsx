@@ -1,7 +1,7 @@
 import React from 'react';
-import styles from './index.jss';
-
 import { isArray, isString } from '@xiao-ai/utils';
+
+import styles from './index.jss';
 
 export interface Props {
   children?: React.ReactNode | React.ReactNode[];
