@@ -22,6 +22,8 @@ export const AssetExtractor = (): BuilderPlugin => ({
     );
     const chunkName = path.basename(entry).replace(EntrySuffix, '');
 
+    // TODO: 部分 template 和组件是合并的，此时如何处理
+
     builder.hooks.runner.tap(pluginName, (runner) => {
       // 忽略运行器
       runner.run = () => Promise.resolve();

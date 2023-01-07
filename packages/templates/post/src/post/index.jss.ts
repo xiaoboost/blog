@@ -18,6 +18,8 @@ import {
   getHeadSelector,
 } from '@blog/styles';
 
+import { toRound } from '@blog/shared';
+
 const indent = 24;
 const smallIndent = 14;
 const tableHeaderBorderColor = Color.hsl(210, 18, 87, 1);
@@ -79,9 +81,9 @@ export default createStyles({
         padding: `16px ${width}px`,
       })),
       ...createHeadStyles('& ', (level) => ({
-        fontSize: `${1.6 - 0.2 * (level - 1)}em`,
-        marginTop: `${1.1 - 0.1 * (level - 1)}em`,
-        marginBottom: `${0.8 - 0.05 * (level - 1)}em`,
+        fontSize: `${toRound(1.6 - 0.2 * (level - 1))}em`,
+        marginTop: `${toRound(1.1 - 0.1 * (level - 1))}em`,
+        marginBottom: `${toRound(0.8 - 0.05 * (level - 1))}em`,
       })),
       [getHeadSelector('& ')]: {
         position: 'relative',

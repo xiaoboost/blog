@@ -7,6 +7,9 @@ import type { BuilderPlugin } from './plugin';
 /** 构建器选项 */
 export type BuilderOptions = ExtendOptions & CommandOptions;
 
+/** 模式 */
+export type Mode = 'production' | 'development';
+
 /** 日志等级字符串 */
 export type LogLevel = keyof typeof LogLevelEnum;
 
@@ -41,7 +44,7 @@ export interface CommandOptions {
   /** 输出目录 */
   outDir?: string;
   /** 构建模式 */
-  mode?: string;
+  mode?: Mode;
   /** 是否启用 HMR */
   hmr?: boolean;
   /** 监听模式 */
