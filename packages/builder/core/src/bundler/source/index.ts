@@ -1,35 +1,57 @@
-import { callHook, waitReady } from '@blog/context/runtime';
+import posts from '@blog/posts';
 
+import type { AssetData, ListRenderData } from '@blog/types';
+import { join } from 'path';
+import { cut } from '@xiao-ai/utils';
+import { callHook, waitReady, builderOptions } from '@blog/context/runtime';
 import { componentReady } from './component';
-import { renderPost } from './post';
+import { renderPost, getPostUrlMap } from './post';
+import { getIndexPathname, renderListPage } from './list';
+import { pageConfig } from '../../constant';
 
 export default async function main() {
+  const assets: AssetData[] = [];
+
   await waitReady;
   await callHook('beforeStart');
-  await componentReady();
+  await componentReady(posts);
   await callHook('afterComponentReady');
 
-  // 获取文章路径到网址的映射
-  await callHook('afterPostUrl', new Map());
+  const postUrlMap = getPostUrlMap(posts);
+  await callHook('afterPostUrl', postUrlMap);
 
-  for (const item of []) {
-    // 编译文章前
-    await callHook('beforeEachPost', {} as any);
-    // 编译文章
-    // 编译文章后
-    await callHook('afterEachPost', {} as any);
+  // 生成文章页面
+  for (const post of posts) {
+    await callHook('beforeEachPost', post);
+    const asset: AssetData = {
+      path: join(builderOptions.publicPath, post.data.pathname),
+      content: Buffer.from(renderPost(post)),
+    };
+    await callHook('afterEachPost', asset);
+    assets.push(asset);
   }
 
-  for (const item of []) {
-    // 编译列表前
-    await callHook('beforeEachList', {} as any);
-    // 编译列表页面
-    // 编译列表后
-    await callHook('afterEachList', {} as any);
+  const lists = cut(posts, pageConfig.index);
+
+  // 生成列表页面
+  for (let i = 0; i < lists.length; i++) {
+    const data: ListRenderData = {
+      index: i,
+      pathname: getIndexPathname(i),
+      posts: lists[i],
+    };
+
+    await callHook('beforeEachList', data);
+    const asset: AssetData = {
+      path: data.pathname,
+      content: Buffer.from(renderListPage(data)),
+    };
+    await callHook('afterEachList', asset);
+    assets.push(asset);
   }
 
-  await callHook('afterBuild', []);
+  await callHook('afterBuild', assets.slice());
 
   // 返回所有资源
-  return [];
+  return assets;
 }

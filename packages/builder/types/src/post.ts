@@ -8,6 +8,9 @@ import { TemplateUtils } from './template';
 
 export type { Mdx, EsTree };
 
+/** 文章路径到链接的映射 */
+export type PostUrlMap = Map<string, string>;
+
 /** 文章原始数据 */
 export interface PostMeta {
   /** 文章标题 */
@@ -48,6 +51,8 @@ export interface PostBasicData {
   description: string;
   /** 网页链接 */
   pathname: string;
+  /** 文件路径 */
+  filePath: string;
   /** 语法树数据 */
   ast: Root;
   /** 是否启用目录 */

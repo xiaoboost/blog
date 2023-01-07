@@ -14,10 +14,9 @@ import type {
 } from 'esbuild';
 import type { FSWatcher } from 'chokidar';
 import type { BuilderOptions, BundlerInstance, RunnerInstance } from './builder';
-import type { PostUrlMap } from './types';
 import type { ErrorData } from './error';
 import type { AssetData } from './asset';
-import type { PostData } from './post';
+import type { PostUrlMap, PostExportData } from './post';
 
 export { OnResolveArgs, OnResolveResult, OnLoadResult, OnLoadArgs } from 'esbuild';
 
@@ -115,13 +114,23 @@ export interface BundlerHooks {
   loadResult: AsyncSeriesHook<[OnLoadResult, OnLoadArgs]>;
 }
 
+/** 列表页数据 */
+export interface ListRenderData {
+  /** 列表第几页 */
+  index: number;
+  /** 列表页网址 */
+  pathname: string;
+  /** 列表页包含的文章 */
+  posts: PostExportData[];
+}
+
 /** 运行器钩子 */
 export interface RuntimeHooks {
   /** 运行开始前 */
   beforeStart: AsyncSeriesHook<[]>;
   /**
    * 组件预备
-   *   - 部分组件需要在
+   *   - 部分组件需要在此时收集文章内的数据
    */
   afterComponentReady: AsyncSeriesHook<[]>;
   /**
@@ -130,11 +139,11 @@ export interface RuntimeHooks {
    */
   afterPostUrl: AsyncSeriesHook<[PostUrlMap]>;
   /** 编译文章页面前 */
-  beforeEachPost: AsyncSeriesHook<[PostData]>;
+  beforeEachPost: AsyncSeriesHook<[PostExportData]>;
   /** 编译文章页面后 */
   afterEachPost: AsyncSeriesHook<[AssetData]>;
   /** 编译列表页面前 */
-  beforeEachList: AsyncSeriesHook<[PostData[]]>;
+  beforeEachList: AsyncSeriesHook<[ListRenderData]>;
   /** 编译列表页面后 */
   afterEachList: AsyncSeriesHook<[AssetData]>;
   /**

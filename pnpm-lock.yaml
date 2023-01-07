@@ -398,6 +398,7 @@ importers:
       '@blog/node': workspace:*
       '@blog/shared': workspace:*
       '@blog/styles': workspace:*
+      '@blog/types': workspace:*
       '@blog/web': workspace:*
       '@types/blog': workspace:*
       '@types/node': 16.11.7
@@ -416,6 +417,7 @@ importers:
       '@blog/node': link:../../utils/node
       '@blog/shared': link:../../utils/shared
       '@blog/styles': link:../../utils/styles
+      '@blog/types': link:../../builder/types
       '@blog/web': link:../../utils/web
       '@xiao-ai/utils': 1.6.6
       moment: 2.29.4

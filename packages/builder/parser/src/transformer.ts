@@ -1,6 +1,6 @@
 import { parse as parseYaml } from 'yaml';
 import type { PostMeta, PostData } from '@blog/types';
-import { toPinyin } from '@blog/node';
+import { toPinyin, normalize } from '@blog/node';
 import { Fixer } from '@blog/shared';
 import { stat } from 'fs/promises';
 import { join } from 'path';
@@ -54,7 +54,10 @@ export async function getPostData(content: string, fileName: string) {
     tags: meta.tags ?? [],
     public: meta.public ?? true,
     content: postContent,
-    pathname: meta.pathname ?? join('posts', createAt, decodeTitle),
+    filePath: normalize(fileName),
+    pathname: meta.pathname
+      ? normalize(meta.pathname)
+      : normalize(join('posts', createAt, decodeTitle)),
     toc: meta.toc ?? true,
     ast: await parse(fileName, postContent),
     template: meta.template ?? 'post',
