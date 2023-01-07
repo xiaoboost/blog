@@ -23,7 +23,7 @@
     "html-escaper": "3.0.3",
     "look-it-up": "2.1.0",
     "react": "18.2.0",
-    "typescript": "4.9.3",
+    "typescript": "4.9.4",
     "vscode-oniguruma": "1.6.2",
     "vscode-textmate": "7.0.1"
   },
@@ -34,7 +34,7 @@
     "@types/react": "18.0.17",
     "@xiao-ai/eslint-config": "1.0.1",
     "@xiao-ai/tsconfig": "1.0.1",
-    "eslint": "8.22.0",
-    "tslib": "2.4.0"
+    "eslint": "8.31.0",
+    "tslib": "2.4.1"
   }
 }
