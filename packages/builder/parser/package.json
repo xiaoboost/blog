@@ -31,10 +31,7 @@
     "yaml": "2.1.1"
   },
   "devDependencies": {
-    "@blog/test-toolkit": "workspace:^1.0.0",
-    "@types/estree": "1.0.0",
-    "@types/mdast": "3.0.10",
-    "@types/mocha": "9.1.1",
+    "@blog/test-toolkit": "workspace:*",
     "@types/node": "16.11.7",
     "@xiao-ai/eslint-config": "1.0.1",
     "@xiao-ai/tsconfig": "1.0.1",

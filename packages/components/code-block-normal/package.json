@@ -27,7 +27,6 @@
     "@blog/test-toolkit": "workspace:*",
     "@xiao-ai/tsconfig": "1.0.1",
     "@types/blog": "workspace:*",
-    "@types/mocha": "9.1.1",
     "@types/node": "16.11.7",
     "@types/react": "18.0.17",
     "eslint": "8.31.0",
