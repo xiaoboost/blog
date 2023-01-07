@@ -59,11 +59,13 @@ export class Runner implements RunnerInstance {
         column: (location.column ?? 1) + (location.length ?? 0),
       },
     };
+    const codeFrame = await getOriginCodeFrame(range, sourceMap);
     const data: ErrorData = {
       message,
       name,
       project: builder.name,
-      codeFrame: await getOriginCodeFrame(range, sourceMap),
+      filePath: codeFrame?.path,
+      codeFrame,
     };
 
     return data;

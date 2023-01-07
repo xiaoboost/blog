@@ -33,7 +33,7 @@ export const PostsLoader = (): BuilderPlugin => ({
   apply(builder) {
     builder.hooks.bundler.tap(pluginName, (bundler) => {
       bundler.hooks.resolve.tapPromise(pluginName, async (args) => {
-        if (args.namespace !== 'file' || !/^@blog\/posts$/.test(args.path)) {
+        if (!/^@blog\/posts$/.test(args.path)) {
           return;
         }
 

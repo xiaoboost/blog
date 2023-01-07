@@ -252,7 +252,7 @@ importers:
     specifiers:
       '@blog/context': workspace:*
       '@blog/mdx-code-block-normal': workspace:*
-      '@blog/shared': workspace:*
+      '@blog/styles': workspace:*
       '@blog/web': workspace:*
       '@types/blog': workspace:*
       '@types/html-escaper': 3.0.0
@@ -272,7 +272,7 @@ importers:
     dependencies:
       '@blog/context': link:../../builder/context
       '@blog/mdx-code-block-normal': link:../code-block-normal
-      '@blog/shared': link:../../utils/shared
+      '@blog/styles': link:../../utils/styles
       '@blog/web': link:../../utils/web
       '@xiao-ai/utils': 1.6.6
       html-escaper: 3.0.3
@@ -293,7 +293,7 @@ importers:
 
   packages/components/icons:
     specifiers:
-      '@blog/shared': workspace:*
+      '@blog/styles': workspace:*
       '@types/blog': workspace:*
       '@types/node': 16.11.7
       '@types/react': 18.0.17
@@ -305,7 +305,7 @@ importers:
       tslib: 2.4.1
       typescript: 4.9.4
     dependencies:
-      '@blog/shared': link:../../utils/shared
+      '@blog/styles': link:../../utils/styles
       '@xiao-ai/utils': 1.6.6
       react: 18.2.0
     devDependencies:

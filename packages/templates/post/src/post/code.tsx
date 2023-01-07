@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { isString } from '@xiao-ai/utils';
-import { parseQuery } from '@blog/shared/node';
+import { parseQuery } from '@blog/node';
 import { CodeBlock } from '@blog/mdx-code-block-normal';
 import { TsCodeBlock, ScriptKind, Platform } from '@blog/mdx-code-block-typescript';
 

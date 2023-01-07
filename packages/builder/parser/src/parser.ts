@@ -45,8 +45,8 @@ export async function parse(fileName: string, content: string) {
       project: 'UNKNOWN',
       name: err.source,
       message: err.message,
+      filePath: fileName,
       codeFrame: {
-        path: fileName,
         content,
         range: err.position,
       },

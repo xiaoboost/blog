@@ -34,7 +34,7 @@ export const FileLoader = (opt: FileLoaderOption): BuilderPlugin => ({
 
     builder.hooks.bundler.tap(pluginName, (bundler) => {
       bundler.hooks.resolve.tapPromise(pluginName, async (args) => {
-        if (args.namespace !== 'file' || !fileMatcher.test(args.path)) {
+        if (!fileMatcher.test(args.path)) {
           return;
         }
 

@@ -16,7 +16,7 @@ export const PathLoader = ({ test }: PathLoaderOption): BuilderPlugin => ({
   apply(builder) {
     builder.hooks.bundler.tap(pluginName, (bundler) => {
       bundler.hooks.resolve.tap(pluginName, (args) => {
-        if (args.namespace !== 'file' || !test.test(args.path)) {
+        if (!test.test(args.path)) {
           return;
         }
 
