@@ -18,6 +18,8 @@ export class BuilderError extends Error implements ErrorData {
 
   project: string;
 
+  filePath?: string;
+
   codeFrame?: CodeFrameData | undefined;
 
   constructor(opt: ErrorData) {
@@ -25,18 +27,28 @@ export class BuilderError extends Error implements ErrorData {
     this.name = opt.name;
     this.stack = opt.stack;
     this.project = opt.project;
+    this.filePath = opt.filePath;
     this.codeFrame = opt.codeFrame;
   }
 
   toString(printer: Chalk = chalk) {
-    const { project, name, message: msg, codeFrame } = this;
+    const { project, name, message: msg, filePath, codeFrame } = this;
 
     let message = '';
 
     message += `${printer.red(`[${project}]`)} ${printer.blue(name)}: ${msg}`;
 
+    if (filePath) {
+      message += `\n${printer.bgRed('File:')} ${filePath}`;
+
+      if (codeFrame) {
+        message += `:${codeFrame.range.start.line}`;
+      }
+
+      message += '\n';
+    }
+
     if (codeFrame) {
-      message += `\n${printer.bgRed('File:')} ${codeFrame.path}:${codeFrame.range.start.line}\n`;
       message += codeFrameColumns(codeFrame.content, codeFrame.range, {
         highlightCode: true,
       });

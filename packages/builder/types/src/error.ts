@@ -9,7 +9,6 @@ export interface Range {
 }
 
 export interface CodeFrameData {
-  path: string;
   content: string;
   range: Range;
 }
@@ -21,6 +20,8 @@ export interface ErrorData {
   name: string;
   /** 错误信息 */
   message: string;
+  /** 文件路径 */
+  filePath?: string;
   /** 代码提示 */
   codeFrame?: CodeFrameData;
   /** 错误堆栈 */

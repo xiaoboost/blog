@@ -1,8 +1,7 @@
 import React from 'react';
-import styles from './index.jss';
-
 import { stringifyClass } from '@xiao-ai/utils';
 
+import styles from './index.jss';
 import * as icons from './data';
 
 interface IconProps {

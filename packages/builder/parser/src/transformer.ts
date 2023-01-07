@@ -79,7 +79,7 @@ export async function getPostData(content: string, fileName: string) {
 /** POST 文章编译 */
 export async function transform(content: string, fileName: string) {
   const { content: mdxCode, ...data } = await getPostData(content, fileName);
-  const renderCode = compile(mdxCode);
+  const renderCode = await compile(mdxCode);
   return `${renderCode};\n;\nexport const data = ${JSON.stringify(data, null, 2)}`;
 }
 
@@ -90,9 +90,9 @@ export function getImportCode(path: string, exportName: string) {
   const index = i++;
 
   return `
-import post_${index}, * as post_${index}_utils from '${path}';
+import post_${index}_default, * as post_${index}_utils from '${path}';
 const ${exportName} = {
-  Component: post_${index},
+  Component: post_${index}_default,
   ...post_${index}_utils,
 };
 `.trimStart();

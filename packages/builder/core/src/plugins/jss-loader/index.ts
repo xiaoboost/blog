@@ -1,7 +1,7 @@
 import type { BuilderPlugin, ErrorData } from '@blog/types';
 import { replaceExt } from '@blog/node';
 import { dirname } from 'path';
-import { cssCodeCache, builderCache } from './store';
+import { cssCodeCache } from './store';
 import { getJssBuilder, cssClassesName, cssFileName } from './builder';
 
 export interface JssLoaderOptions {
@@ -20,7 +20,7 @@ export const JssLoader = ({ extractCss = true }: JssLoaderOptions = {}): Builder
     if (extractCss) {
       builder.hooks.bundler.tap(pluginName, (bundler) => {
         bundler.hooks.resolve.tap(pluginName, (args) => {
-          if (args.namespace === 'file' && /\.jss\.css$/.test(args.path)) {
+          if (/\.jss\.css$/.test(args.path)) {
             return {
               path: args.path,
               namespace: pluginName,
@@ -59,7 +59,7 @@ export const JssLoader = ({ extractCss = true }: JssLoaderOptions = {}): Builder
 
     builder.hooks.bundler.tap(pluginName, (bundler) => {
       bundler.hooks.load.tapPromise(pluginName, async (args) => {
-        if (args.namespace !== 'file' || !/\.jss\.(t|j)s$/.test(args.path)) {
+        if (!/\.jss\.(t|j)s$/.test(args.path)) {
           return;
         }
 
@@ -76,10 +76,12 @@ export const JssLoader = ({ extractCss = true }: JssLoaderOptions = {}): Builder
         for (const asset of jssBuilder.getAssets()) {
           if (asset.path === cssClassesName) {
             classesCode = asset.content.toString('utf-8');
+            continue;
           }
 
           if (asset.path === cssFileName) {
             cssCodeCache.set(cssFilePath, asset.content.toString('utf-8'));
+            continue;
           }
 
           // 其余资源上报
@@ -96,11 +98,6 @@ export const JssLoader = ({ extractCss = true }: JssLoaderOptions = {}): Builder
           `,
         };
       });
-    });
-
-    builder.hooks.done.tap(pluginName, () => {
-      cssCodeCache.clear();
-      builderCache.clear();
     });
   },
 });

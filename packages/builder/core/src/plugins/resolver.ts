@@ -20,11 +20,12 @@ export const Resolver = (): BuilderPlugin => ({
         const result = resolve(args.path, args);
         const ext = extname(result.path);
 
-        if (!defaultExts.includes(ext)) {
+        if (ext && !defaultExts.includes(ext)) {
           const err: ErrorData = {
             project: builder.name,
             name: 'RESOLVE_FAILED',
-            message: `未知的文件后缀：'${ext}'，原始请求为：'${args.path}'，文件：'${args.importer}'`,
+            filePath: args.importer,
+            message: `未知的文件后缀：'${ext}'，原始请求为：'${args.path}'`,
           };
 
           throw err;
