@@ -258,8 +258,10 @@ importers:
 
   packages/components/code-block-typescript:
     specifiers:
+      '@blog/context': workspace:*
       '@blog/mdx-code-block-normal': workspace:*
       '@blog/shared': workspace:*
+      '@blog/web': workspace:*
       '@types/blog': workspace:*
       '@types/html-escaper': 3.0.0
       '@types/node': 16.11.7
@@ -276,8 +278,10 @@ importers:
       vscode-oniguruma: 1.6.2
       vscode-textmate: 7.0.1
     dependencies:
+      '@blog/context': link:../../builder/context
       '@blog/mdx-code-block-normal': link:../code-block-normal
       '@blog/shared': link:../../utils/shared
+      '@blog/web': link:../../utils/web
       '@xiao-ai/utils': 1.6.6
       html-escaper: 3.0.3
       look-it-up: 2.1.0
@@ -324,7 +328,8 @@ importers:
 
   packages/components/katex:
     specifiers:
-      '@blog/shared': workspace:*
+      '@blog/context': workspace:*
+      '@blog/styles': workspace:*
       '@types/blog': workspace:*
       '@types/katex': 0.14.0
       '@types/node': 16.11.7
@@ -337,7 +342,8 @@ importers:
       tslib: 2.4.0
       typescript: 4.9.3
     dependencies:
-      '@blog/shared': link:../../utils/shared
+      '@blog/context': link:../../builder/context
+      '@blog/styles': link:../../utils/styles
       katex: 0.16.0
       react: 18.2.0
     devDependencies:
@@ -442,10 +448,10 @@ importers:
       '@blog/shared': workspace:*
       '@blog/styles': workspace:*
       '@blog/template-layout': workspace:*
+      '@blog/types': workspace:*
+      '@blog/web': workspace:*
       '@mdx-js/react': 2.1.3
       '@types/blog': workspace:*
-      '@types/mdast': 3.0.10
-      '@types/mdx-js__react': 1.5.5
       '@types/node': 16.11.7
       '@types/react': 18.0.17
       '@xiao-ai/eslint-config': 1.0.1
@@ -465,15 +471,15 @@ importers:
       '@blog/shared': link:../../utils/shared
       '@blog/styles': link:../../utils/styles
       '@blog/template-layout': link:../layout
+      '@blog/web': link:../../utils/web
       '@mdx-js/react': 2.1.3_react@18.2.0
       '@xiao-ai/utils': 1.6.6
       moment: 2.29.4
       react: 18.2.0
       tslib: 2.4.0
     devDependencies:
+      '@blog/types': link:../../builder/types
       '@types/blog': link:../../tools/typings
-      '@types/mdast': 3.0.10
-      '@types/mdx-js__react': 1.5.5
       '@types/node': 16.11.7
       '@types/react': 18.0.17
       '@xiao-ai/eslint-config': 1.0.1
@@ -1084,12 +1090,6 @@ packages:
   /@types/mdurl/1.0.2:
     resolution: {integrity: sha512-eC4U9MlIcu2q0KQmXszyn5Akca/0jrQmwDRgpAMJai7qBWq4amIQhZyNau4VYGtCeALvW1/NtjzJJ567aZxfKA==}
     dev: false
-
-  /@types/mdx-js__react/1.5.5:
-    resolution: {integrity: sha512-k8pnaP6JXVlQh18HgL5X6sYFNC/qZnzO7R2+HsmwrwUd+JnnsU0d9lyyT0RQrHg1anxDU36S98TI/fsGtmYqqg==}
-    dependencies:
-      '@types/react': 18.0.17
-    dev: true
 
   /@types/mdx/2.0.2:
     resolution: {integrity: sha512-mJGfgj4aWpiKb8C0nnJJchs1sHBHn0HugkVfqqyQi7Wn6mBRksLeQsPOFvih/Pu8L1vlDzfe/LidhVHBeUk3aQ==}

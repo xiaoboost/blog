@@ -1,8 +1,8 @@
 import React from 'react';
-import styles from './index.jss';
-
-import { toPinyin } from '@blog/shared/node';
+import { toPinyin } from '@blog/node';
 import { isBaseType, isArray, isObject } from '@xiao-ai/utils';
+
+import styles from './index.jss';
 
 interface HeadProps {
   props?: HeadProps;

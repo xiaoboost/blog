@@ -1,11 +1,6 @@
 import React from 'react';
-import styles from './index.jss';
-import assets = require('./code-block-ts.script');
-
 import { stringifyClass } from '@xiao-ai/utils';
-import { renderTsCode, ScriptKind, Platform } from './typescript';
-import { getAssetContents, getAssetPaths } from '@blog/shared/node';
-
+import { defineUtils } from '@blog/context/runtime';
 import {
   styles as normalStyles,
   CodeBlockWrapper,
@@ -13,7 +8,12 @@ import {
   getMinSpaceWidth,
 } from '@blog/mdx-code-block-normal';
 
-export { ready, ScriptKind, Platform } from './typescript';
+import styles from './index.jss';
+import assets from './code-block-ts.script';
+import { renderTsCode, ScriptKind, Platform } from './typescript';
+
+export { ScriptKind, Platform } from './typescript';
+export const utils = defineUtils(assets);
 
 export interface Options {
   children?: string;
@@ -54,11 +54,3 @@ export function TsCodeBlock({
     </CodeBlockWrapper>
   );
 }
-
-export const createAssets: CreateAssets = () => {
-  return getAssetContents(assets);
-};
-
-export const getAssetNames: GetAssetNames = () => {
-  return getAssetPaths(assets);
-};

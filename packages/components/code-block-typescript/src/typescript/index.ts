@@ -1,10 +1,10 @@
-import { tokenize, ready } from './tokenize';
+import { escape } from 'html-escaper';
+import { addSplitLabel } from '@blog/mdx-code-block-normal';
+import { tokenize } from './tokenize';
 import { lsInfoAttrName } from '../constant';
 import { ScriptKind, Platform, DisplaySymbol } from './host';
-import { addSplitLabel } from '@blog/mdx-code-block-normal';
-import { escape } from 'html-escaper';
 
-export { ScriptKind, Platform, ready, DisplaySymbol };
+export { ScriptKind, Platform, DisplaySymbol };
 
 export function renderTsCode(
   code: string,
