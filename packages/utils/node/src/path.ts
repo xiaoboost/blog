@@ -2,13 +2,13 @@ import path from 'path';
 import { AnyObject } from '@xiao-ai/utils';
 
 /** 标准化路径 */
-export function normalize(str: string) {
-  return str.replace(/[\\/]+/g, '/');
+export function normalize(...paths: string[]) {
+  return path.join(...paths).replace(/[\\/]+/g, '/');
 }
 
 /** 编译链接 */
-export function parseUrl(...paths: string[]) {
-  let str = path.join(...paths).replace(/[\\/]+/g, '/');
+export function normalizeUrl(...paths: string[]) {
+  let str = normalize(...paths);
 
   // 链接开始没有加上公共路径
   if (str[0] !== '/') {
