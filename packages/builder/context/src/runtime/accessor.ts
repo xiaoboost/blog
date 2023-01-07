@@ -10,10 +10,10 @@ export function getAccessor<T = any>(name: string, defaultValue?: T): Accessor<T
 
   return {
     get() {
-      return globalThis[GlobalKey.Memory].get(key) ?? defaultValue;
+      return globalThis[GlobalKey.Memory]?.get?.(key) ?? defaultValue;
     },
     set(val: T) {
-      globalThis[GlobalKey.Memory].set(key, val);
+      globalThis[GlobalKey.Memory]?.set?.(key, val);
     },
   };
 }

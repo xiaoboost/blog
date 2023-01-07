@@ -3,7 +3,7 @@
 // @ts-ignore
 import type Mdx from '@mdx-js/mdx';
 
-import { ErrorData, Parser } from '@blog/types';
+import { ErrorData, Parser, Mdx as MdxAst } from '@blog/types';
 import { decodeTemplate } from './template';
 
 const parserThen: Promise<Parser> = Promise.all([
@@ -39,7 +39,7 @@ export async function parse(fileName: string, content: string) {
   const parser = await parserThen;
 
   try {
-    return parser.parse(content);
+    return parser.parse(content) as MdxAst.Root;
   } catch (err: any) {
     const data: ErrorData = {
       project: 'UNKNOWN',

@@ -1,4 +1,4 @@
-import { expect } from '@blog/test-toolkit';
+import { expect, describe, it } from '@blog/test-toolkit';
 import { getHighlightCode } from '../utils';
 
 describe('getHighlightCode', () => {
