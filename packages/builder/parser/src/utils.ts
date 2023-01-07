@@ -69,12 +69,12 @@ function addImageImport(ast: Mdx.Root, fixer: Fixer) {
       throw new Error(`图片解析错误，未获得图片节点位置：${img.url}`);
     }
 
-    importCode += `import img${i} from '${img.url}'\n`;
+    importCode += `import img${i} from '${img.url}';\n`;
 
     // 虚拟模板字符串
     const imgCode = img.title
-      ? `![${img.alt}](\`\${img${i}.path}\` "${img.title}")`
-      : `![${img.alt}](\`\${img${i}.path}\`)`;
+      ? `![${img.alt}](\`\${img${i}}\` "${img.title}")`
+      : `![${img.alt}](\`\${img${i}}\`)`;
 
     fixer.fix({
       start: img.position.start.offset!,
@@ -108,9 +108,13 @@ export function addTemplateUtilsExport(data: PostData, fixer: Fixer) {
   code += `import { defineUtils } from '@blog/context/runtime';\n`;
 
   // 添加导出语句
-  code += `export const utils = defineUtils(template.getAssetNames().concat([\n
-    ${components.map((_, i) => `  c${i}.getAssetNames(),\n`).join('')}
-  ]));\n\n`;
+  if (components.length === 0) {
+    code += `export const utils = defineUtils(template.getAssetNames());\n\n`;
+  } else {
+    code += `export const utils = defineUtils(template.getAssetNames().concat([
+${components.map((_, i) => `  c${i}.getAssetNames(),`).join('\n')}
+]));\n\n`;
+  }
 
   fixer.insert(code);
 }

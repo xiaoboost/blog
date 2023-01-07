@@ -26,7 +26,7 @@ export async function compile(code: string) {
   const [compiler, plugins] = await Promise.all([compilerThen, pluginThen]);
   const jsxCode = await compiler.compile(code, {
     format: 'mdx',
-    jsx: false,
+    jsx: true,
     outputFormat: 'program',
     remarkPlugins: plugins,
   });
