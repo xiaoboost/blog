@@ -1,5 +1,6 @@
 import React from 'react';
 import Moment from 'moment';
+import type { PostExportData } from '@blog/types';
 import { parseUrl } from '@blog/node';
 
 // import { Tags } from '../../components/icons';
@@ -7,15 +8,7 @@ import { Layout, LayoutProps } from '../../components/layout';
 
 import styles from './index.jss';
 
-interface PostProps {
-  title: string;
-  pathname: string;
-  tags: string[];
-  create: number;
-  description: string;
-}
-
-function Post(post: PostProps) {
+function Post({ data: post }: PostExportData) {
   return (
     <section className={styles.classes.postsListItem}>
       <header className={styles.classes.postsListItemHeader}>
@@ -51,7 +44,8 @@ function Pagination(props: PaginationProps) {
 }
 
 export interface MainIndexProps extends LayoutProps, PaginationProps {
-  posts: PostProps[];
+  index: number;
+  posts: PostExportData[];
 }
 
 export function MainIndex(props: MainIndexProps) {
@@ -59,7 +53,7 @@ export function MainIndex(props: MainIndexProps) {
     <Layout {...props}>
       <div className={styles.classes.postsList}>
         {(props.posts || []).map((post) => (
-          <Post key={post.create} {...post} />
+          <Post key={post.data.create} {...post} />
         ))}
       </div>
       <Pagination {...props} />

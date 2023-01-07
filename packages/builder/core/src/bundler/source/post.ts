@@ -1,19 +1,28 @@
 import React from 'react';
-import posts from '@blog/posts';
 
-import type { PostExportDataWithComponent } from '@blog/types';
+import type { PostExportDataWithComponent, PostUrlMap, PostsExportType } from '@blog/types';
 import { Post as PostRender } from '@blog/template-post';
 import { utils as layoutUtils } from '@blog/template-layout';
 import { builderOptions } from '@blog/context/runtime';
 
 import { createHtml } from './react';
-import { site, publicPath } from '../../constant';
+import { site } from '../../constant';
+
+export function getPostUrlMap(posts: PostsExportType) {
+  const map: PostUrlMap = new Map();
+
+  posts.forEach(({ data }) => {
+    map.set(data.filePath, data.pathname);
+  });
+
+  return map;
+}
 
 /**
  * 文章组件空运行
  *   - 部分组件需要预载
  */
-export function renderSpacePost() {
+export function renderSpacePost(posts: PostsExportType) {
   posts.forEach(({ Component }) => {
     React.createElement(Component);
   });
@@ -27,7 +36,7 @@ export function renderPost(post: PostExportDataWithComponent) {
     pathname: post.data.pathname,
     author: site.author,
     description: post.data.description,
-    publicPath,
+    publicPath: builderOptions.publicPath,
     hmr: builderOptions.hmr,
     assets: layoutUtils.getAssetNames().concat(post.utils.getAssetNames()),
     post: post as any,
