@@ -8,10 +8,8 @@ import { join } from 'path';
 import { parse, compile } from './parser';
 import { addTemplateUtilsExport, addPostAssetImport } from './utils';
 
-let i = 0;
-
-/** 获取文章数据 */
-export async function getPostData(content: string, fileName: string) {
+/** 获取元数据 */
+export function getPostMetaData(content: string, fileName: string) {
   const result = content.match(/^---([\d\D]+?)---([\d\D]*)$/);
 
   if (!result) {
@@ -23,22 +21,30 @@ export async function getPostData(content: string, fileName: string) {
   const [, metaStr, mdContent] = result;
   const meta = parseYaml(metaStr) as PostMeta;
 
+  meta.content = mdContent.trim();
+
   if (!meta) {
     throw {
-      message: `缺失文章属性: ${fileName}`,
+      message: `文章属性解析失败: ${fileName}`,
     };
   }
 
   // 检查必填属性
-  const required = ['create', 'title'].filter((key) => !meta[key]);
+  const required = ['title', 'create'].filter((key) => !meta[key]);
 
   if (required.length > 0) {
     throw {
-      message: `文章必须要有 [${required.join(', ')}] 字段`,
+      message: `文章必须要有 ${required.join(', ')} 字段：${fileName}`,
     };
   }
 
-  const postContent = (mdContent ?? '').trim();
+  return meta;
+}
+
+/** 获取文章数据 */
+export async function getPostData(content: string, fileName: string) {
+  const meta = getPostMetaData(content, fileName);
+  const postContent = (meta.content ?? '').trim();
   const createAt = new Date(meta.create).getFullYear().toString();
   const decodeTitle = toPinyin(meta.title).toLowerCase();
   const data: PostData = {
@@ -54,7 +60,7 @@ export async function getPostData(content: string, fileName: string) {
     template: meta.template ?? 'post',
     description:
       meta.description ??
-      mdContent
+      meta.content
         .trim()
         .slice(0, 200)
         .replace(/[\n\r]/g, ''),
@@ -76,6 +82,8 @@ export async function transform(content: string, fileName: string) {
   const renderCode = compile(mdxCode);
   return `${renderCode};\n;\nexport const data = ${JSON.stringify(data, null, 2)}`;
 }
+
+let i = 0;
 
 /** 生成引用文章代码 */
 export function getImportCode(path: string, exportName: string) {
