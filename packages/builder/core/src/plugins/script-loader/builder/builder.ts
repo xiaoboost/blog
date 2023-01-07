@@ -1,5 +1,6 @@
 import type { BuilderInstance } from '@blog/types';
 import { AssetExtractor } from './extractor';
+import { Transformer } from './transformer';
 import { builderCache } from '../utils';
 import { JssLoader } from '../../jss-loader';
 
@@ -12,7 +13,7 @@ export async function getScriptBuilder(entry: string, parent: BuilderInstance) {
         name: 'Script',
         write: false,
         logLevel: 'Silence',
-        plugins: [AssetExtractor(), JssLoader({ extractCss: true })],
+        plugins: [AssetExtractor(), Transformer(), JssLoader({ extractCss: true })],
       });
 
   if (!builderCache.has(key)) {
