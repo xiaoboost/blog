@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { PropsWithChildren } from 'react';
-import { parseUrl } from '@blog/node';
+import { normalizeUrl } from '@blog/node';
 
 import { ScrollBar } from '@blog/component-scrollbar';
 import { HMRClientScriptPath } from '@blog/shared';
@@ -28,14 +28,14 @@ export interface LayoutProps extends HeaderProps {
   /** 当前页面网址 */
   pathname: string;
   /** 网站根路径 */
-  publicPath?: string;
-  /** 静态资源列表 */
-  assets?: string[];
+  publicPath: string;
+  /** 样式资源列表 */
+  styles: string[];
+  /** 脚本资源列表 */
+  scripts: string[];
 }
 
 export function Layout(props: PropsWithChildren<LayoutProps>) {
-  const styles = (props.assets ?? []).filter((item) => item.endsWith('.css'));
-  const scripts = (props.assets ?? []).filter((item) => item.endsWith('.js'));
   const publicPath = props.publicPath ?? '/';
 
   return (
@@ -54,8 +54,13 @@ export function Layout(props: PropsWithChildren<LayoutProps>) {
         <meta httpEquiv='X-UA-Compatible' content='IE=edge,chrome=1' />
         <link rel='short icon' href={favicon} />
         {props.hmr ? <script type='text/javascript' src={HMRClientScriptPath} /> : ''}
-        {styles.map((pathname, i) => (
-          <link key={i} rel='stylesheet' type='text/css' href={parseUrl(publicPath, pathname)} />
+        {props.styles.map((pathname, i) => (
+          <link
+            key={i}
+            rel='stylesheet'
+            type='text/css'
+            href={normalizeUrl(publicPath, pathname)}
+          />
         ))}
       </head>
       <body>
@@ -64,8 +69,8 @@ export function Layout(props: PropsWithChildren<LayoutProps>) {
         <Footer />
         <GotoTop />
         <ScrollBar width={8} mode='y' />
-        {scripts.map((pathname, i) => (
-          <script key={i} type='text/javascript' src={parseUrl(publicPath, pathname)} />
+        {props.scripts.map((pathname, i) => (
+          <script key={i} type='text/javascript' src={normalizeUrl(publicPath, pathname)} />
         ))}
       </body>
     </html>

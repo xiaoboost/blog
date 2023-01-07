@@ -1,7 +1,7 @@
 import React from 'react';
 import Moment from 'moment';
 import type { PostExportData } from '@blog/types';
-import { parseUrl } from '@blog/node';
+import { normalizeUrl } from '@blog/node';
 
 // import { Tags } from '../../components/icons';
 import { Layout, LayoutProps } from '../../components/layout';
@@ -13,7 +13,7 @@ function Post({ data: post }: PostExportData) {
     <section className={styles.classes.postsListItem}>
       <header className={styles.classes.postsListItemHeader}>
         <span>
-          <a href={parseUrl(post.pathname)}>{post.title}</a>
+          <a href={normalizeUrl(post.pathname)}>{post.title}</a>
         </span>
         <time>{Moment(post.create).format('yyyy-MM-DD')}</time>
       </header>
@@ -31,8 +31,8 @@ function Post({ data: post }: PostExportData) {
 }
 
 interface PaginationProps {
-  next: string | null;
-  pre: string | null;
+  next?: string;
+  pre?: string;
 }
 
 function Pagination(props: PaginationProps) {

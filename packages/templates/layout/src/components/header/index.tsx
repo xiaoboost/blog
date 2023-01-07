@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { parseUrl } from '@blog/node';
+import { normalizeUrl } from '@blog/node';
 import { stringifyClass } from '@xiao-ai/utils';
 
 import styles from './index.jss';
@@ -20,11 +20,11 @@ export interface HeaderProps {
 
 export function Header(props: HeaderProps) {
   const publicPath = props.publicPath ?? '/';
-  const location = parseUrl(publicPath, props.pathname);
-  const indexHref = parseUrl(publicPath);
-  const aboutHref = parseUrl(publicPath, '/posts/about/');
-  // const tagHref = parseUrl(props.publicPath, props.tagPath);
-  // const archiveHref = parseUrl(props.publicPath, props.archivePath);
+  const location = normalizeUrl(publicPath, props.pathname);
+  const indexHref = normalizeUrl(publicPath);
+  const aboutHref = normalizeUrl(publicPath, '/posts/about/');
+  // const tagHref = normalizeUrl(props.publicPath, props.tagPath);
+  // const archiveHref = normalizeUrl(props.publicPath, props.archivePath);
   const navs = [
     {
       name: '首页',

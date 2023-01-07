@@ -118,6 +118,8 @@ export interface BundlerHooks {
 export interface ListRenderData {
   /** 列表第几页 */
   index: number;
+  /** 列表总页数 */
+  count: number;
   /** 列表页网址 */
   pathname: string;
   /** 列表页包含的文章 */
