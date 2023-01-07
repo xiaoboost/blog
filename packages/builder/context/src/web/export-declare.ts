@@ -1,2 +1,2 @@
 /** 虚拟资源导出 */
-export const assets: string[] = [];
+export declare const assets: string[];

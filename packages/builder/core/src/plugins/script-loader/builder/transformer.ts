@@ -4,6 +4,8 @@ import { dirname } from 'path';
 
 import * as ts from 'typescript';
 
+import { EntrySuffix } from '../utils';
+
 const pluginName = 'script-transformer';
 
 function findExportDefault(sourceFile: ts.SourceFile) {
@@ -69,7 +71,7 @@ export const Transformer = (): BuilderPlugin => ({
       }));
 
       bundler.hooks.load.tapPromise(pluginName, async (args) => {
-        if (args.path !== builder.options.entry) {
+        if (!EntrySuffix.test(args.path)) {
           return;
         }
 
