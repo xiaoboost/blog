@@ -56,7 +56,7 @@ export function MainIndex(props: MainIndexProps) {
           <Post key={post.data.create} {...post} />
         ))}
       </div>
-      <Pagination {...props} />
+      {/* <Pagination {...props} /> */}
     </Layout>
   );
 }

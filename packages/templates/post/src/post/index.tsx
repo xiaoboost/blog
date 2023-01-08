@@ -2,7 +2,7 @@ import React from 'react';
 import Moment from 'moment';
 import { stringifyClass } from '@xiao-ai/utils';
 import { Layout, LayoutProps } from '@blog/template-layout';
-import type { Mdx } from '@blog/types';
+import type { PostExportDataWithComponent } from '@blog/types';
 
 import styles from './index.jss';
 
@@ -13,17 +13,9 @@ import * as code from './code';
 import * as link from './link';
 import * as paragraph from './paragraph';
 
-interface PostData {
-  title: string;
-  create: number;
-  toc: any;
-  ast: Mdx.Root;
-  Component: (props: any) => JSX.Element;
-}
-
 export interface PostProps extends LayoutProps {
   /** 文章数据 */
-  post: PostData;
+  post: PostExportDataWithComponent;
 }
 
 export function Post(props: PostProps) {
@@ -33,14 +25,14 @@ export function Post(props: PostProps) {
     <Layout {...props}>
       <section
         className={stringifyClass(styles.classes.postDefault, {
-          [styles.classes.postNoToc]: !post.toc,
+          [styles.classes.postNoToc]: !post.data.toc,
         })}
         style={props ? undefined : { width: '100%' }}
       >
         <header className={styles.classes.postHeader}>
-          <h1 className={styles.classes.postHeaderTitle}>{post.title}</h1>
+          <h1 className={styles.classes.postHeaderTitle}>{post.data.title}</h1>
           <time className={styles.classes.postHeaderCreate}>
-            {Moment(post.create).format('yyyy-MM-DD')}
+            {Moment(post.data.create).format('yyyy-MM-DD')}
           </time>
         </header>
         <article className={styles.classes.postArticle}>
@@ -54,7 +46,7 @@ export function Post(props: PostProps) {
           />
         </article>
       </section>
-      {post.toc && <ToContent data={post.ast} />}
+      {post.data.toc && <ToContent data={post.data.ast} />}
     </Layout>
   );
 }

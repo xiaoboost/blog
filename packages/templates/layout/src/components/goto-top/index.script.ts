@@ -68,7 +68,7 @@ function active() {
   };
 }
 
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === 'development' && ModuleLoader) {
   ModuleLoader.install({
     currentScript: getCurrentScriptSrc(),
     active,
