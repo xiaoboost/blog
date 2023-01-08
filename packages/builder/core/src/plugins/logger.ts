@@ -73,17 +73,20 @@ export const Logger = (): BuilderPlugin => ({
       spinner.start();
     });
 
-    builder.hooks.afterBundler.tap(pluginName, () => {
+    builder.hooks.afterBundler.tap({ name: pluginName, stage: 999 }, () => {
+      spinner.stop();
       spinner.clear();
       logger.log(`打包完成，耗时 ${getShortTime(Date.now() - timer)}`);
     });
 
     builder.hooks.runner.tap(pluginName, () => {
       timer = Date.now();
+      spinner.start();
       spinner.text = '运行构建...';
     });
 
-    builder.hooks.afterRunner.tap(pluginName, () => {
+    builder.hooks.afterRunner.tap({ name: pluginName, stage: 999 }, () => {
+      spinner.stop();
       spinner.clear();
       logger.log(`构建完成，耗时 ${getShortTime(Date.now() - timer)}`);
     });
@@ -95,8 +98,6 @@ export const Logger = (): BuilderPlugin => ({
     });
 
     builder.hooks.success.tap(pluginName, (assets) => {
-      spinner.stop();
-
       logger.info(
         '网站已生成，' +
           `文件 ${printer.yellow(`${assets.length} 个`)}，` +
@@ -105,9 +106,6 @@ export const Logger = (): BuilderPlugin => ({
     });
 
     builder.hooks.failed.tap(pluginName, (errors) => {
-      spinner.stop();
-      spinner.clear();
-
       logger.info(`构建失败，发现了 ${printer.bold(errors.length)} 个错误：`);
 
       for (const err of errors) {
