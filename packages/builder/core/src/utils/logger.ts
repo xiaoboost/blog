@@ -1,14 +1,21 @@
-import { isString } from '@xiao-ai/utils';
-import { LogLevel, LogLevelEnum } from '@blog/types';
+import { LogLevel, LogLevelEnum, LoggerInstance } from '@blog/types';
+import type { Chalk } from 'chalk';
 
-export class Logger {
+import Moment from 'moment';
+
+export class Logger implements LoggerInstance {
   private prefix: () => string;
+
+  private printer?: Chalk;
 
   private level: LogLevel;
 
-  constructor(prefix: string | (() => string), level: LogLevel = 'Info') {
-    this.prefix = isString(prefix) ? () => prefix : prefix;
+  constructor(level: LogLevel = 'Info', printer?: Chalk, prefix?: string) {
     this.level = level;
+    this.printer = printer;
+    this.prefix = printer
+      ? () => printer.green(`[${Moment().format('HH:mm:ss')}]${prefix ? ` ${prefix}` : ''}`)
+      : () => `[${Moment().format('HH:mm:ss')}]${prefix ? ` ${prefix}` : ''}`;
   }
 
   private output(level: LogLevelEnum, ...message: string[]) {

@@ -17,6 +17,11 @@ export async function applyPlugin(builder: Builder) {
   const { options: opt } = builder;
   const isProduction = opt.mode === 'production';
 
+  if (opt.logLevel !== 'Silence') {
+    const { Logger } = await import('../plugins/logger.js');
+    Logger().apply(builder);
+  }
+
   Resolver().apply(builder);
   PathLoader({ test: /\.(plist|wasm)$/ }).apply(builder);
   FileLoader({ test: /\.(woff|woff2|ttf)$/, name: getAssetNames('fonts', isProduction) }).apply(
@@ -36,11 +41,6 @@ export async function applyPlugin(builder: Builder) {
     const { Cleaner } = await import('../plugins/cleaner.js');
     AssetWriter().apply(builder);
     Cleaner().apply(builder);
-  }
-
-  if (opt.logLevel !== 'Silence') {
-    const { Logger } = await import('../plugins/logger.js');
-    Logger().apply(builder);
   }
 
   // 主构建器插件

@@ -3,23 +3,13 @@ import type { ErrorData } from './error';
 import type { AssetData } from './asset';
 import type { Resolver } from './resolve';
 import type { BuilderPlugin } from './plugin';
+import type { LogLevel, LoggerInstance } from './logger';
 
 /** 构建器选项 */
 export type BuilderOptions = ExtendOptions & CommandOptions;
 
 /** 模式 */
 export type Mode = 'production' | 'development';
-
-/** 日志等级字符串 */
-export type LogLevel = keyof typeof LogLevelEnum;
-
-/** 日志等级 */
-export enum LogLevelEnum {
-  Debug,
-  Info,
-  Error,
-  Silence,
-}
 
 /** 扩展配置 */
 export interface ExtendOptions {
@@ -68,6 +58,8 @@ export interface BuilderInstance {
   options: Required<BuilderOptions>;
   /** 获取路径 */
   resolve: Resolver;
+  /** 日志打印器 */
+  logger: LoggerInstance;
 
   /** 初始化 */
   init(): Promise<void>;

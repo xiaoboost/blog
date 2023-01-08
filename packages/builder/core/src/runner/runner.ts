@@ -38,7 +38,7 @@ export class Runner implements RunnerInstance {
       clearImmediate,
       clearInterval,
       clearTimeout,
-      console: new Logger(printer.blue('[Runtime]'), logLevel),
+      console: new Logger(logLevel, printer, printer.blue('[Runtime]')),
     };
   }
 
