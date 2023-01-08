@@ -9,6 +9,7 @@ const pluginName = 'mdx-loader';
 export const MdxLoader = (): BuilderPlugin => ({
   name: pluginName,
   apply(builder) {
+    const { options: opt } = builder;
     const mdxCache = new Map<string, string>();
 
     builder.hooks.bundler.tap(pluginName, (bundler) => {
@@ -43,7 +44,7 @@ export const MdxLoader = (): BuilderPlugin => ({
           };
         }
 
-        const code = await transform(content, args.path);
+        const code = await transform(content, args.path, opt.mode === 'development');
 
         mdxCache.set(cacheKey, code);
 
@@ -51,9 +52,6 @@ export const MdxLoader = (): BuilderPlugin => ({
           ...basicResult,
           contents: code,
           loader: 'jsx',
-          pluginData: {
-            transformed: code,
-          },
         };
       });
     });

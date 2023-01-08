@@ -5,9 +5,9 @@ describe('getImportCode', () => {
   it('one post', () => {
     expect(
       `
-import post_default_0, * as post_0_utils from '/xxx/xxx.mdx';
+import post_0_default, * as post_0_utils from '/xxx/xxx.mdx';
 const post1 = {
-  Component: post_default_0,
+  Component: post_0_default,
   ...post_0_utils,
 };
 `.trimStart(),

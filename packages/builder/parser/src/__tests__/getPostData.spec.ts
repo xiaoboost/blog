@@ -2,6 +2,18 @@ import { expect, describe, it } from '@blog/test-toolkit';
 import { getPostData as origin } from '../transformer';
 
 const fileName = '/test/test.md';
+const commonData = {
+  title: '标题',
+  pathname: 'posts/test',
+  public: false,
+  toc: true,
+  tags: [],
+  filePath: fileName,
+  template: 'post',
+  description: '测试内容',
+  create: 2366812800000,
+  update: 2366899200000,
+};
 
 function getPostContent(content: string) {
   return `
@@ -24,15 +36,7 @@ function getPostData(content: string) {
 describe('getPostData', () => {
   it('only template', async () => {
     expect(await getPostData('测试内容')).deep.eq({
-      title: '标题',
-      pathname: 'posts/test',
-      public: false,
-      toc: true,
-      tags: [],
-      template: 'post',
-      description: '测试内容',
-      create: 2366812800000,
-      update: 2366899200000,
+      ...commonData,
       content: `
 import { utils as template } from '@blog/template-post';
 import { defineUtils } from '@blog/context/runtime';
@@ -57,15 +61,8 @@ import { MathBlock } from '@blog/mdx-katex';
     `.trim(),
       ),
     ).deep.eq({
-      title: '标题',
-      pathname: 'posts/test',
-      public: false,
-      toc: true,
-      tags: [],
-      template: 'post',
+      ...commonData,
       description: `import { MathBlock } from '@blog/mdx-katex';测试内容<MathBlock>test</MathBlock>测试内容`,
-      create: 2366812800000,
-      update: 2366899200000,
       content: `
 import { utils as c0 } from '@blog/mdx-katex';
 import { utils as template } from '@blog/template-post';
@@ -87,15 +84,8 @@ import { MathBlock } from '@blog/mdx-katex';
 
   it('with image', async () => {
     expect(await getPostData('测试内容\n\n![测试图片](../images/img.jpg)')).deep.eq({
-      title: '标题',
-      pathname: 'posts/test',
-      public: false,
-      toc: true,
-      tags: [],
-      template: 'post',
+      ...commonData,
       description: '测试内容![测试图片](../images/img.jpg)',
-      create: 2366812800000,
-      update: 2366899200000,
       content: `
 import img0 from '../images/img.jpg';
 import { utils as template } from '@blog/template-post';
