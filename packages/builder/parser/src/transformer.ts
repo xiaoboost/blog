@@ -8,6 +8,12 @@ import { join } from 'path';
 import { parse, compile } from './parser';
 import { addTemplateUtilsExport, addPostAssetImport } from './utils';
 
+function getDateByDay(input: string) {
+  const date = new Date(input);
+  date.setUTCHours(8, 0, 0, 0);
+  return date.getTime();
+}
+
 /** 获取元数据 */
 export function getPostMetaData(content: string, fileName: string) {
   const result = content.match(/^---([\d\D]+?)---([\d\D]*)$/);
@@ -49,8 +55,8 @@ export async function getPostData(content: string, fileName: string) {
   const decodeTitle = toPinyin(meta.title).toLowerCase();
   const data: PostData = {
     title: meta.title,
-    create: new Date(meta.create).getTime(),
-    update: meta.update ? new Date(meta.update).getTime() : (await stat(fileName)).mtimeMs,
+    create: getDateByDay(meta.create),
+    update: meta.update ? getDateByDay(meta.update) : (await stat(fileName)).mtimeMs,
     tags: meta.tags ?? [],
     public: meta.public ?? true,
     content: postContent,
