@@ -9,7 +9,7 @@
     "url": "https://github.com/xiaoboost/blog"
   },
   "scripts": {
-    "build:all": "pnpm run -r build",
+    "build:prepare": "pnpm run --filter @blog/cli... build",
     "build": "blog build --outDir=dist --mode=production",
     "watch": "blog watch --mode=development",
     "test": "pnpm run -r --parallel test",
