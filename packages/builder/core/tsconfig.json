@@ -5,6 +5,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "module": "CommonJS",
-    "outDir": "dist"
+    "outDir": "dist",
+    "lib": ["DOM", "ESNext"]
   }
 }
