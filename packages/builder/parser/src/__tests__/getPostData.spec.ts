@@ -11,8 +11,6 @@ const commonData = {
   filePath: fileName,
   template: 'post',
   description: '测试内容',
-  create: 2366812800000,
-  update: 2366899200000,
 };
 
 function getPostContent(content: string) {
@@ -30,7 +28,7 @@ ${content}
 }
 
 function getPostData(content: string) {
-  return origin(getPostContent(content), fileName).then(({ ast, ...rest }) => rest);
+  return origin(getPostContent(content), fileName).then(({ ast, create, update, ...rest }) => rest);
 }
 
 describe('getPostData', () => {
