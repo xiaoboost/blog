@@ -46,36 +46,37 @@ export class Bundler implements BundlerInstance {
     // 有实例，则直接重新构建
     if (this.instance) {
       this.instance = await this.instance.rebuild();
+    } else {
+      const { builder, hooks } = this;
+      const { options: opt, root } = builder;
+      const esbuildConfig: BuildOptions = hooks.initialization.call({
+        entryPoints: [opt.entry],
+        outfile: join(root, 'virtual', Bundler.BundleFileName),
+        metafile: false,
+        bundle: true,
+        format: 'cjs',
+        target: 'esnext',
+        write: false,
+        logLevel: 'silent',
+        sourcemap: 'external',
+        minify: false,
+        mainFields: ['source', 'module', 'main'],
+        resolveExtensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
+        publicPath: opt.publicPath,
+        external: builtinModules,
+        splitting: false,
+        watch: false,
+        charset: 'utf8',
+        incremental: opt.watch,
+        logLimit: 5,
+        platform: 'node',
+        define: opt.defined,
+        plugins: [BridgePlugin(this)],
+      });
+
+      this.instance = (await esbuild(esbuildConfig)) as BuildIncremental;
     }
 
-    const { builder, hooks } = this;
-    const { options: opt, root } = builder;
-    const esbuildConfig: BuildOptions = hooks.initialization.call({
-      entryPoints: [opt.entry],
-      outfile: join(root, 'virtual', Bundler.BundleFileName),
-      metafile: false,
-      bundle: true,
-      format: 'cjs',
-      target: 'esnext',
-      write: false,
-      logLevel: 'silent',
-      sourcemap: 'external',
-      minify: false,
-      mainFields: ['source', 'module', 'main'],
-      resolveExtensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
-      publicPath: opt.publicPath,
-      external: builtinModules,
-      splitting: false,
-      watch: false,
-      charset: 'utf8',
-      incremental: opt.watch,
-      logLimit: 5,
-      platform: 'node',
-      define: opt.defined,
-      plugins: [BridgePlugin(this)],
-    });
-
-    this.instance = (await esbuild(esbuildConfig)) as BuildIncremental;
     this.assets = (this.instance.outputFiles ?? []).map((file) => ({
       path: file.path,
       content: Buffer.from(file.contents),

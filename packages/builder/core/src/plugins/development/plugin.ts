@@ -74,10 +74,8 @@ export const Development = (opt?: DevOptions): BuilderPlugin => ({
 
     let server: HTTPServer | undefined = createServer(app.callback());
 
-    app.use(staticServe(vfs, builder)).listen(opt?.port ?? 6060);
-
     if (hmr) {
-      app.use(transformServe(vfs, builder));
+      app.use(transformServe(vfs, builder)).use(staticServe(vfs, builder)).listen(port);
       app.ws.server?.on('connection', (socket: WebSocket) => {
         sockets.push(socket);
 
@@ -89,11 +87,14 @@ export const Development = (opt?: DevOptions): BuilderPlugin => ({
           remove(sockets, socket);
         });
       });
+    } else {
+      app.use(staticServe(vfs, builder)).listen(port);
     }
 
     builder.hooks.success.tapPromise(pluginName, async () => {
       const assets = builder.getAssets();
       const log = () => logger.info(`网站已部署至：http://127.0.0.1:${port}/`);
+      const diff = hmr ? getFilesDiff(assets, vfs) : undefined;
 
       for (const file of assets) {
         vfs.set(file.path, file.content);
@@ -105,8 +106,6 @@ export const Development = (opt?: DevOptions): BuilderPlugin => ({
       }
 
       return delay().then(() => {
-        const diff = getFilesDiff(assets, vfs);
-
         if (diff && 'updates' in diff && diff.updates.length > 0) {
           broadcast(sockets, diff);
         }

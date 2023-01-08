@@ -32,7 +32,7 @@ export const MdxLoader = (): BuilderPlugin => ({
         const cacheKey = `${args.path}:\n${content}`;
         const cacheCode = mdxCache.get(cacheKey);
         const basicResult = {
-          loader: 'js' as const,
+          loader: 'jsx' as const,
           watchFiles: [args.path],
           resolveDir: dirname(args.path),
         };

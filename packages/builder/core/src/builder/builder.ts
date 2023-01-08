@@ -181,15 +181,19 @@ export class Builder implements BuilderInstance {
 
   addWatchFiles(...files: string[]) {
     files.forEach((file) => {
-      if (!this.watchFiles.has(file)) {
-        this.watchFiles.add(file);
-        this.watcher?.add(file);
+      const fullPath = normalize(file);
+      if (!this.watchFiles.has(fullPath)) {
+        this.watchFiles.add(fullPath);
+        this.watcher?.add(fullPath);
       }
     });
   }
 
-  isWatchFiles(...files: string[]) {
-    return files.some((file) => this.watchFiles.has(file));
+  isWatchFiles(...files: string[]): boolean {
+    return files.some((item) => {
+      const file = normalize(item);
+      return this.watchFiles.has(file) || this.children.some((child) => child.isWatchFiles(file));
+    });
   }
 
   getErrors(): BuilderError[] {
