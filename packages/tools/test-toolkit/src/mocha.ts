@@ -13,7 +13,7 @@ export { expect, assert } from 'chai';
 export { describe, it } from 'mocha';
 
 export const mochaOptions: MochaOptions = {
-  require: [require.resolve('tsx')],
+  require: [require.resolve('tsm')],
   timeout: 4000,
   color: true,
 };

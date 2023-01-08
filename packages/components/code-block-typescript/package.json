@@ -32,7 +32,7 @@
     "@types/blog": "workspace:*",
     "@types/html-escaper": "3.0.0",
     "@types/node": "16.11.7",
-    "@types/react": "18.0.17",
+    "@types/react": "18.0.26",
     "@xiao-ai/eslint-config": "1.0.1",
     "@xiao-ai/tsconfig": "1.0.1",
     "eslint": "8.31.0",
