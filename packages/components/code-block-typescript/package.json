@@ -17,6 +17,7 @@
   "dependencies": {
     "@blog/context": "workspace:*",
     "@blog/mdx-code-block-normal": "workspace:*",
+    "@blog/node": "workspace:*",
     "@blog/styles": "workspace:*",
     "@blog/web": "workspace:*",
     "@xiao-ai/utils": "1.6.6",

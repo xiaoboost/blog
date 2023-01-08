@@ -272,6 +272,7 @@ importers:
     specifiers:
       '@blog/context': workspace:*
       '@blog/mdx-code-block-normal': workspace:*
+      '@blog/node': workspace:*
       '@blog/styles': workspace:*
       '@blog/web': workspace:*
       '@types/blog': workspace:*
@@ -292,6 +293,7 @@ importers:
     dependencies:
       '@blog/context': link:../../builder/context
       '@blog/mdx-code-block-normal': link:../code-block-normal
+      '@blog/node': link:../../utils/node
       '@blog/styles': link:../../utils/styles
       '@blog/web': link:../../utils/web
       '@xiao-ai/utils': 1.6.6
