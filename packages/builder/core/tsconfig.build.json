@@ -1,5 +1,5 @@
 {
   "extends": "./tsconfig.json",
   "include": ["src"],
-  "exclude": ["src/bundler/source", "dist"]
+  "exclude": ["src/bundler/source", "src/plugins/development/runtime", "dist"]
 }
