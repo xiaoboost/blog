@@ -7,6 +7,9 @@ import { EntrySuffix } from '../utils';
 
 const pluginName = 'asset-extractor';
 
+/** 全局 script 入口引用记录 */
+const scriptIsInside = new Map<string, boolean>();
+
 export const AssetExtractor = (): BuilderPlugin => ({
   name: pluginName,
   apply(builder) {
@@ -22,7 +25,13 @@ export const AssetExtractor = (): BuilderPlugin => ({
     );
     const chunkName = path.basename(entry).replace(EntrySuffix, '');
 
-    // TODO: 部分 template 和组件是合并的，此时如何处理
+    builder.hooks.bundler.tap(pluginName, (bundler) => {
+      bundler.hooks.resolveResult.tap(pluginName, (result) => {
+        if (result.path && result.path !== entry && EntrySuffix.test(result.path)) {
+          scriptIsInside.set(result.path, true);
+        }
+      });
+    });
 
     builder.hooks.runner.tap(pluginName, (runner) => {
       // 忽略运行器
@@ -30,6 +39,11 @@ export const AssetExtractor = (): BuilderPlugin => ({
     });
 
     builder.hooks.afterBundler.tap(pluginName, ({ bundler }) => {
+      // 当前插件是内部插件，则跳过
+      if (scriptIsInside.get(entry)) {
+        return;
+      }
+
       const assets = bundler.getAssets();
       const styleFile = assets.find((item) => item.path.endsWith('.css'));
       const styleMapFile = assets.find((item) => item.path.endsWith('.css.map'));

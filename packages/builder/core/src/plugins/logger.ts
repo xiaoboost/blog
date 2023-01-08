@@ -2,7 +2,6 @@ import type { BuilderPlugin, AssetData } from '@blog/types';
 import { Instance } from 'chalk';
 import { relative } from 'path';
 
-import Moment from 'moment';
 import createSpinner from 'ora';
 
 import { Logger as Console } from '../utils';
@@ -58,11 +57,13 @@ export const Logger = (): BuilderPlugin => ({
     const { options, root } = builder;
     const { terminalColor: color, logLevel } = options;
     const printer = new Instance({ level: color ? 3 : 0 });
-    const logger = new Console(() => printer.green(`[${Moment().format('HH:mm:ss')}]`), logLevel);
+    const logger = new Console(logLevel, printer);
     const spinner = createSpinner({
       interval: 200,
       color: color ? 'blue' : undefined,
     });
+
+    builder.logger = logger;
 
     let timer: number;
 
