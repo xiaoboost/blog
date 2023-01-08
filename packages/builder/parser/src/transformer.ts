@@ -80,9 +80,9 @@ export async function getPostData(content: string, fileName: string) {
 }
 
 /** POST 文章编译 */
-export async function transform(content: string, fileName: string) {
+export async function transform(content: string, fileName: string, format = false) {
   const { content: mdxCode, ...data } = await getPostData(content, fileName);
-  const renderCode = await compile(mdxCode);
+  const renderCode = await compile(mdxCode, format);
   return `${renderCode};\n;\nexport const data = ${JSON.stringify(data, null, 2)}`;
 }
 
