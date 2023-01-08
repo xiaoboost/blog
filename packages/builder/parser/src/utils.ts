@@ -1,5 +1,6 @@
 import { PostData, Mdx, EsTree } from '@blog/types';
 import { Fixer, isUrl } from '@blog/shared';
+import { encodeImageTemplate } from './template';
 
 interface VisitNode {
   type: string;
@@ -73,8 +74,8 @@ function addImageImport(ast: Mdx.Root, fixer: Fixer) {
 
     // 虚拟模板字符串
     const imgCode = img.title
-      ? `![${img.alt}](\`\${img${i}}\` "${img.title}")`
-      : `![${img.alt}](\`\${img${i}}\`)`;
+      ? `![${img.alt}](${encodeImageTemplate(`img${i}`)} "${img.title}")`
+      : `![${img.alt}](${encodeImageTemplate(`img${i}`)})`;
 
     fixer.fix({
       start: img.position.start.offset!,

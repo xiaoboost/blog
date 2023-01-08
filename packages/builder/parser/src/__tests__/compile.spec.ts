@@ -47,7 +47,7 @@ import img0 from '../images/img.jpg';
     p: "p",
     img: "img"
   }, props.components);
-  return <><_components.p>{"测试内容"}</_components.p>{"\\n"}<_components.p><_components.img src=\`\${img0}\` alt="测试图片" /></_components.p></>;
+  return <><_components.p>{"测试内容"}</_components.p>{"\\n"}<_components.p><_components.img src={\`\${img0}\`} alt="测试图片" /></_components.p></>;
     `.trim(),
         "import img0 from '../images/img.jpg';",
       ),
