@@ -42,7 +42,7 @@ function getImportComponentNode(ast: Mdx.Root) {
     }
   }
 
-  return importSet;
+  return Array.from(importSet.values());
 }
 
 function addImageImport(ast: Mdx.Root, fixer: Fixer) {
@@ -94,7 +94,7 @@ export function addPostAssetImport(data: PostData, fixer: Fixer) {
 
 /** 导出 templateUtils 方法 */
 export function addTemplateUtilsExport(data: PostData, fixer: Fixer) {
-  const components = Array.from(getImportComponentNode(data.ast).values());
+  const components = getImportComponentNode(data.ast);
   const templateName = `@blog/template-${data.template}`;
 
   let code = '';
