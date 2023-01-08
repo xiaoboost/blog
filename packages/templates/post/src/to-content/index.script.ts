@@ -1,4 +1,4 @@
-import { headerBodyMargin } from '@blog/styles';
+import { headerBodyMargin } from '@blog/styles/src/constant';
 import { getCurrentScriptSrc } from '@blog/web';
 import { ModuleLoader } from '@blog/context/web';
 import { supportsPassive, addClassName, removeClassName } from '@xiao-ai/utils/web';
