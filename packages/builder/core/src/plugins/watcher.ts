@@ -18,7 +18,9 @@ export const Watcher = (): BuilderPlugin => ({
       const changeHandler = async (file: string) => {
         const fullPath = join(watcher.options.cwd!, file);
         await builder.hooks.filesChange.promise([fullPath]);
-        await builder.build();
+        if (builder.isWatchFiles(fullPath)) {
+          await builder.build();
+        }
       };
 
       watcher

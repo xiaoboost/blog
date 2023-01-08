@@ -11,7 +11,7 @@
   "scripts": {
     "build:prepare": "pnpm run --filter @blog/cli... build",
     "build": "blog build --outDir=dist --mode=production",
-    "watch": "blog watch --mode=development",
+    "watch": "blog watch --hmr --mode=development",
     "test": "pnpm run -r --parallel test",
     "lint": "pnpm run -r --parallel lint --no-error-on-unmatched-pattern",
     "lint:fix": "pnpm run -r --parallel lint:fix --no-error-on-unmatched-pattern"

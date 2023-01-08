@@ -101,7 +101,7 @@ export const Logger = (): BuilderPlugin => ({
       if (!options.watch) {
         logger.info(
           '网站已生成，' +
-            `文件 ${printer.yellow(`${assets.length} 个`)}，` +
+            `文件 ${printer.yellow(`${assets.length}`)} 个，` +
             `总大小 ${printer.green(getShortSize(getSize(assets)))}`,
         );
       }
