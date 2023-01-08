@@ -1,11 +1,16 @@
+import type { BuilderInstance } from '@blog/types';
 import { ParameterizedContext, Next } from 'koa';
 import { join } from 'path';
 import { HMRClientScriptPath } from '@blog/shared';
 import { build, BuildIncremental } from 'esbuild';
 import { getCoreRoot } from '../../../utils';
 
-export function transformServe(vfs: Map<string, Buffer>) {
+export function transformServe(vfs: Map<string, Buffer>, builder: BuilderInstance) {
   let instance: BuildIncremental;
+
+  builder.hooks.done.tap('develop-transform', () => {
+    instance?.stop?.();
+  });
 
   return async (ctx: ParameterizedContext, next: Next) => {
     if (ctx.path !== HMRClientScriptPath) {
