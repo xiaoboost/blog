@@ -4,7 +4,7 @@ import type { AssetData, ListRenderData } from '@blog/types';
 import { cut } from '@xiao-ai/utils';
 import { callHook, waitReady } from '@blog/context/runtime';
 import { componentReady } from './component';
-import { renderPost, getPostUrlMap, getPostAssetPath } from './post';
+import { renderPost, getPostUrlMap, getPostAssetPath, filterSortPosts } from './post';
 import { renderListPage, getIndexUrlPath, getIndexAssetPath } from './list';
 import { pageConfig } from '../../constant';
 
@@ -30,7 +30,8 @@ export default async function main() {
     assets.push(asset);
   }
 
-  const lists = cut(posts, pageConfig.index);
+  const sortedPosts = filterSortPosts(posts);
+  const lists = cut(sortedPosts, pageConfig.index);
 
   // 生成列表页面
   for (let i = 0; i < lists.length; i++) {
