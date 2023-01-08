@@ -8,3 +8,4 @@ export * from './template';
 export * from './error';
 export * from './resolve';
 export * from './post';
+export * from './logger';

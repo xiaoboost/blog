@@ -15,6 +15,7 @@ import { BuilderError } from '../utils';
 import { applyPlugin, normalizeOptions } from './options';
 import { Bundler } from '../bundler';
 import { Runner } from '../runner';
+import { Logger } from '../utils';
 
 let _id = 1;
 
@@ -42,6 +43,8 @@ export class Builder implements BuilderInstance {
   hooks: BuilderHooks;
 
   options: Required<BuilderOptions>;
+
+  logger = new Logger('Silence');
 
   constructor(opt: BuilderOptions, parent?: Builder) {
     this.bundler = new Bundler(this);
@@ -111,6 +114,7 @@ export class Builder implements BuilderInstance {
       await this.hooks.runner.promise(this.runner);
       await this.runner.run(this.bundler.getBundledCode());
       await this.hooks.afterRunner.promise(this._getHookContext());
+      this.assets = await this.hooks.processAssets.promise(this.getAssets());
     } catch (e: any) {
       this.errors = this._reportError(e);
     }

@@ -1,7 +1,7 @@
-import type { BuilderPlugin, BuilderInstance } from '@blog/types';
+import type { BuilderPlugin } from '@blog/types';
 import { dirname } from 'path';
 import { getScriptBuilder } from './builder';
-import { EntrySuffix } from './utils';
+import { EntrySuffix, builderCache } from './utils';
 
 const pluginName = 'script-loader';
 
@@ -9,9 +9,8 @@ export const ScriptLoader = (): BuilderPlugin => ({
   name: pluginName,
   apply(builder) {
     const {
-      options: { entry: parentEntry, mode },
+      options: { mode },
     } = builder;
-    const builderCache = new Map<string, BuilderInstance>();
 
     builder.hooks.bundler.tap(pluginName, (bundler) => {
       bundler.hooks.load.tapPromise(pluginName, async (args) => {
@@ -19,19 +18,8 @@ export const ScriptLoader = (): BuilderPlugin => ({
           return;
         }
 
-        // 入口则跳过
-        if (args.path === parentEntry) {
-          return;
-        }
-
-        const scriptBuilder = builderCache.has(args.path)
-          ? builderCache.get(args.path)!
-          : await getScriptBuilder(args.path, builder);
+        const scriptBuilder = await getScriptBuilder(args.path, builder);
         const assets = scriptBuilder.getAssets();
-
-        if (!builderCache.has(args.path)) {
-          builderCache.set(args.path, scriptBuilder);
-        }
 
         return {
           contents: `export default [\n  ${assets
@@ -53,10 +41,6 @@ export const ScriptLoader = (): BuilderPlugin => ({
           builder.emitAsset(asset);
         }
       }
-    });
-
-    builder.hooks.done.tap(pluginName, () => {
-      builderCache.clear();
     });
   },
 });
