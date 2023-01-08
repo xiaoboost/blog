@@ -22,9 +22,7 @@ export const ScriptLoader = (): BuilderPlugin => ({
         const assets = scriptBuilder.getAssets();
 
         return {
-          contents: `export default [\n  ${assets
-            .map((item) => `"${item.path}"`)
-            .join(',\n  ')},\n]`,
+          contents: `export default [\n${assets.map((item) => `  "${item.path}",\n`).join('')}]`,
           loader: 'js',
           resolveDir: dirname(args.path),
         };
