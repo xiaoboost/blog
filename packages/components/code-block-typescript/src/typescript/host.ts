@@ -1,6 +1,6 @@
 import ts from 'typescript';
-import path from 'path';
 
+import { normalize } from '@blog/node';
 import { getAccessor } from '@blog/context/runtime';
 import { toBoolMap, isString } from '@xiao-ai/utils';
 import { lookItUpSync } from 'look-it-up';
@@ -24,7 +24,7 @@ if (!modulesPath) {
  * 读取绝对路径
  *   - 路径是相对于 builder 库根目录的
  */
-const resolve = (...paths: string[]) => path.join(modulesPath, '..', ...paths);
+const resolve = (...paths: string[]) => normalize(modulesPath, '..', ...paths);
 
 /** 代码文件 */
 interface CodeFile {
@@ -93,7 +93,7 @@ export class TsServer {
   }
 
   private getCurrentName() {
-    return path.join(resolve(), `_template.${this.scriptKind}`);
+    return normalize(resolve(), `_template.${this.scriptKind}`);
   }
 
   private getAllFileNames() {
@@ -151,7 +151,7 @@ export class TsServer {
         }
       },
       getScriptSnapshot: (filePath) => {
-        if (this.current && filePath === this.current.name) {
+        if (filePath === this.current?.name) {
           return this.current.snapshot;
         } else if (cache[filePath]) {
           this.files.add(filePath);
@@ -191,7 +191,7 @@ export class TsServer {
   setFile(code: string) {
     const name = this.getCurrentName();
 
-    if (this.current && code === this.current.code) {
+    if (code === this.current?.code) {
       return;
     }
 
