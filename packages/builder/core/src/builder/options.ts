@@ -51,6 +51,11 @@ export async function applyPlugin(builder: Builder) {
     PostLoader().apply(builder);
     ScriptLoader().apply(builder);
     JssLoader({ extractCss: false }).apply(builder);
+
+    if (opt.watch) {
+      const { Development } = await import('../plugins/development/index.js');
+      Development({ port: 9999, hmr: opt.hmr }).apply(builder);
+    }
   }
 
   // 应用外部插件

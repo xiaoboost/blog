@@ -98,11 +98,13 @@ export const Logger = (): BuilderPlugin => ({
     });
 
     builder.hooks.success.tap(pluginName, (assets) => {
-      logger.info(
-        '网站已生成，' +
-          `文件 ${printer.yellow(`${assets.length} 个`)}，` +
-          `总大小 ${printer.green(getShortSize(getSize(assets)))}`,
-      );
+      if (!options.watch) {
+        logger.info(
+          '网站已生成，' +
+            `文件 ${printer.yellow(`${assets.length} 个`)}，` +
+            `总大小 ${printer.green(getShortSize(getSize(assets)))}`,
+        );
+      }
     });
 
     builder.hooks.failed.tap(pluginName, (errors) => {

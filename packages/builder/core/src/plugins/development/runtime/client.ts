@@ -1,5 +1,3 @@
-import './module';
-
 import { HMRKind, HMRData, HMRUpdate, HMRUpdateKind } from '../types';
 import { showError, closeError } from './error';
 
