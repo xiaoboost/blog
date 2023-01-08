@@ -11,6 +11,12 @@ import { site } from '../../constant';
 
 const createPost = createHtml(PostRender);
 
+export function filterSortPosts(posts: PostsExportType) {
+  return posts
+    .filter(({ data }) => data.public)
+    .sort((pre, next) => (pre.data.create > next.data.create ? -1 : 1));
+}
+
 export function getPostUrlMap(posts: PostsExportType) {
   const map: PostUrlMap = new Map();
 
