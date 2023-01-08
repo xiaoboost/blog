@@ -20,7 +20,7 @@ function getPostsInputCode(posts: string[]) {
     .fill(0)
     .map((_, i) => `post_${i}`)
     .join(', ')}
-].sort((pre, next) => pre.create > next.create ? -1 : 1);
+];
 
 export default posts;
 `;

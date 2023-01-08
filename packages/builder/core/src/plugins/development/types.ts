@@ -41,7 +41,7 @@ export type HMRData =
     };
 
 /** 服务器选项 */
-export interface ServerOption {
+export interface DevOptions {
   /**
    * 监听端口
    *

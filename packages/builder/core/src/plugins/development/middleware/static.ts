@@ -2,8 +2,9 @@ import { ParameterizedContext } from 'koa';
 import { join } from 'path';
 import { getType } from 'mime';
 import { normalize } from '@blog/node';
+import type { BuilderInstance } from '@blog/types';
 
-export function staticServe(vfs: Map<string, Buffer>) {
+export function staticServe(vfs: Map<string, Buffer>, builder: BuilderInstance) {
   return (ctx: ParameterizedContext) => {
     if (ctx.method !== 'GET' && ctx.method !== 'HEAD') {
       ctx.status = 405;
@@ -18,7 +19,7 @@ export function staticServe(vfs: Map<string, Buffer>) {
         : join('/', ctx.path),
     );
 
-    console.log(`请求文件 ${filePath}`);
+    builder.logger.info(`请求文件 ${filePath}`);
 
     const file = vfs.get(filePath);
 
