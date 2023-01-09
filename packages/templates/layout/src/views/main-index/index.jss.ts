@@ -3,7 +3,7 @@ import {
   Black,
   White,
   Shadow,
-  GrayLight,
+  Gray,
   BlackLighter,
   FontDefault,
   FontSerif,
@@ -26,7 +26,7 @@ export default createStyles({
       boxShadow: 'none',
       boxSizing: 'border-box',
       backgroundColor: White.toString(),
-      borderBottom: `1px solid ${GrayLight.toString()}`,
+      borderBottom: `1px solid ${Gray.toString()}`,
       fontFamily: FontDefault,
       fontWeight: 'normal',
       color: Black.toString(),
@@ -55,7 +55,7 @@ export default createStyles({
       },
     },
     '& $postsListItemDescription': {
-      fontSize: 15,
+      fontSize: 14,
       marginTop: 10,
     },
     '& $postsListItemFooter': {

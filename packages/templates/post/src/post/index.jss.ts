@@ -6,7 +6,7 @@ import {
   White,
   Shadow,
   WhiteBg,
-  GrayLight,
+  Gray,
   BlackLight,
   BlackLighter,
   BlackExtraLight,
@@ -57,7 +57,7 @@ export default createStyles({
       height: 50,
       justifyContent: 'space-between',
       alignItems: 'center',
-      borderBottom: `1px solid ${GrayLight.toString()}`,
+      borderBottom: `1px solid ${Gray.toString()}`,
 
       ...createMediaStyles(indent, smallIndent, (width) => ({
         margin: `0 ${width}px`,
@@ -223,6 +223,16 @@ export default createStyles({
       },
       '& img': {
         maxWidth: '100%',
+      },
+      '& hr': {
+        height: 2,
+        padding: 0,
+        margin: [18, 0],
+        backgroundColor: Gray.toString(),
+        border: 'none',
+        overflow: 'hidden',
+        boxSizing: 'content-box',
+        borderBottom: `1px solid ${Gray.toString()}`,
       },
     },
   },
