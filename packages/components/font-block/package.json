@@ -1,0 +1,41 @@
+{
+  "name": "@blog/mdx-font-block",
+  "description": "blog's font block",
+  "version": "1.0.0",
+  "author": "xiaoboost",
+  "license": "MIT",
+  "source": "src/index.tsx",
+  "types": "src/index.tsx",
+  "scripts": {
+    "lint": "eslint --quiet src/**/*.{ts,tsx,js,jsx}",
+    "lint:fix": "eslint --quiet --fix src/**/*.{ts,tsx,js,jsx}"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xiaoboost/blog"
+  },
+  "dependencies": {
+    "@blog/context": "workspace:*",
+    "@blog/node": "workspace:*",
+    "@blog/parser": "workspace:*",
+    "@blog/styles": "workspace:*",
+    "@xiao-ai/utils": "1.6.6",
+    "clean-css": "5.3.1",
+    "fontmin": "0.9.9",
+    "react": "18.2.0"
+  },
+  "devDependencies": {
+    "@blog/types": "workspace:*",
+    "@types/blog": "workspace:*",
+    "@types/clean-css": "4.2.6",
+    "@types/fontmin": "0.9.0",
+    "@types/html-escaper": "3.0.0",
+    "@types/node": "16.11.7",
+    "@types/react": "18.0.26",
+    "@xiao-ai/eslint-config": "1.0.1",
+    "@xiao-ai/tsconfig": "1.0.1",
+    "eslint": "8.31.0",
+    "tslib": "2.4.1",
+    "typescript": "4.9.4"
+  }
+}

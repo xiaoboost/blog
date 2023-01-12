@@ -16,9 +16,10 @@ export function callHook<T extends keyof RuntimeHooks>(
 
 /** 定义工具函数 */
 export function defineUtils(assets: string[] = []): TemplateUtils {
-  const val = unique(assets);
+  const val = unique(assets.slice());
 
   return {
+    addAssetNames: (...assets: string[]) => val.push(...assets),
     getAssetNames: () => {
       return process.env.NODE_ENV === 'production'
         ? val.filter((item) => !item.endsWith('.map'))

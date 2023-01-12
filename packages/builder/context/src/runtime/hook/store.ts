@@ -7,18 +7,18 @@ import type {
   PostExportData,
   ListRenderData,
 } from '@blog/types';
-import { AsyncSeriesHook } from 'tapable';
+import { AsyncSeriesHook, AsyncSeriesWaterfallHook } from 'tapable';
 import { getAccessor } from '../accessor';
 import { GlobalKey } from '../../types';
 
 export const hooks: RuntimeHooks = {
   beforeStart: new AsyncSeriesHook<[]>(),
-  afterComponentReady: new AsyncSeriesHook<[]>(),
   afterPostUrl: new AsyncSeriesHook<[PostUrlMap]>(['PostUrlMap']),
   beforeEachPost: new AsyncSeriesHook<[PostExportData]>(['PostExportData']),
   afterEachPost: new AsyncSeriesHook<[AssetData]>(['Asset']),
   beforeEachList: new AsyncSeriesHook<[ListRenderData]>(['ListRenderData']),
   afterEachList: new AsyncSeriesHook<[AssetData]>(['Asset']),
+  processAssets: new AsyncSeriesWaterfallHook<[AssetData[]]>(['Assets']),
   afterBuild: new AsyncSeriesHook<[AssetData[]]>(['Assets']),
 };
 

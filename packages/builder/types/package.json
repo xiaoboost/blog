@@ -21,7 +21,7 @@
     "@types/mdast": "3.0.10",
     "@types/react": "18.0.26",
     "chokidar": "3.5.3",
-    "esbuild": "0.16.15",
+    "esbuild": "0.15.18",
     "tapable": "2.2.1"
   },
   "devDependencies": {
