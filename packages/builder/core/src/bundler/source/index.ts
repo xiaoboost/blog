@@ -3,7 +3,6 @@ import posts from '@blog/posts';
 import type { AssetData, ListRenderData } from '@blog/types';
 import { cut } from '@xiao-ai/utils';
 import { callHook, waitReady } from '@blog/context/runtime';
-import { componentReady } from './component';
 import { renderPost, getPostUrlMap, getPostAssetPath, filterSortPosts } from './post';
 import { renderListPage, getIndexUrlPath, getIndexAssetPath } from './list';
 import { pageConfig } from '../../constant';
@@ -13,8 +12,6 @@ export default async function main() {
 
   await waitReady;
   await callHook('beforeStart');
-  await componentReady(posts);
-  await callHook('afterComponentReady');
 
   const postUrlMap = getPostUrlMap(posts);
   await callHook('afterPostUrl', postUrlMap);
@@ -51,8 +48,9 @@ export default async function main() {
     assets.push(asset);
   }
 
-  await callHook('afterBuild', assets.slice());
+  const processed = await callHook('processAssets', assets.slice());
+  await callHook('afterBuild', processed.slice());
 
   // 返回所有资源
-  return assets;
+  return processed;
 }

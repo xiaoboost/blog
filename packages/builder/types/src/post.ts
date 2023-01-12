@@ -1,12 +1,7 @@
 import { Root } from 'mdast';
 import { FC } from 'react';
 
-import type * as Mdx from 'mdast';
-import type * as EsTree from 'estree';
-
 import { TemplateUtils } from './template';
-
-export type { Mdx, EsTree };
 
 /** 文章路径到链接的映射 */
 export type PostUrlMap = Map<string, string>;
