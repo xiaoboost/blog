@@ -7,6 +7,8 @@ export interface RuntimeData {
 
 /** 模板辅助函数 */
 export interface TemplateUtils {
+  /** 追加资源 */
+  addAssetNames(...assets: string[]): void;
   /** 获取所有资源 */
   getAssetNames(): string[];
   /** 获取样式资源 */

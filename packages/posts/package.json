@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@blog/mdx-code-block-typescript": "workspace:*",
+    "@blog/mdx-font-block": "workspace:*",
     "@blog/template-post": "workspace:*"
   },
   "devDependencies": {

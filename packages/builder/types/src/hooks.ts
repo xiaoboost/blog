@@ -137,11 +137,6 @@ export interface RuntimeHooks {
   /** 运行开始前 */
   beforeStart: AsyncSeriesHook<[]>;
   /**
-   * 组件预备
-   *   - 部分组件需要在此时收集文章内的数据
-   */
-  afterComponentReady: AsyncSeriesHook<[]>;
-  /**
    * 生成文章网址后
    *   - 文章路径到网址的映射
    */
@@ -154,6 +149,11 @@ export interface RuntimeHooks {
   beforeEachList: AsyncSeriesHook<[ListRenderData]>;
   /** 编译列表页面后 */
   afterEachList: AsyncSeriesHook<[AssetData]>;
+  /**
+   * 处理资源
+   *   - 返回资源列表数组
+   */
+  processAssets: AsyncSeriesWaterfallHook<[AssetData[]]>;
   /**
    * 完成构建
    *   - 资源数组
