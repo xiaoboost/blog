@@ -4,6 +4,7 @@ import type {
   AsyncSeriesBailHook,
   AsyncSeriesWaterfallHook,
   SyncWaterfallHook,
+  SyncHook,
 } from 'tapable';
 import type {
   OnResolveArgs,
@@ -13,7 +14,7 @@ import type {
   BuildOptions,
 } from 'esbuild';
 import type { FSWatcher } from 'chokidar';
-import type { BuilderOptions, BundlerInstance, RunnerInstance } from './builder';
+import type { BuilderOptions, BuilderInstance, BundlerInstance, RunnerInstance } from './builder';
 import type { ErrorData } from './error';
 import type { AssetData } from './asset';
 import type { PostUrlMap, PostExportData } from './post';
@@ -42,7 +43,12 @@ export interface BuilderHooks {
    * 初始化
    *   - 构建开始之前
    */
-  initialization: AsyncSeriesHook<[Required<BuilderOptions>]>;
+  initialization: SyncHook<[Required<BuilderOptions>]>;
+  /**
+   * 初始化之后
+   *   - watch 模式下，也只会运行一次
+   */
+  afterInitialized: SyncHook<[BuilderInstance]>;
   /**
    * 开始构建
    *   - 初始化之后
@@ -81,7 +87,7 @@ export interface BuilderHooks {
    * 打包器创建后
    *   - 运行打包之前
    */
-  bundler: AsyncSeriesHook<[BundlerInstance]>;
+  bundler: SyncHook<[BundlerInstance]>;
   /**
    * 打包代码完成
    */
@@ -90,7 +96,7 @@ export interface BuilderHooks {
    * 运行器创建后
    *   - 运行代码之前
    */
-  runner: AsyncSeriesHook<[RunnerInstance]>;
+  runner: SyncHook<[RunnerInstance]>;
   /**
    * 运行代码完成
    */

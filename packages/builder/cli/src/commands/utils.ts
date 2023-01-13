@@ -18,6 +18,11 @@ const baseOptions: Record<string, yargs.Options> = {
     default: 'info',
     choices: ['debug', 'info', 'error'],
   },
+  debug: {
+    type: 'boolean',
+    describe: '开启调试器',
+    default: false,
+  },
 };
 
 export const buildOptions: Record<string, yargs.Options> = {

@@ -56,6 +56,11 @@ export async function applyPlugin(builder: Builder) {
       const { Development } = await import('../plugins/development/index.js');
       Development({ port: 9999, hmr: opt.hmr }).apply(builder);
     }
+
+    if (opt.debug) {
+      const { Intercepter } = await import('../plugins/intercepter/index.js');
+      Intercepter({ excludes: ['logger', 'watcher', 'cname'] }).apply(builder);
+    }
   }
 
   // 应用外部插件
@@ -79,6 +84,7 @@ export function normalizeOptions(opt: BuilderOptions): Required<BuilderOptions> 
     terminalColor: opt.terminalColor ?? true,
     plugins: opt.plugins ?? [],
     logLevel: opt.logLevel ?? 'Info',
+    debug: opt.debug ?? false,
     defined: {
       ...opt.defined,
       'process.env.NODE_ENV': isProduction ? '"production"' : '"development"',

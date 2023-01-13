@@ -7,7 +7,7 @@ import {
   ResolveOptions,
   ResolveResult,
 } from '@blog/types';
-import { AsyncSeriesHook, AsyncParallelHook, AsyncSeriesWaterfallHook } from 'tapable';
+import { AsyncSeriesHook, AsyncParallelHook, AsyncSeriesWaterfallHook, SyncHook } from 'tapable';
 import { normalize } from '@blog/node';
 import { Watcher } from '@xiao-ai/utils';
 import { FSWatcher } from 'chokidar';
@@ -51,15 +51,16 @@ export class Builder implements BuilderInstance {
     this.runner = new Runner(this);
     this.options = normalizeOptions(opt);
     this.hooks = {
-      initialization: new AsyncSeriesHook<[Required<BuilderOptions>]>(['Options']),
+      initialization: new SyncHook<[Required<BuilderOptions>]>(['Options']),
+      afterInitialized: new SyncHook<[BuilderInstance]>(['Builder']),
       start: new AsyncSeriesHook<[]>(),
       success: new AsyncSeriesHook<[AssetData[], BuilderHookContext]>(['Assets', 'Context']),
       done: new AsyncSeriesHook<[BuilderHookContext]>(['Context']),
       failed: new AsyncSeriesHook<[BuilderError[]]>(['Errors']),
       filesChange: new AsyncParallelHook<[string[]]>(['Files']),
       watcher: new AsyncSeriesHook<[FSWatcher]>(['Watcher']),
-      bundler: new AsyncSeriesHook<[Bundler]>(['Bundler']),
-      runner: new AsyncSeriesHook<[Runner]>(['Runner']),
+      bundler: new SyncHook<[Bundler]>(['Bundler']),
+      runner: new SyncHook<[Runner]>(['Runner']),
       afterBundler: new AsyncSeriesHook<[BuilderHookContext]>(['Context']),
       afterRunner: new AsyncSeriesHook<[BuilderHookContext]>(['Context']),
       processAssets: new AsyncSeriesWaterfallHook<[AssetData[]]>(['Assets']),
@@ -108,10 +109,10 @@ export class Builder implements BuilderInstance {
 
     try {
       await this.hooks.start.promise();
-      await this.hooks.bundler.promise(this.bundler);
+      this.hooks.bundler.call(this.bundler);
       await this.bundler.bundle();
       await this.hooks.afterBundler.promise(this._getHookContext());
-      await this.hooks.runner.promise(this.runner);
+      this.hooks.runner.call(this.runner);
       await this.runner.run(this.bundler.getBundledCode());
       await this.hooks.afterRunner.promise(this._getHookContext());
       this.assets = await this.hooks.processAssets.promise(this.getAssets());
@@ -154,8 +155,9 @@ export class Builder implements BuilderInstance {
     const { options, root } = this;
     const { watch, outDir } = options;
 
-    await this.hooks.initialization.promise({ ...this.options });
+    this.hooks.initialization.call({ ...this.options });
     await applyPlugin(this);
+    this.hooks.afterInitialized.call(this);
 
     if (watch) {
       this.watcher = new FSWatcher({
