@@ -47,6 +47,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "source-map": "0.7.4",
+    "table": "6.8.1",
     "tapable": "2.2.1",
     "tslib": "2.4.1",
     "vite-esbuild-typescript-checker": "1.0.0",

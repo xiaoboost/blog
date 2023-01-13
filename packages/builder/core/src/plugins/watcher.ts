@@ -1,7 +1,7 @@
 import type { BuilderPlugin } from '@blog/types';
 import { join } from 'path';
 
-const pluginName = 'watcher-plugin';
+const pluginName = 'watcher';
 
 export const Watcher = (): BuilderPlugin => ({
   name: pluginName,
