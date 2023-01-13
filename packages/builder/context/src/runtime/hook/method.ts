@@ -1,4 +1,5 @@
 import type { TemplateUtils, RuntimeHooks } from '@blog/types';
+import { unique } from '@xiao-ai/utils';
 import { hooks } from './store';
 
 type GetAsyncHookParameter<T extends keyof RuntimeHooks> = Parameters<
@@ -15,13 +16,15 @@ export function callHook<T extends keyof RuntimeHooks>(
 
 /** 定义工具函数 */
 export function defineUtils(assets: string[] = []): TemplateUtils {
+  const val = unique(assets);
+
   return {
     getAssetNames: () => {
       return process.env.NODE_ENV === 'production'
-        ? assets.filter((item) => !item.endsWith('.map'))
-        : assets.slice();
+        ? val.filter((item) => !item.endsWith('.map'))
+        : val.slice();
     },
-    getScriptNames: () => assets.filter((item) => item.endsWith('.js')),
-    getStyleNames: () => assets.filter((item) => item.endsWith('.css')),
+    getScriptNames: () => val.filter((item) => item.endsWith('.js')),
+    getStyleNames: () => val.filter((item) => item.endsWith('.css')),
   };
 }

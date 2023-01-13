@@ -31,17 +31,47 @@ export interface ExtendOptions {
 
 /** 命令行选项 */
 export interface CommandOptions {
-  /** 输出目录 */
+  /**
+   * 输出目录
+   *
+   * @default './dist'
+   */
   outDir?: string;
-  /** 构建模式 */
+  /**
+   * 构建模式
+   *
+   * @default 'development'
+   */
   mode?: Mode;
-  /** 是否启用 HMR */
+  /**
+   * 是否启用 HMR
+   *
+   * @default false
+   */
   hmr?: boolean;
-  /** 监听模式 */
+  /**
+   * 监听模式
+   *
+   * @default false
+   */
   watch?: boolean;
-  /** 命令行输出带颜色 */
+  /**
+   * 调试模式
+   *
+   * @default false
+   */
+  debug?: boolean;
+  /**
+   * 命令行输出带颜色
+   *
+   * @default true
+   */
   terminalColor?: boolean;
-  /** 日志输出等级 */
+  /**
+   * 日志输出等级
+   *
+   * @default 'info'
+   */
   logLevel?: LogLevel;
 }
 
