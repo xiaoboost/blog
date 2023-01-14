@@ -1,6 +1,16 @@
-name: Build
+name: Analysis
 
-on: push
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+    branches:
+      - master
+
+env:
+  intercepter_outFile: './.intercepter/ci_debug.md'
 
 jobs:
   setup:
@@ -10,7 +20,6 @@ jobs:
         node:
           - '16'
         platform:
-          - windows-latest
           - macos-latest
 
     name: Build Check on '${{ matrix.platform }} / Node.js v${{ matrix.node }}'
@@ -29,7 +38,8 @@ jobs:
       - name: Create Env File
         run: |
           touch .env
-          echo ENV=github_ci >> .env
+          echo 'ENV=GITHUB_CI' >> .env
+          echo 'ENV_OUTPUT=${{ env.intercepter_outFile }}' >> .env
 
       - name: Setup Node
         uses: actions/setup-node@v3
@@ -42,14 +52,13 @@ jobs:
       - name: Install Dependencies
         run: pnpm install
 
-      - name: Check Code Style
-        run: pnpm run lint
-
       - name: Build Prepare
         run: pnpm run build:prepare
 
-      - name: Test Code
-        run: pnpm run test
+      - name: Build Blog with debug
+        run: pnpm run build:debug
 
-      - name: Build Blog
-        run: pnpm run build
+      - name: PR comment with file
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          filePath: ${{ env.intercepter_outFile }}
