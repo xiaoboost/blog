@@ -59,7 +59,10 @@ export async function applyPlugin(builder: Builder) {
 
     if (opt.debug) {
       const { Intercepter } = await import('../plugins/intercepter/index.js');
-      Intercepter({ excludes: ['logger', 'watcher', 'cname'] }).apply(builder);
+      Intercepter({
+        excludes: ['logger', 'watcher', 'cname'],
+        outFile: process.env.ENV === 'GITHUB_CI' ? process.env.ENV_OUTPUT : undefined,
+      }).apply(builder);
     }
   }
 
