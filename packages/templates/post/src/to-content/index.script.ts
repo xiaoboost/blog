@@ -32,6 +32,11 @@ function active() {
   const menuItems = Array.from(
     menu.querySelectorAll<HTMLLIElement>(`.${tocStyles.classes.menuItem}`),
   );
+  const menuLists = Array.from(
+    menu.querySelectorAll<HTMLLIElement>(
+      `.${tocStyles.classes.menuList} .${tocStyles.classes.menuList}`,
+    ),
+  );
   const bodyTop = mainBody.offsetTop - headerBodyMargin;
   const options: AddEventListenerOptions | boolean = !supportsPassive
     ? false
@@ -63,12 +68,21 @@ function active() {
     const first = titlePosition.find((item) => item.offsetTop < top);
     const anchor = first && menu.querySelector<HTMLAnchorElement>(`[href="#${first.title}"]`);
     const highLightItem = anchor?.parentElement;
+    const highLightListItem = highLightItem?.parentElement;
 
     menuItems.forEach((el) => {
       if (el === highLightItem) {
         addClassName(highLightItem, tocStyles.classes.menuItemHighlight);
       } else {
         removeClassName(el, tocStyles.classes.menuItemHighlight);
+      }
+    });
+
+    menuLists.forEach((el) => {
+      if (el === highLightListItem) {
+        addClassName(highLightListItem, tocStyles.classes.menuListHighlight);
+      } else {
+        removeClassName(el, tocStyles.classes.menuListHighlight);
       }
     });
   };
@@ -106,6 +120,8 @@ function active() {
   return () => {
     menu = null;
     mainBody = null;
+    menuItems.length = 0;
+    menuLists.length = 0;
 
     window.removeEventListener('scroll', scrollEvent, options);
     window.removeEventListener('resize', recordTitlePosition, options);
