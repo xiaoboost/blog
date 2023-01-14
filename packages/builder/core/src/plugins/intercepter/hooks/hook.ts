@@ -130,7 +130,7 @@ export function getMdString() {
 
   sortedTableData.slice(1, 4).forEach((item) => (content += `|${item.join('|')}|\n`));
   content += `\n\n## 完整插件数据\n\n${tableHeader}`;
-  tableData.forEach((item) => (content += `|${item.join('|')}|\n`));
+  tableData.slice(1).forEach((item) => (content += `|${item.join('|')}|\n`));
 
   return content;
 }
