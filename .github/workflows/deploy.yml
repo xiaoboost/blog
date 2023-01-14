@@ -1,16 +1,12 @@
 name: Deploy
 
 on:
-  push:
-    branches:
-      - master
-
-  # workflow_dispatch:
-  #   inputs:
-  #     branch:
-  #       description: 选择发布分支
-  #       required: true
-  #       default: main
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 输入发布分支
+        required: true
+        default: master
 
 jobs:
   setup:
@@ -34,8 +30,13 @@ jobs:
 
       - name: Checkout Commit
         uses: actions/checkout@v3
-        # with:
-        #   ref: ${{ github.event.inputs.branch }}
+        with:
+          ref: ${{ github.event.inputs.branch }}
+
+      - name: Create Env File
+        run: |
+          touch .env
+          echo ENV=github_ci >> .env
 
       - name: Setup Node
         uses: actions/setup-node@v3
@@ -43,7 +44,7 @@ jobs:
           node-version: ${{ matrix.node }}
 
       - name: Install Pnpm
-        run: npm install --g pnpm@7.9.0
+        run: npm install -g pnpm@7.25.0
 
       - name: Install Dependencies
         run: pnpm install

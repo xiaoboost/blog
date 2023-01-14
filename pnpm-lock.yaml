@@ -16,6 +16,7 @@ importers:
       '@types/yargs': 17.0.11
       '@xiao-ai/eslint-config': 1.0.1
       '@xiao-ai/tsconfig': 1.0.1
+      dotenv: 16.0.3
       eslint: 8.31.0
       rimraf: 3.0.2
       tslib: 2.4.1
@@ -24,6 +25,7 @@ importers:
     dependencies:
       '@blog/core': link:../core
       '@blog/types': link:../types
+      dotenv: 16.0.3
       tslib: 2.4.1
       yargs: 17.5.1
     devDependencies:
@@ -1910,6 +1912,11 @@ packages:
     dependencies:
       esutils: 2.0.3
     dev: true
+
+  /dotenv/16.0.3:
+    resolution: {integrity: sha512-7GO6HghkA5fYG9TYnNxi14/7K9f5occMlp3zXAuSxn7CKCxt9xbNWG7yF8hTCSUchlfWSe3uLmlPfigevRItzQ==}
+    engines: {node: '>=12'}
+    dev: false
 
   /ee-first/1.1.1:
     resolution: {integrity: sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==}

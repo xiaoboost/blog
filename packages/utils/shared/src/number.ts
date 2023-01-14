@@ -20,7 +20,9 @@ export function toRound(origin: number, bits = 6) {
 
   // 插入小数点
   let str = '';
-  if (toInt > 0) {
+  if (toInt === 0) {
+    str = round;
+  } else if (toInt > 0) {
     str = round + '0'.repeat(toInt);
   } else if (-toInt >= bits) {
     str = `0.${'0'.repeat(-toInt - bits)}${round}`;
