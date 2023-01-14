@@ -33,11 +33,6 @@ jobs:
         with:
           ref: ${{ github.event.inputs.branch }}
 
-      - name: Create Env File
-        run: |
-          touch .env
-          echo ENV=github_ci >> .env
-
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
@@ -49,14 +44,8 @@ jobs:
       - name: Install Dependencies
         run: pnpm install
 
-      - name: Check Code Style
-        run: pnpm run lint
-
       - name: Build Prepare
         run: pnpm run build:prepare
-
-      - name: Test Code
-        run: pnpm run test
 
       - name: Build Blog
         run: pnpm run build

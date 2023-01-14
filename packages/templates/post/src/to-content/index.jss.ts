@@ -3,6 +3,8 @@ import {
   Black,
   White,
   Shadow,
+  BlackLight,
+  Gray,
   GrayLight,
   BlueLight,
   mediaPhone,
@@ -17,6 +19,7 @@ export default createStyles({
   menuListArticle: {},
   menuItem: {},
   menuItemHighlight: {},
+  menuListHighlight: {},
   menuLevel1: {},
   menuLevel2: {},
   menuIcon: {},
@@ -47,21 +50,32 @@ export default createStyles({
       listStyle: 'none',
 
       '& $menuList': {
-        paddingLeft: 12,
-        marginBottom: 8,
+        paddingLeft: 14,
+        marginBottom: 4,
+        marginLeft: 3,
+        borderLeft: `1px solid ${Gray.toString()}`,
+        transition: 'border-color .1s linear',
+
+        '&$menuListHighlight': {
+          borderColor: BlackLight.toString(),
+        },
       },
     },
 
     '& $menuIcon': {
-      marginRight: 4,
+      marginRight: 3,
       fontSize: 6,
     },
 
     '& $menuItem': {
       marginTop: 4,
 
-      '& $menuLevel1': {
-        marginTop: 0,
+      '&$menuLevel1': {
+        fontSize: 14,
+      },
+
+      '&$menuLevel2': {
+        fontSize: 12,
       },
     },
 

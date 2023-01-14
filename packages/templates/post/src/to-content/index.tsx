@@ -3,7 +3,7 @@ import React from 'react';
 import { toPinyin } from '@blog/node';
 import { stringifyClass } from '@xiao-ai/utils';
 import { Mdx } from '@blog/types';
-import { Circle, CircleThin } from '@blog/icons';
+import { Circle } from '@blog/icons';
 import { levelLimit } from './constant';
 
 import styles from './index.jss';
@@ -113,11 +113,7 @@ function NavTitle({ titles }: NavTitleProps) {
       {titles.map((title, i) => (
         <li key={i} className={stringifyClass(cla.menuItem, cla[`menuLevel${title.level}`])}>
           <a href={`#${title.hash}`}>
-            {title.level === 1 ? (
-              <Circle className={cla.menuIcon} />
-            ) : (
-              <CircleThin className={cla.menuIcon} />
-            )}
+            {title.level === 1 ? <Circle className={cla.menuIcon} /> : ''}
             {title.content}
           </a>
           {title.children && <NavTitle titles={title.children} />}
