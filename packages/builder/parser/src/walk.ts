@@ -1,4 +1,4 @@
-import { Mdx } from '@blog/types';
+import type { Mdx } from '@blog/types';
 
 export function getChildrenContent(paragraph: Mdx.Syntax) {
   let content = '';

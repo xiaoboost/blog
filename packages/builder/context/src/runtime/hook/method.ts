@@ -6,11 +6,15 @@ type GetAsyncHookParameter<T extends keyof RuntimeHooks> = Parameters<
   Parameters<RuntimeHooks[T]['tapPromise']>[1]
 >;
 
+type GetAsyncHookReturnType<T extends keyof RuntimeHooks> = ReturnType<
+  Parameters<RuntimeHooks[T]['tapPromise']>[1]
+>;
+
 /** 调用钩子 */
 export function callHook<T extends keyof RuntimeHooks>(
   name: T,
   ...args: GetAsyncHookParameter<T>
-): Promise<void> {
+): GetAsyncHookReturnType<T> {
   return (hooks[name].promise as any)(...args);
 }
 
