@@ -65,9 +65,9 @@ import { MathBlock } from '@blog/mdx-katex';
 import { utils as c0 } from '@blog/mdx-katex';
 import { utils as template } from '@blog/template-post';
 import { defineUtils } from '@blog/context/runtime';
-export const utils = defineUtils(template.getAssetNames().concat([
+export const utils = defineUtils(template.getAssetNames().concat(
   c0.getAssetNames(),
-]));
+));
 
 import { MathBlock } from '@blog/mdx-katex';
 

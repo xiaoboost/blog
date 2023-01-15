@@ -47,18 +47,14 @@ export class CustomFont implements CustomFontData {
     return parse(this.src).name.replace(/\s+/g, '');
   }
 
-  /**
-   * TODO: 现在存在的问题是如何复用文件提取和命名的逻辑？
-   */
-
   /** 字体文件名称 */
   get fontFileName() {
-    return '';
+    return normalize(env.publicPath, this.post, `${this.fontFamily}.woff2`);
   }
 
   /** 样式文件路径 */
   get cssFileName() {
-    return '';
+    return normalize(env.publicPath, this.post, `${this.fontFamily}.css`);
   }
 
   /** 生成自定义字体数据 */
@@ -86,7 +82,7 @@ export class CustomFont implements CustomFontData {
     const code = `
       @font-face {
         font-family: "${this.fontFamily}";
-        src: url("./${this.fontFileName}");
+        src: url("${this.fontFileName}");
       }
 
       .${this.className} {
@@ -109,7 +105,7 @@ export class CustomFont implements CustomFontData {
     this.text.push(text);
 
     Array.from(text)
-      .filter((item) => item.length > 0)
+      .filter((item) => item.trim().length > 0)
       .forEach((key) => this.charSet.add(key));
   }
 
@@ -119,14 +115,16 @@ export class CustomFont implements CustomFontData {
       return this.assets.slice();
     }
 
-    // TODO:
+    await this.getCustomFontContent();
+    this.getCssCode();
+
     this.assets = [
       {
-        path: '', // normalize(dirname(this.post)),
+        path: this.fontFileName,
         content: this.minFont,
       },
       {
-        path: '',
+        path: this.cssFileName,
         content: Buffer.from(this.cssCode),
       },
     ];
