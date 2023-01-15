@@ -19,7 +19,7 @@ function getImportComponentNode(ast: Mdx.Root) {
 
   // 只会在首层存在
   for (const node of ast.children) {
-    if ((node as any).type === 'mdxjsEsm' && node.data?.estree) {
+    if (node.type === 'mdxjsEsm' && node.data?.estree) {
       const esNode = node.data?.estree as EsTree.Node;
 
       if (esNode.type !== 'Program') {
