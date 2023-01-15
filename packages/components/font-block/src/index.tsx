@@ -1,7 +1,11 @@
 import React from 'react';
-import { readFile } from 'fs/promises';
+import { AssetData } from '@blog/types';
 import { forEach, defineUtils } from '@blog/context/runtime';
-import { getCustomTextByPost, getFontFile, FontCacheData } from './utils';
+import { stringifyClass, isString } from '@xiao-ai/utils';
+import { getCustomTextByPost, getCustomFontByData, getCustomFontByProps } from './utils';
+
+import styles from './index.jss';
+import script from './font-block.script';
 
 const componentName = 'font-block';
 
@@ -25,47 +29,70 @@ export interface FontBlockProps {
   /**
    * 是否使用首行缩进
    *
-   * @default true
+   * @default `2em`
    */
-  indent?: boolean;
+  indent?: string | false;
+  /** 输入文本 */
+  children: string;
 }
 
 /** 自定义字体块 */
 export function FontBlock(props: FontBlockProps) {
-  return <div></div>;
+  const font = getCustomFontByProps(props);
+
+  if (!font) {
+    throw new Error(`未发现自定义字体实例：${JSON.stringify(props)}`);
+  }
+
+  const { direction = 'horizontal', align = 'left', indent = '2em', children } = props;
+  const lines = children.replace(/\r/g, '').split('\n');
+
+  return (
+    <div
+      className={stringifyClass(
+        styles.classes.fontBlock,
+        font.className,
+        direction === 'horizontal'
+          ? styles.classes.fontBlockHorizontal
+          : styles.classes.fontBlockVertical,
+        align === 'left'
+          ? styles.classes.fontBlockLeft
+          : align === 'right'
+          ? styles.classes.fontBlockRight
+          : styles.classes.fontBlockCenter,
+        indent ? '' : styles.classes.fontBlockNoIndent,
+      )}
+      style={{
+        textIndent: isString(indent) ? indent : undefined,
+      }}
+    >
+      {lines.map((line) => (
+        <p>{line}</p>
+      ))}
+    </div>
+  );
 }
 
-export const utils = defineUtils([]);
+export const utils = defineUtils(script);
 
 forEach((runtime) => {
-  const fileCache = new Map<string, Buffer>();
-  const fontCache = new Map<string, FontCacheData>();
+  const postAssets: AssetData[] = [];
 
   runtime.hooks.beforeEachPost.tapPromise(componentName, async (post) => {
-    const fontData = getCustomTextByPost(post);
+    for (const data of getCustomTextByPost(post)) {
+      const font = getCustomFontByData(data);
+      const fontAssets = await font.getAssets();
+      const cssFile = fontAssets.find((item) => item.path.endsWith('.css'));
 
-    // TODO: 调试状态时，不用做裁剪操作
-
-    for (const data of fontData) {
-      const fileContent = fileCache.has(data.src)
-        ? fileCache.get(data.src)!
-        : await readFile(data.src);
-
-      if (!fileCache.has(data.src)) {
-        fileCache.set(data.src, fileContent);
+      if (cssFile) {
+        post.utils.addAssetNames(cssFile.path);
       }
 
-      const key = `${data.src}:${data.text}`;
-
-      if (fontCache.has(key)) {
-        // ..
-      } else {
-        // ..
-      }
+      postAssets.push(...fontAssets);
     }
   });
 
   runtime.hooks.processAssets.tap(componentName, (assets) => {
-    return assets.slice();
+    return assets.concat(postAssets);
   });
 });
