@@ -14,18 +14,31 @@ export interface FontBlockProps {
   src: string;
   /**
    * 文字方向
-   *   - `'horizontal'` - 从左往右
-   *   - `'vertical'` - 从上往下
+   *   - `'horizontal'` - 横向，从上往下
+   *   - `'vertical'` - 竖向，从左往右
+   *   - `'verticalRight'` - 竖向，从右往左
    *
    * @default 'horizontal'
    */
-  direction?: 'horizontal' | 'vertical';
+  direction?: 'horizontal' | 'vertical' | 'verticalRight';
   /**
    * 对齐方向
    *
    * @default 'left'
    */
   align?: 'left' | 'right' | 'center';
+  /**
+   * 文字大小
+   *
+   * @default 20
+   */
+  fontSize: number;
+  /**
+   * 段落间距
+   *
+   * @default 0
+   */
+  paragraphGutter: number;
   /**
    * 是否使用首行缩进
    *
@@ -38,14 +51,24 @@ export interface FontBlockProps {
 
 /** 自定义字体块 */
 export function FontBlock(props: FontBlockProps) {
-  const font = getCustomFontByProps(props);
+  const { children } = (props.children as any).props;
+  const font = getCustomFontByProps({
+    ...props,
+    children,
+  });
 
   if (!font) {
     throw new Error(`未发现自定义字体实例：${JSON.stringify(props)}`);
   }
 
-  const { direction = 'horizontal', align = 'left', indent = '2em', children } = props;
-  const lines = children.replace(/\r/g, '').split('\n');
+  const {
+    direction = 'horizontal',
+    align = 'left',
+    indent = '2em',
+    fontSize = 20,
+    paragraphGutter = 0,
+  } = props;
+  const lines: string[] = children.replace(/\r/g, '').split('\n');
 
   return (
     <div
@@ -54,20 +77,26 @@ export function FontBlock(props: FontBlockProps) {
         font.className,
         direction === 'horizontal'
           ? styles.classes.fontBlockHorizontal
-          : styles.classes.fontBlockVertical,
-        align === 'left'
-          ? styles.classes.fontBlockLeft
-          : align === 'right'
-          ? styles.classes.fontBlockRight
-          : styles.classes.fontBlockCenter,
+          : direction === 'vertical'
+          ? styles.classes.fontBlockVertical
+          : styles.classes.fontBlockVerticalRight,
         indent ? '' : styles.classes.fontBlockNoIndent,
       )}
       style={{
         textIndent: isString(indent) ? indent : undefined,
+        textAlign: align,
+        fontSize,
       }}
     >
-      {lines.map((line) => (
-        <p>{line}</p>
+      {lines.map((line, i, arr) => (
+        <p
+          key={i}
+          style={{
+            marginBottom: paragraphGutter > 0 ? (i === arr.length - 1 ? 0 : paragraphGutter) : 0,
+          }}
+        >
+          {line}
+        </p>
       ))}
     </div>
   );

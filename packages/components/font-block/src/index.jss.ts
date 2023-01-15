@@ -1,15 +1,24 @@
-import { createStyles, Color, FontMono, Gray, GrayLight } from '@blog/styles';
+import { createStyles } from '@blog/styles';
 
 export default createStyles({
-  fontBlock: {},
-  fontBlockHorizontal: {},
-  fontBlockVertical: {},
-  fontBlockLeft: {},
-  fontBlockRight: {},
-  fontBlockCenter: {},
+  fontBlock: {
+    margin: [14, 0],
+  },
+  fontBlockHorizontal: {
+    direction: 'ltr',
+    writingMode: 'horizontal-tb',
+  },
+  fontBlockVertical: {
+    direction: 'ltr',
+    writingMode: 'vertical-lr',
+  },
+  fontBlockVerticalRight: {
+    direction: 'rtl',
+    writingMode: 'vertical-lr',
+  },
   fontBlockNoIndent: {
     '& p': {
-      textAlign: 0,
+      textIndent: '0 !important',
     },
   },
 });

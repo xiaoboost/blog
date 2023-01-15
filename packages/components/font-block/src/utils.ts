@@ -1,9 +1,9 @@
 import FontMin from 'fontmin';
-import { dirname, isAbsolute } from 'path';
+import { dirname, isAbsolute, join } from 'path';
 import { normalize } from '@blog/node';
 import { readFile } from 'fs/promises';
 import { getAccessor } from '@blog/context/runtime';
-import { getChildrenContent, getAttribute } from '@blog/parser';
+import { getChildrenContent, getAttribute } from '@blog/parser/walk';
 import type { PostExportData } from '@blog/types';
 import type { CustomFontData } from './types';
 import type { FontBlockProps } from './index';
@@ -21,7 +21,7 @@ function getCustomFontKey(data: CustomFontData) {
 
 /** 获取字体完整路径 */
 function resolveFontPath(src: string, post: string) {
-  return isAbsolute(src) ? normalize(src) : normalize(dirname(post), src);
+  return normalize(require.resolve(isAbsolute(src) ? src : join(dirname(post), src)));
 }
 
 /** 获取字体文件原始文件数据 */
@@ -88,7 +88,7 @@ export function getCustomTextByPost({ data: post }: PostExportData) {
     } else {
       result.push({
         src: fontPath,
-        post: post.filePath,
+        post: post.pathname,
         text: [text],
       });
     }

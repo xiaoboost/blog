@@ -112,9 +112,9 @@ export function addTemplateUtilsExport(data: PostData, fixer: Fixer) {
   if (components.length === 0) {
     code += `export const utils = defineUtils(template.getAssetNames());\n\n`;
   } else {
-    code += `export const utils = defineUtils(template.getAssetNames().concat([
+    code += `export const utils = defineUtils(template.getAssetNames().concat(
 ${components.map((_, i) => `  c${i}.getAssetNames(),`).join('\n')}
-]));\n\n`;
+));\n\n`;
   }
 
   fixer.insert(code);
