@@ -1,43 +1,72 @@
 import FontMin from 'fontmin';
-import { dirname, isAbsolute, parse } from 'path';
+import { dirname, isAbsolute } from 'path';
 import { normalize } from '@blog/node';
 import { readFile } from 'fs/promises';
-import { getAccessor, builderOptions } from '@blog/context/runtime';
+import { getAccessor } from '@blog/context/runtime';
 import { getChildrenContent, getAttribute } from '@blog/parser';
 import type { PostExportData } from '@blog/types';
+import type { CustomFontData } from './types';
+import type { FontBlockProps } from './index';
+import { CustomFont } from './font';
 
+/** 字体源文件缓存 */
 const fileCache = getAccessor('fileCache', new Map<string, Buffer>()).get();
-const fontCache = getAccessor('fontCache', new Map<string, MinFontData>()).get();
+/** 字体数据缓存 */
+const fontCache = getAccessor('fontCache', new Map<string, CustomFont>()).get();
 
-export interface CustomFontData {
-  /** 字体文件原始路径 */
-  src: string;
-  /** 原文文本 */
-  text: string[];
-  /** 裁剪的字体字符集 */
-  charSet: Set<string>;
+/** 获取自定义字体标识符 */
+function getCustomFontKey(data: CustomFontData) {
+  return `${data.post}:${data.src}:${data.text.join(',')}`;
 }
 
-export interface MinFontData extends CustomFontData {
-  /** 网页元素类名 */
-  className: string;
-  /** 自定义字体名称 */
-  fontFamily: string;
-  /** 裁剪后的字体文件数据 */
-  content: Buffer;
+/** 获取字体完整路径 */
+function resolveFontPath(src: string, post: string) {
+  return isAbsolute(src) ? normalize(src) : normalize(dirname(post), src);
 }
 
-function mergeTextSet(text: string, set = new Set<string>()) {
-  Array.from(new Set(text))
-    .filter((item) => item.length > 0)
-    .forEach((key) => set.add(key));
+/** 获取字体文件原始文件数据 */
+export async function getFontContentBySrc(src: string) {
+  const content = fileCache.has(src) ? fileCache.get(src)! : await readFile(src);
 
-  return set;
+  if (!fileCache.has(src)) {
+    fileCache.set(src, content);
+  }
+
+  return content;
 }
 
+/** 获取自定义字体 */
+export function getCustomFontByData(data: CustomFontData) {
+  const src = resolveFontPath(data.src, data.post);
+  const key = getCustomFontKey({
+    ...data,
+    src,
+  });
+
+  if (fontCache.has(key)) {
+    return fontCache.get(key)!;
+  }
+
+  const font = new CustomFont(data.src, data.post, data.text);
+  fontCache.set(key, font);
+  return font;
+}
+
+/** 从渲染属性获得自定义字体 */
+export function getCustomFontByProps(props: FontBlockProps) {
+  const src = normalize(props.src).replace(/(\.+\/)+/, '');
+  const text = props.children.trim();
+
+  for (const font of fontCache.values()) {
+    if (font.src.includes(src) && font.text.includes(text)) {
+      return font;
+    }
+  }
+}
+
+/** 获取文章内所有自定义文本 */
 export function getCustomTextByPost({ data: post }: PostExportData) {
   const result: CustomFontData[] = [];
-  const postDir = dirname(post.filePath);
 
   for (const node of post.ast.children) {
     if (node.type !== 'mdxJsxFlowElement' || node.name !== 'FontBlock') {
@@ -51,18 +80,16 @@ export function getCustomTextByPost({ data: post }: PostExportData) {
       throw new Error(`FontBlock 组件必须含有\`src\`属性`);
     }
 
-    const fontPath = isAbsolute(src) ? normalize(src) : normalize(postDir, src);
+    const fontPath = resolveFontPath(src, post.filePath);
     const oldFontData = result.find((item) => item.src === fontPath);
-    const charSet = mergeTextSet(text, oldFontData?.charSet);
 
     if (oldFontData) {
       oldFontData.text.push(text);
-      oldFontData.charSet = charSet;
     } else {
       result.push({
         src: fontPath,
+        post: post.filePath,
         text: [text],
-        charSet,
       });
     }
   }
@@ -70,33 +97,8 @@ export function getCustomTextByPost({ data: post }: PostExportData) {
   return result;
 }
 
-export async function getCustomFontContent(src: string, text: string): Promise<MinFontData> {
-  if (builderOptions.mode === 'production') {
-    const content = fileCache.has(src) ? fileCache.get(src)! : await readFile(src);
-
-    if (!fileCache.has(src)) {
-      fileCache.set(src, content);
-    }
-
-    return {
-      src,
-      text: ['*'],
-      fontFamily: '',
-      content,
-    };
-  }
-
-  const key = `${src}:${text}`;
-  const data: MinFontData = {
-    src,
-    text,
-  };
-
-  if (fontCache.has(key)) {
-  }
-}
-
-export function getFontFile(original: string, text: string) {
+/** 根据文本获取压缩字体数据 */
+export function getMinFontFile(font: Buffer, text: Set<string>) {
   interface FontFileData {
     basename: string;
     contents: Uint8Array;
@@ -104,8 +106,13 @@ export function getFontFile(original: string, text: string) {
 
   return new Promise<Buffer>((resolve, reject) => {
     new FontMin()
-      .src(original)
-      .use(FontMin.glyph({ text, hinting: false }))
+      .src(font)
+      .use(
+        FontMin.glyph({
+          text: Array.from(text).join(''),
+          hinting: false,
+        }),
+      )
       .use(FontMin.ttf2woff2())
       .run((err, files: any[]) => {
         if (err) {
