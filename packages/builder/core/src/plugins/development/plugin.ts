@@ -9,7 +9,7 @@ import { WebSocket } from 'ws';
 import { remove, delay } from '@xiao-ai/utils';
 import { staticServe, transformServe } from './middleware';
 import { HMRData, HMRKind, HMRUpdateKind, DevOptions } from './types';
-import { isFileEqual, getHtmlDiff } from './utils';
+import { isFileEqual, getHtmlDiff, getAllLocalIp } from './utils';
 
 const pluginName = 'development';
 
@@ -93,7 +93,8 @@ export const Development = (opt?: DevOptions): BuilderPlugin => ({
 
     builder.hooks.success.tapPromise(pluginName, async () => {
       const assets = builder.getAssets();
-      const log = () => logger.info(`网站已部署至：http://127.0.0.1:${port}/`);
+      const ips = getAllLocalIp().map((ip) => `http://${ip}:${port}/`);
+      const log = () => logger.info(`网站已生成，部署至：${ips.join(', ')}`);
       const diff = hmr ? getFilesDiff(assets, vfs) : undefined;
 
       for (const file of assets) {
