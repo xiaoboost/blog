@@ -108,6 +108,9 @@ export const Logger = (): BuilderPlugin => ({
     });
 
     builder.hooks.failed.tap(pluginName, (errors) => {
+      spinner.stop();
+      spinner.clear();
+
       logger.info(`构建失败，发现了 ${printer.bold(errors.length)} 个错误：`);
 
       for (const err of errors) {
