@@ -1,3 +1,5 @@
+import { networkInterfaces } from 'os';
+import { isDef } from '@xiao-ai/utils';
 import { HMRUpdate, HMRUpdateKind } from './types';
 
 type FileInput = string | undefined | null | Buffer;
@@ -35,4 +37,12 @@ export function getHtmlDiff(html1: string, html2: string, path: string): HMRUpda
       content: body2[1],
     },
   ];
+}
+
+export function getAllLocalIp() {
+  return Object.values(networkInterfaces())
+    .filter(isDef)
+    .reduce((ans, item) => ans.concat(item), [])
+    .filter((ip) => ip.family === 'IPv4' && ip.address.startsWith('192.168'))
+    .map((ip) => ip.address);
 }
