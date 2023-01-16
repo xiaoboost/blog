@@ -202,7 +202,7 @@ export default createStyles({
         width: 'max-content',
         maxWidth: '100%',
         overflow: 'auto',
-        margin: '0 0 0.8em 0',
+        margin: '0 auto 0.8em',
         borderSpacing: 0,
         borderCollapse: 'collapse',
 
