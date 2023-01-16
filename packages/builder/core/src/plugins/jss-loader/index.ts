@@ -1,4 +1,4 @@
-import type { BuilderPlugin, ErrorData, BuilderInstance } from '@blog/types';
+import type { BuilderPlugin, ErrorData } from '@blog/types';
 import { replaceExt } from '@blog/node';
 import { dirname } from 'path';
 import { cssCodeCache } from './store';

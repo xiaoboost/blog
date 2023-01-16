@@ -81,6 +81,8 @@ export interface BuilderInstance {
   readonly name: string;
   /** 根路径 */
   readonly root: string;
+  /** 是否需要构建 */
+  readonly shouldBuild: boolean;
 
   /** 钩子数据 */
   hooks: BuilderHooks;
@@ -104,7 +106,7 @@ export interface BuilderInstance {
   /** 添加监听文件 */
   addWatchFiles(...files: string[]): void;
   /** 是否是监听文件 */
-  isWatchFiles(...files: string[]): boolean;
+  setChangeFiles(...files: string[]): void;
   /**
    * 添加资源文件
    *   - 路径重复时，旧资源将会被覆盖

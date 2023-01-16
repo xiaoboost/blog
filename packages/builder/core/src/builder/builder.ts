@@ -30,6 +30,8 @@ export class Builder implements BuilderInstance {
 
   private watchFiles = new Set<string>();
 
+  private changedFiles = new Set<string>();
+
   private parent?: Builder;
 
   private errors: BuilderError[] = [];
@@ -80,48 +82,25 @@ export class Builder implements BuilderInstance {
     return this.options.name;
   }
 
+  get shouldBuild(): boolean {
+    if (
+      // watchFiles 为空表示是首次构建
+      this.watchFiles.size === 0 ||
+      // changedFiles 有值表示有文件变更
+      this.changedFiles.size > 0
+    ) {
+      return true;
+    }
+
+    return this.children.some((child) => child.shouldBuild);
+  }
+
   private _getHookContext() {
     return {
       bundler: this.bundler,
       runner: this.runner,
       watcher: this.watcher,
     };
-  }
-
-  private async _build() {
-    const endCompile = async () => {
-      const errors = this.getErrors();
-
-      if (errors.length > 0) {
-        await this.hooks.failed.promise(errors);
-      } else {
-        await this.hooks.success.promise(this.getAssets(), this._getHookContext());
-      }
-    };
-
-    // 如果已经在构建则等待构建完成
-    if (this.buildStatus.data) {
-      await this.buildStatus.once(false);
-      await endCompile();
-    }
-
-    this.buildStatus.setData(true);
-
-    try {
-      await this.hooks.start.promise();
-      this.hooks.bundler.call(this.bundler);
-      await this.bundler.bundle();
-      await this.hooks.afterBundler.promise(this._getHookContext());
-      this.hooks.runner.call(this.runner);
-      await this.runner.run(this.bundler.getBundledCode());
-      await this.hooks.afterRunner.promise(this._getHookContext());
-      this.assets = await this.hooks.processAssets.promise(this.getAssets());
-    } catch (e: any) {
-      this.errors = this._reportError(e);
-    }
-
-    await endCompile();
-    this.buildStatus.setData(false);
   }
 
   private _reportError(err: any) {
@@ -191,11 +170,16 @@ export class Builder implements BuilderInstance {
     });
   }
 
-  isWatchFiles(...files: string[]): boolean {
-    return files.some((item) => {
-      const file = normalize(item);
-      return this.watchFiles.has(file) || this.children.some((child) => child.isWatchFiles(file));
-    });
+  setChangeFiles(...files: string[]) {
+    this.children.forEach((child) => child.setChangeFiles(...files));
+
+    for (const file of files) {
+      const full = normalize(file);
+
+      if (this.watchFiles.has(full)) {
+        this.changedFiles.add(full);
+      }
+    }
   }
 
   getErrors(): BuilderError[] {
@@ -230,7 +214,45 @@ export class Builder implements BuilderInstance {
   }
 
   async build() {
-    await this._build();
+    const endCompile = async () => {
+      const errors = this.getErrors();
+
+      if (errors.length > 0) {
+        await this.hooks.failed.promise(errors);
+      } else {
+        await this.hooks.success.promise(this.getAssets(), this._getHookContext());
+      }
+    };
+
+    // 如果已经在构建则等待构建完成
+    if (this.buildStatus.data) {
+      await this.buildStatus.once(false);
+      await endCompile();
+    }
+
+    if (!this.shouldBuild) {
+      return;
+    }
+
+    this.changedFiles.clear();
+    this.buildStatus.setData(true);
+
+    try {
+      await this.hooks.start.promise();
+      this.hooks.bundler.call(this.bundler);
+      await this.bundler.bundle();
+      await this.hooks.afterBundler.promise(this._getHookContext());
+      this.hooks.runner.call(this.runner);
+      await this.runner.run(this.bundler.getBundledCode());
+      await this.hooks.afterRunner.promise(this._getHookContext());
+      this.assets = await this.hooks.processAssets.promise(this.getAssets());
+    } catch (e: any) {
+      this.errors = this._reportError(e);
+    }
+
+    await endCompile();
+
+    this.buildStatus.setData(false);
 
     if (!this.options.watch) {
       await this.stop();
