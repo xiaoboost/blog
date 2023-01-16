@@ -19,6 +19,10 @@ function isErrorData(data: unknown): data is ErrorData {
   );
 }
 
+function isNormalError(data: unknown): data is Error {
+  return isObject(data) && 'message' in data && 'stack' in data;
+}
+
 function isEsbuildError(err: any): err is EsbuildError {
   return 'pluginName' in err && 'text' in err && 'location' in err;
 }
@@ -77,11 +81,12 @@ function transformEsbuildError(err: any, opt?: ErrorParam): BuilderError | void 
 }
 
 function transformNormalError(err: any, opt?: ErrorParam): BuilderError | void {
-  if (err instanceof Error) {
+  if (isNormalError(err)) {
     return new BuilderError({
       project: opt?.project ?? 'UNKNOWN_PROJECT',
       message: err.message,
       name: err.name,
+      stack: err.stack,
     });
   }
 }
