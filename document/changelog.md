@@ -1,5 +1,12 @@
 # 博客
 
+## 5.2.1
+
+fix:
+
+- file, jss, script loader 添加缓存，加快构建速度
+- logger 显示本机在局域网内 ip 地址
+
 ## 5.2.0
 
 feat:

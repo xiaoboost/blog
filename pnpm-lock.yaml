@@ -90,7 +90,6 @@ importers:
       '@xiao-ai/eslint-config': 1.0.1
       '@xiao-ai/tsconfig': 1.0.1
       '@xiao-ai/utils': 1.6.6
-      address: 1.2.2
       chalk: 4.1.2
       chokidar: 3.5.3
       enhanced-resolve: 5.12.0
@@ -129,7 +128,6 @@ importers:
       '@blog/types': link:../types
       '@types/mime': 3.0.1
       '@xiao-ai/utils': 1.6.6
-      address: 1.2.2
       chalk: 4.1.2
       chokidar: 3.5.3
       enhanced-resolve: 5.12.0
@@ -1307,11 +1305,6 @@ packages:
     resolution: {integrity: sha512-QOxyigPVrpZ2GXT+PFyZTl6TtOFc5egxHIP9IlQ+RbupQuX4RkT/Bee4/kQuC02Xkzg84JcT7oLYtDIQxp+v7w==}
     engines: {node: '>=0.4.0'}
     hasBin: true
-
-  /address/1.2.2:
-    resolution: {integrity: sha512-4B/qKCfeE/ODUaAUpSwfzazo5x29WD4r3vXiWsB7I2mSDAihwEqKO+g8GELZUQSSAo5e1XTYh3ZVfLyxBc12nA==}
-    engines: {node: '>= 10.0.0'}
-    dev: false
 
   /agent-base/6.0.2:
     resolution: {integrity: sha512-RZNwNclF7+MS/8bDg70amg32dyeZGZxiDuQmZxKLAlQjr3jGyLx+4Kkk58UO7D2QdgFIQCovuSuZESne6RG6XQ==}
