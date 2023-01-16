@@ -1,6 +1,7 @@
 import type { AssetData, BuilderPlugin, ResolveResult } from '@blog/types';
 import md5 from 'md5';
 import path from 'path';
+import { AnyObject } from '@xiao-ai/utils';
 import { readFile } from 'fs/promises';
 import { getPathFormatter } from '@blog/node';
 import { isCssImport } from '../utils';
@@ -39,11 +40,17 @@ export const FileLoader = (opt: FileLoaderOption): BuilderPlugin => ({
         }
 
         const resolved = builder.resolve(args.path, args);
-        const fileContent = await readFile(resolved.path);
+        const fileContent = fileCache.has(resolved.path)
+          ? fileCache.get(resolved.path)!
+          : await readFile(resolved.path);
+
         const nameOpt = path.parse(resolved.path);
         const assetPath = getName({ name: nameOpt.name, hash: md5(fileContent), ext: nameOpt.ext });
 
-        fileCache.set(resolved.path, fileContent);
+        if (!fileCache.has(resolved.path)) {
+          fileCache.set(resolved.path, fileContent);
+        }
+
         filePathMap.set(assetPath, resolved);
 
         return {

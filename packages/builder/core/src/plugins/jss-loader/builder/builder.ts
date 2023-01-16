@@ -19,7 +19,9 @@ export async function getJssBuilder(entry: string, parent: BuilderInstance) {
     await childBuilder.init();
   }
 
-  await childBuilder.build();
+  if (childBuilder.shouldBuild) {
+    await childBuilder.build();
+  }
 
   return childBuilder;
 }
