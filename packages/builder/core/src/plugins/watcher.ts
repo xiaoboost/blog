@@ -1,5 +1,6 @@
 import type { BuilderPlugin } from '@blog/types';
-import { join } from 'path';
+import { debounce } from '@xiao-ai/utils';
+import { normalize } from '@blog/node';
 
 const pluginName = 'watcher';
 
@@ -12,14 +13,18 @@ export const Watcher = (): BuilderPlugin => ({
       return;
     }
 
+    const reBuild = debounce(() => builder.build(), 500);
+
     builder.hooks.watcher.tap(pluginName, (watcher) => {
       let ready = false;
 
       const changeHandler = async (file: string) => {
-        const fullPath = join(watcher.options.cwd!, file);
+        const fullPath = normalize(watcher.options.cwd!, file);
+        builder.setChangeFiles(fullPath);
         await builder.hooks.filesChange.promise([fullPath]);
-        if (builder.isWatchFiles(fullPath)) {
-          await builder.build();
+
+        if (builder.shouldBuild) {
+          await reBuild();
         }
       };
 
