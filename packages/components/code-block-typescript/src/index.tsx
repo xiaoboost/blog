@@ -1,6 +1,6 @@
 import React from 'react';
 import { stringifyClass } from '@xiao-ai/utils';
-import { defineUtils } from '@blog/context/runtime';
+import { defineUtils, getReference } from '@blog/context/runtime';
 import {
   styles as normalStyles,
   CodeBlockWrapper,
@@ -30,23 +30,45 @@ export function TsCodeBlock({
     throw new Error('代码块的子元素必须是字符串');
   }
 
+  interface CodeBlockData {
+    lines: string[];
+    highlight: Record<number, boolean>;
+  }
+
   const { classes } = styles;
-  const { code, highlightLines } = getHighlightCode(children);
-  const tabWidth = getMinSpaceWidth(code);
-  const codeLines = renderTsCode(code, tabWidth, lang, platform);
+  const cache = getReference<Map<string, CodeBlockData>>('code-block-typescript', new Map());
+  const { lines, highlight } = (() => {
+    const key = `typescript:${children}`;
+
+    if (cache.has(key)) {
+      console.log('use cache');
+      return cache.get(key)!;
+    }
+
+    const { code, highlightLines } = getHighlightCode(children);
+    const tabWidth = getMinSpaceWidth(code);
+    const result = {
+      lines: renderTsCode(code, tabWidth, lang, platform),
+      highlight: highlightLines,
+    };
+
+    cache.set(key, result);
+
+    return result;
+  })();
 
   return (
     <CodeBlockWrapper
       lang={lang}
       listClassName={classes.codeBlockLs}
-      lineCount={codeLines.length}
-      highlightLines={highlightLines}
+      lineCount={lines.length}
+      highlightLines={highlight}
     >
-      {codeLines.map((line, i) => (
+      {lines.map((line, i) => (
         <li
           key={i}
           className={stringifyClass({
-            [normalStyles.classes.codeBlockHighlightLine]: highlightLines[i],
+            [normalStyles.classes.codeBlockHighlightLine]: highlight[i],
           })}
           dangerouslySetInnerHTML={{ __html: line }}
         />

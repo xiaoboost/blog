@@ -10,7 +10,7 @@ export function getAccessor<T = any>(name: string, defaultValue?: T): Accessor<T
   const key = `var::${name}`;
   const memory = globalThis[GlobalKey.Memory] as Memory;
 
-  if (isDef(defaultValue) && memory) {
+  if (memory && !memory.has(key) && isDef(defaultValue)) {
     memory.set(key, defaultValue);
   }
 
@@ -29,7 +29,7 @@ export function getAccessorWithGetter<T = any>(name: string, getter: () => T): A
   const key = `getter::${name}`;
   const memory = globalThis[GlobalKey.Memory] as Memory;
 
-  if (isDef(getter) && memory) {
+  if (memory && !memory.has(key)) {
     memory.set(key, getter());
   }
 
@@ -38,4 +38,16 @@ export function getAccessorWithGetter<T = any>(name: string, getter: () => T): A
       return memory?.get?.(key);
     },
   };
+}
+
+/** 变量引用 */
+export function getReference<T = any>(name: string, initVal: T) {
+  const key = `ref::${name}`;
+  const memory = globalThis[GlobalKey.Memory] as Memory;
+
+  if (memory && !memory.has(key) && isDef(initVal)) {
+    memory.set(key, initVal);
+  }
+
+  return initVal;
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import highlight from 'highlight.js';
 import { stringifyClass } from '@xiao-ai/utils';
-import { defineUtils } from '@blog/context/runtime';
+import { defineUtils, getReference } from '@blog/context/runtime';
 
 import styles from './index.jss';
 import script from './code-block.script';
@@ -68,19 +68,40 @@ export function CodeBlock({ lang, children }: React.PropsWithChildren<CodeBlockP
     throw new Error('代码块的子元素必须是字符串');
   }
 
+  interface CodeBlockData {
+    lines: string[];
+    highlight: Record<number, boolean>;
+  }
+
   const { classes } = styles;
   const lan = lang ? lang.toLowerCase() : '';
-  const tabWidth = getMinSpaceWidth(children);
-  const { code, highlightLines } = getHighlightCode(children);
-  const codeLines = renderCode(code, lan, tabWidth);
+  const cache = getReference<Map<string, CodeBlockData>>('code-block-normal', new Map());
+  const { lines, highlight } = (() => {
+    const key = `${lan}:${children}`;
+
+    if (cache.has(key)) {
+      return cache.get(key)!;
+    }
+
+    const tabWidth = getMinSpaceWidth(children);
+    const { code, highlightLines } = getHighlightCode(children);
+    const result = {
+      lines: renderCode(code, lan, tabWidth),
+      highlight: highlightLines,
+    };
+
+    cache.set(key, result);
+
+    return result;
+  })();
 
   return (
-    <CodeBlockWrapper lang={lang} lineCount={codeLines.length} highlightLines={highlightLines}>
-      {codeLines.map((line, i) => (
+    <CodeBlockWrapper lang={lang} lineCount={lines.length} highlightLines={highlight}>
+      {lines.map((line, i) => (
         <li
           key={i}
           className={stringifyClass({
-            [classes.codeBlockHighlightLine]: highlightLines[i],
+            [classes.codeBlockHighlightLine]: highlight[i],
           })}
           dangerouslySetInnerHTML={{ __html: line }}
         />
