@@ -109,10 +109,10 @@ importers:
       source-map: 0.7.4
       table: 6.8.1
       tapable: 2.2.1
-      tslib: 2.5.0
-      typescript: 4.9.5
+      tslib: 2.4.1
+      typescript: 4.9.4
       vite-esbuild-typescript-checker: 1.0.0
-      ws: 8.12.1
+      ws: 8.12.0
     dependencies:
       '@babel/code-frame': 7.18.6
       '@blog/context': link:../context
@@ -145,9 +145,9 @@ importers:
       source-map: 0.7.4
       table: 6.8.1
       tapable: 2.2.1
-      tslib: 2.5.0
+      tslib: 2.4.1
       vite-esbuild-typescript-checker: 1.0.0
-      ws: 8.12.1
+      ws: 8.12.0
     devDependencies:
       '@types/babel__code-frame': 7.0.3
       '@types/koa': 2.13.5
@@ -5974,8 +5974,8 @@ packages:
     resolution: {integrity: sha512-i+bYGvgWOJIFmomVuScP8I78zTc9x4lm8F6xb81GJRpXggGpCA5Mtvj2Izy6nd49pjSUVCz0VjUsPjXopAFdoA==}
     dev: false
 
-  /vscode-oniguruma/1.7.0:
-    resolution: {integrity: sha512-L9WMGRfrjOhgHSdOYgCt/yRMsXzLDJSL7BPrOZt73gU0iWO4mpqzqQzOz5srxqTvMBaR0XZTSrVWo4j55Rc6cA==}
+  /vscode-oniguruma/1.6.2:
+    resolution: {integrity: sha512-KH8+KKov5eS/9WhofZR8M8dMHWN2gTxjMsG4jd04YhpbPR91fUj7rYQ2/XjeHCJWbg7X++ApRIU9NUwM2vTvLA==}
     dev: false
 
   /vscode-textmate/8.0.0:

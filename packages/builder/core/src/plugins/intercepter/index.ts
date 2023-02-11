@@ -23,10 +23,6 @@ export const Intercepter = (opt?: DebuggerOptions): BuilderPlugin => {
 
       Hook.intercept(pluginName, builder, pluginOptions);
 
-      builder.hooks.start.tap(pluginName, () => {
-        Hook.clear();
-      });
-
       builder.hooks.success.tapPromise(pluginName, async () => {
         Hook.print(logger);
 
