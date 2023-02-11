@@ -50,7 +50,6 @@
     "table": "6.8.1",
     "tapable": "2.2.1",
     "tslib": "2.5.0",
-    "vite-esbuild-typescript-checker": "1.0.0",
     "ws": "8.12.1"
   },
   "devDependencies": {

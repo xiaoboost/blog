@@ -142,6 +142,10 @@ export function print(logger: LoggerInstance) {
 
 /** 拦截钩子 */
 export function intercept(name: string, builder: BuilderInstance, options: DebuggerOptions) {
+  builder.hooks.start.tap(name, () => {
+    hookData.clear();
+  });
+
   builder.hooks.afterInitialized.tap(name, (builder) => {
     interceptHookMap('Builder', builder.hooks as {}, options);
 
@@ -149,9 +153,4 @@ export function intercept(name: string, builder: BuilderInstance, options: Debug
       interceptHookMap('Bundler', bundler.hooks as {}, options);
     });
   });
-}
-
-/** 清空数据 */
-export function clear() {
-  hookData.clear();
 }
