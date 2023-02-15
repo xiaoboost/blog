@@ -1,5 +1,11 @@
 # 博客
 
+## 5.2.2
+
+fix:
+
+- 修复文章文件的路径问题 [!39](https://github.com/xiaoboost/blog/pull/39)
+
 ## 5.2.1
 
 fix:
