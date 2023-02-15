@@ -19,21 +19,21 @@
   },
   "devDependencies": {
     "@types/blog": "workspace:*",
-    "@types/chai": "4.3.3",
-    "@types/mocha": "9.1.1",
+    "@types/chai": "4.3.4",
+    "@types/mocha": "10.0.1",
     "@types/node": "16.11.7",
     "@xiao-ai/eslint-config": "1.0.1",
     "@xiao-ai/tsconfig": "1.0.1",
-    "chai": "4.3.6",
-    "eslint": "8.31.0",
-    "tslib": "2.4.1",
+    "chai": "4.3.7",
+    "eslint": "8.34.0",
+    "tslib": "2.5.0",
     "tsm": "2.3.0",
-    "typescript": "4.9.4"
+    "typescript": "4.9.5"
   },
   "dependencies": {
     "@blog/context": "workspace:*",
     "@xiao-ai/utils": "1.6.6",
-    "jss": "10.9.2",
-    "jss-preset-default": "10.9.2"
+    "jss": "10.10.0",
+    "jss-preset-default": "10.10.0"
   }
 }
