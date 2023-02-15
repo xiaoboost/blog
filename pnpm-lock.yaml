@@ -453,11 +453,13 @@ importers:
 
   packages/posts:
     specifiers:
+      '@blog/context': workspace:*
       '@blog/mdx-code-block-typescript': workspace:*
       '@blog/mdx-font-block': workspace:*
       '@blog/template-post': workspace:*
       '@blog/types': workspace:*
     dependencies:
+      '@blog/context': link:../builder/context
       '@blog/mdx-code-block-typescript': link:../components/code-block-typescript
       '@blog/mdx-font-block': link:../components/font-block
       '@blog/template-post': link:../templates/post
