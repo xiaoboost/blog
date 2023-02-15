@@ -1,6 +1,7 @@
 import type { BuilderPlugin } from '@blog/types';
 import { lookItUp } from 'look-it-up';
 import { join } from 'path';
+import { realpath } from 'fs/promises';
 import { normalize } from '@blog/node';
 import { getImportCode } from '@blog/parser';
 
@@ -38,12 +39,13 @@ export const PostsLoader = (): BuilderPlugin => ({
         }
 
         const postDir = await lookItUp('node_modules/@blog/posts', args.resolveDir);
+        const realPostDir = await realpath(postDir ?? '');
 
         return {
           namespace: pluginName,
           sideEffects: false,
           external: false,
-          path: postDir ?? '',
+          path: realPostDir,
         };
       });
 
