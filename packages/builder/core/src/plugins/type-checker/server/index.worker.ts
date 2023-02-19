@@ -1,5 +1,5 @@
 import { isMainThread, parentPort } from 'worker_threads';
-import type { PostData, ReturnData } from '../../../utils';
+import type { PostData, ReturnData } from '../../../utils/index';
 import { EventData, EventName } from '../types';
 import { LanguageService } from './server';
 
@@ -18,7 +18,7 @@ if (parentPort) {
     try {
       switch (data.name) {
         case EventName.StartServer:
-          server = new LanguageService(...(data.params as [any, any]));
+          server = new LanguageService(...(data.params as [any]));
           break;
         case EventName.FilesChanged:
           result.return = server?.filesChanged(...(data.params as string[]));

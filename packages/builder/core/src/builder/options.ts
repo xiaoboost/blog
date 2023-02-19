@@ -68,7 +68,8 @@ export async function applyPlugin(builder: Builder) {
     if (opt.typeCheck) {
       const { TypeChecker } = await import('../plugins/type-checker/index.js');
       TypeChecker({
-        configFile: join(getCoreRoot(), 'src/bundler/source/tsconfig.json'),
+        basePath: getCoreRoot(),
+        configFile: './src/bundler/source/tsconfig.json',
         typescriptPath: require.resolve('typescript'),
       }).apply(builder);
     }
