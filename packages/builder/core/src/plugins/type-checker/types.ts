@@ -25,6 +25,13 @@ export interface TypeScriptConfig {
 }
 
 export interface TypeCheckerOptions {
+  /** 起始路径 */
+  basePath?: string;
+  /**
+   * 配置文件路径
+   *   - `basePath`的相对路径
+   *   - 绝对路径
+   */
   configFile?: string;
   configOverwrite?: TypeScriptConfig;
   typescriptPath?: string;

@@ -1,35 +1,12 @@
 import type ts from 'typescript';
 import path from 'path';
 
-import { unique } from '@xiao-ai/utils';
+import { unique, isString } from '@xiao-ai/utils';
 import { FileMemory } from './files';
+import { requireTs } from './utils';
 import { ModuleResolutionMemory } from './resolution';
 import { TypeScriptConfig, TypeCheckerOptions } from '../types';
-import { requireTs } from './utils';
-
-// import {
-//   LynxCommonTypeModule,
-//   LynxBuildInComponentModule,
-//   renderHelperModule,
-//   globalTypesModule,
-//   windowGlobalTypesModule,
-//   tsGlobalTypesModule,
-// } from '@byted-lynx/transformer-ttml';
-
-// const Modules = [
-//   LynxCommonTypeModule,
-//   LynxBuildInComponentModule,
-//   renderHelperModule,
-//   globalTypesModule,
-//   windowGlobalTypesModule,
-//   tsGlobalTypesModule,
-// ];
-
-// const ConstantModule = toMap(
-//   Modules,
-//   (item) => item.import,
-//   (item) => ({ resolvedFileName: item.path }),
-// );
+import { ErrorData } from '../../../utils';
 
 /** 语言服务器 */
 export class LanguageService {
@@ -48,9 +25,6 @@ export class LanguageService {
   /** 项目版本 */
   private projectVersion = 1;
 
-  /** 编译命令 */
-  // private parsedConfig: ts.ParsedCommandLine;
-
   /** js/ts 语言服务 */
   private jsLanguageService: ts.LanguageService;
 
@@ -62,8 +36,8 @@ export class LanguageService {
   };
 
   /** 项目版本号 */
-  constructor(basePath: string, opt: TypeCheckerOptions) {
-    this.basePath = basePath;
+  constructor(opt: Required<TypeCheckerOptions>) {
+    this.basePath = opt.basePath;
     this.tsModule = requireTs(opt.typescriptPath);
 
     const { tsModule } = this;
@@ -72,15 +46,15 @@ export class LanguageService {
 
     this.jsLanguageService = tsModule.createLanguageService(jsHost, registry);
     this.getParsedCommand(opt.configFile);
+    this.runProgram();
   }
 
   /** 获取编译选项 */
-  private getParsedCommand(configFile?: string) {
+  private getParsedCommand(configFile: string) {
     const { basePath, tsModule, files } = this;
-    const tsconfigPath =
-      configFile && path.isAbsolute(configFile)
-        ? configFile
-        : path.join(basePath, configFile ?? 'tsconfig.json');
+    const tsconfigPath = path.isAbsolute(configFile)
+      ? configFile
+      : path.join(basePath, configFile ?? 'tsconfig.json');
 
     const { config } = tsModule.readConfigFile(tsconfigPath, tsModule.sys.readFile);
 
@@ -123,8 +97,10 @@ export class LanguageService {
       target: this.tsModule.ScriptTarget.Latest,
       moduleResolution: this.tsModule.ModuleResolutionKind.NodeNext,
       module: this.tsModule.ModuleKind.ESNext,
-      lib: ['ESNext', 'DOM'],
+      declaration: false,
+      skipDefaultLibCheck: true,
       skipLibCheck: true,
+      locale: 'zh',
     };
   }
 
@@ -176,8 +152,6 @@ export class LanguageService {
             return cachedResolvedModule;
           }
 
-          // TODO: 常量模块
-
           const { resolvedModule } = tsModule.resolveModuleName(
             name,
             containingFile,
@@ -196,38 +170,68 @@ export class LanguageService {
         });
       },
       getScriptSnapshot: (fileName: string) => {
-        // /**
-        //  * 某些特殊情况下 typescript 的类型文件传入的名称是错误的
-        //  * 暂且不知道为什么会传入错误的名称，总之这里将会强制修正 ts 的自带库路径
-        //  */
-        // if (/node_modules[\\/]typescript/.test(fileName)) {
-        //   const name = path.basename(fileName);
-        //   const dir = path.dirname(fileName);
+        const { tsModule, files, basePath, tsConfigData } = this;
 
-        //   if (!name.endsWith('.d.ts')) {
-        //     fileName = path.join(dir, `lib.${name.toLowerCase()}.d.ts`);
-        //   }
-        // }
-
-        debugger;
-        if (this.files.has(fileName)) {
-          return this.files.get(fileName)!.snapshot;
+        if (files.has(fileName)) {
+          return files.get(fileName)!.snapshot;
         }
 
-        const fileText = this.tsModule.sys.readFile(fileName);
+        const fileRealPath = ((file: string) => {
+          if (!/^lib\.\S+\.d\.ts$/.test(file)) {
+            return file;
+          }
+
+          const libResolved = tsModule.resolveModuleName(
+            `typescript/lib/${file.replace('.d.ts', '')}`,
+            path.join(basePath, 'index.ts'),
+            tsConfigData.compilerOptions,
+            tsModule.sys,
+            undefined,
+            undefined,
+            tsModule.ModuleKind.CommonJS,
+          );
+
+          if (!libResolved.resolvedModule) {
+            return file;
+          }
+
+          return libResolved.resolvedModule.resolvedFileName;
+        })(fileName);
+
+        const fileText = tsModule.sys.readFile(fileRealPath);
 
         if (fileText) {
-          this.files.setScript(fileName, fileText);
-          return this.files.get(fileName)!.snapshot;
+          files.setScript(fileName, fileText);
+          return files.get(fileName)!.snapshot;
         }
       },
     };
   }
 
+  /** 运行类型检查 */
+  private runProgram() {
+    this.jsLanguageService.getProgram();
+  }
+
   /** 文件变更 */
-  filesChanged(...files: string[]) {
-    // TODO: 过滤 md 文件
-    // tsconfig.json 文件变更单独列出
+  filesChanged(...fileNames: string[]) {
+    const { files, tsModule } = this;
+
+    let change = false;
+
+    for (const file of fileNames) {
+      if (!this.files.has(file)) {
+        continue;
+      }
+
+      change = true;
+      files.setScript(file, tsModule.sys.readFile(file) ?? '');
+    }
+
+    if (change) {
+      this.projectVersion++;
+      this.runProgram();
+    }
   }
 
   getDiagnostics() {
@@ -236,15 +240,45 @@ export class LanguageService {
       ...(program?.getSyntacticDiagnostics() ?? []),
       ...(program?.getSemanticDiagnostics() ?? []),
       ...(program?.getDeclarationDiagnostics() ?? []),
-      // ...this.jsLanguageService.getSuggestionDiagnostics(),
     ];
 
-    debugger;
-    return [];
+    return rawScriptDiagnostics
+      .filter((item) => item.code !== 2742)
+      .map(({ code, file, messageText, start, length }): ErrorData => {
+        const baseData: ErrorData = {
+          name: `TS${code}`,
+          project: 'Main',
+          message: isString(messageText) ? messageText : messageText.messageText,
+        };
+
+        if (!file || !start) {
+          return baseData;
+        }
+
+        const startPosition = file.getLineAndCharacterOfPosition(start);
+        const endPosition = file.getLineAndCharacterOfPosition(start + (length ?? 1));
+
+        return {
+          ...baseData,
+          filePath: file.fileName,
+          codeFrame: {
+            content: file.getText(),
+            range: {
+              start: {
+                line: startPosition.line,
+                column: startPosition.character,
+              },
+              end: {
+                line: endPosition.line,
+                column: endPosition.character,
+              },
+            },
+          },
+        };
+      });
   }
 
   dispose() {
-    // TODO:
     this.jsLanguageService.dispose();
   }
 }
