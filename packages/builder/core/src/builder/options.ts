@@ -64,6 +64,14 @@ export async function applyPlugin(builder: Builder) {
         outFile: process.env.ENV === 'GITHUB_CI' ? process.env.ENV_OUTPUT : undefined,
       }).apply(builder);
     }
+
+    if (opt.typeCheck) {
+      const { TypeChecker } = await import('../plugins/type-checker/index.js');
+      TypeChecker({
+        configFile: join(getCoreRoot(), 'src/bundler/source/tsconfig.json'),
+        typescriptPath: require.resolve('typescript'),
+      }).apply(builder);
+    }
   }
 
   // 应用外部插件
@@ -88,6 +96,7 @@ export function normalizeOptions(opt: BuilderOptions): Required<BuilderOptions> 
     plugins: opt.plugins ?? [],
     logLevel: opt.logLevel ?? 'Info',
     debug: opt.debug ?? false,
+    typeCheck: opt.typeCheck ?? true,
     defined: {
       ...opt.defined,
       'process.env.NODE_ENV': isProduction ? '"production"' : '"development"',

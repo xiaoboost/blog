@@ -1,23 +1,21 @@
-import { readFile } from 'fs/promises';
-import type { TypeScriptConfig } from '../types';
+import type * as ts from 'typescript';
 
-/**
- * 读取 tsconfig 文件完整配置
- */
-export async function readTsConfig(configFile: string, resolve: (target: string) => string) {
-  const content = await readFile(configFile, 'utf-8');
-  const tsConfig = JSON.parse(content) as TypeScriptConfig;
+export function getScriptSnapshot(code: string): ts.IScriptSnapshot {
+  return {
+    getText: (start, end) => code.substring(start, end),
+    getLength: () => code.length,
+    getChangeRange: () => void 0,
+  };
+}
 
-  if (tsConfig.extends) {
-    const extendsTsConfig = await readTsConfig(resolve(tsConfig.extends), resolve);
-
-    tsConfig.compilerOptions = {
-      ...extendsTsConfig.compilerOptions,
-      ...tsConfig.compilerOptions,
-    };
+export function requireTs(typescriptPath?: string): typeof ts {
+  try {
+    if (typescriptPath) {
+      return require(typescriptPath);
+    }
+  } catch (e) {
+    // ..
   }
 
-  delete tsConfig.extends;
-
-  return tsConfig;
+  return require('typescript');
 }
