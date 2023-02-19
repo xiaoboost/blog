@@ -73,6 +73,12 @@ export interface CommandOptions {
    * @default 'info'
    */
   logLevel?: LogLevel;
+  /**
+   * 类型检查
+   *
+   * @default true
+   */
+  typeCheck?: boolean;
 }
 
 /** 构建器实例 */
