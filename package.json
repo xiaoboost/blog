@@ -1,6 +1,6 @@
 {
   "name": "blog",
-  "version": "5.2.2",
+  "version": "5.3.0",
   "description": "个人博客",
   "author": "xiaoboost",
   "license": "MIT",
@@ -20,7 +20,12 @@
   },
   "pnpm": {
     "updateConfig": {
-      "ignoreDependencies": ["@types/node", "esbuild", "ora", "chalk"]
+      "ignoreDependencies": [
+        "@types/node",
+        "esbuild",
+        "ora",
+        "chalk"
+      ]
     }
   },
   "devDependencies": {
