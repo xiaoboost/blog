@@ -58,7 +58,7 @@ export function renderPost(post: PostExportDataWithComponent) {
     hmr: builderOptions.hmr,
     styles: layoutUtils.getStyleNames().concat(post.utils.getStyleNames()),
     scripts: layoutUtils.getScriptNames().concat(post.utils.getScriptNames()),
-    post: post as any,
+    post,
   });
 
   return html;

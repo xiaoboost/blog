@@ -38,16 +38,14 @@ export const TypeChecker = (opt?: TypeCheckerOptions): BuilderPlugin => ({
         name: EventName.GetTsDiagnostics,
       });
 
-      debugger;
       if (result.length > 0) {
         throw result;
       }
     });
 
-    builder.hooks.done.tap(pluginName, () => {
-      worker.send({
-        name: EventName.Dispose,
-      });
+    builder.hooks.done.tapPromise(pluginName, async () => {
+      await worker.send({ name: EventName.Dispose });
+      await worker.worker.terminate();
     });
   },
 });

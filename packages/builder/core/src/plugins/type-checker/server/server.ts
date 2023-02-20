@@ -100,7 +100,7 @@ export class LanguageService {
       declaration: false,
       skipDefaultLibCheck: true,
       skipLibCheck: true,
-      locale: 'zh',
+      // locale: 'zh-CN',
     };
   }
 
@@ -152,10 +152,19 @@ export class LanguageService {
             return cachedResolvedModule;
           }
 
+          // TODO: highlight.js 的错误，待修复
+          const resolveOptions =
+            name === 'highlight.js'
+              ? {
+                  ...compilerOptions,
+                  moduleResolution: tsModule.ModuleResolutionKind.NodeJs,
+                }
+              : compilerOptions;
+
           const { resolvedModule } = tsModule.resolveModuleName(
             name,
             containingFile,
-            compilerOptions,
+            resolveOptions,
             tsModule.sys,
             undefined,
             undefined,
@@ -251,8 +260,15 @@ export class LanguageService {
           message: isString(messageText) ? messageText : messageText.messageText,
         };
 
-        if (!file || !start) {
+        if (!file) {
           return baseData;
+        }
+
+        if (!start) {
+          return {
+            ...baseData,
+            filePath: file.fileName,
+          };
         }
 
         const startPosition = file.getLineAndCharacterOfPosition(start);
@@ -265,12 +281,12 @@ export class LanguageService {
             content: file.getText(),
             range: {
               start: {
-                line: startPosition.line,
-                column: startPosition.character,
+                line: startPosition.line + 1,
+                column: startPosition.character + 1,
               },
               end: {
-                line: endPosition.line,
-                column: endPosition.character,
+                line: endPosition.line + 1,
+                column: endPosition.character + 1,
               },
             },
           },
