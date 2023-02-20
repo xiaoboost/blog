@@ -2,6 +2,7 @@
   "extends": "../../../tsconfig.json",
   "include": ["../source"],
   "compilerOptions": {
-    "outDir": "./bundle"
+    "outDir": "./bundle",
+    "typeRoots": ["./node_modules/@types"]
   }
 }
