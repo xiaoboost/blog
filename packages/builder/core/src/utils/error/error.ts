@@ -49,9 +49,9 @@ export class BuilderError extends Error implements ErrorData {
     }
 
     if (codeFrame) {
-      message += codeFrameColumns(codeFrame.content, codeFrame.range, {
+      message += `\n${codeFrameColumns(codeFrame.content, codeFrame.range, {
         highlightCode: true,
-      });
+      })}`;
     } else if (this.stack) {
       message += `\n${this.stack}`;
     }

@@ -14,7 +14,8 @@
     "@blog/context": "workspace:*",
     "@blog/mdx-code-block-typescript": "workspace:*",
     "@blog/mdx-font-block": "workspace:*",
-    "@blog/template-post": "workspace:*"
+    "@blog/template-post": "workspace:*",
+    "react": "18.2.0"
   },
   "devDependencies": {
     "@blog/types": "workspace:*"

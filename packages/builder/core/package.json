@@ -54,6 +54,7 @@
   },
   "devDependencies": {
     "@types/babel__code-frame": "7.0.3",
+    "@types/blog": "workspace:*",
     "@types/koa": "2.13.5",
     "@types/koa-websocket": "5.0.7",
     "@types/md5": "2.3.2",
