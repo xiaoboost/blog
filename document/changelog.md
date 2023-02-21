@@ -4,13 +4,17 @@
 
 feat:
 
-- 添加类型检查功能 !40
+- 添加类型检查功能 [#46](https://github.com/xiaoboost/blog/pull/46)
+
+fix:
+
+- 修复文件变更时会打印多个记录的问题
 
 ## 5.2.2
 
 fix:
 
-- 修复文章文件的路径问题 [!39](https://github.com/xiaoboost/blog/pull/39)
+- 修复文章文件的路径问题 [#39](https://github.com/xiaoboost/blog/pull/39)
 
 ## 5.2.1
 
