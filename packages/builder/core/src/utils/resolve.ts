@@ -12,8 +12,6 @@ import { dirname, isAbsolute } from 'path';
 import { builtinModules } from 'module';
 import { BuilderError } from './error';
 
-// TODO: tsconfig-paths 可能需要另外处理
-
 const ErrorCode = 'RESOLVE_FAILED';
 
 export function isCssImport(kind?: ImportKind) {

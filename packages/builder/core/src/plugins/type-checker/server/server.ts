@@ -229,7 +229,7 @@ export class LanguageService {
     let change = false;
 
     for (const file of fileNames) {
-      if (!this.files.has(file)) {
+      if (/\.mdx?/.test(file)) {
         continue;
       }
 

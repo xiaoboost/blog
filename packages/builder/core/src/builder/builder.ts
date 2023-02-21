@@ -234,6 +234,7 @@ export class Builder implements BuilderInstance {
       return;
     }
 
+    this.errors = [];
     this.changedFiles.clear();
     this.buildStatus.setData(true);
 
