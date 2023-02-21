@@ -34,7 +34,7 @@ export class FileMemory extends Map<string, FileData> {
 
       if (oldCode !== code) {
         this.set(file, {
-          version: oldData.version++,
+          version: ++oldData.version,
           snapshot: getScriptSnapshot(code),
         });
       }
