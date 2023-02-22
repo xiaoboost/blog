@@ -598,12 +598,14 @@ importers:
 
   packages/utils/node:
     specifiers:
+      '@blog/test-toolkit': workspace:*
       '@types/blog': workspace:*
       '@types/node': 16.11.7
       '@xiao-ai/eslint-config': 1.0.1
       '@xiao-ai/tsconfig': 1.0.1
       '@xiao-ai/utils': 1.6.6
       eslint: 8.34.0
+      mocha: 10.2.0
       pinyin-pro: 3.13.0
       tslib: 2.5.0
       typescript: 4.9.5
@@ -612,11 +614,13 @@ importers:
       pinyin-pro: 3.13.0
       tslib: 2.5.0
     devDependencies:
+      '@blog/test-toolkit': link:../../tools/test-toolkit
       '@types/blog': link:../../tools/typings
       '@types/node': 16.11.7
       '@xiao-ai/eslint-config': 1.0.1
       '@xiao-ai/tsconfig': 1.0.1
       eslint: 8.34.0
+      mocha: 10.2.0
       typescript: 4.9.5
 
   packages/utils/shared:
@@ -6085,7 +6089,6 @@ packages:
   /yargs-parser/20.2.9:
     resolution: {integrity: sha512-y11nGElTIV+CT3Zv9t7VKl+Q3hTQoT9a1Qzezhhl6Rp21gJ/IVTW7Z3y9EWXhuUBC2Shnf+DX0antecpAwSP8w==}
     engines: {node: '>=10'}
-    dev: false
 
   /yargs-parser/21.1.1:
     resolution: {integrity: sha512-tVpsJW7DdjecAiFpbIB1e3qxIQsE6NoPc5/eTdrbbIC4h0LVsWhnoa3g+m2HclBIujHzsxZ4VJVA+GUuc2/LBw==}
@@ -6112,7 +6115,7 @@ packages:
       require-directory: 2.1.1
       string-width: 4.2.3
       y18n: 5.0.8
-      yargs-parser: 20.2.4
+      yargs-parser: 20.2.9
     dev: true
 
   /yargs/17.6.2:
