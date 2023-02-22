@@ -5,13 +5,13 @@ export type Query = Record<string, string | boolean>;
 
 /** 汉字转换为拼音 */
 export function toPinyin(str: string) {
-  const strings = pinyin(str, {
+  const strings = pinyin(str.replace(/[\s]+/g, '-'), {
     type: 'array',
     toneType: 'num',
     nonZh: 'consecutive',
   });
 
-  return strings.join('-').toLowerCase();
+  return strings.join('-').replace(/-+/g, '-').toLowerCase();
 }
 
 export function parseQuery(input: string) {
