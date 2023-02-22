@@ -6,6 +6,10 @@ feat:
 
 - 添加图片缩放功能 [#47](https://github.com/xiaoboost/blog/pull/47)
 
+fix:
+
+- 修复部分文章链接计算错误的问题
+
 ## 5.3.0
 
 feat:
