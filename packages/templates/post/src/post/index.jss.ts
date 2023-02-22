@@ -221,9 +221,6 @@ export default createStyles({
           fontWeight: 600,
         },
       },
-      '& img': {
-        maxWidth: '100%',
-      },
       '& hr': {
         height: 2,
         padding: 0,

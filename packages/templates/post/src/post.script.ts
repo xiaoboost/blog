@@ -1,4 +1,6 @@
 import './post/index.jss';
+import './post/image/index.jss';
+import './post/image/index.script';
 import './to-content/index.jss';
 import './to-content/index.script';
 
