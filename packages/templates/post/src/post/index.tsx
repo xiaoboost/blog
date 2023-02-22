@@ -11,6 +11,7 @@ import { ToContent } from '../to-content';
 import * as title from './title';
 import * as code from './code';
 import * as link from './link';
+import * as image from './image';
 import * as paragraph from './paragraph';
 
 export interface PostProps extends LayoutProps {
@@ -41,6 +42,7 @@ export function Post(props: PostProps) {
               ...title,
               ...code,
               ...link,
+              ...image,
               ...paragraph,
             }}
           />
