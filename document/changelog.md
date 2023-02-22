@@ -1,5 +1,11 @@
 # 博客
 
+## 5.4.0
+
+feat:
+
+- 添加图片缩放功能 [#47](https://github.com/xiaoboost/blog/pull/47)
+
 ## 5.3.0
 
 feat:
