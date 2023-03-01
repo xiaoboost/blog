@@ -203,6 +203,7 @@ export default createStyles({
 
     '& pre': {
       margin: 0,
+      whiteSpace: 'pre-wrap',
     },
     '& .keyword': {
       color: '#A626A4',

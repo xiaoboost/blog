@@ -3,7 +3,7 @@ import { extname } from 'path';
 import { createResolver } from '../utils';
 
 const pluginName = 'resolver';
-const defaultExts = ['.js', '.jsx', '.ts', '.tsx', '.json', '.css'];
+const defaultExts = ['.mjs', '.js', '.jsx', '.ts', '.tsx', '.json', '.css'];
 
 export const Resolver = (): BuilderPlugin => ({
   name: pluginName,

@@ -61,7 +61,7 @@ export class Bundler implements BundlerInstance {
         sourcemap: 'external',
         minify: false,
         mainFields: ['source', 'module', 'main'],
-        resolveExtensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
+        resolveExtensions: ['.ts', '.tsx', '.mjs', '.js', '.jsx', '.json'],
         publicPath: opt.publicPath,
         external: builtinModules,
         splitting: false,

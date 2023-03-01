@@ -47,7 +47,7 @@ export function createResolver(options: ResolveCreatorOptions): Resolver {
   };
   const jsResolver = create.sync({
     ...resolveOptions,
-    extensions: ['.jsx', '.tsx', '.js', '.ts', '.json'],
+    extensions: ['.jsx', '.tsx', '.mjs', '.js', '.ts', '.json'],
     preferRelative: false,
   });
   const cssResolver = create.sync({
