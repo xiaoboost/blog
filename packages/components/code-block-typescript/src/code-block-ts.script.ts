@@ -1,4 +1,5 @@
 import { isString } from '@xiao-ai/utils';
+import { computePosition, autoUpdate, flip, shift, offset, inline } from '@floating-ui/dom';
 import { getCurrentScriptSrc } from '@blog/web';
 import { ModuleLoader, assets } from '@blog/context/web';
 
@@ -7,17 +8,20 @@ import { DisplaySymbol } from './typescript';
 import { lsInfoAttrName } from './constant';
 
 class InfoElement {
-  private el: Element;
+  private el: HTMLElement;
 
-  private pre: Element;
+  private pre: HTMLElement;
 
   private list: HTMLElement[] = [];
+
+  private cleanup?: () => void;
 
   constructor() {
     const el = document.createElement('div');
     const pre = document.createElement('pre');
 
     el.setAttribute('class', styles.classes.lsInfoBox);
+    el.setAttribute('style', 'opacity: 0');
     el.appendChild(pre);
 
     this.el = el;
@@ -55,18 +59,42 @@ class InfoElement {
   }
 
   hidden() {
-    if (document.body.contains(this.el)) {
-      document.body.removeChild(this.el);
+    const { el } = this;
+
+    if (document.body.contains(el)) {
+      el.setAttribute('style', 'opacity: 0');
+      document.body.removeChild(el);
     }
+
+    this.cleanup?.();
+    this.cleanup = undefined;
   }
 
-  show(rect: DOMRect, infos: DisplaySymbol[]) {
+  show(reference: HTMLElement, infos: DisplaySymbol[]) {
     if (!document.body.contains(this.el)) {
       document.body.appendChild(this.el);
     }
 
+    const updatePosition = () => {
+      computePosition(reference, this.el, {
+        placement: 'top-start',
+        strategy: 'fixed',
+        middleware: [
+          flip(),
+          shift(),
+          inline(),
+          offset({
+            crossAxis: 0,
+            mainAxis: 14,
+          }),
+        ],
+      }).then(({ x, y }) => {
+        this.el.setAttribute('style', `left: ${x}px; top: ${y}px`);
+      });
+    };
+
     this.setInfo(infos);
-    this.el.setAttribute('style', `left: ${rect.left}px; top: ${rect.top + 1}px`);
+    this.cleanup = autoUpdate(reference, this.el, updatePosition);
   }
 }
 
@@ -89,19 +117,17 @@ function active() {
     }
 
     el.addEventListener('mouseenter', () => {
-      infoEle.show(el.getBoundingClientRect(), infoData);
+      infoEle.show(el, infoData);
     });
 
     el.addEventListener('mouseleave', hiddenEvent);
-    document.addEventListener('scroll', hiddenEvent);
   }
 
   return () => {
     infoEle.hidden();
-    document.removeEventListener('scroll', hiddenEvent);
 
     /**
-     * 至于为什么不移除元素列表的事件，详细见
+     * 为什么不移除元素列表的事件，详细见
      * https://stackoverflow.com/questions/6033821/do-i-need-to-remove-event-listeners-before-removing-elements
      */
   };

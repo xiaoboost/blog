@@ -20,6 +20,7 @@
     "@blog/node": "workspace:*",
     "@blog/styles": "workspace:*",
     "@blog/web": "workspace:*",
+    "@floating-ui/dom": "1.2.2",
     "@xiao-ai/utils": "1.6.6",
     "html-escaper": "3.0.3",
     "look-it-up": "2.1.0",
