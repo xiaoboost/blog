@@ -36,7 +36,7 @@ export function getPostMetaData(content: string, fileName: string) {
   }
 
   // 检查必填属性
-  const required = ['title', 'create'].filter((key) => !meta[key]);
+  const required = (['title', 'create'] as const).filter((key) => !meta[key]);
 
   if (required.length > 0) {
     throw {
