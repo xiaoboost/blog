@@ -1,4 +1,3 @@
-import type { ModuleLoader as ModuleLoaderInstance } from '@blog/types';
-import { GlobalKey } from '../types';
+import { GlobalKey, getGlobalContext } from './constant';
 
-export const ModuleLoader: ModuleLoaderInstance = window[GlobalKey.ModuleLoader];
+export const ModuleLoader = getGlobalContext()[GlobalKey.ModuleLoader];
