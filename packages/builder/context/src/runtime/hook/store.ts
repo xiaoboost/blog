@@ -9,7 +9,7 @@ import type {
 } from '@blog/types';
 import { AsyncSeriesHook, AsyncSeriesWaterfallHook } from 'tapable';
 import { getAccessor } from '../accessor';
-import { GlobalKey } from '../../types';
+import { getGlobalContext, GlobalKey } from '../constant';
 
 export const hooks: RuntimeHooks = {
   beforeStart: new AsyncSeriesHook<[]>(),
@@ -47,7 +47,7 @@ export const waitReady = new Promise<void>((resolve) => {
 
 // 延迟运行钩子
 setTimeout(() => {
-  const builder: BuilderInstance = globalThis[GlobalKey.Builder];
+  const builder: BuilderInstance = getGlobalContext()[GlobalKey.Builder];
   const runtimeData: RuntimeData = {
     hooks,
   };

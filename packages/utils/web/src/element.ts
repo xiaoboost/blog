@@ -1,21 +1,25 @@
 export type ScrollMode = 'all' | 'x' | 'y';
 
+function getStyleDeclarationValue(style: CSSStyleDeclaration, name: string): string {
+  return String(style[name as keyof CSSStyleDeclaration] ?? '');
+}
+
 export function getStyle(el: HTMLElement, name: string): string {
   if (name === 'float') {
     name = 'cssFloat';
   }
 
   try {
-    const style = el.style[name];
+    const style = getStyleDeclarationValue(el.style, name);
 
     if (style) {
-      return style;
+      return style as string;
     }
 
     const computed = document.defaultView?.getComputedStyle(el);
-    return computed ? computed[name] : '';
+    return computed ? getStyleDeclarationValue(computed, name) : '';
   } catch (e) {
-    return el.style[name];
+    return getStyleDeclarationValue(el.style, name);
   }
 }
 
