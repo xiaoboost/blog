@@ -44,8 +44,6 @@ export class BuilderError extends Error implements ErrorData {
       if (codeFrame) {
         message += `:${codeFrame.range.start.line}`;
       }
-
-      message += '\n';
     }
 
     if (codeFrame) {
