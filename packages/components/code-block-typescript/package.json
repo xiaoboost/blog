@@ -35,7 +35,7 @@
     "@types/node": "16.11.7",
     "@types/react": "18.0.28",
     "@xiao-ai/eslint-config": "1.0.1",
-    "@xiao-ai/tsconfig": "1.0.1",
+    "@xiao-ai/tsconfig": "1.0.3",
     "eslint": "8.34.0",
     "tslib": "2.5.0"
   }
