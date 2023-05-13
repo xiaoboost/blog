@@ -1,6 +1,6 @@
 import styles from './index.jss';
 
-const langLabel = {
+const langLabel: Record<string, string> = {
   html: 'HTML',
   js: 'JavaScript',
   jsx: 'JavaScript React',

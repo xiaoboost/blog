@@ -41,7 +41,7 @@ function displayPartsToString(tokens: ts.SymbolDisplayPart[]) {
   const result: DisplaySymbol[] = [];
 
   for (const token of tokens) {
-    if (infoNoStyleKinds[token.kind]) {
+    if (infoNoStyleKinds[token.kind as keyof typeof infoNoStyleKinds]) {
       const lastText = result[result.length - 1];
 
       if (isString(lastText)) {
