@@ -64,11 +64,11 @@ async function getGrammar() {
 }
 
 /** 不需要获取语法提示的字符 */
-const noInfoChar: Record<string, boolean> = Array.from('{}:();,+-*/.\'"=[]%`<>|^&~!')
+const noInfoChar = Array.from('{}:();,+-*/.\'"=[]%`<>|^&~!')
   .concat(['=>', '**', '>>', '<<', '>>>', '&&', '||'])
   .concat(['==', '===', '!=', '!==', '>=', '<=', '++', '--'])
   .concat(['new', 'function'])
-  .reduce((ans, item) => ((ans[item] = true), ans), {});
+  .reduce((ans, item) => ((ans[item] = true), ans), {} as Record<string, boolean>);
 
 /**
  * 分割行首 token

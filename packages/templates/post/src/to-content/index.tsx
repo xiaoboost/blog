@@ -111,7 +111,13 @@ function NavTitle({ titles }: NavTitleProps) {
   return (
     <ul className={cla.menuList}>
       {titles.map((title, i) => (
-        <li key={i} className={stringifyClass(cla.menuItem, cla[`menuLevel${title.level}`])}>
+        <li
+          key={i}
+          className={stringifyClass(
+            cla.menuItem,
+            cla[`menuLevel${title.level}` as keyof typeof cla],
+          )}
+        >
           <a href={`#${title.hash}`}>
             {title.level === 1 ? <Circle className={cla.menuIcon} /> : ''}
             {title.content}
