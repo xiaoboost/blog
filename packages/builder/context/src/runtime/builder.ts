@@ -1,5 +1,5 @@
 import type { BuilderOptions } from '@blog/types';
-import { GlobalKey } from '../types';
+import { getGlobalContext, GlobalKey } from './constant';
 
 export const builderOptions: Required<BuilderOptions> =
-  globalThis[GlobalKey.Builder]?.options ?? {};
+  getGlobalContext()[GlobalKey.Builder]?.options ?? {};
