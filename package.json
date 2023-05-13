@@ -18,6 +18,10 @@
     "lint": "pnpm run -r --parallel lint --no-error-on-unmatched-pattern",
     "lint:fix": "pnpm run -r --parallel lint:fix --no-error-on-unmatched-pattern"
   },
+  "engines": {
+    "node": ">=16",
+    "pnpm": ">=8"
+  },
   "pnpm": {
     "updateConfig": {
       "ignoreDependencies": [
