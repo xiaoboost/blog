@@ -110,6 +110,7 @@ function transformErrorData(err: any, opt?: ErrorParam): BuilderError | void {
       name: err.name ?? err.name ?? 'UNKNOWN_ERROR',
       message: err.message,
       codeFrame: err.codeFrame,
+      filePath: err.filePath,
     });
   }
 }
