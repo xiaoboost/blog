@@ -1,5 +1,17 @@
 # 博客
 
+## 5.4.2
+
+fix:
+
+- 修复 ts 错误没有显示文件的问题
+
+chore:
+
+- pnpm 升级至 8.5.0
+- typescript 升级至 5.0.4
+- @xiao-ai/tsconfig 升级至 1.0.3
+
 ## 5.4.1
 
 fix:
