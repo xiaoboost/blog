@@ -1,61 +1,53 @@
-import type { AssetData, BuilderPlugin, ResolveResult } from '@blog/types';
-import md5 from 'md5';
+import type { BuilderPlugin, ResolveResult } from '@blog/types';
 import path from 'path';
-import { AnyObject } from '@xiao-ai/utils';
 import { readFile } from 'fs/promises';
-import { getPathFormatter } from '@blog/node';
-import { isCssImport } from '../utils';
+import { getRenameMethod, mergeRename } from './rename';
+import { isCssImport } from '../../utils';
+import type { FileLoaderOptionInput, Rename } from './types';
 
 const pluginName = 'file-loader';
 
-export interface FileLoaderOption {
-  /** 文件匹配 */
-  test: RegExp;
-  /** 资源名称 */
-  name?: string;
-}
-
-export const getAssetNames = (name: string, isProduction: boolean) =>
-  isProduction ? `${name}/[name].[hash][ext]` : `${name}/[name][ext]`;
-
-export const FileLoader = (opt: FileLoaderOption): BuilderPlugin => ({
+export const FileLoader = (opt: FileLoaderOptionInput): BuilderPlugin => ({
   name: pluginName,
   apply(builder) {
-    const assets: AssetData[] = [];
+    /** 原始文件缓存 */
     const fileCache = new Map<string, Buffer>();
+    /** 路径映射缓存 */
     const filePathMap = new Map<string, ResolveResult>();
-    const { publicPath } = builder.options;
-    const { test: fileMatcher, name } = opt;
-    const getName = getPathFormatter(path.join(publicPath, name ?? '[name][ext]'));
+    /** 重命名配置 */
+    const rename = getRenameMethod(builder, opt);
 
     builder.hooks.start.tap(pluginName, () => {
-      assets.length = 0;
-      filePathMap.clear();
+      if ('test' in builder.renameAsset) {
+        builder.renameAsset = mergeRename(builder.renameAsset as Rename, rename);
+      } else {
+        builder.renameAsset = rename;
+      }
     });
 
     builder.hooks.bundler.tap(pluginName, (bundler) => {
       bundler.hooks.resolve.tapPromise(pluginName, async (args) => {
-        if (!fileMatcher.test(args.path)) {
+        if (!rename.test(args.path)) {
           return;
         }
 
         const resolved = builder.resolve(args.path, args);
-        const fileContent = fileCache.has(resolved.path)
-          ? fileCache.get(resolved.path)!
-          : await readFile(resolved.path);
+        const fileContent = fileCache.get(resolved.path) ?? (await readFile(resolved.path));
+        const newName = rename({ path: resolved.path, content: fileContent });
 
-        const nameOpt = path.parse(resolved.path);
-        const assetPath = getName({ name: nameOpt.name, hash: md5(fileContent), ext: nameOpt.ext });
+        if (!newName) {
+          return;
+        }
 
         if (!fileCache.has(resolved.path)) {
           fileCache.set(resolved.path, fileContent);
         }
 
-        filePathMap.set(assetPath, resolved);
+        filePathMap.set(newName, resolved);
 
         return {
           ...resolved,
-          path: assetPath,
+          path: newName,
           external: isCssImport(args.kind),
           watchFiles: [resolved.path],
           namespace: pluginName,
@@ -79,7 +71,7 @@ export const FileLoader = (opt: FileLoaderOption): BuilderPlugin => ({
     });
 
     builder.hooks.afterBundler.tap(pluginName, ({ bundler }) => {
-      // 外部资源
+      // 外部资源上报
       for (const [path, val] of filePathMap.entries()) {
         const cache = fileCache.get(val.path);
         if (cache) {
@@ -92,18 +84,15 @@ export const FileLoader = (opt: FileLoaderOption): BuilderPlugin => ({
 
       // bundler 资源
       for (const { path: original, content } of bundler.getAssets()) {
-        if (fileMatcher.test(original)) {
-          const nameOpt = path.parse(original);
-          const assetPath = getName({
-            name: nameOpt.name,
-            hash: md5(content),
-            ext: nameOpt.ext,
-          });
+        if (rename.test(original)) {
+          const newName = rename({ path: original, content });
 
-          builder.emitAsset({
-            path: assetPath,
-            content,
-          });
+          if (newName) {
+            builder.emitAsset({
+              path: newName,
+              content,
+            });
+          }
         }
       }
     });

@@ -1,9 +1,7 @@
-import type { BuilderPlugin } from '@blog/types';
-import path from 'path';
-import md5 from 'md5';
-import { getPathFormatter } from '@blog/node';
-import { getAssetNames } from '../../file-loader';
+import type { BuilderPlugin, AssetData } from '@blog/types';
+import { basename } from 'path';
 import { EntrySuffix } from '../utils';
+import { isBundleFile, BundleFileName } from '../../../bundler/utils';
 
 const pluginName = 'asset-extractor';
 
@@ -14,16 +12,9 @@ export const AssetExtractor = (): BuilderPlugin => ({
   name: pluginName,
   apply(builder) {
     const {
-      options: { mode, publicPath, entry },
+      options: { entry },
     } = builder;
-    const isProduction = mode === 'production';
-    const getStyleNames = getPathFormatter(
-      path.join(publicPath, getAssetNames('styles', isProduction)),
-    );
-    const getScriptNames = getPathFormatter(
-      path.join(publicPath, getAssetNames('scripts', isProduction)),
-    );
-    const chunkName = path.basename(entry).replace(EntrySuffix, '');
+    const chunkName = basename(entry).replace(EntrySuffix, '');
 
     builder.hooks.bundler.tap(pluginName, (bundler) => {
       bundler.hooks.resolveResult.tap(pluginName, (result) => {
@@ -44,64 +35,45 @@ export const AssetExtractor = (): BuilderPlugin => ({
         return;
       }
 
-      const assets = bundler.getAssets();
-      const styleFile = assets.find((item) => item.path.endsWith('.css'));
-      const styleMapFile = assets.find((item) => item.path.endsWith('.css.map'));
-      const scriptFile = assets.find((item) => item.path.endsWith('.js'));
-      const scriptMapFile = assets.find((item) => item.path.endsWith('.js.map'));
+      const isSpaceJsFile = (code: string) =>
+        code.length > 0 && /^\(\(\)\s*=>\s*\{\s*\}\)\(\);\s*$/.test(code);
+      const isEmitFile = (asset: AssetData) => {
+        // 跳过非构建产物文件
+        if (!isBundleFile(asset.path)) {
+          return false;
+        }
 
-      if (styleFile) {
-        const hash = md5(styleFile.content);
+        // 跳过空 js 文件
+        if (/\.js$/.test(asset.path) && isSpaceJsFile(asset.content.toString())) {
+          return false;
+        }
+
+        // 跳过 map 文件
+        if (/\.map$/.test(asset.path)) {
+          return false;
+        }
+
+        return true;
+      };
+
+      bundler.getAssets(true).forEach((asset) => {
+        if (!isEmitFile(asset)) {
+          return;
+        }
+
+        const { path: oldPath, content } = asset;
+        const nameWithChunk = oldPath.replace(BundleFileName, chunkName);
+        const newPath = builder.parent?.renameAsset({ path: nameWithChunk, content });
+
+        if (!newPath) {
+          return;
+        }
 
         builder.emitAsset({
-          content: styleFile.content,
-          path: getStyleNames({
-            name: chunkName,
-            ext: '.css',
-            hash,
-          }),
+          path: newPath,
+          content,
         });
-
-        if (styleMapFile) {
-          builder.emitAsset({
-            content: styleMapFile.content,
-            path: getStyleNames({
-              name: chunkName,
-              ext: '.css.map',
-              hash,
-            }),
-          });
-        }
-      }
-
-      if (scriptFile) {
-        const code = scriptFile.content.toString('utf-8');
-
-        // 跳过空文件
-        if (!/^\(\(\)\s*=>\s*\{\s*\}\)\(\);\s*$/.test(code)) {
-          const hash = md5(scriptFile.content);
-
-          builder.emitAsset({
-            content: scriptFile.content,
-            path: getScriptNames({
-              name: chunkName,
-              ext: '.js',
-              hash,
-            }),
-          });
-
-          if (scriptMapFile) {
-            builder.emitAsset({
-              content: scriptMapFile.content,
-              path: getScriptNames({
-                name: chunkName,
-                ext: '.js.map',
-                hash,
-              }),
-            });
-          }
-        }
-      }
+      });
     });
   },
 });

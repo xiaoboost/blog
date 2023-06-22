@@ -15,11 +15,9 @@ import {
 } from '@blog/types';
 import { AsyncSeriesBailHook, AsyncSeriesHook, SyncWaterfallHook } from 'tapable';
 import { BridgePlugin } from './bridge';
+import { BundleFileName, isBundleFile } from './utils';
 
 export class Bundler implements BundlerInstance {
-  /** 打包产物文件名称 */
-  static BundleFileName = '__bundleFile.js';
-
   private builder: BuilderInstance;
 
   private instance?: BuildIncremental;
@@ -51,7 +49,7 @@ export class Bundler implements BundlerInstance {
       const { options: opt, root } = builder;
       const esbuildConfig: BuildOptions = hooks.initialization.call({
         entryPoints: [opt.entry],
-        outfile: join(root, 'virtual', Bundler.BundleFileName),
+        outfile: join(root, 'virtual', `${BundleFileName}.js`),
         metafile: false,
         bundle: true,
         format: 'cjs',
@@ -76,21 +74,27 @@ export class Bundler implements BundlerInstance {
 
       this.instance = (await esbuild(esbuildConfig)) as BuildIncremental;
     }
-
-    this.assets = (this.instance.outputFiles ?? []).map((file) => ({
-      path: file.path,
-      content: Buffer.from(file.contents),
-    }));
   }
 
-  getAssets(): AssetData[] {
-    return this.assets.slice();
+  getAssets(includeOutput = false): AssetData[] {
+    const assets = this.assets.slice();
+
+    if (includeOutput) {
+      assets.push(
+        ...(this.instance?.outputFiles ?? []).map((item) => ({
+          path: item.path,
+          content: Buffer.from(item.contents),
+        })),
+      );
+    }
+
+    return assets;
   }
 
   getBundledCode(): BundlerResult {
     const output = this.instance?.outputFiles ?? [];
-    const source = output.find((item) => item.path.endsWith(Bundler.BundleFileName));
-    const sourceMap = output.find((item) => item.path.endsWith(`${Bundler.BundleFileName}.map`));
+    const source = output.find((item) => isBundleFile(item.path) && /\.js$/.test(item.path));
+    const sourceMap = output.find((item) => isBundleFile(item.path) && /\.map$/.test(item.path));
 
     return {
       source: source?.text ?? '',

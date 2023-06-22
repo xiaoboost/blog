@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import {
   BuilderHooks,
   BuilderInstance,
@@ -32,8 +34,6 @@ export class Builder implements BuilderInstance {
 
   private changedFiles = new Set<string>();
 
-  private parent?: Builder;
-
   private errors: BuilderError[] = [];
 
   private assets: AssetData[] = [];
@@ -41,6 +41,8 @@ export class Builder implements BuilderInstance {
   private children: Builder[] = [];
 
   private buildStatus = new Watcher(false);
+
+  readonly parent?: Builder;
 
   hooks: BuilderHooks;
 
@@ -189,18 +191,28 @@ export class Builder implements BuilderInstance {
       .concat(this.errors.slice());
   }
 
-  emitAsset(file: AssetData) {
-    const assetPath = normalize(file.path);
-    const oldAsset = this.assets.find((item) => item.path === assetPath);
+  emitAsset(...files: AssetData[]) {
+    for (const file of files) {
+      const assetPath = normalize(file.path);
+      const oldAsset = this.assets.find((item) => item.path === assetPath);
 
-    if (oldAsset) {
-      oldAsset.content = file.content;
-    } else {
-      this.assets.push({
-        path: assetPath,
-        content: file.content,
-      });
+      if (oldAsset) {
+        oldAsset.content = file.content;
+      } else {
+        this.assets.push({
+          path: assetPath,
+          content: file.content,
+        });
+      }
     }
+  }
+
+  renameAsset(file: AssetData): string {
+    throw new BuilderError({
+      project: this.name,
+      name: 'RENAME_NOT_INIT',
+      message: 'renameAsset 方法没有初始化',
+    });
   }
 
   getAssets(): AssetData[] {
