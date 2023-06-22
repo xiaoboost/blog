@@ -4,7 +4,7 @@ import type { Builder } from './builder';
 
 import { getCoreRoot } from '../utils';
 import { LocalPackageRequirer } from '../plugins/local-package-requirer';
-import { FileLoader, getAssetNames } from '../plugins/file-loader';
+import { FileLoader } from '../plugins/file-loader';
 import { PathLoader } from '../plugins/path-loader';
 import { Resolver } from '../plugins/resolver';
 import { JssLoader } from '../plugins/jss-loader';
@@ -12,6 +12,9 @@ import { ScriptLoader } from '../plugins/script-loader';
 import { PostLoader } from '../plugins/post-loader';
 import { AssetExtractor } from '../plugins/asset-extractor';
 import { Cname } from '../plugins/cname';
+
+const getAssetNames = (name: string, isProduction: boolean) =>
+  isProduction ? `${name}/[name].[hash].[ext]` : `${name}/[name].[ext]`;
 
 export async function applyPlugin(builder: Builder) {
   const { options: opt } = builder;
@@ -24,12 +27,16 @@ export async function applyPlugin(builder: Builder) {
 
   Resolver().apply(builder);
   PathLoader({ test: /\.(plist|wasm)$/ }).apply(builder);
-  FileLoader({ test: /\.(woff|woff2|ttf)$/, name: getAssetNames('fonts', isProduction) }).apply(
-    builder,
-  );
-  FileLoader({ test: /\.(svg|jpg|png|ico)$/, name: getAssetNames('images', isProduction) }).apply(
-    builder,
-  );
+  FileLoader([
+    {
+      test: /\.(woff|woff2|ttf)$/,
+      name: getAssetNames('fonts', isProduction),
+    },
+    {
+      test: /\.(svg|jpg|png|ico)$/,
+      name: getAssetNames('images', isProduction),
+    },
+  ]).apply(builder);
 
   if (opt.watch) {
     const { Watcher } = await import('../plugins/watcher.js');
@@ -50,7 +57,7 @@ export async function applyPlugin(builder: Builder) {
     LocalPackageRequirer().apply(builder);
     PostLoader().apply(builder);
     ScriptLoader().apply(builder);
-    JssLoader({ extractCss: false }).apply(builder);
+    JssLoader({ extractAsset: false }).apply(builder);
 
     if (opt.watch) {
       const { Development } = await import('../plugins/development/index.js');
@@ -73,6 +80,17 @@ export async function applyPlugin(builder: Builder) {
         typescriptPath: require.resolve('typescript'),
       }).apply(builder);
     }
+
+    FileLoader([
+      {
+        test: /\.css$/,
+        name: getAssetNames('styles', isProduction),
+      },
+      {
+        test: /\.js$/,
+        name: getAssetNames('scripts', isProduction),
+      },
+    ]).apply(builder);
   }
 
   // 应用外部插件

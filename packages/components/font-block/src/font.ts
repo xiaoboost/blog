@@ -1,8 +1,8 @@
-import { builderOptions as env } from '@blog/context/runtime';
-import { dirname, parse } from 'path';
+import { Builder } from '@blog/context/runtime';
+import { parse } from 'path';
 import { FontSerif } from '@blog/styles';
 import { toPinyin, normalize } from '@blog/node';
-import type { AssetData, PostExportData } from '@blog/types';
+import type { AssetData } from '@blog/types';
 import CleanCSS from 'clean-css';
 import { CustomFontData } from './types';
 import { getFontContentBySrc, getMinFontFile } from './utils';
@@ -14,6 +14,7 @@ export class CustomFont implements CustomFontData {
 
   text: string[] = [];
 
+  /** 字符集 */
   charSet = new Set<string>();
 
   /** 最小化字体文件 */
@@ -41,7 +42,6 @@ export class CustomFont implements CustomFontData {
 
   /**
    * 字体名称
-   *   - 字体文件的文件名（不包含后缀）
    */
   get fontFamily() {
     return parse(this.src).name.replace(/\s+/g, '');
@@ -49,12 +49,22 @@ export class CustomFont implements CustomFontData {
 
   /** 字体文件名称 */
   get fontFileName() {
-    return normalize(env.publicPath, this.post, `${this.fontFamily}.woff2`);
+    return (
+      Builder.renameAsset({
+        path: `${this.className}.woff2`,
+        content: this.minFont,
+      }) ?? normalize(Builder.options.publicPath, this.post, `${this.className}.woff2`)
+    );
   }
 
   /** 样式文件路径 */
   get cssFileName() {
-    return normalize(env.publicPath, this.post, `${this.fontFamily}.css`);
+    return (
+      Builder.renameAsset({
+        path: `${this.className}.css`,
+        content: Buffer.from(this.cssCode),
+      }) ?? normalize(Builder.options.publicPath, this.post, `${this.className}.css`)
+    );
   }
 
   /** 生成自定义字体数据 */
@@ -66,7 +76,7 @@ export class CustomFont implements CustomFontData {
     let original = await getFontContentBySrc(this.src);
 
     // 生产模式需要最小化字体
-    if (env.mode === 'production') {
+    if (Builder.options.mode === 'production') {
       original = await getMinFontFile(original, this.charSet);
     }
 
@@ -79,14 +89,15 @@ export class CustomFont implements CustomFontData {
       return this.cssCode;
     }
 
+    const { fontFileName, fontFamily, className } = this;
     const code = `
       @font-face {
-        font-family: "${this.fontFamily}";
-        src: url("${this.fontFileName}");
+        font-family: "${fontFamily}";
+        src: url("${fontFileName}");
       }
 
-      .${this.className} {
-        font-family: "${this.fontFamily}", ${FontSerif};
+      .${className} {
+        font-family: "${fontFamily}", ${FontSerif};
       }
     `;
 

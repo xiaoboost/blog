@@ -2,14 +2,12 @@ import type {
   RuntimeHooks,
   RuntimeData,
   PostUrlMap,
-  BuilderInstance,
   AssetData,
   PostExportData,
   ListRenderData,
 } from '@blog/types';
 import { AsyncSeriesHook, AsyncSeriesWaterfallHook } from 'tapable';
 import { getAccessor } from '../accessor';
-import { getGlobalContext, GlobalKey } from '../constant';
 
 export const hooks: RuntimeHooks = {
   beforeStart: new AsyncSeriesHook<[]>(),
@@ -23,7 +21,7 @@ export const hooks: RuntimeHooks = {
 };
 
 export type EachSetupHook = (runtime: RuntimeData) => void;
-export type OnceSetupHook = (runtime: RuntimeData, builder: BuilderInstance) => void;
+export type OnceSetupHook = (runtime: RuntimeData) => void;
 
 export const forEachStack: EachSetupHook[] = [];
 export const forOnceStack: OnceSetupHook[] = [];
@@ -47,13 +45,12 @@ export const waitReady = new Promise<void>((resolve) => {
 
 // 延迟运行钩子
 setTimeout(() => {
-  const builder: BuilderInstance = getGlobalContext()[GlobalKey.Builder];
   const runtimeData: RuntimeData = {
     hooks,
   };
 
   if (isFirstRun.get()) {
-    forOnceStack.forEach((item) => item(runtimeData, builder));
+    forOnceStack.forEach((item) => item(runtimeData));
   }
 
   forEachStack.forEach((item) => item(runtimeData));
