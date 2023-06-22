@@ -4,7 +4,7 @@ import type { PostExportDataWithComponent, PostUrlMap, PostsExportType } from '@
 import { normalize, normalizeUrl } from '@blog/node';
 import { Post as PostRender } from '@blog/template-post';
 import { utils as layoutUtils } from '@blog/template-layout';
-import { builderOptions } from '@blog/context/runtime';
+import { Builder } from '@blog/context/runtime';
 
 import { createHtml } from './react';
 import { site } from '../../constant';
@@ -30,7 +30,7 @@ export function getPostUrlMap(posts: PostsExportType) {
 }
 
 export function getPostUrlPath(post: PostExportDataWithComponent) {
-  return normalizeUrl(builderOptions.publicPath, post.data.pathname);
+  return normalizeUrl(Builder.options.publicPath, post.data.pathname);
 }
 
 export function getPostAssetPath(post: PostExportDataWithComponent) {
@@ -54,8 +54,8 @@ export function renderPost(post: PostExportDataWithComponent) {
     pathname: post.data.pathname,
     author: site.author,
     description: post.data.description,
-    publicPath: builderOptions.publicPath,
-    hmr: builderOptions.hmr,
+    publicPath: Builder.options.publicPath,
+    hmr: Builder.options.hmr,
     styles: layoutUtils.getStyleNames().concat(post.utils.getStyleNames()),
     scripts: layoutUtils.getScriptNames().concat(post.utils.getScriptNames()),
     post,

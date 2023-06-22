@@ -1,6 +1,5 @@
 import React from 'react';
-import { AssetData } from '@blog/types';
-import { forEach, defineUtils } from '@blog/context/runtime';
+import { forEach, defineUtils, Builder } from '@blog/context/runtime';
 import { stringifyClass, isString } from '@xiao-ai/utils';
 import { getCustomTextByPost, getCustomFontByData, getCustomFontByProps } from './utils';
 
@@ -105,8 +104,6 @@ export function FontBlock(props: FontBlockProps) {
 export const utils = defineUtils(script);
 
 forEach((runtime) => {
-  const postAssets: AssetData[] = [];
-
   runtime.hooks.beforeEachPost.tapPromise(componentName, async (post) => {
     for (const data of getCustomTextByPost(post)) {
       const font = getCustomFontByData(data);
@@ -117,11 +114,7 @@ forEach((runtime) => {
         post.utils.addAssetNames(cssFile.path);
       }
 
-      postAssets.push(...fontAssets);
+      Builder.emitAsset(...fontAssets);
     }
-  });
-
-  runtime.hooks.processAssets.tap(componentName, (assets) => {
-    return assets.concat(postAssets);
   });
 });

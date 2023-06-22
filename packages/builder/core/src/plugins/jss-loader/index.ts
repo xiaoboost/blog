@@ -5,19 +5,20 @@ import { cssCodeCache } from './store';
 import { getJssBuilder, cssClassesName, cssFileName } from './builder';
 
 export interface JssLoaderOptions {
-  extractCss?: boolean;
+  /** 是否提取资源 */
+  extractAsset?: boolean;
 }
 
 const pluginName = 'jss-loader';
 
-export const JssLoader = ({ extractCss = true }: JssLoaderOptions = {}): BuilderPlugin => ({
+export const JssLoader = ({ extractAsset = true }: JssLoaderOptions = {}): BuilderPlugin => ({
   name: pluginName,
   apply(builder) {
     /**
      * 提取 CSS 文件
      *   - 加载生成 css 文件，并重命名生成的文件
      */
-    if (extractCss) {
+    if (extractAsset) {
       builder.hooks.bundler.tap(pluginName, (bundler) => {
         bundler.hooks.resolve.tap(pluginName, (args) => {
           if (/\.jss\.css$/.test(args.path)) {
@@ -86,7 +87,7 @@ export const JssLoader = ({ extractCss = true }: JssLoaderOptions = {}): Builder
         return {
           loader: 'js',
           contents: `
-            ${extractCss ? `import '${cssFilePath}';` : ''}
+            ${extractAsset ? `import '${cssFilePath}';\n` : ''}
             export default {
               classes: ${classesCode},
             };

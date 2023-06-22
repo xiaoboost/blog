@@ -89,6 +89,8 @@ export interface BuilderInstance {
   readonly root: string;
   /** 是否需要构建 */
   readonly shouldBuild: boolean;
+  /** 上级构建器 */
+  readonly parent?: BuilderInstance;
 
   /** 钩子数据 */
   hooks: BuilderHooks;
@@ -115,9 +117,16 @@ export interface BuilderInstance {
   setChangeFiles(...files: string[]): void;
   /**
    * 添加资源文件
-   *   - 路径重复时，旧资源将会被覆盖
+   *
+   * @description 路径重复时，旧资源将会被覆盖
    */
-  emitAsset(file: AssetData): void;
+  emitAsset(...files: AssetData[]): void;
+  /**
+   * 重命名资源
+   *
+   * @description 输出为空时表示重命名失败
+   */
+  renameAsset(file: AssetData): string | undefined;
   /** 获取错误数据 */
   getErrors(): ErrorData[];
   /** 获取产物数据 */
@@ -136,8 +145,12 @@ export interface BundlerInstance {
   hooks: BundlerHooks;
   /** 打包代码 */
   bundle(): Promise<void>;
-  /** 获取产物数据 */
-  getAssets(): AssetData[];
+  /**
+   * 获取构建产物数据
+   *
+   * @param {boolean} [includeOutput] 是否包含构建产物本身
+   */
+  getAssets(includeOutput?: boolean): AssetData[];
   /** 获取打包后的代码 */
   getBundledCode(): BundlerResult;
   /** 停止运行 */

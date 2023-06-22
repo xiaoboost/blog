@@ -1,5 +1,12 @@
 # 博客
 
+## 5.5.0
+
+feature:
+
+- 重写了 font-loader 的机制
+- Builder 新增了 renameAsset 接口
+
 ## 5.4.2
 
 fix:
