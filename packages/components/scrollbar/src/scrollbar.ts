@@ -1,10 +1,21 @@
 import { supportsPassive, addClassName, removeClassName, MouseButtons } from '@xiao-ai/utils/web';
-import { getScrollContainer, getDataFromEl } from '@blog/web';
+import { getScrollContainer, getDataFromEl, device } from '@blog/web';
 import { ScrollMode } from './constant';
 
 import styles from './index.jss';
 
 const { classes: cla } = styles;
+
+interface MouseState {
+  /** 鼠标在移动 */
+  isMoving: boolean;
+  /** 鼠标在滚动条上 */
+  isOver: boolean;
+  /** 鼠标当前偏移量 */
+  offset: number;
+  /** 鼠标上次偏移量 */
+  lastOffset: number;
+}
 
 export class ScrollBar {
   /** 滚动条容器 */
@@ -22,14 +33,16 @@ export class ScrollBar {
   /** 滚动条模式 */
   private readonly mode: ScrollMode = 'x';
 
-  /** 鼠标正在移动 */
-  private mouseMove = false;
+  /** 滚动隐藏定时器 */
+  private hideScrollTimer = -1;
 
-  /** 鼠标当前偏移量 */
-  private mouseOffset = -1;
-
-  /** 鼠标上次偏移量 */
-  private mouseLastOffset = -1;
+  /** 鼠标状态 */
+  private mouse: MouseState = {
+    isMoving: false,
+    isOver: false,
+    offset: -1,
+    lastOffset: -1,
+  };
 
   constructor(el: HTMLElement) {
     this.scrollbar = el;
@@ -74,7 +87,14 @@ export class ScrollBar {
       width,
       isVertical,
       isScrollWindow,
+      mouse,
     } = this;
+
+    // 非桌面端禁用此滚动条
+    if (!device.desktop()) {
+      addClassName(scrollbar, cla.disable);
+      return;
+    }
 
     // 容器不存在，或者是滚轴长度没有超过容器长度
     if (scrollLength <= clientLength) {
@@ -93,7 +113,6 @@ export class ScrollBar {
     }
 
     this.setSliderPositionFromContainer();
-    this.triggerClass(this.scrollbar, true);
 
     const options: AddEventListenerOptions | boolean = !supportsPassive
       ? false
@@ -102,15 +121,40 @@ export class ScrollBar {
           capture: false,
         };
 
-    const triggerTrue = () => this.triggerClass(scrollbar, true);
-    const triggerFalse = () => this.triggerClass(scrollbar, true);
+    const triggerTrue = () => {
+      mouse.isOver = true;
+      this.triggerClass(true);
+    };
+    const triggerFalse = () => {
+      mouse.isOver = false;
+      this.delaySetScrollInvisible();
+    };
+    const startMouseMove = (ev: MouseEvent) => {
+      if (!mouse.isMoving && ev.button === MouseButtons.Left) {
+        mouse.isMoving = true;
+        // 鼠标滑动时，不允许选中文本
+        container.style.userSelect = 'none';
+      }
+    };
+    const stopMouseMove = () => {
+      const { mouse, container } = this;
 
-    container.addEventListener('mouseenter', triggerTrue, options);
-    container.addEventListener('mouseleave', triggerFalse, options);
-    container.addEventListener('scroll', this.setSliderPositionFromContainer, options);
-    slider.addEventListener('mousedown', this.startMouseMove, options);
-    window.addEventListener('mouseup', this.stopMouseMove, options);
+      if (mouse.isMoving) {
+        mouse.offset = -1;
+        mouse.lastOffset = -1;
+        mouse.isMoving = false;
+        container.style.userSelect = '';
+      }
+
+      this.delaySetScrollInvisible();
+    };
+
+    scrollbar.addEventListener('mouseenter', triggerTrue, options);
+    scrollbar.addEventListener('mouseleave', triggerFalse, options);
+    slider.addEventListener('mousedown', startMouseMove, options);
+    window.addEventListener('mouseup', stopMouseMove, options);
     window.addEventListener('mousemove', this.setSliderPositionFromMouse, options);
+    container.addEventListener('scroll', this.setSliderPositionFromContainer, options);
 
     if (isScrollWindow) {
       scrollbar.style.position = 'fixed';
@@ -121,14 +165,14 @@ export class ScrollBar {
     }
 
     this.disable = () => {
-      this.stopMouseMove();
+      stopMouseMove();
 
-      container.removeEventListener('mouseenter', triggerTrue, options);
-      container.removeEventListener('mouseleave', triggerFalse, options);
-      container.removeEventListener('scroll', this.setSliderPositionFromContainer, options);
-      slider.removeEventListener('mousedown', this.startMouseMove, options);
-      window.removeEventListener('mouseup', this.stopMouseMove, options);
+      scrollbar.removeEventListener('mouseenter', triggerTrue, options);
+      scrollbar.removeEventListener('mouseleave', triggerFalse, options);
+      slider.removeEventListener('mousedown', startMouseMove, options);
+      window.removeEventListener('mouseup', stopMouseMove, options);
       window.removeEventListener('mousemove', this.setSliderPositionFromMouse, options);
+      container.removeEventListener('scroll', this.setSliderPositionFromContainer, options);
 
       if (isScrollWindow) {
         window.removeEventListener('resize', this.setSliderPositionFromContainer, options);
@@ -143,7 +187,9 @@ export class ScrollBar {
   disable = (): void => void 0;
 
   setSliderPositionFromContainer = () => {
-    if (this.mouseMove) {
+    const { mouse } = this;
+
+    if (mouse.isMoving) {
       return;
     }
 
@@ -158,7 +204,9 @@ export class ScrollBar {
     const scrollbarLen = (client / scroll) * client;
     const scrollOffset = ((isVertical ? parent.scrollTop : parent.scrollLeft) / scroll) * client;
 
-    this.mouseOffset = scrollOffset;
+    mouse.offset = scrollOffset;
+    this.triggerClass(true);
+    this.delaySetScrollInvisible();
 
     if (isVertical) {
       slider.style.height = `${scrollbarLen}px`;
@@ -169,32 +217,34 @@ export class ScrollBar {
     }
   };
 
-  setSliderPositionFromMouse = (mouse: MouseEvent) => {
-    if (!this.mouseMove) {
+  setSliderPositionFromMouse = (ev: MouseEvent) => {
+    const { mouse } = this;
+
+    if (!mouse.isMoving) {
       return;
     }
 
     const { clientLength: client, scrollLength: scroll, slider, isVertical } = this;
-    const currentOffset = isVertical ? mouse.clientY : mouse.clientX;
+    const currentOffset = isVertical ? ev.clientY : ev.clientX;
 
-    if (this.mouseOffset === -1) {
-      this.mouseOffset = isVertical
+    if (mouse.offset === -1) {
+      mouse.offset = isVertical
         ? Number.parseFloat(slider.style.top)
         : Number.parseFloat(slider.style.left);
     }
 
-    if (this.mouseLastOffset === -1) {
-      this.mouseLastOffset = currentOffset;
+    if (mouse.lastOffset === -1) {
+      mouse.lastOffset = currentOffset;
       return;
     }
 
-    const offsetY = currentOffset - this.mouseLastOffset;
+    const offsetY = currentOffset - mouse.lastOffset;
     const scrollbarLen = (client / scroll) * client;
 
-    this.mouseLastOffset = currentOffset;
-    this.mouseOffset += offsetY;
+    mouse.lastOffset = currentOffset;
+    mouse.offset += offsetY;
 
-    let realOffset = this.mouseOffset;
+    let realOffset = mouse.offset;
 
     if (realOffset < 0) {
       realOffset = 0;
@@ -211,25 +261,22 @@ export class ScrollBar {
     });
   };
 
-  startMouseMove = (mouse: MouseEvent) => {
-    if (!this.mouseMove && mouse.button === MouseButtons.Left) {
-      this.mouseMove = true;
-      // 鼠标滑动时，不允许选中文本
-      this.container.style.userSelect = 'none';
+  delaySetScrollInvisible = () => {
+    if (this.hideScrollTimer !== -1) {
+      clearTimeout(this.hideScrollTimer);
     }
+
+    this.hideScrollTimer = window.setTimeout(() => {
+      if (this.mouse.isOver) {
+        return;
+      }
+
+      this.triggerClass(false);
+    }, 300);
   };
 
-  stopMouseMove = () => {
-    if (this.mouseMove) {
-      this.mouseOffset = -1;
-      this.mouseLastOffset = -1;
-      this.mouseMove = false;
-      this.container.style.userSelect = '';
-    }
-  };
-
-  triggerClass = (el: HTMLElement, visible: boolean) => {
-    removeClassName(el, visible ? cla.invisible : cla.visible);
-    addClassName(el, visible ? cla.visible : cla.invisible);
+  triggerClass = (visible: boolean) => {
+    removeClassName(this.scrollbar, visible ? cla.invisible : cla.visible);
+    addClassName(this.scrollbar, visible ? cla.visible : cla.invisible);
   };
 }
