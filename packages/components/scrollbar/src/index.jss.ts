@@ -4,6 +4,7 @@ export default createStyles({
   invisible: {},
   visible: {},
   slider: {},
+  disable: {},
   scrollbar: {
     position: 'absolute',
     background: 'transparent',
@@ -12,23 +13,22 @@ export default createStyles({
 
     '&$invisible': {
       opacity: 0,
-      pointerEvents: 'none',
-      transition: 'opacity .8s linear',
+      transition: 'opacity .5s linear',
     },
     '&$visible': {
       opacity: 1,
       transition: 'opacity .2s linear',
+    },
+    '&$disable': {
+      display: 'none',
+      'pointer-events': 'none',
     },
     '& $slider': {
       position: 'absolute',
       left: 0,
       transform: 'translate3d(0px, 0px, 0px)',
       contain: 'strict',
-      background: 'rgba(100, 100, 100, 0.4)',
-
-      '&:hover': {
-        background: 'rgba(100, 100, 100, 0.6)',
-      },
+      background: 'rgba(100, 100, 100, 0.5)',
     },
   },
 });
