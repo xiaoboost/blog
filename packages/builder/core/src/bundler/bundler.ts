@@ -93,8 +93,8 @@ export class Bundler implements BundlerInstance {
 
   getBundledCode(): BundlerResult {
     const output = this.instance?.outputFiles ?? [];
-    const source = output.find((item) => isBundleFile(item.path) && /\.js$/.test(item.path));
-    const sourceMap = output.find((item) => isBundleFile(item.path) && /\.map$/.test(item.path));
+    const source = output.find(({ path }) => isBundleFile(path) && /\.js$/.test(path));
+    const sourceMap = output.find(({ path }) => isBundleFile(path) && /\.js\.map$/.test(path));
 
     return {
       source: source?.text ?? '',

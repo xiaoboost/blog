@@ -1,11 +1,17 @@
 # 博客
 
+## 5.5.1
+
+fix:
+
+- 修复`bundler`产物路径判定错误 
+
 ## 5.5.0
 
 feature:
 
-- 重写了 font-loader 的机制
-- Builder 新增了 renameAsset 接口
+- 重写`font-loader`机制
+- `Builder`新增`renameAsset`接口
 
 ## 5.4.2
 
