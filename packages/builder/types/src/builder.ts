@@ -1,3 +1,4 @@
+import type { CacheAccessor } from './accessor';
 import type { BuilderHooks, BundlerHooks } from './hooks';
 import type { ErrorData } from './error';
 import type { AssetData } from './asset';
@@ -79,6 +80,12 @@ export interface CommandOptions {
    * @default true
    */
   typeCheck?: boolean;
+  /**
+   * 缓存路径
+   *
+   * @default '.cache'
+   */
+  cache?: string;
 }
 
 /** 构建器实例 */
@@ -109,6 +116,12 @@ export interface BuilderInstance {
   stop(): Promise<void>;
   /** 是否是子构建器 */
   isChild(): boolean;
+  /**
+   * 获取缓存访问器
+   *
+   * @description 缓存数据将会存入硬盘中，用以提高下次构建的速度
+   */
+  getCacheAccessor(name: string): CacheAccessor;
   /** 创建子构建器 */
   createChild(opt?: BuilderOptions): Promise<BuilderInstance>;
   /** 添加监听文件 */

@@ -1,6 +1,6 @@
 import type { ListRenderData } from '@blog/types';
 import { normalize, normalizeUrl } from '@blog/node';
-import { Builder } from '@blog/context/runtime';
+import { RuntimeBuilder as Builder } from '@blog/context/runtime';
 import { MainIndex, utils } from '@blog/template-layout';
 import { createHtml } from './react';
 import { site } from '../../constant';

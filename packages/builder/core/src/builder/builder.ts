@@ -8,6 +8,7 @@ import {
   BuilderHookContext,
   ResolveOptions,
   ResolveResult,
+  CacheAccessor,
 } from '@blog/types';
 import { AsyncSeriesHook, AsyncParallelHook, AsyncSeriesWaterfallHook, SyncHook } from 'tapable';
 import { normalize } from '@blog/node';
@@ -212,6 +213,18 @@ export class Builder implements BuilderInstance {
       project: this.name,
       name: 'RENAME_NOT_INIT',
       message: 'renameAsset 方法没有初始化',
+    });
+  }
+
+  getCacheAccessor(name: string): CacheAccessor {
+    if (this.isChild()) {
+      return this.parent!.getCacheAccessor(name);
+    }
+
+    throw new BuilderError({
+      project: this.name,
+      name: 'CACHE_NOT_INIT',
+      message: 'getCacheAccessor 方法没有初始化',
     });
   }
 
