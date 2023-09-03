@@ -1,7 +1,8 @@
 import React from 'react';
 import { getJsxNodesByTag, getAttribute } from '@blog/parser/walk';
 import { forEach, defineUtils, RuntimeBuilder as Builder } from '@blog/context/runtime';
-import { getBookData, getBookDataForUI, componentName } from './book';
+import { getBookData, getBookDataForUI } from './book';
+import { ComponentName, ComponentAttrName } from './constant';
 
 import script from './book-summary.script';
 
@@ -30,21 +31,20 @@ export function BookSummary({ id, fallbackName }: BookSummaryProps) {
     if (fallbackName) {
       return <em>{fallbackName}</em>;
     } else {
-      throw new Error(`组件 ${componentName}：书籍编号未找到数据，且没有默认书名。`);
+      throw new Error(`组件 ${ComponentName}：书籍编号未找到数据，且没有默认书名。`);
     }
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { cover, ...uiData } = data;
+  const attrs = { [ComponentAttrName]: encodeURI(JSON.stringify(uiData)) };
 
-  debugger;
   return (
     <a
       target='_blank'
       rel='noreferrer'
       href={uiData.url}
-      data-book-summary={encodeURI(JSON.stringify(uiData))}
-      data-id={id}
+      {...attrs}
       // eslint-disable-next-line prettier/prettier
     ><em>《{data.title}》</em></a>
   );
@@ -53,7 +53,7 @@ export function BookSummary({ id, fallbackName }: BookSummaryProps) {
 export const utils = defineUtils(script);
 
 forEach((runtime) => {
-  runtime.hooks.beforeEachPost.tapPromise(componentName, async ({ data: { ast } }) => {
+  runtime.hooks.beforeEachPost.tapPromise(ComponentName, async ({ data: { ast } }) => {
     const bookNodes = getJsxNodesByTag(ast, 'BookSummary');
 
     if (bookNodes.length === 0) {

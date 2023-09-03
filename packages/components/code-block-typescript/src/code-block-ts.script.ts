@@ -113,7 +113,7 @@ function active() {
     }
 
     if (!infoData) {
-      break;
+      continue;
     }
 
     el.addEventListener('mouseenter', () => {

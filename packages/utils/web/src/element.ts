@@ -1,3 +1,5 @@
+import { isString } from '@xiao-ai/utils';
+
 export type ScrollMode = 'all' | 'x' | 'y';
 
 function getStyleDeclarationValue(style: CSSStyleDeclaration, name: string): string {
@@ -122,4 +124,30 @@ export function getCurrentScriptSrc() {
   }
 
   return src;
+}
+
+export function createElement(
+  tag: string,
+  props: Record<string, string | number> = {},
+  children: (HTMLElement | string)[] = [],
+): HTMLElement {
+  const el = document.createElement(tag);
+
+  for (const [key, value] of Object.entries(props)) {
+    if (key === 'className') {
+      el.setAttribute('class', String(value));
+    } else {
+      el.setAttribute(key, String(value));
+    }
+  }
+
+  for (const child of children) {
+    if (isString(child)) {
+      el.appendChild(new Text(child));
+    } else {
+      el.appendChild(child);
+    }
+  }
+
+  return el;
 }

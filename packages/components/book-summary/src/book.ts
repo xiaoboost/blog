@@ -2,11 +2,10 @@ import { getReference, RuntimeBuilder } from '@blog/context/runtime';
 import { load as loadHtml } from 'cheerio';
 import { imageSize as imageCheck } from 'image-size';
 import { BookData, BookCache } from './types';
+import { ComponentName } from './constant';
 
-/** 组件名称 */
-export const componentName = 'book-summary';
 /** 书籍数据 */
-export const bookMap = getReference(`${componentName}-map`, new Map<number, BookData>());
+export const bookMap = getReference(`${ComponentName}-map`, new Map<number, BookData>());
 /** 书籍编号生成起点地址 */
 export const getUrlFromId = (id: number) => `https://www.qidian.com/book/${id}/`;
 
@@ -18,7 +17,7 @@ const getCacheFilePath = (id: number) => ({
 });
 
 async function getBookDataFromDisk(id: number): Promise<BookData | undefined> {
-  const builderCache = RuntimeBuilder.getCacheAccessor(componentName);
+  const builderCache = RuntimeBuilder.getCacheAccessor(ComponentName);
   const [metaDataBuffer, coverDataBuffer] = await Promise.all([
     builderCache.read(getCacheFilePath(id).meta),
     builderCache.read(getCacheFilePath(id).cover),
@@ -31,6 +30,8 @@ async function getBookDataFromDisk(id: number): Promise<BookData | undefined> {
   RuntimeBuilder.logger.debug(`书籍 ${id} 数据从缓存中获取。`);
 
   const data = JSON.parse(metaDataBuffer.toString('utf-8')) as BookCache;
+
+  // TODO: 缓存取出来的也要重新 hash
 
   return {
     ...data,
@@ -53,7 +54,12 @@ async function getBookDataFromUrl(id: number): Promise<BookData | undefined> {
 
   const $ = loadHtml(html);
   const title = $('#bookName').text().trim();
-  const intro = $('#book-intro-detail').text().trim();
+  const introEl = $('#book-intro-detail');
+  const intro =
+    introEl
+      .html()
+      ?.trim()
+      .replace(/ *<br> */g, '\n') ?? introEl.text().trim();
   const author = $('.writer-name');
   const authorName = author.text().trim();
   const authorUrl = normalizeUrl(author.attr('href')?.trim() ?? '');
@@ -94,7 +100,7 @@ async function getBookDataFromUrl(id: number): Promise<BookData | undefined> {
   RuntimeBuilder.logger.debug(`书籍 ${id} 从网络获取数据成功，写入缓存。`);
 
   const cachePath = getCacheFilePath(id);
-  const builderCache = RuntimeBuilder.getCacheAccessor(componentName);
+  const builderCache = RuntimeBuilder.getCacheAccessor(ComponentName);
 
   await Promise.all([
     builderCache.write(cachePath.meta, JSON.stringify(bookCache)),

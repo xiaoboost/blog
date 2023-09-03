@@ -1,6 +1,6 @@
 import React from 'react';
 import { stringifyClass } from '@xiao-ai/utils';
-import { defineUtils, getReference } from '@blog/context/runtime';
+import { defineUtils, getReference, RuntimeBuilder as Builder } from '@blog/context/runtime';
 import {
   styles as normalStyles,
   CodeBlockWrapper,
@@ -41,7 +41,7 @@ export function TsCodeBlock({
     const key = `typescript:${children}`;
 
     if (cache.has(key)) {
-      console.log('use cache');
+      Builder.logger.debug(`${TsCodeBlock}: use cache`);
       return cache.get(key)!;
     }
 
