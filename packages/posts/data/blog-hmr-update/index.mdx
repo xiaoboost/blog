@@ -43,7 +43,11 @@ HMR 全称 Hot Module Replacement，中文通常翻译为*模块热更新*，它
 
 因为 HMR 需要后端主动通知前端变更，所以只能使用 WebSocket 服务来建立连接，由于之前的静态服务器使用 Koa 来完成，这里也就直接用`koa-websocket`来完成 WS 服务了。
 
-```ts?lsp=false
+```ts
+/// <reference import-type="@types/koa" />
+/// <reference import-type="@types/koa-websocket" />
+/// <reference import-type="@types/ws" />
+
 import Koa from 'koa';
 import Ws from 'koa-websocket';
 
@@ -51,6 +55,8 @@ import type { WebSocket } from 'ws';
 
 const app = Ws(new Koa());
 const sockets: WebSocket[] = [];
+
+declare remove = (sockets: WebSocket[], socket: WebSocket) => void;
 
 app.ws.server?.on('connection', (socket: WebSocket) => {
   sockets.push(socket);
@@ -116,7 +122,9 @@ export default function Layout(props: Props) {
 
 后端服务器：
 
-```ts?lsp=false
+```ts
+/// <reference import-type="@types/koa" />
+
 import { build } from 'esbuild';
 import { ParameterizedContext, Next } from 'koa';
 
@@ -199,7 +207,7 @@ if ('WebSocket' in window) {
 
 CSS 文件更新是最简单的，只需要替换新的`link`标签即可。但是注意要在链接后面加上新的 hash 编码，这样浏览器才会去读新的文件内容，而不是从缓存里拿。所以它的更新代码大约可以是：
 
-```ts
+```ts?platform=browser
 function reloadCSS(src: string) {
   const link = document.querySelector(`link[href|="${src}"]`);
 
@@ -224,7 +232,7 @@ HTML 的更新要稍微复杂一些，因为还直接涉及了 JS 页面交互�
 
 于是我想到，博客几乎全是静态网页的文章，现在为止也就是目录导航之类的轻交互内容，何不直接替换`body`标签内容呢？能解决问题的方法就是好方法，更何况这只在开发阶段才会用，正式上线是没有 HMR 的。于是按照这个思路，后端只需要对比前后 body 标签内容是否变更即可，随后将 body 的内容发送至前端，前端对其直接替换。所以 HTML 的代码大约是：
 
-```ts
+```ts?platform=browser
 function reloadHTML(content: string) {
   const element = document.querySelector('body');
 

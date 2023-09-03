@@ -6,7 +6,7 @@ description: TypeScript 官网不知道啥时候上线了静态代码提示功�
 
 所谓“静态代码提示”，是指在没有语言服务的情况下，展示出鼠标`hover`代码的类型提示功能。如下所示：
 
-```ts
+```ts?platform=browser
 // 将鼠标放在变量上
 
 interface Point {
@@ -308,7 +308,7 @@ const var1 = '123';
 
 这里没有什么能介绍的原理，只是 API 调用而已：
 
-```ts?lsp=false
+```ts
 import vsctm from 'vscode-textmate';
 import oniguruma from 'vscode-oniguruma';
 

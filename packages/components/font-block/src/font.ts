@@ -1,4 +1,4 @@
-import { Builder } from '@blog/context/runtime';
+import { RuntimeBuilder as Builder } from '@blog/context/runtime';
 import { FontSerif } from '@blog/styles';
 import { toPinyin, normalize } from '@blog/node';
 import type { AssetData } from '@blog/types';

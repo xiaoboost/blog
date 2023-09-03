@@ -41,4 +41,4 @@ class Module implements ModuleLoader {
 
 export const module = new Module();
 
-window[GlobalKey.ModuleLoader] = module;
+(window as any)[GlobalKey.ModuleLoader] = module;

@@ -96,4 +96,43 @@ export const utils = defineUtils(template.getAssetNames());
       `.trim(),
     });
   });
+
+  it('one more component', async () => {
+    expect(
+      await getPostData(
+        `
+import { MathBlock } from '@blog/mdx-katex';
+import { BookSummary } from '@blog/mdx-book-summary';
+
+测试内容
+
+<MathBlock>test</MathBlock>
+
+测试内容<BookSummary />测试内容
+    `.trim(),
+      ),
+    ).deep.eq({
+      ...commonData,
+      description: `import { MathBlock } from '@blog/mdx-katex';import { BookSummary } from '@blog/mdx-book-summary';测试内容<MathBlock>test</MathBlock>测试内容<BookSummary />测试内容`,
+      content: `
+import { utils as c0 } from '@blog/mdx-katex';
+import { utils as c1 } from '@blog/mdx-book-summary';
+import { utils as template } from '@blog/template-post';
+import { defineUtils } from '@blog/context/runtime';
+export const utils = defineUtils(template.getAssetNames().concat(
+  c0.getAssetNames(),
+  c1.getAssetNames(),
+));
+
+import { MathBlock } from '@blog/mdx-katex';
+import { BookSummary } from '@blog/mdx-book-summary';
+
+测试内容
+
+<MathBlock>test</MathBlock>
+
+测试内容<BookSummary />测试内容
+      `.trim(),
+    });
+  });
 });

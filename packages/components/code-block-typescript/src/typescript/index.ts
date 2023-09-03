@@ -9,10 +9,11 @@ export { ScriptKind, Platform, DisplaySymbol };
 export function renderTsCode(
   code: string,
   tabWith: number,
-  lang: ScriptKind = 'ts',
-  platform: Platform = 'browser',
+  baseDir: string,
+  lang: ScriptKind,
+  platform: Platform,
 ) {
-  const linesTokens = tokenize(code, lang, platform === 'node' ? 'node' : 'browser');
+  const linesTokens = tokenize(code, baseDir, lang, platform);
   const lineCodes = linesTokens.map((line) => {
     let code = '';
 

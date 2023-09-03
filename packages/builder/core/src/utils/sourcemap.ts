@@ -11,7 +11,7 @@ function getSource(sourceMap: SourceMapConsumer, raw: string, fullPath: string) 
     if (result) {
       return result;
     }
-  } catch (e) {
+  } catch (_) {
     // ..
   }
 

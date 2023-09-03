@@ -21,17 +21,17 @@
   "dependencies": {
     "@blog/core": "workspace:*",
     "@blog/types": "workspace:*",
-    "dotenv": "16.0.3",
-    "tslib": "2.5.0",
-    "yargs": "17.6.2"
+    "dotenv": "16.3.1",
+    "tslib": "2.6.2",
+    "yargs": "17.7.2"
   },
   "devDependencies": {
-    "@types/node": "16.11.7",
-    "@types/yargs": "17.0.22",
-    "@xiao-ai/eslint-config": "1.0.1",
+    "@types/node": "18.11.9",
+    "@types/yargs": "17.0.24",
+    "@xiao-ai/eslint-config": "1.0.3",
     "@xiao-ai/tsconfig": "1.0.4",
-    "eslint": "8.34.0",
-    "rimraf": "4.1.2",
-    "typescript": "5.0.4"
+    "eslint": "8.56.0",
+    "rimraf": "5.0.1",
+    "typescript": "5.2.2"
   }
 }

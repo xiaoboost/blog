@@ -26,19 +26,19 @@ function getImportComponentNode(ast: Mdx.Root) {
         continue;
       }
 
-      const firstNode = esNode.body[0];
+      for (const item of esNode.body) {
+        if (item.type !== 'ImportDeclaration') {
+          continue;
+        }
 
-      if (firstNode.type !== 'ImportDeclaration') {
-        continue;
+        const importSource = String(item.source.value ?? '');
+
+        if (!importSource.startsWith('@blog/mdx-')) {
+          continue;
+        }
+
+        importSet.add(importSource);
       }
-
-      const importSource = String(firstNode.source.value ?? '');
-
-      if (!importSource.startsWith('@blog/mdx-')) {
-        continue;
-      }
-
-      importSet.add(importSource);
     }
   }
 

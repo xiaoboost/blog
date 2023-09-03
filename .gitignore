@@ -1,9 +1,9 @@
 node_modules
 
 .vscode
+.cache
 .DS_Store
 .intercepter
-.cache
 
 old
 dist
