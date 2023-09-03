@@ -35,7 +35,7 @@ export async function compile(code: string, format = false) {
   let jsxCode = compiled.toString();
 
   if (format) {
-    jsxCode = prettier.format(jsxCode, {
+    jsxCode = await prettier.format(jsxCode, {
       parser: 'babel',
     });
   }

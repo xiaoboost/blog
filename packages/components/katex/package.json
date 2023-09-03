@@ -17,14 +17,14 @@
   "dependencies": {
     "@blog/context": "workspace:*",
     "@blog/styles": "workspace:*",
-    "katex": "0.16.4",
+    "katex": "0.16.8",
     "react": "18.2.0"
   },
   "devDependencies": {
     "@types/blog": "workspace:*",
-    "@types/katex": "0.16.0",
+    "@types/katex": "0.16.2",
     "@types/node": "16.11.7",
-    "@types/react": "18.0.28",
+    "@types/react": "18.2.21",
     "@xiao-ai/eslint-config": "1.0.1",
     "@xiao-ai/tsconfig": "1.0.4",
     "eslint": "8.34.0",

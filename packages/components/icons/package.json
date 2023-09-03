@@ -22,7 +22,7 @@
   "devDependencies": {
     "@types/blog": "workspace:*",
     "@types/node": "16.11.7",
-    "@types/react": "18.0.28",
+    "@types/react": "18.2.21",
     "@xiao-ai/eslint-config": "1.0.1",
     "@xiao-ai/tsconfig": "1.0.4",
     "eslint": "8.34.0",

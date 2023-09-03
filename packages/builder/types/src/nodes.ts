@@ -43,9 +43,9 @@ declare module 'mdast' {
     | Table
     | TableRow
     | TableCell
-    | HTML
+    | Html
     | Code
-    | YAML
+    | Yaml
     | Definition
     | FootnoteDefinition
     | Text
@@ -58,6 +58,5 @@ declare module 'mdast' {
     | Image
     | LinkReference
     | ImageReference
-    | Footnote
     | FootnoteReference;
 }

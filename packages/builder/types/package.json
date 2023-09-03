@@ -17,9 +17,9 @@
     "url": "https://github.com/xiaoboost/blog"
   },
   "dependencies": {
-    "@types/estree": "1.0.0",
-    "@types/mdast": "3.0.10",
-    "@types/react": "18.0.28",
+    "@types/estree": "1.0.1",
+    "@types/mdast": "4.0.0",
+    "@types/react": "18.2.21",
     "chokidar": "3.5.3",
     "esbuild": "0.15.18",
     "tapable": "2.2.1"
