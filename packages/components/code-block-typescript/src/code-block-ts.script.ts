@@ -53,7 +53,7 @@ class InfoElement {
         text.textContent = info;
       } else {
         text.setAttribute('class', info[0]);
-        text.textContent = info[1];
+        [, text.textContent] = info;
       }
     }
   }
@@ -113,7 +113,7 @@ function active() {
     }
 
     if (!infoData) {
-      break;
+      continue;
     }
 
     el.addEventListener('mouseenter', () => {

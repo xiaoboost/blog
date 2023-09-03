@@ -12,8 +12,16 @@ import { getAccessor } from '../accessor';
 export const hooks: RuntimeHooks = {
   beforeStart: new AsyncSeriesHook<[]>(),
   afterPostUrl: new AsyncSeriesHook<[PostUrlMap]>(['PostUrlMap']),
-  beforeEachPost: new AsyncSeriesHook<[PostExportData]>(['PostExportData']),
-  afterEachPost: new AsyncSeriesHook<[AssetData]>(['Asset']),
+  beforeEachPost: new AsyncSeriesHook<[PostExportData, number, PostExportData[]]>([
+    'PostExportData',
+    'Index',
+    'AllPostExportData',
+  ]),
+  afterEachPost: new AsyncSeriesHook<[AssetData, number, PostExportData[]]>([
+    'Asset',
+    'Index',
+    'AllPostExportData',
+  ]),
   beforeEachList: new AsyncSeriesHook<[ListRenderData]>(['ListRenderData']),
   afterEachList: new AsyncSeriesHook<[AssetData]>(['Asset']),
   processAssets: new AsyncSeriesWaterfallHook<[AssetData[]]>(['Assets']),

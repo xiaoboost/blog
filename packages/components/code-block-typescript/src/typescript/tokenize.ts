@@ -3,7 +3,7 @@ import * as oniguruma from 'vscode-oniguruma';
 
 import { readFile } from 'fs/promises';
 import { getAccessor, forEach } from '@blog/context/runtime';
-import { getTsServer, ScriptKind, Platform, TsServer } from './host';
+import { ScriptKind, Platform, TsServer } from './host';
 import { ComponentName } from '../constant';
 
 import tsPlistPath from '../../tmLanguage/ts.plist';
@@ -141,17 +141,15 @@ forEach((runtime) => {
   runtime.hooks.beforeStart.tapPromise(ComponentName, () => getGrammar());
 });
 
-export function tokenize(code: string, lang: ScriptKind = 'ts', platform: Platform = 'browser') {
-  const server = getTsServer(lang, platform);
+export function tokenize(code: string, baseDir: string, lang: ScriptKind, platform: Platform) {
   const grammar = /^(j|t)s$/.test(lang) ? tsGrammar.get() : tsxGrammar.get();
+  const server = new TsServer(baseDir, code, lang, platform);
   const lines = code.split(/[\n\r]/);
   const linesToken: Token[][] = [];
 
   if (!grammar) {
     throw new Error('语法器加载失败');
   }
-
-  server.setFile(code);
 
   let ruleStack = vsctm.INITIAL;
   let offset = 0;

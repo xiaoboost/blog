@@ -14,13 +14,13 @@
   },
   "devDependencies": {
     "@types/blog": "workspace:*",
-    "@types/node": "16.11.7",
-    "@xiao-ai/eslint-config": "1.0.1",
+    "@types/node": "18.11.9",
+    "@xiao-ai/eslint-config": "1.0.3",
     "@xiao-ai/tsconfig": "1.0.4",
-    "eslint": "8.34.0",
-    "typescript": "5.0.4"
+    "eslint": "8.56.0",
+    "typescript": "5.2.2"
   },
   "dependencies": {
-    "tslib": "2.5.0"
+    "tslib": "2.6.2"
   }
 }

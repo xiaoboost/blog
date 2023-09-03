@@ -4,7 +4,7 @@
   "exclude": ["node_modules", "dist"],
   "compilerOptions": {
     "baseUrl": ".",
-    "module": "CommonJS",
+    "module": "NodeNext",
     "outDir": "dist"
   }
 }

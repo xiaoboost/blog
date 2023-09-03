@@ -13,7 +13,7 @@ export function requireTs(typescriptPath?: string): typeof ts {
     if (typescriptPath) {
       return require(typescriptPath);
     }
-  } catch (e) {
+  } catch (_) {
     // ..
   }
 

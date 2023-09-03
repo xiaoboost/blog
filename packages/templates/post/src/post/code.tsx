@@ -24,13 +24,12 @@ export function pre(props: Props) {
   }
 
   const { base, query } = parseQuery(data.className);
-  const lang = base.replace(/^language-/, '').toLowerCase();
+  const lang = base.replace(/^language-/, '').toLowerCase() as ScriptKind;
   const disableLsp = query.lsp === false;
-  const platform = (query.platform ?? 'node') as Platform;
 
   if (isTs(lang) && !disableLsp) {
     return (
-      <TsCodeBlock lang={lang as ScriptKind} platform={platform}>
+      <TsCodeBlock lang={lang} platform={query.platform as Platform | undefined}>
         {data.children}
       </TsCodeBlock>
     );

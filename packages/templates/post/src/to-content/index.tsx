@@ -34,7 +34,7 @@ function getContext(node: Mdx.Heading | Mdx.PhrasingContent): string {
   }
 }
 
-function createNavFromAst(ast: Mdx.Root, limit: number): NavTitleData[] {
+function createNavFromAst(ast: Mdx.Root, _: number): NavTitleData[] {
   const root: NavTitleData = {
     content: 'root',
     hash: '',

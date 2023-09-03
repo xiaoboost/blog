@@ -10,7 +10,7 @@ export enum LogLevelEnum {
 }
 
 export interface LoggerInstance {
-  log(...messages: string[]): void;
+  debug(...messages: string[]): void;
   info(...messages: string[]): void;
   error(...messages: string[]): void;
 }
