@@ -41,12 +41,16 @@ export function getAccessorWithGetter<T = any>(name: string, getter: () => T): A
 }
 
 /** 变量引用 */
-export function getReference<T = any>(name: string, initVal: T) {
+export function getReference<T = any>(name: string, initVal: T): T {
   const key = `ref::${name}`;
   const memory = getGlobalContext()[GlobalKey.Memory] as Memory;
 
-  if (memory && !memory.has(key) && isDef(initVal)) {
-    memory.set(key, initVal);
+  if (memory) {
+    if (memory.has(key)) {
+      return memory.get(key);
+    } else if (isDef(initVal)) {
+      memory.set(key, initVal);
+    }
   }
 
   return initVal;
