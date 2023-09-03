@@ -7,14 +7,20 @@ declare module 'mdast' {
   export interface JsxAttribute {
     type: 'mdxJsxAttribute';
     name: string;
-    value: string;
+    value: mdxJsxAttributeValueExpression;
   }
 
+  /** 块级自定义组件元素 */
   export interface JsxFlowElement {
     type: 'mdxJsxFlowElement';
     children: Syntax[];
     attributes: JsxAttribute[];
     name: string;
+  }
+
+  /** 行内自定义组件元素 */
+  export interface JsxTextElement extends Omit<JsxFlowElement, 'type'> {
+    type: 'mdxJsxTextElement';
   }
 
   export interface JsEsm {
@@ -25,6 +31,10 @@ declare module 'mdast' {
     };
   }
 
+  export interface mdxJsxAttributeValueExpression extends Omit<JsEsm, 'type'> {
+    type: 'mdxJsxAttributeValueExpression';
+  }
+
   interface Root {
     children: Syntax[];
   }
@@ -32,6 +42,7 @@ declare module 'mdast' {
   export type Syntax =
     | JsxAttribute
     | JsxFlowElement
+    | JsxTextElement
     | JsEsm
     | Root
     | Paragraph
@@ -43,9 +54,9 @@ declare module 'mdast' {
     | Table
     | TableRow
     | TableCell
-    | HTML
+    | Html
     | Code
-    | YAML
+    | Yaml
     | Definition
     | FootnoteDefinition
     | Text
@@ -58,6 +69,5 @@ declare module 'mdast' {
     | Image
     | LinkReference
     | ImageReference
-    | Footnote
     | FootnoteReference;
 }

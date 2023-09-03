@@ -12,6 +12,7 @@ import { ScriptLoader } from '../plugins/script-loader';
 import { PostLoader } from '../plugins/post-loader';
 import { AssetExtractor } from '../plugins/asset-extractor';
 import { Cname } from '../plugins/cname';
+import { CacheController } from '../plugins/cache';
 
 const getAssetNames = (name: string, isProduction: boolean) =>
   isProduction ? `${name}/[name].[hash].[ext]` : `${name}/[name].[ext]`;
@@ -57,6 +58,7 @@ export async function applyPlugin(builder: Builder) {
     LocalPackageRequirer().apply(builder);
     PostLoader().apply(builder);
     ScriptLoader().apply(builder);
+    CacheController().apply(builder);
     JssLoader({ extractAsset: false }).apply(builder);
 
     if (opt.watch) {
@@ -116,6 +118,7 @@ export function normalizeOptions(opt: BuilderOptions): Required<BuilderOptions> 
     logLevel: opt.logLevel ?? 'Info',
     debug: opt.debug ?? false,
     typeCheck: opt.typeCheck ?? true,
+    cache: opt.cache ?? '.cache',
     defined: {
       ...opt.defined,
       'process.env.NODE_ENV': isProduction ? '"production"' : '"development"',

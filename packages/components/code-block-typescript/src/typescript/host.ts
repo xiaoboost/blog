@@ -1,69 +1,37 @@
 import ts from 'typescript';
 
 import { normalize } from '@blog/node';
-import { getAccessor } from '@blog/context/runtime';
 import { toBoolMap, isString } from '@xiao-ai/utils';
-import { lookItUpSync } from 'look-it-up';
+import { getAccessor } from '@blog/context/runtime';
 
-export type ScriptKind = 'ts' | 'tsx';
+export type ScriptKind = 'ts' | 'tsx' | 'js' | 'jsx';
 export type Platform = 'browser' | 'node' | 'none';
 export type DisplaySymbol = string | [string, string];
 
-/** 语言服务器缓存 */
-const serverCache = getAccessor<Record<string, TsServer>>('TsServer', {});
+let id = 0;
+
+/** 公共静态文档缓存 */
+const tsDocument = getAccessor('ts-document', ts.createDocumentRegistry()).get();
 /** 公共静态文件缓存 */
-const cache: Record<string, CodeFile> = {};
-/** 项目根目录 */
-const modulesPath = lookItUpSync('node_modules', __dirname);
-
-if (!modulesPath) {
-  throw new Error(`未找到包含\`node_modules\`目录的上级路径，起始路径为：${__dirname}`);
-}
-
-/**
- * 读取绝对路径
- *   - 路径是相对于 builder 库根目录的
- */
-const resolve = (...paths: string[]) => normalize(modulesPath, '..', ...paths);
+const fileCache = getAccessor<Record<string, CodeFile>>('ts-file-cache', {}).get();
 
 /** 代码文件 */
 interface CodeFile {
   name: string;
   code: string;
-  version: number;
   snapshot: ts.IScriptSnapshot;
 }
 
 /** 不需要样式的数据类型 */
 const infoNoStyleKinds = toBoolMap(['space', 'text', 'lineBreak', 'punctuation']);
 
-function displayPartsToString(tokens: ts.SymbolDisplayPart[]) {
-  const result: DisplaySymbol[] = [];
-
-  for (const token of tokens) {
-    if (infoNoStyleKinds[token.kind as keyof typeof infoNoStyleKinds]) {
-      const lastText = result[result.length - 1];
-
-      if (isString(lastText)) {
-        result.splice(result.length - 1, 1, lastText + token.text);
-      } else {
-        result.push(token.text);
-      }
-    } else {
-      result.push([token.kind, token.text]);
-    }
-  }
-
-  return encodeURI(JSON.stringify(result));
-}
-
 /** 语言服务器 */
 export class TsServer {
   /** script 类型 */
-  private readonly scriptKind: ScriptKind;
+  private scriptKind: ScriptKind = 'ts';
 
   /** 平台类型 */
-  private readonly platform: Platform;
+  private platform: Platform = 'none';
 
   /** 语言服务器 */
   private readonly server: ts.LanguageService;
@@ -74,14 +42,21 @@ export class TsServer {
   /** 当前文件 */
   private current!: CodeFile;
 
-  /** 当前项目版本 */
-  private version = 0;
+  /** 基础路径 */
+  private readonly baseDir: string;
 
-  constructor(scriptKind: ScriptKind, platform: Platform = 'browser') {
+  constructor(baseDir: string, code: string, scriptKind: ScriptKind, platform: Platform) {
+    this.baseDir = baseDir;
     this.scriptKind = scriptKind;
     this.platform = platform;
-    this.setFile('');
-    this.server = ts.createLanguageService(this.createLanguageServiceHost());
+    this.current = {
+      code,
+      // 文件名称必须要不同，Document 服务会记录同名文件
+      name: this.resolve(`$index-${Date.now()}-${id++}.${this.scriptKind}`),
+      snapshot: this.getScriptSnapshot(code),
+    };
+    this.files.add(this.current.name);
+    this.server = ts.createLanguageService(this.createLanguageServiceHost(), tsDocument);
   }
 
   private getScriptSnapshot(code: string): ts.IScriptSnapshot {
@@ -92,27 +67,11 @@ export class TsServer {
     };
   }
 
-  private getCurrentName() {
-    return normalize(resolve(), `_template.${this.scriptKind}`);
+  private resolve(...paths: (string | number)[]) {
+    return normalize(this.baseDir, ...paths.map(String));
   }
 
   private getAllFileNames() {
-    if (this.current) {
-      this.files.add(this.current.name);
-    }
-
-    this.files.add(resolve('node_modules/typescript/lib/lib.esnext.d.ts'));
-
-    if (this.scriptKind === 'tsx') {
-      this.files.add(resolve('node_modules/@types/react/index.d.ts'));
-    }
-
-    if (this.platform === 'node') {
-      this.files.add(resolve('node_modules/@types/node/index.d.ts'));
-    } else if (this.platform === 'browser') {
-      this.files.add(resolve('node_modules/typescript/lib/lib.dom.d.ts'));
-    }
-
     return Array.from(this.files.keys());
   }
 
@@ -121,52 +80,59 @@ export class TsServer {
       readFile: ts.sys.readFile,
       fileExists: ts.sys.fileExists,
       getDefaultLibFileName: ts.getDefaultLibFilePath,
-      getCompilationSettings(): ts.CompilerOptions {
+      getCompilationSettings: (): ts.CompilerOptions => {
+        const allowJs = this.scriptKind.startsWith('js');
+        const isJsx = this.scriptKind.endsWith('x');
+        const jsx = isJsx ? ts.JsxEmit.React : ts.JsxEmit.None;
+        const jsxFactory = isJsx ? 'react' : undefined;
+        const lib = this.platform === 'browser' ? ['lib.dom.d.ts'] : [];
+        const types = this.platform === 'node' ? ['node'] : [];
+
+        lib.push('lib.esnext.d.ts');
+
+        if (isJsx) {
+          types.push('react');
+        }
+
         return {
           strict: false,
-          allowJs: true,
-          jsx: ts.JsxEmit.React,
+          allowJs,
+          jsx,
+          jsxFactory,
           allowSyntheticDefaultImports: true,
           allowNonTsExtensions: true,
           target: ts.ScriptTarget.Latest,
           moduleResolution: ts.ModuleResolutionKind.NodeJs,
           module: ts.ModuleKind.ESNext,
-          lib: [],
-          types: [],
+          lib,
+          types,
         };
       },
       getScriptFileNames: () => {
         return this.getAllFileNames();
       },
       getProjectVersion: () => {
-        return String(this.version);
+        return '0';
       },
-      getScriptVersion: (filePath) => {
-        if (this.current && filePath === this.current.name) {
-          return String(this.current.version);
-        } else if (cache[filePath]) {
-          return String(cache[filePath].version);
-        } else {
-          return '0';
-        }
+      getScriptVersion: () => {
+        return '0';
       },
       getScriptSnapshot: (filePath) => {
-        if (filePath === this.current?.name) {
+        if (filePath === this.current.name) {
           return this.current.snapshot;
-        } else if (cache[filePath]) {
+        } else if (fileCache[filePath]) {
           this.files.add(filePath);
-          return cache[filePath].snapshot;
+          return fileCache[filePath].snapshot;
         } else {
           const fileText = ts.sys.readFile(filePath) ?? '';
           const file: CodeFile = {
             name: filePath,
             code: fileText,
-            version: 1,
             snapshot: this.getScriptSnapshot(fileText),
           };
 
           this.files.add(filePath);
-          cache[filePath] = file;
+          fileCache[filePath] = file;
 
           return file.snapshot;
         }
@@ -174,8 +140,8 @@ export class TsServer {
       resolveModuleNames: (
         moduleNames,
         containingFile,
-        reusedNames,
-        redirectedReference,
+        _1,
+        _2,
         options,
       ): (ts.ResolvedModule | undefined)[] => {
         return moduleNames.map((name) => {
@@ -183,24 +149,8 @@ export class TsServer {
         });
       },
       getNewLine: () => '\n',
-      getCurrentDirectory: () => resolve(),
+      getCurrentDirectory: () => this.resolve(),
       useCaseSensitiveFileNames: () => true,
-    };
-  }
-
-  setFile(code: string) {
-    const name = this.getCurrentName();
-
-    if (code === this.current?.code) {
-      return;
-    }
-
-    this.version++;
-    this.current = {
-      name,
-      code,
-      snapshot: this.getScriptSnapshot(code),
-      version: (this.current?.version ?? 0) + 1,
     };
   }
 
@@ -211,19 +161,27 @@ export class TsServer {
       return '';
     }
 
-    return displayPartsToString(infos.displayParts);
-  }
-}
+    const result: DisplaySymbol[] = [];
 
-export function getTsServer(kind: ScriptKind, platform: Platform) {
-  const key = `${kind}-${platform}`;
-  const cache = serverCache.get();
+    for (const token of infos.displayParts ?? []) {
+      // 有些文本会包含基础路径，需要去除掉
+      if (token.text.includes(this.baseDir)) {
+        token.text = token.text.replace(this.baseDir, '.');
+      }
 
-  if (cache[key]) {
-    return cache[key];
-  } else {
-    const server = new TsServer(kind, platform);
-    cache[key] = server;
-    return server;
+      if (infoNoStyleKinds[token.kind as keyof typeof infoNoStyleKinds]) {
+        const lastText = result[result.length - 1];
+
+        if (isString(lastText)) {
+          result.splice(result.length - 1, 1, lastText + token.text);
+        } else {
+          result.push(token.text);
+        }
+      } else {
+        result.push([token.kind, token.text]);
+      }
+    }
+
+    return encodeURI(JSON.stringify(result));
   }
 }

@@ -17,13 +17,14 @@ export default async function main() {
   await callHook('afterPostUrl', postUrlMap);
 
   // 生成文章页面
-  for (const post of posts) {
-    await callHook('beforeEachPost', post);
+  for (let i = 0; i < posts.length; i++) {
+    const post = posts[i];
+    await callHook('beforeEachPost', post, i, posts);
     const asset: AssetData = {
       path: getPostAssetPath(post),
       content: Buffer.from(renderPost(post)),
     };
-    await callHook('afterEachPost', asset);
+    await callHook('afterEachPost', asset, i, posts);
     assets.push(asset);
   }
 

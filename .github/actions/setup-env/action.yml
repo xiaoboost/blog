@@ -24,7 +24,7 @@ runs:
     - name: Install Pnpm
       uses: pnpm/action-setup@v3
       with:
-        version: '8.15.6'
+        version: '9.0.4'
         run_install: false
 
     - name: Get Pnpm Store Directory

@@ -142,9 +142,9 @@ export interface RuntimeHooks {
    */
   afterPostUrl: AsyncSeriesHook<[PostUrlMap]>;
   /** 编译文章页面前 */
-  beforeEachPost: AsyncSeriesHook<[PostExportData]>;
+  beforeEachPost: AsyncSeriesHook<[PostExportData, number, PostExportData[]]>;
   /** 编译文章页面后 */
-  afterEachPost: AsyncSeriesHook<[AssetData]>;
+  afterEachPost: AsyncSeriesHook<[AssetData, number, PostExportData[]]>;
   /** 编译列表页面前 */
   beforeEachList: AsyncSeriesHook<[ListRenderData]>;
   /** 编译列表页面后 */

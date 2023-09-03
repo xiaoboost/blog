@@ -15,8 +15,8 @@ const baseOptions: Record<string, yargs.Options> = {
   logLevel: {
     type: 'string',
     describe: '输出日志等级',
-    default: 'info',
-    choices: ['debug', 'info', 'error'],
+    default: 'Info',
+    choices: ['Debug', 'Info', 'Error'],
   },
   debug: {
     type: 'boolean',

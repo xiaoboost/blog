@@ -76,7 +76,7 @@ Markdown 编译器也更换成了 [MDX](https://www.mdxjs.com)，它的优势就
 
 esbuild 的插件是个包含`name`和`setup`函数的对象，一个最为简单的插件大约是这样的：
 
-```ts
+```ts?platform=node
 import { build, Plugin } from 'esbuild';
 
 const envPlugin: Plugin = {
@@ -132,9 +132,9 @@ const envPlugin: Plugin = {
 
 当你注册了`onLoad`钩子，这个回调将会拦截所有未被标记为`external`的路径读取操作，你可以在回调中自定义文件读取的操作，下文的 JSS 加载器就是利用此钩子完全重写了`.jss.ts`文件的内容。这里是个简单的读取`.txt`文件的例子：
 
-```ts
+```ts?platform=node
 import { build, Plugin } from 'esbuild';
-import { promises as fs } from 'fs';
+import * as fs from 'fs/promises';
 
 const envPlugin: Plugin = {
   name: 'txt-loader',
@@ -162,7 +162,7 @@ const envPlugin: Plugin = {
 
 之所以这么设计，最重要的原因就是为了实现*变量共享*，这里共享的变量除开常规的普通变量，还有样式的类名。常规变量自不必说，样式的类名会被加载器提取出来，而 CSS 源码会被单独拿出，这样就避免了把 JSS 打包进网站，而且也实现了类名的共享，不必再到处复制粘贴字符串的字面量了。这里举个例子：
 
-```ts?lsp=false
+```ts
 import jss from 'jss';
 
 export default jss.createStyleSheet({
@@ -172,7 +172,7 @@ export default jss.createStyleSheet({
 });
 ```
 
-```ts?lsp=false
+```ts?platform=browser
 import styles from './styles.jss';
 
 const elements = document.querySelectorAll<HTMLElement>(`.${styles.classes.show}`);
@@ -188,7 +188,7 @@ Array.from(elements).forEach((el) => el.setAttribute('data-index', 1))
 
 可以参考下面的例子：
 
-```ts?lsp=false
+```ts
 import jss from 'jss';
 
 export default jss.createStyleSheet({
@@ -200,7 +200,7 @@ export default jss.createStyleSheet({
 
 上述代码最后会被转化为：
 
-```ts?lsp=false
+```ts
 import './[name].css';
 
 export default {
@@ -243,7 +243,7 @@ import { MathBlock } from '@blog/mdx-katex';
 在 AST 中搜索自定义组件的内容，然后将所有自定义组件整合，再在转换后的文章代码尾部附加一段导出静态资源的函数即可，就以上文中对于`@blog/mdx-katex`组件的引用为例，这里会在文章末尾添加一段这样的代码：
 
 ```ts?lsp=false
-import a1 from '@blog/mdx-katex'
+import a1 from '@blog/mdx-katex';
 
 export function getComponentAssetNames() {
   return [].concat(a1.getAssetNames());
@@ -283,7 +283,9 @@ export function getPostAssetNames() {
 
 在整个网站生成器的代码打包之后，我发现生成的代码实在是太大了（十几兆），非常不方便调试，仔细调试之后才发现，原来是将每个组件使用的各种本地库都打包进来了，实际上这是没必要的。因为这个打包生成的代码并不是最终代码，只是拿来运行一次就扔掉的中间产物。所以这里需要将每个子包内的“本地库”的代码全部隔离，不需要将它们代入产物中。但是仅仅将这些包都标记为`external`是不能实现的，因为只是标记为外部包的话，代码会变成`require('xxx')`，打包完成之后，最后生成的代码已经脱离了原本它所在的上下文，所以这里必须要使用`createRequire`接口来实现隔离。举个例子：
 
-```ts?lsp=false
+```ts
+/// <reference import-type="@types/katex" />
+
 import Katex from 'katex';
 
 console.log(Katex.renderToString('cos(ζ)'));
@@ -291,7 +293,7 @@ console.log(Katex.renderToString('cos(ζ)'));
 
 上面的代码会被转化为：
 
-```ts
+```ts?platform=node
 import { createRequire } from 'module';
 
 // 这里的模板填入当前文件的路径

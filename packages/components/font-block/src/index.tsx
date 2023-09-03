@@ -1,6 +1,6 @@
 import React from 'react';
-import { forEach, defineUtils, Builder } from '@blog/context/runtime';
-import { stringifyClass, isString } from '@xiao-ai/utils';
+import { forEach, defineUtils, RuntimeBuilder as Builder } from '@blog/context/runtime';
+import { stringifyClass } from '@xiao-ai/utils';
 import { getCustomTextByPost, getCustomFontByData, getCustomFontByProps } from './utils';
 
 import styles from './index.jss';
