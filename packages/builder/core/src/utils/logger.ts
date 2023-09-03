@@ -26,7 +26,7 @@ export class Logger implements LoggerInstance {
     console.log(this.prefix(), ...message);
   }
 
-  log = this.info;
+  private log = this.info;
 
   info(...msg: string[]) {
     this.output(LogLevelEnum.Info, ...msg);

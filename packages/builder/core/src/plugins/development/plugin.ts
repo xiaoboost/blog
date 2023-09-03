@@ -80,7 +80,7 @@ export const Development = (opt?: DevOptions): BuilderPlugin => ({
         sockets.push(socket);
 
         socket.on('message', (data: any) => {
-          logger.log(`接收消息: ${JSON.stringify(data.toString())}`);
+          logger.info(`接收消息: ${JSON.stringify(data.toString())}`);
         });
 
         socket.on('close', () => {

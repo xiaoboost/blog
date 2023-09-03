@@ -76,7 +76,7 @@ export const Logger = (): BuilderPlugin => ({
     builder.hooks.afterBundler.tap({ name: pluginName, stage: 999 }, () => {
       spinner.stop();
       spinner.clear();
-      logger.log(`打包完成，耗时 ${getShortTime(Date.now() - timer)}`);
+      logger.info(`打包完成，耗时 ${getShortTime(Date.now() - timer)}`);
     });
 
     builder.hooks.runner.tap(pluginName, () => {
@@ -88,7 +88,7 @@ export const Logger = (): BuilderPlugin => ({
     builder.hooks.afterRunner.tap({ name: pluginName, stage: 999 }, () => {
       spinner.stop();
       spinner.clear();
-      logger.log(`构建完成，耗时 ${getShortTime(Date.now() - timer)}`);
+      logger.info(`构建完成，耗时 ${getShortTime(Date.now() - timer)}`);
     });
 
     builder.hooks.filesChange.tap(pluginName, (files) => {
