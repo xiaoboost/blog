@@ -1,7 +1,7 @@
 import type { CacheAccessor, BuilderPlugin } from '@blog/types';
-import { join } from 'path';
+import { join, dirname } from 'path';
 import { normalize } from '@blog/node';
-import { readFile, writeFile } from 'fs/promises';
+import { readFile, writeFile, mkdir } from 'fs/promises';
 
 export const CacheController = (): BuilderPlugin => ({
   name: 'cacheController',
@@ -16,14 +16,13 @@ export const CacheController = (): BuilderPlugin => ({
     builder.getCacheAccessor = (name): CacheAccessor => {
       return {
         read(target): Promise<Buffer | undefined> {
-          try {
-            return readFile(normalize(join(basePath, name, String(target))));
-          } catch (e) {
-            return Promise.resolve(undefined);
-          }
+          return readFile(normalize(join(basePath, name, String(target)))).catch(() => void 0);
         },
         write(path, content) {
-          return writeFile(normalize(join(basePath, name, String(path))), content);
+          const realPath = normalize(join(basePath, name, String(path)));
+          return mkdir(dirname(realPath), { recursive: true }).then(() =>
+            writeFile(realPath, content),
+          );
         },
       };
     };

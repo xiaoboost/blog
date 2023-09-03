@@ -20,7 +20,9 @@ export const RuntimeBuilder: RuntimeBuilder = {
     ...builderOutside.options,
   },
   logger: {
-    ...builderOutside.logger,
+    debug: builderOutside.logger.debug.bind(builderOutside.logger),
+    info: builderOutside.logger.info.bind(builderOutside.logger),
+    error: builderOutside.logger.error.bind(builderOutside.logger),
   },
   getCacheAccessor(name: string) {
     return builderOutside.getCacheAccessor(name);

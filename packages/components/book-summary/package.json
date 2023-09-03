@@ -1,0 +1,39 @@
+{
+  "name": "@blog/mdx-book-summary",
+  "description": "component of book-summary",
+  "version": "1.0.0",
+  "author": "xiaoboost",
+  "license": "MIT",
+  "source": "src/index.tsx",
+  "types": "src/index.tsx",
+  "scripts": {
+    "lint": "eslint --quiet src/**/*.{ts,tsx,js,jsx}",
+    "lint:fix": "eslint --quiet --fix src/**/*.{ts,tsx,js,jsx}"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xiaoboost/blog"
+  },
+  "dependencies": {
+    "@blog/context": "workspace:*",
+    "@blog/node": "workspace:*",
+    "@blog/parser": "workspace:*",
+    "@blog/styles": "workspace:*",
+    "@blog/web": "workspace:*",
+    "@xiao-ai/utils": "1.6.6",
+    "cheerio": "1.0.0-rc.12",
+    "image-size": "1.0.2",
+    "react": "18.2.0"
+  },
+  "devDependencies": {
+    "@blog/types": "workspace:*",
+    "@types/blog": "workspace:*",
+    "@types/node": "16.11.7",
+    "@types/react": "18.2.21",
+    "@xiao-ai/eslint-config": "1.0.1",
+    "@xiao-ai/tsconfig": "1.0.3",
+    "eslint": "8.48.0",
+    "tslib": "2.6.2",
+    "typescript": "5.2.2"
+  }
+}

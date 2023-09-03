@@ -36,7 +36,7 @@ export class Logger implements LoggerInstance {
     this.output(LogLevelEnum.Error, ...msg);
   }
 
-  debug(...info: string[]) {
-    this.output(LogLevelEnum.Debug, ...info);
+  debug(...msg: string[]) {
+    this.output(LogLevelEnum.Debug, ...msg);
   }
 }
