@@ -1,5 +1,5 @@
 ---
-title: 缺乏细节的平庸作品
+title: 缺乏细节的平庸之作
 create: 2022/09/28
 description: 评论——《第四次灵石金融危机》
 toc: false

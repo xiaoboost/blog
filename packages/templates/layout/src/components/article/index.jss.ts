@@ -14,6 +14,7 @@ export default createStyles({
       marginTop: headerBodyMargin,
       justifyContent: 'flex-start',
       alignItems: 'flex-start',
+      flexDirection: 'column',
 
       [mediaPhone]: {
         width: '100vw',
