@@ -2,6 +2,7 @@ import {
   createStyles,
   createScrollbarWidth,
   getHeadSelector,
+  Color,
   mergeStyles,
   FontSerif,
   FontMono,
@@ -13,6 +14,9 @@ import {
   BlackLight,
 } from '@blog/styles';
 
+const linkColor = Color.rgb(23, 81, 153).alpha(0.6);
+const linkHoverColor = Color.rgb(23, 81, 153);
+
 const global = createStyles({
   '@global': {
     '*': {
@@ -20,7 +24,15 @@ const global = createStyles({
       boxSizing: 'border-box',
     },
     a: {
+      cursor: 'pointer',
       textDecoration: 'none',
+      color: linkColor.toString(),
+      transition: 'color .2s, background .4s',
+
+      '&:hover, &:focus': {
+        outline: 0,
+        color: linkHoverColor.toString(),
+      },
     },
     [getHeadSelector()]: {
       fontFamily: FontSerif,

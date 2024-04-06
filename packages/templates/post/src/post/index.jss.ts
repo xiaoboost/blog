@@ -25,8 +25,6 @@ const smallIndent = 14;
 const tableHeaderBorderColor = Color.hsl(210, 18, 87, 1);
 const tableBorderColor = Color(0xd0d7de);
 const tableRowBgColor = Color(0xf6f9fa);
-const linkColor = Color.rgb(23, 81, 153).alpha(0.6);
-const linkHoverColor = Color.rgb(23, 81, 153);
 
 export default createStyles({
   postAnchor: {},
@@ -163,17 +161,6 @@ export default createStyles({
       },
       '& sub': {
         bottom: '-0.3em',
-      },
-      '& a': {
-        cursor: 'pointer',
-        color: linkColor.toString(),
-        textDecoration: 'none',
-        transition: 'color .2s, background .4s',
-
-        '&:hover, &:focus': {
-          outline: 0,
-          color: linkHoverColor.toString(),
-        },
       },
       '& ul, & ol': {
         lineHeight: 1.4,
