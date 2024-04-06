@@ -24,7 +24,7 @@
     "@types/color": "3.0.3",
     "@types/node": "16.11.7",
     "@xiao-ai/eslint-config": "1.0.1",
-    "@xiao-ai/tsconfig": "1.0.3",
+    "@xiao-ai/tsconfig": "1.0.4",
     "eslint": "8.34.0",
     "typescript": "5.0.4"
   },
