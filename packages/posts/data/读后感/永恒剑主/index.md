@@ -1,7 +1,7 @@
 ---
 title: 唯有死亡才是永恒
 create: 2023/05/23
-description: 这篇算是读后感吧，算不得评论，读滚开的《永恒剑主》有点浅薄的感想。
+description: 《永恒剑主》，永恒的终结。
 toc: false
 ---
 
