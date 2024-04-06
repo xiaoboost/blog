@@ -4,6 +4,7 @@ import { FontSerif } from '@blog/styles';
 import { toPinyin, normalize } from '@blog/node';
 import type { AssetData } from '@blog/types';
 import CleanCSS from 'clean-css';
+import md5 from 'md5';
 import { CustomFontData } from './types';
 import { getFontContentBySrc, getMinFontFile } from './utils';
 
@@ -26,9 +27,13 @@ export class CustomFont implements CustomFontData {
   /** 静态资源 */
   private assets: AssetData[] = [];
 
+  /** 字体名称 */
+  private readonly fontFamily: string;
+
   constructor(src: string, post: string, text: string[] = []) {
     this.src = src;
     this.post = post;
+    this.fontFamily = `font-${md5(parse(this.src).name)}`;
     text.forEach((item) => this.addText(item));
   }
 
@@ -38,13 +43,6 @@ export class CustomFont implements CustomFontData {
    */
   get className() {
     return toPinyin(this.fontFamily);
-  }
-
-  /**
-   * 字体名称
-   */
-  get fontFamily() {
-    return parse(this.src).name.replace(/\s+/g, '');
   }
 
   /** 字体文件名称 */

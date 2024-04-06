@@ -9,7 +9,13 @@ import script from './font-block.script';
 const componentName = 'font-block';
 
 export interface FontBlockProps {
-  /** 自定义字体路径 */
+  /**
+   * 自定义字体路径
+   *
+   * @description 绝对路径
+   * @description 以文章文件路径为主的相对路径
+   * @description 以 posts 路径为的主的缺省路径
+   */
   src: string;
   /**
    * 文字方向
@@ -29,7 +35,7 @@ export interface FontBlockProps {
   /**
    * 文字大小
    *
-   * @default 20
+   * @default 24
    */
   fontSize: number;
   /**
@@ -41,7 +47,8 @@ export interface FontBlockProps {
   /**
    * 是否使用首行缩进
    *
-   * @default `2em`
+   * @description 单位`em`
+   * @default `2`
    */
   indent?: string | false;
   /** 输入文本 */
@@ -63,8 +70,8 @@ export function FontBlock(props: FontBlockProps) {
   const {
     direction = 'horizontal',
     align = 'left',
-    indent = '2em',
-    fontSize = 20,
+    indent = 2,
+    fontSize = 24,
     paragraphGutter = 0,
   } = props;
   const lines: string[] = children.replace(/\r/g, '').split('\n');
@@ -82,7 +89,6 @@ export function FontBlock(props: FontBlockProps) {
         indent ? '' : styles.classes.fontBlockNoIndent,
       )}
       style={{
-        textIndent: isString(indent) ? indent : undefined,
         textAlign: align,
         fontSize,
       }}
@@ -92,6 +98,7 @@ export function FontBlock(props: FontBlockProps) {
           key={i}
           style={{
             marginBottom: paragraphGutter > 0 ? (i === arr.length - 1 ? 0 : paragraphGutter) : 0,
+            textIndent: indent ? `${indent}em` : undefined,
           }}
         >
           {line}
