@@ -1,6 +1,6 @@
 import FontMin from 'fontmin';
-import { dirname, isAbsolute, join } from 'path';
-import { normalize } from '@blog/node';
+import { dirname, isAbsolute, join, basename } from 'path';
+import { normalize, isRootDirectory } from '@blog/node';
 import { readFile } from 'fs/promises';
 import { getAccessor } from '@blog/context/runtime';
 import { getChildrenContent, getAttribute } from '@blog/parser/walk';
@@ -20,8 +20,32 @@ function getCustomFontKey(data: CustomFontData) {
 }
 
 /** 获取字体完整路径 */
-function resolveFontPath(src: string, post: string) {
-  return normalize(require.resolve(isAbsolute(src) ? src : join(dirname(post), src)));
+function resolveFontPath(src: string, postPath: string) {
+  function getBasePath(input: string) {
+    let current = input;
+
+    while (basename(current) !== 'posts' && !isRootDirectory(current)) {
+      current = dirname(current);
+    }
+
+    if (isRootDirectory(current)) {
+      throw new Error('获取字体路径时计算错误');
+    }
+
+    return current;
+  }
+
+  function getFontFilePath(input: string, file: string) {
+    if (input.startsWith('.')) {
+      return join(dirname(file), input);
+    } else if (isAbsolute(input)) {
+      return input;
+    } else {
+      return join(getBasePath(file), input);
+    }
+  }
+
+  return normalize(require.resolve(getFontFilePath(src, postPath)));
 }
 
 /** 获取字体文件原始文件数据 */

@@ -1,7 +1,7 @@
 ---
 title: 好钢用在了刀背上
 create: 2023/09/12
-description: 简评——《不是吧君子也防》
+description: 《不是吧君子也防》，作者应该好好想想自己擅长的是什么，然后由此来构思剧情。
 toc: false
 ---
 

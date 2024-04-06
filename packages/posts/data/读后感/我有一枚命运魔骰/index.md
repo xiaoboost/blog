@@ -1,7 +1,7 @@
 ---
 title: 规则交织的世界
 create: 2023/10/14
-description: 简评——《我有一枚命运魔骰》
+description: 《我有一枚命运魔骰》，神秘学、规则怪谈、修仙体系的杂糅作品。
 toc: false
 ---
 
