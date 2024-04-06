@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { stringifyClass } from '@xiao-ai/utils';
+import styles from './index.jss';
 
 type SpanProps = React.DetailedHTMLProps<React.HTMLAttributes<HTMLSpanElement>, HTMLSpanElement>;
 
@@ -15,7 +16,7 @@ export function IconCreator(props: IconCreatorProps) {
     <span
       {...props}
       aria-label={props.name}
-      className={stringifyClass('blog-icon', props.className)}
+      className={stringifyClass(styles.classes.blogIcon, props.className)}
     >
       {props.children}
     </span>

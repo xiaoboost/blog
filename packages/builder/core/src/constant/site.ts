@@ -13,7 +13,7 @@ export const links = {
 
 /** 网站配置 */
 export const pageConfig = {
-  index: 10,
+  index: 12,
   archive: 30,
 };
 

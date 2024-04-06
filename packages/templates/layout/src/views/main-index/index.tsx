@@ -5,6 +5,7 @@ import { normalizeUrl } from '@blog/node';
 
 // import { Tags } from '../../components/icons';
 import { Layout, LayoutProps } from '../../components/layout';
+import { Pagination, PaginationProps } from '../../components/pagination';
 
 import styles from './index.jss';
 
@@ -30,19 +31,6 @@ function Post({ data: post }: PostExportData) {
   );
 }
 
-interface PaginationProps {
-  next?: string;
-  pre?: string;
-}
-
-function Pagination(props: PaginationProps) {
-  if (!props.next && !props.pre) {
-    return <></>;
-  }
-
-  return <div className='pagination'>TODO: Pagination</div>;
-}
-
 export interface MainIndexProps extends LayoutProps, PaginationProps {
   index: number;
   posts: PostExportData[];
@@ -51,12 +39,12 @@ export interface MainIndexProps extends LayoutProps, PaginationProps {
 export function MainIndex(props: MainIndexProps) {
   return (
     <Layout {...props}>
-      <div className={styles.classes.postsList}>
+      <section className={styles.classes.postsList}>
         {(props.posts || []).map((post) => (
           <Post key={post.data.create} {...post} />
         ))}
-      </div>
-      {/* <Pagination {...props} /> */}
+      </section>
+      <Pagination {...props} />
     </Layout>
   );
 }

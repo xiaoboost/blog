@@ -19,6 +19,8 @@ export function getIndexAssetPath(index: number) {
 
 export function renderListPage({ index, pathname, posts, count }: ListRenderData) {
   const pageTitle = index === 0 ? site.title : `${site.title} | 第 ${index + 1} 页`;
+  const isStart = index === 0;
+  const isEnd = index === count - 1;
 
   return createIndex({
     posts,
@@ -28,8 +30,8 @@ export function renderListPage({ index, pathname, posts, count }: ListRenderData
     pathname,
     publicPath: Builder.options.publicPath,
     hmr: Builder.options.hmr,
-    next: index < count ? getIndexUrlPath(index + 1) : undefined,
-    pre: index > 0 ? getIndexUrlPath(index - 1) : undefined,
+    pre: isEnd ? undefined : getIndexUrlPath(index + 1),
+    next: isStart ? undefined : getIndexUrlPath(index - 1),
     styles: utils.getStyleNames(),
     scripts: utils.getScriptNames(),
   });
