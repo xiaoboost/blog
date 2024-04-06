@@ -40,8 +40,8 @@ importers:
         specifier: 1.0.1
         version: 1.0.1
       '@xiao-ai/tsconfig':
-        specifier: 1.0.3
-        version: 1.0.3
+        specifier: 1.0.4
+        version: 1.0.4
       eslint:
         specifier: 8.34.0
         version: 8.34.0
@@ -80,8 +80,8 @@ importers:
         specifier: 1.0.1
         version: 1.0.1
       '@xiao-ai/tsconfig':
-        specifier: 1.0.3
-        version: 1.0.3
+        specifier: 1.0.4
+        version: 1.0.4
       eslint:
         specifier: 8.34.0
         version: 8.34.0
@@ -222,8 +222,8 @@ importers:
         specifier: 1.0.1
         version: 1.0.1
       '@xiao-ai/tsconfig':
-        specifier: 1.0.3
-        version: 1.0.3
+        specifier: 1.0.4
+        version: 1.0.4
       eslint:
         specifier: 8.34.0
         version: 8.34.0
@@ -286,8 +286,8 @@ importers:
         specifier: 1.0.1
         version: 1.0.1
       '@xiao-ai/tsconfig':
-        specifier: 1.0.3
-        version: 1.0.3
+        specifier: 1.0.4
+        version: 1.0.4
       eslint:
         specifier: 8.34.0
         version: 8.34.0
@@ -326,8 +326,8 @@ importers:
         specifier: 1.0.1
         version: 1.0.1
       '@xiao-ai/tsconfig':
-        specifier: 1.0.3
-        version: 1.0.3
+        specifier: 1.0.4
+        version: 1.0.4
       eslint:
         specifier: 8.34.0
         version: 8.34.0
@@ -372,8 +372,8 @@ importers:
         specifier: 1.0.1
         version: 1.0.1
       '@xiao-ai/tsconfig':
-        specifier: 1.0.3
-        version: 1.0.3
+        specifier: 1.0.4
+        version: 1.0.4
       eslint:
         specifier: 8.34.0
         version: 8.34.0
@@ -445,8 +445,8 @@ importers:
         specifier: 1.0.1
         version: 1.0.1
       '@xiao-ai/tsconfig':
-        specifier: 1.0.3
-        version: 1.0.3
+        specifier: 1.0.4
+        version: 1.0.4
       eslint:
         specifier: 8.34.0
         version: 8.34.0
@@ -512,8 +512,8 @@ importers:
         specifier: 1.0.1
         version: 1.0.1
       '@xiao-ai/tsconfig':
-        specifier: 1.0.3
-        version: 1.0.3
+        specifier: 1.0.4
+        version: 1.0.4
       eslint:
         specifier: 8.34.0
         version: 8.34.0
@@ -549,8 +549,8 @@ importers:
         specifier: 1.0.1
         version: 1.0.1
       '@xiao-ai/tsconfig':
-        specifier: 1.0.3
-        version: 1.0.3
+        specifier: 1.0.4
+        version: 1.0.4
       eslint:
         specifier: 8.34.0
         version: 8.34.0
@@ -592,8 +592,8 @@ importers:
         specifier: 1.0.1
         version: 1.0.1
       '@xiao-ai/tsconfig':
-        specifier: 1.0.3
-        version: 1.0.3
+        specifier: 1.0.4
+        version: 1.0.4
       eslint:
         specifier: 8.34.0
         version: 8.34.0
@@ -635,8 +635,8 @@ importers:
         specifier: 1.0.1
         version: 1.0.1
       '@xiao-ai/tsconfig':
-        specifier: 1.0.3
-        version: 1.0.3
+        specifier: 1.0.4
+        version: 1.0.4
       eslint:
         specifier: 8.34.0
         version: 8.34.0
@@ -718,8 +718,8 @@ importers:
         specifier: 1.0.1
         version: 1.0.1
       '@xiao-ai/tsconfig':
-        specifier: 1.0.3
-        version: 1.0.3
+        specifier: 1.0.4
+        version: 1.0.4
       eslint:
         specifier: 8.34.0
         version: 8.34.0
@@ -788,8 +788,8 @@ importers:
         specifier: 1.0.1
         version: 1.0.1
       '@xiao-ai/tsconfig':
-        specifier: 1.0.3
-        version: 1.0.3
+        specifier: 1.0.4
+        version: 1.0.4
       eslint:
         specifier: 8.34.0
         version: 8.34.0
@@ -828,8 +828,8 @@ importers:
         specifier: 1.0.1
         version: 1.0.1
       '@xiao-ai/tsconfig':
-        specifier: 1.0.3
-        version: 1.0.3
+        specifier: 1.0.4
+        version: 1.0.4
       chai:
         specifier: 4.3.7
         version: 4.3.7
@@ -873,8 +873,8 @@ importers:
         specifier: 1.0.1
         version: 1.0.1
       '@xiao-ai/tsconfig':
-        specifier: 1.0.3
-        version: 1.0.3
+        specifier: 1.0.4
+        version: 1.0.4
       eslint:
         specifier: 8.34.0
         version: 8.34.0
@@ -901,8 +901,8 @@ importers:
         specifier: 1.0.1
         version: 1.0.1
       '@xiao-ai/tsconfig':
-        specifier: 1.0.3
-        version: 1.0.3
+        specifier: 1.0.4
+        version: 1.0.4
       eslint:
         specifier: 8.34.0
         version: 8.34.0
@@ -935,8 +935,8 @@ importers:
         specifier: 1.0.1
         version: 1.0.1
       '@xiao-ai/tsconfig':
-        specifier: 1.0.3
-        version: 1.0.3
+        specifier: 1.0.4
+        version: 1.0.4
       eslint:
         specifier: 8.34.0
         version: 8.34.0
@@ -966,8 +966,8 @@ importers:
         specifier: 1.0.1
         version: 1.0.1
       '@xiao-ai/tsconfig':
-        specifier: 1.0.3
-        version: 1.0.3
+        specifier: 1.0.4
+        version: 1.0.4
       eslint:
         specifier: 8.34.0
         version: 8.34.0
@@ -1590,8 +1590,8 @@ packages:
       - supports-color
     dev: true
 
-  /@xiao-ai/tsconfig@1.0.3:
-    resolution: {integrity: sha512-12mlG9Y+EU2W8kNz0aXiJ3mXK5cLmgrQVr6LABfe6KoM8YTwAHKnrz/19tOf+MBRqs8LQZUx0GsgB3L05gAaHQ==}
+  /@xiao-ai/tsconfig@1.0.4:
+    resolution: {integrity: sha512-rrW+0mmz950LqizmnValeKtMB6zVEgchppSnlAwvb5FQXSARuAdnxk5l0V7XxDCE0U80gI78DeKZEGBYJFT1xg==}
     dev: true
 
   /@xiao-ai/utils@1.6.6:

@@ -23,7 +23,7 @@
     "@types/mocha": "10.0.1",
     "@types/node": "16.11.7",
     "@xiao-ai/eslint-config": "1.0.1",
-    "@xiao-ai/tsconfig": "1.0.3",
+    "@xiao-ai/tsconfig": "1.0.4",
     "chai": "4.3.7",
     "eslint": "8.34.0",
     "tslib": "2.5.0",
