@@ -48,7 +48,7 @@ export interface FontBlockProps {
    * 是否使用首行缩进
    *
    * @description 单位`em`
-   * @default `2`
+   * @default 1
    */
   indent?: string | false;
   /** 输入文本 */
@@ -70,7 +70,7 @@ export function FontBlock(props: FontBlockProps) {
   const {
     direction = 'horizontal',
     align = 'left',
-    indent = 2,
+    indent = 1,
     fontSize = 24,
     paragraphGutter = 0,
   } = props;

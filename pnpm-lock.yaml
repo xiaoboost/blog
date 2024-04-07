@@ -477,9 +477,6 @@ importers:
       fontmin:
         specifier: 0.9.9
         version: 0.9.9
-      md5:
-        specifier: 2.3.0
-        version: 2.3.0
       react:
         specifier: 18.2.0
         version: 18.2.0
@@ -499,9 +496,6 @@ importers:
       '@types/html-escaper':
         specifier: 3.0.0
         version: 3.0.0
-      '@types/md5':
-        specifier: 2.3.2
-        version: 2.3.2
       '@types/node':
         specifier: 16.11.7
         version: 16.11.7
