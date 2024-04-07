@@ -63,7 +63,7 @@ export default createStyles({
     },
     '& $postHeaderTitle': {
       color: Black.toString(),
-      fontSize: 28,
+      fontSize: 30,
       margin: 0,
       padding: 0,
     },
@@ -74,7 +74,7 @@ export default createStyles({
       fontFamily: FontDefault,
     },
     '& $postArticle': {
-      fontSize: 14,
+      fontSize: 16,
       ...createMediaStyles(indent, smallIndent, (width) => ({
         padding: `16px ${width}px`,
       })),

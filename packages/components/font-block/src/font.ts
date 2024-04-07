@@ -1,10 +1,8 @@
 import { Builder } from '@blog/context/runtime';
-import { parse } from 'path';
 import { FontSerif } from '@blog/styles';
 import { toPinyin, normalize } from '@blog/node';
 import type { AssetData } from '@blog/types';
 import CleanCSS from 'clean-css';
-import md5 from 'md5';
 import { CustomFontData } from './types';
 import { getFontContentBySrc, getMinFontFile } from './utils';
 
@@ -33,7 +31,7 @@ export class CustomFont implements CustomFontData {
   constructor(src: string, post: string, text: string[] = []) {
     this.src = src;
     this.post = post;
-    this.fontFamily = `font-${md5(parse(this.src).name)}`;
+    this.fontFamily = `custom-font-${Date.now()}`;
     text.forEach((item) => this.addText(item));
   }
 

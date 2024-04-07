@@ -1,10 +1,10 @@
 import React from 'react';
 
-import { toPinyin } from '@blog/node';
 import { stringifyClass } from '@xiao-ai/utils';
 import { Mdx } from '@blog/types';
 import { Circle } from '@blog/icons';
 import { levelLimit } from './constant';
+import { getHeadAnchor } from './utils';
 
 import styles from './index.jss';
 
@@ -52,7 +52,7 @@ function createNavFromAst(ast: Mdx.Root, limit: number): NavTitleData[] {
     }
 
     const content = getContext(token);
-    const hash = toPinyin(content);
+    const hash = getHeadAnchor(content);
     const level = token.depth;
 
     if (level > current.level) {
