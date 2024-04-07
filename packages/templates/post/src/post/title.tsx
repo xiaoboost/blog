@@ -1,6 +1,6 @@
 import React from 'react';
-import { toPinyin } from '@blog/node';
 import { isBaseType, isArray, isObject } from '@xiao-ai/utils';
+import { getHeadAnchor } from '../to-content/utils';
 
 import styles from './index.jss';
 
@@ -28,7 +28,7 @@ function getHeadContent(props: React.ReactNode): string {
 function createHead(level: number) {
   return function Head(props: HeadProps) {
     const Tag = `h${level}` as 'h1';
-    const id = toPinyin(getHeadContent(props.children));
+    const id = getHeadAnchor(getHeadContent(props.children));
     return (
       <Tag id={id}>
         <a className={styles.classes.postAnchor} href={`#${id}`}>

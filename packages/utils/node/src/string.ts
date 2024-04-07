@@ -11,7 +11,11 @@ export function toPinyin(str: string) {
     nonZh: 'consecutive',
   });
 
-  return strings.join('-').replace(/-+/g, '-').toLowerCase();
+  return strings
+    .join('-')
+    .replace(/[\uff00-\uffe5]/g, '-')
+    .replace(/-+/g, '-')
+    .toLowerCase();
 }
 
 export function parseQuery(input: string) {
