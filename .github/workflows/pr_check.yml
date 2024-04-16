@@ -1,0 +1,125 @@
+name: 代码合并
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+    branches:
+      - master
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  Lint:
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+          - windows-latest
+          - macos-latest
+
+    name: 代码风格检查 ${{ matrix.platform }}
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+      - name: Configure Git
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+
+      - name: Checkout Commit
+        uses: actions/checkout@v4
+
+      - name: Setup Environment
+        uses: './.github/actions/setup-env'
+
+      - name: Check Code Style
+        run: pnpm run lint
+
+  UnitTest:
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+          - windows-latest
+          - macos-latest
+
+    name: 单元测试 ${{ matrix.platform }}
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+      - name: Checkout Commit
+        uses: actions/checkout@v4
+
+      - name: Setup Environment
+        uses: './.github/actions/setup-env'
+
+      - name: Build Prepare
+        run: pnpm run build:prepare
+
+      - name: Test Code
+        run: pnpm run test
+
+  Build:
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+          - windows-latest
+          - macos-latest
+
+    name: 构建测试 ${{ matrix.platform }}
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+      - name: Checkout Commit
+        uses: actions/checkout@v4
+
+      - name: Setup Environment
+        uses: './.github/actions/setup-env'
+
+      - name: Build Prepare
+        run: pnpm run build:prepare
+
+      - name: Build Blog
+        run: pnpm run build
+
+  Analysis:
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+          - macos-latest
+    env:
+      intercepter_outFile: './.intercepter/ci_debug.md'
+
+    name: 构建性能分析 ${{ matrix.platform }}
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+      - name: Checkout Commit
+        uses: actions/checkout@v4
+      
+      - name: Update Env File
+        run: |
+          echo 'ENV_OUTPUT=${{ env.intercepter_outFile }}' >> .env
+
+      - name: Setup Environment
+        uses: './.github/actions/setup-env'
+
+      - name: Build Prepare
+        run: pnpm run build:prepare
+
+      - name: Build Blog with debug
+        run: pnpm run build:debug
+
+      - name: PR comment with file
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          mode: upsert
+          comment_tag: build
+          filePath: ${{ env.intercepter_outFile }}
