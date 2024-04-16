@@ -1,4 +1,4 @@
-name: Deploy
+name: 发布博客
 
 on:
   workflow_dispatch:
@@ -13,36 +13,18 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node:
-          - '20'
         platform:
           - macos-latest
 
-    name: Deploy on '${{ matrix.platform }} / Node.js v${{ matrix.node }}'
+    name: 发布流程 ${{ matrix.platform }}
     runs-on: ${{ matrix.platform }}
 
     steps:
-      - name: Configure Git
-        run: |
-          git config --global core.autocrlf false
-          git config --global user.name "xyz"
-          git config --global user.email "x@y.z"
-
       - name: Checkout Commit
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ github.event.inputs.branch }}
+        uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node }}
-
-      - name: Install Pnpm
-        run: npm install -g pnpm@8.15.6
-
-      - name: Install Dependencies
-        run: pnpm install
+      - name: Setup Environment
+        uses: './.github/actions/setup-env'
 
       - name: Build Prepare
         run: pnpm run build:prepare
