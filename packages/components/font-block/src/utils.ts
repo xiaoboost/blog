@@ -98,7 +98,8 @@ export function getCustomTextByPost({ data: post }: PostExportData) {
     }
 
     const text = getChildrenContent(node);
-    const src = getAttribute('src', node.attributes)?.value?.value;
+    const srcAttr = getAttribute('src', node.attributes)?.value;
+    const src = (srcAttr ?? (srcAttr as any)?.value) as string;
 
     if (!src) {
       throw new Error(`FontBlock 组件必须含有\`src\`属性`);
