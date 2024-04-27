@@ -56,7 +56,7 @@ import type { WebSocket } from 'ws';
 const app = Ws(new Koa());
 const sockets: WebSocket[] = [];
 
-declare remove = (sockets: WebSocket[], socket: WebSocket) => void;
+declare const remove: (sockets: WebSocket[], socket: WebSocket) => void;
 
 app.ws.server?.on('connection', (socket: WebSocket) => {
   sockets.push(socket);
