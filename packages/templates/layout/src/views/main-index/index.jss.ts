@@ -38,7 +38,7 @@ export default createStyles({
 
     '& $postsListItem': {
       margin: 0,
-      padding: '16px 20px',
+      padding: '15px 20px',
       boxShadow: 'none',
       boxSizing: 'border-box',
       backgroundColor: White.toString(),
