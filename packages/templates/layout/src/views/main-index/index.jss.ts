@@ -9,11 +9,27 @@ import {
   FontSerif,
 } from '@blog/styles';
 
+export const PostTitleStyle = {
+  color: Black.toString(),
+  lineHeight: 1,
+  fontWeight: 600,
+  fontFamily: FontSerif,
+};
+
+export const PostSubTitleStyle = {
+  color: BlackLighter.toString(),
+  fontSize: 12,
+  fontWeight: 'normal',
+  fontFamily: FontDefault,
+};
+
 export default createStyles({
   postsListItemFooter: {},
   postsListItemDescription: {},
   postsListItemHeader: {},
   postsListItem: {},
+  postsListItemFooterIcon: {},
+  postsListItemFooterTag: {},
   postsList: {
     color: Black.toString(),
     backgroundColor: White.toString(),
@@ -41,17 +57,11 @@ export default createStyles({
       justifyContent: 'space-between',
 
       '& a': {
-        color: Black.toString(),
-        lineHeight: 1,
+        ...PostTitleStyle,
         fontSize: 20,
-        fontWeight: 600,
-        fontFamily: FontSerif,
       },
       '& time': {
-        color: BlackLighter.toString(),
-        fontSize: 12,
-        fontWeight: 'normal',
-        fontFamily: FontDefault,
+        ...PostSubTitleStyle,
       },
     },
     '& $postsListItemDescription': {
@@ -60,7 +70,20 @@ export default createStyles({
     },
     '& $postsListItemFooter': {
       fontSize: 12,
-      marginTop: 10,
+      marginTop: 12,
+      display: 'flex',
+    },
+    '& $postsListItemFooterIcon': {
+      marginRight: 4,
+      color: BlackLighter.toString(),
+    },
+    '& $postsListItemFooterTag': {
+      margin: 0,
+      color: BlackLighter.toString(),
+
+      '&:hover': {
+        color: Black.toString(),
+      },
     },
   },
 });

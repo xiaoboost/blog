@@ -7,12 +7,12 @@ import { ScrollBar } from '@blog/component-scrollbar';
 import { HMRClientScriptPath } from '@blog/shared';
 import { Header, HeaderProps } from '../header';
 import { Footer } from '../footer';
-import { Article } from '../article';
+import { Article, ArticleProps } from '../article';
 import { GotoTop } from '../goto-top';
 
 import favicon from '../../assets/image/favicon.ico';
 
-export interface LayoutProps extends HeaderProps {
+export interface LayoutProps extends HeaderProps, ArticleProps {
   /** 网站标题 */
   siteTitle: string;
   /** 网页标题 */
@@ -65,7 +65,7 @@ export function Layout(props: PropsWithChildren<LayoutProps>) {
       </head>
       <body>
         <Header {...props} />
-        <Article>{props.children}</Article>
+        <Article bodyClassName={props.bodyClassName}>{props.children}</Article>
         <Footer />
         <GotoTop />
         <ScrollBar width={8} mode='y' />

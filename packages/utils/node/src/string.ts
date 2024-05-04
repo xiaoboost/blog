@@ -15,6 +15,7 @@ export function toPinyin(str: string) {
     .join('-')
     .replace(/[\uff00-\uffe5]/g, '-')
     .replace(/-+/g, '-')
+    .replace(/-$/g, '')
     .toLowerCase();
 }
 

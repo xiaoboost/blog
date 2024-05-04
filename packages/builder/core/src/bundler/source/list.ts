@@ -1,4 +1,4 @@
-import type { ListRenderData } from '@blog/types';
+import type { PostListData } from '@blog/types';
 import { normalize, normalizeUrl } from '@blog/node';
 import { RuntimeBuilder as Builder } from '@blog/context/runtime';
 import { MainIndex, utils } from '@blog/template-layout';
@@ -17,14 +17,13 @@ export function getIndexAssetPath(index: number) {
   return normalize(getIndexUrlPath(index), 'index.html');
 }
 
-export function renderListPage({ index, pathname, posts, count }: ListRenderData) {
+export function renderListPage({ index, pathname, posts, count }: PostListData) {
   const pageTitle = index === 0 ? site.title : `${site.title} | 第 ${index + 1} 页`;
   const isStart = index === 0;
   const isEnd = index === count - 1;
 
   return createIndex({
     posts,
-    index,
     siteTitle: site.title,
     pageTitle,
     pathname,

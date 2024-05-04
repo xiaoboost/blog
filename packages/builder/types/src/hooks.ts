@@ -120,16 +120,44 @@ export interface BundlerHooks {
   loadResult: AsyncSeriesHook<[OnLoadResult, OnLoadArgs]>;
 }
 
-/** 列表页数据 */
-export interface ListRenderData {
+/** 列表数据 */
+interface ListRenderData {
   /** 列表第几页 */
   index: number;
   /** 列表总页数 */
   count: number;
   /** 列表页网址 */
   pathname: string;
+}
+
+/** 列表页数据 */
+export interface PostListData extends ListRenderData {
   /** 列表页包含的文章 */
   posts: PostExportData[];
+}
+
+/** 带标题的列表页数据 */
+export interface PostListDataWithTitle extends PostListData {
+  /** 列表标题 */
+  listTitle: string;
+}
+
+/** 链接数据 */
+interface UrlData {
+  /** 链接标题 */
+  title: string;
+  /** 链接副标题 */
+  subTitle: string;
+  /** 链接地址 */
+  url: string;
+}
+
+/** 项目列表页数据 */
+export interface UrlListData extends ListRenderData {
+  /** 列表标题 */
+  listTitle: string;
+  /** 项目列表 */
+  data: UrlData[];
 }
 
 /** 运行器钩子 */
@@ -145,10 +173,26 @@ export interface RuntimeHooks {
   beforeEachPost: AsyncSeriesHook<[PostExportData, number, PostExportData[]]>;
   /** 编译文章页面后 */
   afterEachPost: AsyncSeriesHook<[AssetData, number, PostExportData[]]>;
-  /** 编译列表页面前 */
-  beforeEachList: AsyncSeriesHook<[ListRenderData]>;
-  /** 编译列表页面后 */
-  afterEachList: AsyncSeriesHook<[AssetData]>;
+  /** 编译标签列表页前 */
+  beforeEachTagList: AsyncSeriesHook<[UrlListData]>;
+  /** 编译标签列表页后 */
+  afterEachTagList: AsyncSeriesHook<[AssetData]>;
+  /** 编译标签文章列表页前 */
+  beforeEachTagPostList: AsyncSeriesHook<[PostListDataWithTitle]>;
+  /** 编译标签文章列表页后 */
+  afterEachTagPostList: AsyncSeriesHook<[AssetData]>;
+  /** 编译年份列表页前 */
+  beforeEachYearList: AsyncSeriesHook<[UrlListData]>;
+  /** 编译年份列表页后 */
+  afterEachYearList: AsyncSeriesHook<[AssetData]>;
+  /** 编译年份文章列表页前 */
+  beforeEachYearPostList: AsyncSeriesHook<[PostListDataWithTitle]>;
+  /** 编译年份文章列表页后 */
+  afterEachYearPostList: AsyncSeriesHook<[AssetData]>;
+  /** 编译主列表页前 */
+  beforeEachMainIndexList: AsyncSeriesHook<[PostListData]>;
+  /** 编译列主表页后 */
+  afterEachMainIndexList: AsyncSeriesHook<[AssetData]>;
   /**
    * 处理资源
    *   - 返回资源列表数组

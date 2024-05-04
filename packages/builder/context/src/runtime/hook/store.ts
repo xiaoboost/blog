@@ -4,7 +4,9 @@ import type {
   PostUrlMap,
   AssetData,
   PostExportData,
-  ListRenderData,
+  PostListData,
+  UrlListData,
+  PostListDataWithTitle,
 } from '@blog/types';
 import { AsyncSeriesHook, AsyncSeriesWaterfallHook } from 'tapable';
 import { getAccessor } from '../accessor';
@@ -22,8 +24,16 @@ export const hooks: RuntimeHooks = {
     'Index',
     'AllPostExportData',
   ]),
-  beforeEachList: new AsyncSeriesHook<[ListRenderData]>(['ListRenderData']),
-  afterEachList: new AsyncSeriesHook<[AssetData]>(['Asset']),
+  beforeEachMainIndexList: new AsyncSeriesHook<[PostListData]>(['PostListData']),
+  afterEachMainIndexList: new AsyncSeriesHook<[AssetData]>(['Asset']),
+  beforeEachTagList: new AsyncSeriesHook<[UrlListData]>(['UrlList']),
+  afterEachTagList: new AsyncSeriesHook<[AssetData]>(['Asset']),
+  beforeEachTagPostList: new AsyncSeriesHook<[PostListDataWithTitle]>(['PostListData']),
+  afterEachTagPostList: new AsyncSeriesHook<[AssetData]>(['Asset']),
+  beforeEachYearList: new AsyncSeriesHook<[UrlListData]>(['UrlList']),
+  afterEachYearList: new AsyncSeriesHook<[AssetData]>(['Asset']),
+  beforeEachYearPostList: new AsyncSeriesHook<[PostListDataWithTitle]>(['PostListData']),
+  afterEachYearPostList: new AsyncSeriesHook<[AssetData]>(['Asset']),
   processAssets: new AsyncSeriesWaterfallHook<[AssetData[]]>(['Assets']),
   afterBuild: new AsyncSeriesHook<[AssetData[]]>(['Assets']),
 };
