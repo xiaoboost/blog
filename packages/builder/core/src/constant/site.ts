@@ -13,8 +13,8 @@ export const links = {
 
 /** 网站配置 */
 export const pageConfig = {
-  index: 12,
-  archive: 30,
+  index: 10,
+  archive: 20,
 };
 
 /** 网站 cname */
@@ -22,8 +22,10 @@ export const cname = 'www.dreamingcat.me';
 
 /** 公共资源公共路径 */
 export const publicPath = '/';
+/** 关于自己的文章路径 */
+export const aboutPath = '/posts/about/';
 /** 标签页路径 */
-export const tagsPath = 'tag';
+export const tagPath = 'tags';
 /** 归档页路径 */
 export const archivePath = 'archive';
 /** 本地调试时的端口号 */

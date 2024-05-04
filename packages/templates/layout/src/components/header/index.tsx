@@ -12,35 +12,37 @@ export interface HeaderProps {
   siteTitle: string;
   /** 网站根路径 */
   publicPath?: string;
-  // /** 标签页面路径 */
-  // tagPath: string;
-  // /** 归档页面路径 */
-  // archivePath: string;
+  /** 关于自己文章路径 */
+  aboutPath: string;
+  /** 标签页面路径 */
+  tagPath: string;
+  /** 归档页面路径 */
+  archivePath: string;
 }
 
 export function Header(props: HeaderProps) {
   const publicPath = props.publicPath ?? '/';
   const location = normalizeUrl(publicPath, props.pathname);
   const indexHref = normalizeUrl(publicPath);
-  const aboutHref = normalizeUrl(publicPath, '/posts/about/');
-  // const tagHref = normalizeUrl(props.publicPath, props.tagPath);
-  // const archiveHref = normalizeUrl(props.publicPath, props.archivePath);
+  const aboutHref = normalizeUrl(publicPath, props.aboutPath);
+  const tagHref = normalizeUrl(publicPath, props.tagPath);
+  const archiveHref = normalizeUrl(publicPath, props.archivePath);
   const navs = [
     {
       name: '首页',
       href: indexHref,
       highlight: location === '/' || location === '/index.html',
     },
-    // {
-    //   name: '归档',
-    //   href: archiveHref,
-    //   highlight: location.indexOf(archiveHref) === 0,
-    // },
-    // {
-    //   name: '标签',
-    //   href: tagHref,
-    //   highlight: location.indexOf(tagHref) === 0,
-    // },
+    {
+      name: '标签',
+      href: tagHref,
+      highlight: location.indexOf(tagHref) === 0,
+    },
+    {
+      name: '归档',
+      href: archiveHref,
+      highlight: location.indexOf(archiveHref) === 0,
+    },
     {
       name: '关于',
       href: aboutHref,

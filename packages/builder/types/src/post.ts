@@ -30,6 +30,12 @@ export interface PostMeta {
   template?: string;
 }
 
+/** 标签数据 */
+interface Tag {
+  name: string;
+  url: string;
+}
+
 /** 文章基础属性 */
 export interface PostBasicData {
   /** 文章标题 */
@@ -39,7 +45,7 @@ export interface PostBasicData {
   /** 文章最后更新时间 */
   update: number;
   /** 文章标签 */
-  tags: string[];
+  tags: Tag[];
   /** 是否可以被列表检索 */
   public: boolean;
   /** 文章简介 */

@@ -2,6 +2,7 @@
 title: 唯有死亡才是永恒
 create: 2023/05/23
 description: 《永恒剑主》，永恒的终结。
+tags: 读后感
 toc: false
 ---
 

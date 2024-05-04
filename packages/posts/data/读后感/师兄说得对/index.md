@@ -2,6 +2,7 @@
 title: 天生万物以养人
 create: 2023/12/17
 description: 《师兄说得对》，以杀止杀真的是澄清玉宇拯救世道的最好方法吗？
+tags: 读后感
 toc: false
 ---
 
