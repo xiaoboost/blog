@@ -57,7 +57,10 @@ export async function getPostData(content: string, fileName: string) {
     title: meta.title,
     create: getDateByDay(meta.create),
     update: meta.update ? getDateByDay(meta.update) : (await stat(fileName)).mtimeMs,
-    tags: meta.tags ?? [],
+    tags: (meta.tags ? (Array.isArray(meta.tags) ? meta.tags : [meta.tags]) : []).map((name) => ({
+      name,
+      url: '',
+    })),
     public: meta.public ?? true,
     content: postContent,
     filePath: normalize(fileName),

@@ -2,8 +2,7 @@ import React from 'react';
 import Moment from 'moment';
 import type { PostExportData } from '@blog/types';
 import { normalizeUrl } from '@blog/node';
-
-// import { Tags } from '../../components/icons';
+import { Tags } from '../../components/icons';
 import { Layout, LayoutProps } from '../../components/layout';
 import { Pagination, PaginationProps } from '../../components/pagination';
 
@@ -21,9 +20,18 @@ function Post({ data: post }: PostExportData) {
       <article className={styles.classes.postsListItemDescription}>{post.description}</article>
       {post.tags.length !== 0 && (
         <footer className={styles.classes.postsListItemFooter}>
-          {/* <Tags /> */}
-          {post.tags.map((tag) => (
-            <a key={tag}>{tag}</a>
+          <Tags className={styles.classes.postsListItemFooterIcon} />
+          {post.tags.map((tag, i, arr) => (
+            <React.Fragment key={tag.name}>
+              <a
+                href={tag.url}
+                title={`跳转至“${tag.name}”标签页面`}
+                className={styles.classes.postsListItemFooterTag}
+              >
+                {tag.name}
+              </a>
+              {i !== arr.length - 1 && <span>，</span>}
+            </React.Fragment>
           ))}
         </footer>
       )}
@@ -32,7 +40,6 @@ function Post({ data: post }: PostExportData) {
 }
 
 export interface MainIndexProps extends LayoutProps, PaginationProps {
-  index: number;
   posts: PostExportData[];
 }
 
@@ -40,7 +47,7 @@ export function MainIndex(props: MainIndexProps) {
   return (
     <Layout {...props}>
       <section className={styles.classes.postsList}>
-        {(props.posts || []).map((post) => (
+        {(props.posts ?? []).map((post) => (
           <Post key={post.data.create} {...post} />
         ))}
       </section>
