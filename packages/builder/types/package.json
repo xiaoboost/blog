@@ -17,19 +17,19 @@
     "url": "https://github.com/xiaoboost/blog"
   },
   "dependencies": {
-    "@types/estree": "1.0.1",
-    "@types/mdast": "4.0.0",
-    "@types/react": "18.2.21",
-    "chokidar": "3.5.3",
+    "@types/estree": "1.0.5",
+    "@types/mdast": "4.0.3",
+    "@types/react": "18.3.1",
+    "chokidar": "3.6.0",
     "esbuild": "0.15.18",
     "tapable": "2.2.1"
   },
   "devDependencies": {
-    "@types/node": "18.11.9",
+    "@types/node": "20.12.8",
     "@xiao-ai/eslint-config": "1.0.3",
     "@xiao-ai/tsconfig": "1.0.4",
     "eslint": "8.56.0",
-    "tslib": "2.5.0",
-    "typescript": "5.2.2"
+    "tslib": "2.6.2",
+    "typescript": "5.4.5"
   }
 }

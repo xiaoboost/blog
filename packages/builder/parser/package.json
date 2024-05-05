@@ -32,22 +32,22 @@
     "@blog/shared": "workspace:*",
     "@blog/types": "workspace:*",
     "@mdx-js/mdx": "2.3.0",
-    "prettier": "3.0.3",
+    "prettier": "3.2.5",
     "remark-gfm": "3.0.1",
     "remark-mdx": "2.3.0",
     "remark-parse": "10.0.2",
     "remark-stringify": "10.0.3",
     "tslib": "2.6.2",
-    "unified": "11.0.2",
-    "yaml": "2.3.2"
+    "unified": "11.0.4",
+    "yaml": "2.4.2"
   },
   "devDependencies": {
     "@blog/test-toolkit": "workspace:*",
-    "@types/node": "18.11.9",
+    "@types/node": "20.12.8",
     "@xiao-ai/eslint-config": "1.0.3",
     "@xiao-ai/tsconfig": "1.0.4",
     "eslint": "8.56.0",
-    "mocha": "10.2.0",
-    "typescript": "5.2.2"
+    "mocha": "10.4.0",
+    "typescript": "5.4.5"
   }
 }
