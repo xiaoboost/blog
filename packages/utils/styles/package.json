@@ -21,12 +21,12 @@
     "lint:fix": "eslint --quiet --fix src/**/*.{ts,tsx,js,jsx}"
   },
   "devDependencies": {
-    "@types/color": "3.0.3",
-    "@types/node": "18.11.9",
+    "@types/color": "3.0.6",
+    "@types/node": "20.12.8",
     "@xiao-ai/eslint-config": "1.0.3",
     "@xiao-ai/tsconfig": "1.0.4",
     "eslint": "8.56.0",
-    "typescript": "5.2.2"
+    "typescript": "5.4.5"
   },
   "dependencies": {
     "@blog/context": "workspace:*",

@@ -19,16 +19,16 @@
   },
   "devDependencies": {
     "@types/blog": "workspace:*",
-    "@types/chai": "4.3.5",
-    "@types/mocha": "10.0.1",
-    "@types/node": "18.11.9",
+    "@types/chai": "4.3.16",
+    "@types/mocha": "10.0.6",
+    "@types/node": "20.12.8",
     "@xiao-ai/eslint-config": "1.0.3",
     "@xiao-ai/tsconfig": "1.0.4",
-    "chai": "4.3.7",
+    "chai": "4.4.1",
     "eslint": "8.56.0",
-    "tslib": "2.5.0",
+    "tslib": "2.6.2",
     "tsm": "2.3.0",
-    "typescript": "5.2.2"
+    "typescript": "5.4.5"
   },
   "dependencies": {
     "@blog/context": "workspace:*",

@@ -35,10 +35,10 @@
     "tslib": "2.6.2"
   },
   "devDependencies": {
-    "@types/node": "18.11.9",
+    "@types/node": "20.12.8",
     "@xiao-ai/eslint-config": "1.0.3",
     "@xiao-ai/tsconfig": "1.0.4",
     "eslint": "8.56.0",
-    "typescript": "5.2.2"
+    "typescript": "5.4.5"
   }
 }

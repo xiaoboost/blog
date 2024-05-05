@@ -19,8 +19,8 @@
     "lint:fix": "pnpm run -r --parallel lint:fix --no-error-on-unmatched-pattern"
   },
   "engines": {
-    "node": ">=16",
-    "pnpm": ">=8"
+    "node": ">=20",
+    "pnpm": ">=9"
   },
   "pnpm": {
     "updateConfig": {
@@ -28,7 +28,10 @@
         "@types/node",
         "esbuild",
         "ora",
-        "chalk"
+        "chalk",
+        "eslint",
+        "chai",
+        "mime"
       ]
     }
   },
