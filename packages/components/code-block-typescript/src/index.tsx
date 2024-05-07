@@ -1,5 +1,4 @@
 import React from 'react';
-import { stringifyClass } from '@xiao-ai/utils';
 import {
   defineUtils,
   getReference,
@@ -8,18 +7,20 @@ import {
 } from '@blog/context/runtime';
 import {
   styles as normalStyles,
+  WrapperProps,
   CodeBlockWrapper,
   getHighlightCode,
   getMinSpaceWidth,
 } from '@blog/mdx-code-block-normal';
 
+import { stringifyClass } from '@xiao-ai/utils';
 import { ComponentName } from './constant';
 import { getImportedByPost, npmInstall, removeReference } from './utils';
 import { name as ComponentPkgName } from '../package.json';
 
 import styles from './index.jss';
 import assets from './code-block-ts.script';
-import { renderTsCode, ScriptKind, Platform } from './typescript';
+import { renderTsCode, ScriptKind, Platform, RenderedTsCodeLine } from './typescript';
 
 export { ScriptKind, Platform } from './typescript';
 export const utils = defineUtils(assets);
@@ -30,11 +31,13 @@ export interface Options {
   children?: string;
   lang?: ScriptKind;
   platform?: Platform;
+  showError?: boolean;
 }
 
 export function TsCodeBlock({
   lang = 'ts',
   platform = 'none',
+  showError = true,
   children = '',
 }: React.PropsWithChildren<Options> = {}) {
   if (typeof children !== 'string') {
@@ -42,49 +45,66 @@ export function TsCodeBlock({
   }
 
   interface CodeBlockData {
-    lines: string[];
+    lines: RenderedTsCodeLine[];
     highlight: Record<number, boolean>;
   }
 
   const { classes } = styles;
   const cache = getReference<Map<string, CodeBlockData>>(`${ComponentName}-ts-code`, new Map());
-  const { lines, highlight } = (() => {
+  const { lines, highlight, customLines } = (() => {
     const key = `typescript:${children}`;
 
-    if (cache.has(key)) {
-      Builder.logger.debug(`${TsCodeBlock}: use cache`);
-      return cache.get(key)!;
+    if (!cache.has(key)) {
+      const removedExtractCode = removeReference(children);
+      const { code, highlightLines } = getHighlightCode(removedExtractCode);
+      const tabWidth = getMinSpaceWidth(code);
+      const result = {
+        lines: renderTsCode(code, tabWidth, cacheTsServerDir, lang, platform, showError),
+        highlight: highlightLines,
+      };
+      cache.set(key, result);
     }
 
-    const removedExtractCode = removeReference(children);
-    const { code, highlightLines } = getHighlightCode(removedExtractCode);
-    const tabWidth = getMinSpaceWidth(code);
-    const result = {
-      lines: renderTsCode(code, tabWidth, cacheTsServerDir, lang, platform),
-      highlight: highlightLines,
+    const result = cache.get(key)!;
+    const customLines: NonNullable<WrapperProps['customLines']> = {};
+
+    Builder.logger.debug(`${TsCodeBlock}: use cache`);
+
+    result.lines.forEach((line, index) => {
+      if (line.noIndex || line.indexClassNames) {
+        customLines[index + 1] = {
+          noIndex: line.noIndex,
+          classNames: line.indexClassNames,
+        };
+      }
+    });
+
+    return {
+      ...result,
+      customLines,
     };
-
-    cache.set(key, result);
-
-    return result;
   })();
 
   return (
     <CodeBlockWrapper
       lang={lang}
-      listClassName={classes.codeBlockLs}
+      wrapperClassName={classes.codeBlockLs}
       lineCount={lines.length}
       highlightLines={highlight}
+      customLines={customLines}
     >
-      {lines.map((line, i) => (
-        <li
-          key={i}
-          className={stringifyClass({
+      {lines.map((line, i) =>
+        React.createElement('li', {
+          key: i,
+          dangerouslySetInnerHTML: {
+            __html: line.code,
+          },
+          className: stringifyClass(...(line.classNames ?? []), {
             [normalStyles.classes.codeBlockHighlightLine]: highlight[i],
-          })}
-          dangerouslySetInnerHTML={{ __html: line }}
-        />
-      ))}
+          }),
+          ...line.attributes,
+        }),
+      )}
     </CodeBlockWrapper>
   );
 }

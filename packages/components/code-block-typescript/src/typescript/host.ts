@@ -22,6 +22,18 @@ interface CodeFile {
   snapshot: ts.IScriptSnapshot;
 }
 
+/** 错误信息 */
+export interface DiagnosticData {
+  // /** 错误信息 */
+  // category: keyof typeof ts.DiagnosticCategory;
+  /** 错误信息 */
+  messages: string[];
+  /** 错误编码 */
+  code: number;
+  /** 偏移量 */
+  offset: number;
+}
+
 /** 不需要样式的数据类型 */
 const infoNoStyleKinds = toBoolMap(['space', 'text', 'lineBreak', 'punctuation']);
 
@@ -183,5 +195,41 @@ export class TsServer {
     }
 
     return encodeURI(JSON.stringify(result));
+  }
+
+  getDiagnostics() {
+    const program = this.server.getProgram();
+    const sourceFile = program?.getSourceFile(this.current.name);
+    const rawScriptDiagnostics = [
+      ...(program?.getSyntacticDiagnostics(sourceFile) ?? []),
+      ...(program?.getSemanticDiagnostics(sourceFile) ?? []),
+      ...(program?.getDeclarationDiagnostics(sourceFile) ?? []),
+    ];
+
+    const host: ts.FormatDiagnosticsHost = {
+      getCurrentDirectory: () => this.resolve(),
+      getCanonicalFileName: () => '',
+      getNewLine: () => '\n',
+    };
+
+    const formatDiagnostic = (diagnostic: ts.Diagnostic) => {
+      const tsFormatted = ts.formatDiagnostic(diagnostic, host);
+      return tsFormatted
+        .replace(/^[\d\D]+?error TS\d+:/, '')
+        .trim()
+        .split('\n');
+    };
+
+    return rawScriptDiagnostics
+      .filter(
+        (diagnostic) => diagnostic.start && diagnostic.category === ts.DiagnosticCategory.Error,
+      )
+      .map((diagnostic): DiagnosticData => {
+        return {
+          messages: formatDiagnostic(diagnostic),
+          code: diagnostic.code,
+          offset: diagnostic.start!,
+        };
+      });
   }
 }

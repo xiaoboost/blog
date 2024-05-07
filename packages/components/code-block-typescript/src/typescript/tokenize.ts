@@ -3,7 +3,7 @@ import * as oniguruma from 'vscode-oniguruma';
 
 import { readFile } from 'fs/promises';
 import { getAccessor, forEach } from '@blog/context/runtime';
-import { ScriptKind, Platform, TsServer } from './host';
+import { ScriptKind, Platform, TsServer, DiagnosticData } from './host';
 import { ComponentName } from '../constant';
 
 import tsPlistPath from '../../tmLanguage/ts.plist';
@@ -14,15 +14,17 @@ import wasmBinPath from '../../node_modules/vscode-oniguruma/release/onig.wasm';
 const tsGrammar = getAccessor<vsctm.IGrammar>('tsGrammar');
 const tsxGrammar = getAccessor<vsctm.IGrammar>('tsxGrammar');
 
-interface Token extends vsctm.IToken {
+export interface Token extends vsctm.IToken {
   /** 距离整个代码开头的偏移 */
   offset: number;
   /** 原始字符串 */
   text: string;
   /** 渲染后的标签类名 */
-  class?: string;
+  className?: string;
   /** 代码提示 */
   info?: string;
+  /** 错误信息 */
+  diagnostic?: DiagnosticData;
 }
 
 async function getGrammar() {
@@ -141,11 +143,18 @@ forEach((runtime) => {
   runtime.hooks.beforeStart.tapPromise(ComponentName, () => getGrammar());
 });
 
-export function tokenize(code: string, baseDir: string, lang: ScriptKind, platform: Platform) {
+export function tokenize(
+  code: string,
+  baseDir: string,
+  lang: ScriptKind,
+  platform: Platform,
+  showError = true,
+) {
   const grammar = /^(j|t)s$/.test(lang) ? tsGrammar.get() : tsxGrammar.get();
   const server = new TsServer(baseDir, code, lang, platform);
   const lines = code.split(/[\n\r]/);
   const linesToken: Token[][] = [];
+  const diagnostics = showError ? server.getDiagnostics() : [];
 
   if (!grammar) {
     throw new Error('语法器加载失败');
@@ -170,8 +179,9 @@ export function tokenize(code: string, baseDir: string, lang: ScriptKind, platfo
         .reduce((ans, token) => ans.concat(token), [])
         .map((token) => ({
           ...token,
-          class: getClass(token),
+          className: getClass(token),
           info: getInfo(server, token),
+          diagnostic: diagnostics.find((data) => data.offset === token.offset),
         })),
     );
 
