@@ -13,41 +13,75 @@ export { styles };
 
 export const utils = defineUtils(script);
 
+/** 自定义行 */
+interface CustomLine {
+  /** 此行不计行数 */
+  noIndex?: boolean;
+  /** 自定义类名 */
+  classNames?: string[];
+}
+
 export interface WrapperProps {
   /** 代码语言 */
   lang?: string;
   /** 代码共几行 */
   lineCount: number;
-  /** 高亮的行数 */
-  highlightLines: Record<number, boolean>;
-  /** 列表的样式名称 */
-  listClassName?: string;
+  /**
+   * 高亮的行数
+   *
+   * @description 行号从`1`开始
+   */
+  highlightLines?: Record<number, boolean>;
+  /**
+   * 不标记行数
+   *
+   * @description 行号从`1`开始
+   */
+  customLines?: Record<number, CustomLine>;
+  /** 代码列表的样式名称 */
+  lineListClassName?: string;
+  /** 序号列表样式名称 */
+  indexListClassName?: string;
+  /** 代码框样式名称 */
+  wrapperClassName?: string;
 }
 
 export function CodeBlockWrapper(props: React.PropsWithChildren<WrapperProps>) {
   const { classes } = styles;
-  const { lang, lineCount, highlightLines, children } = props;
+  const { lang, lineCount, highlightLines = {}, customLines = {}, children } = props;
+  const lines: React.JSX.Element[] = [];
+
+  for (let i = 1, lineIndex = 1; i <= lineCount; i++, lineIndex++) {
+    const isHighlight = highlightLines[i];
+    const custom = customLines[i];
+
+    lines.push(
+      <li
+        key={lineIndex}
+        className={stringifyClass(...(custom?.classNames ?? []), {
+          [classes.codeBlockHighlightLine]: isHighlight,
+        })}
+      >
+        {custom?.noIndex ? ' ' : lineIndex}
+      </li>,
+    );
+
+    if (custom?.noIndex) {
+      lineIndex--;
+    }
+  }
 
   return (
-    <pre className={classes.codeBlockWrapper}>
+    <pre className={stringifyClass(classes.codeBlockWrapper, props.wrapperClassName)}>
       {lang ? <label className={classes.codeBlockLabel}>{getLangLabel(lang)}</label> : ''}
       <code className={classes.codeBlockList}>
-        <ul className={classes.codeBlockGutter}>
-          {Array(lineCount)
-            .fill(0)
-            .map((_, i) => (
-              <li
-                key={i}
-                className={stringifyClass({
-                  [classes.codeBlockHighlightLine]: highlightLines[i],
-                })}
-              >
-                {i + 1}
-              </li>
-            ))}
+        <ul className={stringifyClass(classes.codeBlockGutter, props.indexListClassName)}>
+          {lines}
         </ul>
         <span className={classes.codeBlockBox}>
-          <ul className={stringifyClass(classes.codeBlockCode, props.listClassName)}>{children}</ul>
+          <ul className={stringifyClass(classes.codeBlockCode, props.lineListClassName)}>
+            {children}
+          </ul>
         </span>
       </code>
     </pre>
