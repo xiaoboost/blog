@@ -1,5 +1,5 @@
 import { createStyles, Color, FontMono, Gray, GrayLight } from '@blog/styles';
-import { lsInfoAttrName } from './constant';
+import { lsInfoAttrName, lsErrorTokenAttrName } from './constant';
 
 const Black = Color(0x383a42);
 const Blue = Color(0x4078f2);
@@ -10,6 +10,9 @@ const LightBrown = Color(0xc18401);
 const Brown = Color(0x986801);
 const Violet = Color(0xa626a4);
 const LightViolet = Color(0xda70d6);
+const ErrorBgColor = Color(0xffeeee);
+const ErrorBorderColor = Color(0xbf1818);
+const ErrorBgHoverColor = Color(0xffcccc);
 
 function addTsxSelector(selector: string) {
   const selectorList = selector
@@ -28,6 +31,11 @@ function addTsxSelector(selector: string) {
 }
 
 export default createStyles({
+  lspError: {},
+  lspErrorStartLine: {},
+  lspErrorEndLine: {},
+  lspErrorLineHighlight: {},
+  lspErrorGoto: {},
   codeBlockLs: {
     [`&:hover [${lsInfoAttrName}]`]: {
       borderColor: '#747474',
@@ -36,6 +44,33 @@ export default createStyles({
       borderBottom: '1px dotted transparent',
       transitionTimingFunction: 'ease',
       transition: 'border-color .3s',
+    },
+    [`& [${lsErrorTokenAttrName}]`]: {
+      backgroundImage: `url("./assets/red-under-wave-line.svg")`,
+      backgroundAttachment: 'scroll',
+      backgroundClip: 'border-box',
+      backgroundOrigin: 'padding-box',
+      backgroundPositionX: 0,
+      backgroundPositionY: '100%',
+      backgroundRepeat: 'repeat-x',
+      backgroundSize: 'auto',
+    },
+    '& $lspErrorStartLine': {
+      paddingTop: '0.2em !important',
+      marginTop: '0.2em !important',
+    },
+    '& $lspErrorEndLine': {
+      paddingBottom: '0.2em !important',
+      marginBottom: '0.2em !important',
+    },
+    '& $lspError': {
+      backgroundColor: ErrorBgColor.toString(),
+      borderLeft: `2px solid ${ErrorBorderColor.toString()}`,
+      transition: 'background-color 200ms ease',
+
+      '&$lspErrorLineHighlight': {
+        backgroundColor: ErrorBgHoverColor.toString(),
+      },
     },
 
     '& [class*="lsp-keyword"], & [class*="lsp-storage-type"], & [class*="lsp-storage-modifier"]': {

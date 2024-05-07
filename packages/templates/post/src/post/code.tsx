@@ -25,11 +25,16 @@ export function pre(props: Props) {
 
   const { base, query } = parseQuery(data.className);
   const lang = base.replace(/^language-/, '').toLowerCase() as ScriptKind;
-  const disableLsp = query.lsp === false;
+  const enableLsp = !query.lsp || query.lsp === true || query.lsp === 'true';
+  const showError = !query.showError || query.showError === true || query.showError === 'true';
 
-  if (isTs(lang) && !disableLsp) {
+  if (isTs(lang) && enableLsp) {
     return (
-      <TsCodeBlock lang={lang} platform={query.platform as Platform | undefined}>
+      <TsCodeBlock
+        lang={lang}
+        platform={query.platform as Platform | undefined}
+        showError={showError}
+      >
         {data.children}
       </TsCodeBlock>
     );
