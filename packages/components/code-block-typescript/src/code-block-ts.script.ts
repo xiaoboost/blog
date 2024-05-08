@@ -1,14 +1,13 @@
 /* eslint-disable max-classes-per-file */
 
 import { isString } from '@xiao-ai/utils';
-import { removeClassName, addClassName } from '@xiao-ai/utils/web';
 import { computePosition, autoUpdate, flip, shift, offset, inline } from '@floating-ui/dom';
 import { getCurrentScriptSrc } from '@blog/web';
 import { ModuleLoader, assets } from '@blog/context/web';
 
 import styles from './index.jss';
 import { DisplaySymbol } from './typescript';
-import { lsInfoAttrName, lsErrorTokenAttrName, lsErrorByAttrName } from './constant';
+import { lsInfoAttrName } from './constant';
 
 class InfoElement {
   private el: HTMLElement;
@@ -104,7 +103,7 @@ class InfoElement {
 function active() {
   const infoEle = new InfoElement();
   const elHasInfo = document.querySelectorAll<HTMLElement>(`pre span[${lsInfoAttrName}]`);
-  const errorTokenEl = document.querySelectorAll<HTMLElement>(`pre span[${lsErrorTokenAttrName}]`);
+  // const errorTokenEl = document.querySelectorAll<HTMLElement>(`pre span[${lsErrorTokenAttrName}]`);
   const hiddenEvent = () => infoEle.hidden();
 
   for (const el of Array.from(elHasInfo)) {
@@ -127,26 +126,26 @@ function active() {
     el.addEventListener('mouseleave', hiddenEvent);
   }
 
-  for (const el of Array.from(errorTokenEl)) {
-    const tokenId = el.getAttribute(lsErrorTokenAttrName);
-    const errorLineEl = Array.from(
-      document.querySelectorAll<HTMLElement>(`pre [${lsErrorByAttrName}="${tokenId}"]`),
-    );
+  // for (const el of Array.from(errorTokenEl)) {
+  //   const tokenId = el.getAttribute(lsErrorTokenAttrName);
+  //   const errorLineEl = Array.from(
+  //     document.querySelectorAll<HTMLElement>(`pre [${lsErrorByAttrName}="${tokenId}"]`),
+  //   );
 
-    // 生产模式需要移除语言服务信息
-    if (process.env.NODE_ENV === 'production') {
-      el.setAttribute(lsErrorTokenAttrName, '');
-      errorLineEl.forEach((el) => el.removeAttribute(lsErrorByAttrName));
-    }
+  //   // 生产模式需要移除语言服务信息
+  //   if (process.env.NODE_ENV === 'production') {
+  //     el.setAttribute(lsErrorTokenAttrName, '');
+  //     errorLineEl.forEach((el) => el.removeAttribute(lsErrorByAttrName));
+  //   }
 
-    el.addEventListener('mouseenter', () => {
-      errorLineEl.forEach((el) => addClassName(el, styles.classes.lspErrorLineHighlight));
-    });
+  //   el.addEventListener('mouseenter', () => {
+  //     errorLineEl.forEach((el) => addClassName(el, styles.classes.lspErrorLineHighlight));
+  //   });
 
-    el.addEventListener('mouseleave', () => {
-      errorLineEl.forEach((el) => removeClassName(el, styles.classes.lspErrorLineHighlight));
-    });
-  }
+  //   el.addEventListener('mouseleave', () => {
+  //     errorLineEl.forEach((el) => removeClassName(el, styles.classes.lspErrorLineHighlight));
+  //   });
+  // }
 
   return () => {
     infoEle.hidden();

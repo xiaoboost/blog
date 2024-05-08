@@ -12,7 +12,7 @@ import {
 const CodeColor = Color(BlackLight);
 const CodeBgColor = Color(WhiteBg);
 const SplitColor = Color(Gray);
-const highlightBgColor = Color(BlackExtraLight);
+const highlightBgColor = Color(BlackExtraLight.rgbNumber() + 0x222222);
 const GutterBgColor = Color(CodeBgColor.rgbNumber() - 0x101010);
 const GutterColor = Color(GutterBgColor.rgbNumber() - 0x303030);
 const borderRadius = 4;
@@ -79,6 +79,10 @@ export default createStyles({
         [mediaPhone]: {
           borderTopLeftRadius: 0,
           borderBottomLeftRadius: 0,
+        },
+
+        '& $codeBlockHighlightLine': {
+          color: BlackLight.toString(),
         },
 
         '& > li': {

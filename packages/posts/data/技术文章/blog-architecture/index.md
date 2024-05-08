@@ -174,11 +174,12 @@ export default jss.createStyleSheet({
 ```
 
 ```ts?platform=browser
+// @ts-ignore
 import styles from './styles.jss';
 
 const elements = document.querySelectorAll<HTMLElement>(`.${styles.classes.show}`);
 
-Array.from(elements).forEach((el) => el.setAttribute('data-index', 1))
+Array.from(elements).forEach((el) => el.setAttribute('data-index', '1'));
 ```
 
 样式文件和脚本文件会被加载器转换为普通的静态资源一并导入模板文件中，模板文件中实际上就含有生成网页的模板函数以及当前模板/组件的所有静态资源。
@@ -284,7 +285,7 @@ export function getPostAssetNames() {
 
 在整个网站生成器的代码打包之后，我发现生成的代码实在是太大了（十几兆），非常不方便调试，仔细调试之后才发现，原来是将每个组件使用的各种本地库都打包进来了，实际上这是没必要的。因为这个打包生成的代码并不是最终代码，只是拿来运行一次就扔掉的中间产物。所以这里需要将每个子包内的“本地库”的代码全部隔离，不需要将它们代入产物中。但是仅仅将这些包都标记为`external`是不能实现的，因为只是标记为外部包的话，代码会变成`require('xxx')`，打包完成之后，最后生成的代码已经脱离了原本它所在的上下文，所以这里必须要使用`createRequire`接口来实现隔离。举个例子：
 
-```ts
+```ts?platform=node
 /// <reference import-type="@types/katex" />
 
 import Katex from 'katex';

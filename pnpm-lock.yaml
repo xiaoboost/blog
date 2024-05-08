@@ -416,9 +416,6 @@ importers:
       typescript:
         specifier: 5.4.5
         version: 5.4.5
-      uuid:
-        specifier: 9.0.1
-        version: 9.0.1
       vscode-oniguruma:
         specifier: 2.0.1
         version: 2.0.1
@@ -441,9 +438,6 @@ importers:
       '@types/react':
         specifier: 18.3.1
         version: 18.3.1
-      '@types/uuid':
-        specifier: 9.0.8
-        version: 9.0.8
       '@xiao-ai/eslint-config':
         specifier: 1.0.3
         version: 1.0.3
@@ -1245,9 +1239,6 @@ packages:
 
   '@types/unist@3.0.2':
     resolution: {integrity: sha512-dqId9J8K/vGi5Zr7oo212BGii5m3q5Hxlkwy3WpYuKPklmBEvsbMYYyLxAQpSffdLl/gdW0XUpKWFvYmyoWCoQ==}
-
-  '@types/uuid@9.0.8':
-    resolution: {integrity: sha512-jg+97EGIcY9AGHJJRaaPVgetKDsrTgbRjQ5Msgjh/DQKEFl0DtyRr/VCOyD1T2R1MNeWPK/u7JoGhlDZnKBAfA==}
 
   '@types/ws@8.5.10':
     resolution: {integrity: sha512-vmQSUcfalpIq0R9q7uTo2lXs6eGIpt9wtnLdMv9LVpIjCA/+ufZRozlVoVelIYixx1ugCBKDhn89vnsEGOCx9A==}
@@ -3874,10 +3865,6 @@ packages:
     resolution: {integrity: sha512-FULf7fayPdpASncVy4DLh3xydlXEJJpvIELjYjNeQWYUZ9pclcpvCZSr2gkmN2FrrGcI7G/cJsIEwk5/8vfXpg==}
     deprecated: Please upgrade  to version 7 or higher.  Older versions may use Math.random() in certain circumstances, which is known to be problematic.  See https://v8.dev/blog/math-random for details.
 
-  uuid@9.0.1:
-    resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
-    hasBin: true
-
   uvu@0.5.6:
     resolution: {integrity: sha512-+g8ENReyr8YsOc6fv/NVJs2vFdHBnBNdfE49rshrTzDWOlUx4Gq7KOS2GD8eqhy2j+Ejq29+SbKH8yjkAqXqoA==}
     engines: {node: '>=8'}
@@ -4338,8 +4325,6 @@ snapshots:
   '@types/unist@2.0.10': {}
 
   '@types/unist@3.0.2': {}
-
-  '@types/uuid@9.0.8': {}
 
   '@types/ws@8.5.10':
     dependencies:
@@ -7594,8 +7579,6 @@ snapshots:
   util-deprecate@1.0.2: {}
 
   uuid@2.0.3: {}
-
-  uuid@9.0.1: {}
 
   uvu@0.5.6:
     dependencies:

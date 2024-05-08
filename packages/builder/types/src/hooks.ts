@@ -17,7 +17,7 @@ import type { FSWatcher } from 'chokidar';
 import type { BuilderOptions, BuilderInstance, BundlerInstance, RunnerInstance } from './builder';
 import type { ErrorData } from './error';
 import type { AssetData } from './asset';
-import type { PostUrlMap, PostExportData } from './post';
+import type { PostExportData, PostBasicData } from './post';
 
 export { OnResolveArgs, OnResolveResult, OnLoadResult, OnLoadArgs } from 'esbuild';
 
@@ -164,11 +164,8 @@ export interface UrlListData extends ListRenderData {
 export interface RuntimeHooks {
   /** 运行开始前 */
   beforeStart: AsyncSeriesHook<[]>;
-  /**
-   * 生成文章网址后
-   *   - 文章路径到网址的映射
-   */
-  afterPostUrl: AsyncSeriesHook<[PostUrlMap]>;
+  /** 文章数据准备完成 */
+  afterPostDataReady: AsyncSeriesHook<[PostBasicData[]]>;
   /** 编译文章页面前 */
   beforeEachPost: AsyncSeriesHook<[PostExportData, number, PostExportData[]]>;
   /** 编译文章页面后 */

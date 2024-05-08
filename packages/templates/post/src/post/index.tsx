@@ -10,9 +10,10 @@ import { ToContent } from '../to-content';
 
 import * as title from './title';
 import * as code from './code';
-import * as link from './link';
 import * as image from './image';
 import * as paragraph from './paragraph';
+
+import { Link } from './link';
 
 export interface PostProps extends LayoutProps {
   /** 文章数据 */
@@ -21,6 +22,7 @@ export interface PostProps extends LayoutProps {
 
 export function Post(props: PostProps) {
   const { post } = props;
+  const a = Link(post.data);
 
   return (
     <Layout {...props}>
@@ -39,9 +41,9 @@ export function Post(props: PostProps) {
         <article className={styles.classes.postArticle}>
           <post.Component
             components={{
+              a,
               ...title,
               ...code,
-              ...link,
               ...image,
               ...paragraph,
             }}

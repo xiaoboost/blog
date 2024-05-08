@@ -30,7 +30,9 @@ function Post({ data: post }: PostExportData) {
               >
                 {tag.name}
               </a>
-              {i !== arr.length - 1 && <span>，</span>}
+              {i !== arr.length - 1 && (
+                <span className={styles.classes.postsListItemFooterTagSplit}>、</span>
+              )}
             </React.Fragment>
           ))}
         </footer>

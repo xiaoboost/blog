@@ -135,7 +135,7 @@ export function CodeBlock({ lang, children }: React.PropsWithChildren<CodeBlockP
         <li
           key={i}
           className={stringifyClass({
-            [classes.codeBlockHighlightLine]: highlight[i],
+            [classes.codeBlockHighlightLine]: highlight[i + 1],
           })}
           dangerouslySetInnerHTML={{ __html: line }}
         />

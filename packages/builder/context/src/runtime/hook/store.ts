@@ -1,11 +1,11 @@
 import type {
   RuntimeHooks,
   RuntimeData,
-  PostUrlMap,
   AssetData,
   PostExportData,
   PostListData,
   UrlListData,
+  PostBasicData,
   PostListDataWithTitle,
 } from '@blog/types';
 import { AsyncSeriesHook, AsyncSeriesWaterfallHook } from 'tapable';
@@ -13,7 +13,7 @@ import { getAccessor } from '../accessor';
 
 export const hooks: RuntimeHooks = {
   beforeStart: new AsyncSeriesHook<[]>(),
-  afterPostUrl: new AsyncSeriesHook<[PostUrlMap]>(['PostUrlMap']),
+  afterPostDataReady: new AsyncSeriesHook<[PostBasicData[]]>(['PostData']),
   beforeEachPost: new AsyncSeriesHook<[PostExportData, number, PostExportData[]]>([
     'PostExportData',
     'Index',

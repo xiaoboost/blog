@@ -100,7 +100,7 @@ export function TsCodeBlock({
             __html: line.code,
           },
           className: stringifyClass(...(line.classNames ?? []), {
-            [normalStyles.classes.codeBlockHighlightLine]: highlight[i],
+            [normalStyles.classes.codeBlockHighlightLine]: highlight[i + 1],
           }),
           ...line.attributes,
         }),

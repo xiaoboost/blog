@@ -1,5 +1,5 @@
 import { createStyles, Color, FontMono, Gray, GrayLight } from '@blog/styles';
-import { lsInfoAttrName, lsErrorTokenAttrName } from './constant';
+import { lsInfoAttrName } from './constant';
 
 const Black = Color(0x383a42);
 const Blue = Color(0x4078f2);
@@ -35,6 +35,7 @@ export default createStyles({
   lspErrorStartLine: {},
   lspErrorEndLine: {},
   lspErrorLineHighlight: {},
+  lspErrorToken: {},
   lspErrorGoto: {},
   codeBlockLs: {
     [`&:hover [${lsInfoAttrName}]`]: {
@@ -45,7 +46,7 @@ export default createStyles({
       transitionTimingFunction: 'ease',
       transition: 'border-color .3s',
     },
-    [`& [${lsErrorTokenAttrName}]`]: {
+    '& $lspErrorToken': {
       backgroundImage: `url("./assets/red-under-wave-line.svg")`,
       backgroundAttachment: 'scroll',
       backgroundClip: 'border-box',
@@ -92,6 +93,9 @@ export default createStyles({
     [addTsxSelector('& .lsp-constant-numeric-decimal')]: {
       color: Brown.toString(),
     },
+    [addTsxSelector('& .lsp-storage-type-numeric-bigint')]: {
+      color: LightViolet.toString(),
+    },
 
     // import 语句
     [addTsxSelector(`
@@ -112,6 +116,7 @@ export default createStyles({
         &.lsp-entity-name-type
       `)]: {
         color: LightBrown.toString(),
+        fontWeight: 'bold',
       },
       [addTsxSelector('&.lsp-entity-name-type-module')]: {
         color: Red.toString(),
@@ -165,6 +170,7 @@ export default createStyles({
       [addTsxSelector('&.lsp-meta-type-annotation')]: {
         [addTsxSelector('&.lsp-entity-name-type')]: {
           color: Brown.toString(),
+          fontWeight: 'bold',
         },
       },
       [addTsxSelector('&.lsp-variable-other-constant')]: {
