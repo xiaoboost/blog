@@ -1,6 +1,6 @@
 import React from 'react';
 
-import type { PostExportDataWithComponent, PostUrlMap, PostsExportType } from '@blog/types';
+import type { PostExportDataWithComponent, PostsExportType } from '@blog/types';
 import { normalize, normalizeUrl } from '@blog/node';
 import { Post as PostRender } from '@blog/template-post';
 import { utils as layoutUtils } from '@blog/template-layout';
@@ -17,16 +17,10 @@ export function filterSortPosts(posts: PostsExportType) {
     .sort((pre, next) => (pre.data.create > next.data.create ? -1 : 1));
 }
 
-export function getPostUrlMap(posts: PostsExportType) {
-  const map: PostUrlMap = new Map();
-
+export function setPostUrl(posts: PostsExportType) {
   posts.forEach((post) => {
-    const pathname = getPostUrlPath(post);
-    post.data.pathname = pathname;
-    map.set(post.data.filePath, pathname);
+    post.data.pathname = getPostUrlPath(post);
   });
-
-  return map;
 }
 
 export function getPostUrlPath(post: PostExportDataWithComponent) {

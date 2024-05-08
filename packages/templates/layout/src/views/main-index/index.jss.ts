@@ -30,6 +30,7 @@ export default createStyles({
   postsListItem: {},
   postsListItemFooterIcon: {},
   postsListItemFooterTag: {},
+  postsListItemFooterTagSplit: {},
   postsList: {
     color: Black.toString(),
     backgroundColor: White.toString(),
@@ -72,17 +73,22 @@ export default createStyles({
       fontSize: 12,
       marginTop: 12,
       display: 'flex',
-    },
-    '& $postsListItemFooterIcon': {
-      marginRight: 4,
-      color: BlackLighter.toString(),
-    },
-    '& $postsListItemFooterTag': {
-      margin: 0,
-      color: BlackLighter.toString(),
 
-      '&:hover': {
-        color: Black.toString(),
+      '& $postsListItemFooterIcon': {
+        marginRight: 4,
+        color: BlackLighter.toString(),
+      },
+      '& $postsListItemFooterTagSplit': {
+        color: BlackLighter.toString(),
+        cursor: 'default',
+      },
+      '& $postsListItemFooterTag': {
+        margin: 0,
+        color: BlackLighter.toString(),
+
+        '&:hover': {
+          color: Black.toString(),
+        },
       },
     },
   },

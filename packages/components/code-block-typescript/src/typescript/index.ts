@@ -1,8 +1,8 @@
 import { escape } from 'html-escaper';
 import { addSplitLabel } from '@blog/mdx-code-block-normal';
-import { v4 as uuid } from 'uuid';
+import { stringifyClass } from '@xiao-ai/utils';
 import { tokenize } from './tokenize';
-import { lsInfoAttrName, lsErrorTokenAttrName, lsErrorByAttrName } from '../constant';
+import { lsInfoAttrName } from '../constant';
 import { ScriptKind, Platform, DisplaySymbol, DiagnosticData } from './host';
 import styles from '../index.jss';
 
@@ -22,14 +22,11 @@ export interface RenderedTsCodeLine {
   noIndex?: boolean;
 }
 
-function renderTsError(diagnostic: DiagnosticData, id: string): RenderedTsCodeLine[] {
+function renderTsError(diagnostic: DiagnosticData): RenderedTsCodeLine[] {
   const { code: errCode, messages } = diagnostic;
   const diagnostics = messages.map((text, index, arr) => {
     const classNames = [styles.classes.lspError];
     const indexClassNames: string[] = [];
-    const attributes = {
-      [lsErrorByAttrName]: id,
-    };
 
     let code = '';
 
@@ -58,7 +55,6 @@ function renderTsError(diagnostic: DiagnosticData, id: string): RenderedTsCodeLi
       kind: RenderedTsCodeLineKind.Error,
       classNames,
       indexClassNames,
-      attributes,
       noIndex: true,
     };
   });
@@ -106,9 +102,15 @@ export function renderTsCode(
     let code = '';
     // 因为可以是多个错误
     const diagnostics: RenderedTsCodeLine[] = [];
+    /** 错误 Token 剩余长度 */
+    let errorRestTokenLength = 0;
 
     for (const token of line) {
-      const { className, diagnostic, info } = token;
+      const { className: originClassName, diagnostic, info } = token;
+      const tokenText = escape(token.text);
+      const className = stringifyClass(originClassName, {
+        [styles.classes.lspErrorToken]: Boolean(diagnostic) || errorRestTokenLength > 0,
+      });
 
       if (className || diagnostic || info) {
         code += '<span';
@@ -122,14 +124,21 @@ export function renderTsCode(
         }
 
         if (diagnostic) {
-          const id = uuid();
-          code += ` ${lsErrorTokenAttrName}="${id}"`;
-          diagnostics.push(...renderTsError(diagnostic, id));
+          diagnostics.push(...renderTsError(diagnostic));
+          errorRestTokenLength = diagnostic.length;
         }
 
-        code += `>${escape(token.text)}</span>`;
+        if (errorRestTokenLength > 0) {
+          errorRestTokenLength -= token.text.length;
+
+          if (errorRestTokenLength < 0) {
+            errorRestTokenLength = 0;
+          }
+        }
+
+        code += `>${tokenText}</span>`;
       } else {
-        code += escape(token.text);
+        code += tokenText;
       }
     }
 

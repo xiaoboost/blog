@@ -1,7 +1,7 @@
 ---
-title: 静态代码提示
+title: 静态代码类型提示
 create: 2021/03/22
-description: TypeScript 官网不知道啥时候上线了静态代码提示功能，看着觉得非常不错，于是准备在博客里也做一个。
+description: TypeScript 官网不知道啥时候上线了静态代码类型提示功能，看着觉得非常不错，于是准备在博客里也做一个。
 tags: 前端技术
 ---
 
@@ -14,7 +14,7 @@ interface Point {
   x: number;
   y: number;
 }
-            
+
 function print(pt: Point) {
   console.log("The coordinate's x value is " + pt.x);
   console.log("The coordinate's y value is " + pt.y);
@@ -50,6 +50,7 @@ print({
 ```ts
 import * as ts from 'typescript';
 
+declare const LanguageServiceHost: ts.LanguageServiceHost;
 const server = ts.createLanguageService(LanguageServiceHost);
 ```
 
@@ -309,19 +310,21 @@ const var1 = '123';
 
 这里没有什么能介绍的原理，只是 API 调用而已：
 
-```ts
+```ts?platform=node
 import vsctm from 'vscode-textmate';
 import oniguruma from 'vscode-oniguruma';
+
+import * as fs from 'fs/promises';
 
 let tsGrammar: vsctm.IGrammar;
 
 const tmLanguage = '这里放上文中提到的配置文件路径' as string;
-const onigPath = 'node_modules/vscode-oniguruma/release/onig.wasm';
+const onigPath = './node_modules/vscode-oniguruma/release/onig.wasm';
 
 async function getGrammar() {
   const [ts, wasmBin] = await Promise.all([
-    fs.readFile(resolveRoot(tmLanguage), 'utf-8'),
-    fs.readFile(resolveRoot(onigPath)),
+    fs.readFile(tmLanguage, 'utf-8'),
+    fs.readFile(onigPath),
   ]);
 
   const vscodeOnigLib = oniguruma.loadWASM(wasmBin.buffer).then(() => ({
@@ -354,7 +357,8 @@ export function tokenize(code: string) {
   let ruleStack = vsctm.INITIAL;
 
   for (let i = 0; i < lines.length; i++) {
-    linesToken.push(tsGrammar.tokenizeLine(lines[i], ruleStack));
+    const lineTokens = tsGrammar.tokenizeLine(lines[i], ruleStack);
+    linesToken.push(lineTokens);
     ruleStack = lineTokens.ruleStack;
   }
 

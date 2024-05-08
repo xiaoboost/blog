@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { isString } from '@xiao-ai/utils';
+import { isString, isUndef } from '@xiao-ai/utils';
 import { parseQuery } from '@blog/node';
 import { CodeBlock } from '@blog/mdx-code-block-normal';
 import { TsCodeBlock, ScriptKind, Platform } from '@blog/mdx-code-block-typescript';
@@ -25,7 +25,7 @@ export function pre(props: Props) {
 
   const { base, query } = parseQuery(data.className);
   const lang = base.replace(/^language-/, '').toLowerCase() as ScriptKind;
-  const enableLsp = !query.lsp || query.lsp === true || query.lsp === 'true';
+  const enableLsp = isUndef(query.lsp) || query.lsp === true || query.lsp === 'true';
   const showError = !query.showError || query.showError === true || query.showError === 'true';
 
   if (isTs(lang) && enableLsp) {

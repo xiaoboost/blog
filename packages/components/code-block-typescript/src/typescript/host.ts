@@ -30,8 +30,10 @@ export interface DiagnosticData {
   messages: string[];
   /** 错误编码 */
   code: number;
-  /** 偏移量 */
+  /** 错误 Token 在代码中的偏移量 */
   offset: number;
+  /** 错误 Token 的长度 */
+  length: number;
 }
 
 /** 不需要样式的数据类型 */
@@ -62,7 +64,7 @@ export class TsServer {
     this.scriptKind = scriptKind;
     this.platform = platform;
     this.current = {
-      code,
+      code: `${code}\n\n\n export {};\n`,
       // 文件名称必须要不同，Document 服务会记录同名文件
       name: this.resolve(`$index-${Date.now()}-${id++}.${this.scriptKind}`),
       snapshot: this.getScriptSnapshot(code),
@@ -96,7 +98,7 @@ export class TsServer {
         const allowJs = this.scriptKind.startsWith('js');
         const isJsx = this.scriptKind.endsWith('x');
         const jsx = isJsx ? ts.JsxEmit.React : ts.JsxEmit.None;
-        const jsxFactory = isJsx ? 'react' : undefined;
+        const jsxFactory = isJsx ? 'React' : undefined;
         const lib = this.platform === 'browser' ? ['lib.dom.d.ts'] : [];
         const types = this.platform === 'node' ? ['node'] : [];
 
@@ -229,6 +231,7 @@ export class TsServer {
           messages: formatDiagnostic(diagnostic),
           code: diagnostic.code,
           offset: diagnostic.start!,
+          length: diagnostic.length ?? -1,
         };
       });
   }
