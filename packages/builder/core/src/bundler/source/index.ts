@@ -3,7 +3,7 @@ import posts from '@blog/posts';
 import type { AssetData, PostListData, UrlListData, PostListDataWithTitle } from '@blog/types';
 import { cut } from '@xiao-ai/utils';
 import { callHook, waitReady } from '@blog/context/runtime';
-import { renderPost, getPostUrlMap, getPostAssetPath, filterSortPosts } from './post';
+import { renderPost, setPostUrl, getPostAssetPath, filterSortPosts } from './post';
 import { renderListPage, getIndexUrlPath, getIndexAssetPath } from './list';
 import { pageConfig } from '../../constant';
 
@@ -16,8 +16,12 @@ export default async function main() {
   await waitReady;
   await callHook('beforeStart');
 
-  const postUrlMap = getPostUrlMap(posts);
-  await callHook('afterPostUrl', postUrlMap);
+  setPostUrl(posts);
+
+  await callHook(
+    'afterPostDataReady',
+    posts.map(({ data }) => data),
+  );
 
   // 生成文章页面
   for (let i = 0; i < posts.length; i++) {

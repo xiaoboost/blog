@@ -3,9 +3,6 @@ import { FC } from 'react';
 
 import { TemplateUtils } from './template';
 
-/** 文章路径到链接的映射 */
-export type PostUrlMap = Map<string, string>;
-
 /** 文章原始数据 */
 export interface PostMeta {
   /** 文章标题 */

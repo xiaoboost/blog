@@ -67,7 +67,7 @@ export function getHighlightCode(code: string) {
 
       if (match) {
         line = line.replace(hlLabel, '');
-        highlightLines[index] = true;
+        highlightLines[index + 1] = true;
       }
 
       return line.trimEnd();
