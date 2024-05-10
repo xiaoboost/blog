@@ -10,7 +10,7 @@ describe('getHighlightCode', () => {
     `.trim();
 
     const result = getHighlightCode(code);
-    expect(result.highlightLines).deep.eq({ 1: true });
+    expect(result.highlightLines).deep.eq({ 2: true });
   });
   it('two lines', () => {
     const code = `
@@ -20,7 +20,7 @@ describe('getHighlightCode', () => {
     `.trim();
 
     const result = getHighlightCode(code);
-    expect(result.highlightLines).deep.eq({ 1: true, 2: true });
+    expect(result.highlightLines).deep.eq({ 2: true, 3: true });
   });
   it('must have space', () => {
     const code = `
