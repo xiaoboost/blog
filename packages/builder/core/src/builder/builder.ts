@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
 import {
   BuilderHooks,
   BuilderInstance,
@@ -155,7 +153,7 @@ export class Builder implements BuilderInstance {
     return Boolean(this.parent);
   }
 
-  resolve(request: string, opt?: ResolveOptions): ResolveResult {
+  resolve(_: string, __?: ResolveOptions): ResolveResult {
     throw new BuilderError({
       project: this.name,
       name: 'RESOLVE_NOT_INIT',
@@ -208,7 +206,7 @@ export class Builder implements BuilderInstance {
     }
   }
 
-  renameAsset(file: AssetData): string {
+  renameAsset(_: AssetData): string {
     throw new BuilderError({
       project: this.name,
       name: 'RENAME_NOT_INIT',
