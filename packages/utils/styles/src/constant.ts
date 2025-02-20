@@ -1,3 +1,5 @@
+// cSpell:disable
+
 /** 自定义字体名称枚举 */
 export const CustomFont = {
   /** 英文正文 */
@@ -11,19 +13,44 @@ export const CustomFont = {
 /** 默认字体 */
 export const FontDefault = /* @__PURE__ */ [
   CustomFont.Lato,
-  '-apple-system',
-  'BlinkMacSystemFont',
-  'PingFang SC',
+  /** 思源黑体 */
+  '"Source Han Sans SC"',
   '思源黑体',
-  'Source Han Sans SC',
-  'Noto Sans CJK SC',
-  'WenQuanYi Micro Hei',
-  'Microsoft YaHei',
+  /** MacOS 默认字体 */
+  '-apple-system',
+  /** MacOS 苹方 */
+  '"PingFang SC"',
+  /** MacOS 冬青黑 */
+  '"Hiragino Sans GB"',
+  /** Windows 微软雅黑 */
+  '"Microsoft YaHei"',
+  /** Linux 文泉驿黑体 */
+  '"WenQuanYi Micro Hei"',
+  /** 安卓默认字体 */
+  '"Noto Sans CJK SC"',
   'sans-serif',
 ].join(', ');
 
 /** 衬线字体 */
-export const FontSerif = /* @__PURE__ */ ['思源宋体', 'STSong', '宋体', 'serif'].join(', ');
+export const FontSerif = /* @__PURE__ */ [
+  /** 思源宋体 */
+  '"Source Han Serif"',
+  '"思源宋体"',
+  /** MocOS 宋体 */
+  '"Songti SC"',
+  /** MacOS 华文宋体 */
+  'STSong',
+  /** windows 中易中宋 */
+  'STZhongsong',
+  /** windows 宋体 */
+  'SimSun',
+  /* Android 衬线字体 */
+  '"Noto Serif CJK SC"',
+  /* 跨平台英文字体 */
+  'Georgia',
+  '"Times New Roman"',
+  'serif',
+].join(', ');
 
 /** 等宽字体 */
 export const FontMono = /* @__PURE__ */ [
