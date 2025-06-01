@@ -57,7 +57,7 @@ export const FontMono = /* @__PURE__ */ [
   'Menlo',
   'Monaco',
   'Consolas',
-  'Courier New',
+  '"Courier New"',
   'monospace',
 ].join(', ');
 
@@ -65,11 +65,7 @@ export const FontMono = /* @__PURE__ */ [
 export const FontTitle = CustomFont.Dancing;
 
 /** 网站宽度 */
-export const mainWidth = 1000;
-/** 右侧边栏宽度 */
-export const articleWidth = 750;
-/** 右侧边栏挂件间隔 */
-export const asideMarginLeft = 20;
+export const mainWidth = 900;
 /** 文章主体和顶栏的空隙高度 */
 export const headerBodyMargin = 20;
 /** 默认字体大小 */

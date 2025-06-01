@@ -1,6 +1,6 @@
 import {
   createStyles,
-  articleWidth,
+  mainWidth,
   Color,
   Black,
   White,
@@ -39,11 +39,11 @@ export default createStyles({
     color: Black.toString(),
     backgroundColor: White.toString(),
     boxShadow: `0 1px 3px ${Shadow.toString()}`,
-    width: articleWidth,
+    width: mainWidth,
     flexGrow: 0,
     flexShrink: 0,
 
-    ...createMediaStyles<number | string>(articleWidth, '100%', (width) => ({
+    ...createMediaStyles<number | string>(mainWidth, '100%', (width) => ({
       width: typeof width === 'number' ? `${width}px` : width,
     })),
 
