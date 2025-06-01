@@ -8,10 +8,9 @@ import {
   GrayLight,
   BlueLight,
   mediaPhone,
-  mainWidth,
-  articleWidth,
-  asideMarginLeft,
 } from '@blog/styles';
+
+import { tocMarginLeft, tocWidth } from './constant';
 
 export default createStyles({
   menuListHeader: {},
@@ -32,8 +31,8 @@ export default createStyles({
     backgroundColor: White.toString(),
     boxShadow: `0 1px 3px ${Shadow.toString()}`,
     position: 'absolute',
-    width: mainWidth - articleWidth - asideMarginLeft,
-    marginLeft: articleWidth + asideMarginLeft,
+    width: 200,
+    right: 0 - tocWidth - tocMarginLeft,
     boxSizing: 'border-box',
     padding: `0 14px`,
     fontSize: 14,

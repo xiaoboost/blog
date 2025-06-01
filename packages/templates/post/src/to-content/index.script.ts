@@ -1,11 +1,11 @@
-import { headerBodyMargin } from '@blog/styles/constant';
+import { headerBodyMargin, mainWidth } from '@blog/styles/constant';
 import { getCurrentScriptSrc } from '@blog/web';
 import { ModuleLoader } from '@blog/context/web';
 import { supportsPassive, addClassName, removeClassName } from '@xiao-ai/utils/web';
 
 import tocStyles from './index.jss';
 import postStyles from '../post/index.jss';
-import { levelLimit } from './constant';
+import { levelLimit, tocMarginLeft, tocWidth } from './constant';
 
 const enum Status {
   Init,
@@ -59,10 +59,12 @@ function active() {
       status = Status.Follow;
       menu.style.position = 'fixed';
       menu.style.top = `${headerBodyMargin}px`;
+      menu.style.right = `calc(50vw - ${mainWidth / 2}px - ${tocWidth}px - ${tocMarginLeft}px)`;
     } else if (top <= bodyTop && (status === Status.Follow || status === Status.Init)) {
       status = Status.Static;
       menu.style.position = '';
       menu.style.top = '';
+      menu.style.right = '';
     }
 
     const first = titlePosition.find((item) => item.offsetTop < top);
