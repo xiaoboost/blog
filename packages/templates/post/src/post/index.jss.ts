@@ -66,6 +66,13 @@ export default createStyles({
       fontSize: 30,
       margin: 0,
       padding: 0,
+      overflow: 'hidden',
+      whiteSpace: 'nowrap',
+      textOverflow: 'ellipsis',
+
+      ...createMediaStyles('auto', 'calc(100% - 100px)', (width) => ({
+        width,
+      })),
     },
     '& $postHeaderCreate': {
       color: BlackLighter.toString(),
