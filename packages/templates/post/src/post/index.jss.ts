@@ -52,7 +52,7 @@ export default createStyles({
     },
     '& $postHeader': {
       display: 'flex',
-      height: 50,
+      minHeight: 50,
       justifyContent: 'space-between',
       alignItems: 'center',
       borderBottom: `1px solid ${Gray.toString()}`,
@@ -66,13 +66,8 @@ export default createStyles({
       fontSize: 30,
       margin: 0,
       padding: 0,
-      overflow: 'hidden',
-      whiteSpace: 'nowrap',
-      textOverflow: 'ellipsis',
-
-      ...createMediaStyles('auto', 'calc(100% - 100px)', (width) => ({
-        width,
-      })),
+      whiteSpace: 'wrap',
+      width: 'calc(100% - 100px)',
     },
     '& $postHeaderCreate': {
       color: BlackLighter.toString(),
