@@ -1,6 +1,7 @@
 import {
   createStyles,
   Black,
+  Color,
   BlackLight,
   BlackLighter,
   White,
@@ -14,9 +15,12 @@ export default createStyles({
   mainNavItemHighlight: {},
   mainHeaderWrapper: {
     width: '100%',
-    height: 40,
+    height: 42,
     backgroundColor: White.toString(),
-    boxShadow: '0 1px 3px rgba(26,26,26,.1)',
+    boxShadow: `
+      0 1px 3px ${Color.rgb(0, 0, 0).alpha(0.08).toString()}, 
+      0 1px 1px ${Color.rgb(0, 0, 0).alpha(0.04).toString()}
+    `,
     flex: '0 0 auto',
     display: 'flex',
     justifyContent: 'center',
