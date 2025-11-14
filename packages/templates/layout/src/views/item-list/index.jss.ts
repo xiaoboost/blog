@@ -1,4 +1,4 @@
-import { createStyles, White, Shadow, Gray } from '@blog/styles';
+import { createStyles, White, Gray, MainShadow } from '@blog/styles';
 import { PostTitleStyle, PostSubTitleStyle } from '../main-index/index.jss';
 
 export default createStyles({
@@ -15,7 +15,9 @@ export default createStyles({
     '& $itemList': {
       width: '100%',
       backgroundColor: White.toString(),
-      boxShadow: `0 1px 3px ${Shadow.toString()}`,
+      boxShadow: MainShadow,
+      borderRadius: 4,
+      overflow: 'hidden',
 
       '& $itemListItem': {
         margin: 0,

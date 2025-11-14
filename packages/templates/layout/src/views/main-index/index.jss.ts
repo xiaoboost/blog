@@ -2,8 +2,8 @@ import {
   createStyles,
   Black,
   White,
-  Shadow,
   Gray,
+  MainShadow,
   BlackLighter,
   FontDefault,
   FontSerif,
@@ -34,12 +34,14 @@ export default createStyles({
   postsList: {
     color: Black.toString(),
     backgroundColor: White.toString(),
-    boxShadow: `0 1px 3px ${Shadow.toString()}`,
     width: '100%',
+    borderRadius: '4px',
+    overflow: 'hidden',
+    boxShadow: MainShadow,
 
     '& $postsListItem': {
       margin: 0,
-      padding: '15px 20px',
+      padding: '20px 24px',
       boxShadow: 'none',
       boxSizing: 'border-box',
       backgroundColor: White.toString(),
@@ -59,15 +61,16 @@ export default createStyles({
 
       '& a': {
         ...PostTitleStyle,
-        fontSize: 20,
+        fontSize: 18,
       },
       '& time': {
         ...PostSubTitleStyle,
+        fontSize: 13,
       },
     },
     '& $postsListItemDescription': {
       fontSize: 14,
-      marginTop: 10,
+      marginTop: 12,
     },
     '& $postsListItemFooter': {
       fontSize: 12,

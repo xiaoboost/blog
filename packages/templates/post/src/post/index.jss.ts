@@ -4,7 +4,6 @@ import {
   Color,
   Black,
   White,
-  Shadow,
   WhiteBg,
   Gray,
   BlackLight,
@@ -13,6 +12,7 @@ import {
   YellowLight,
   YellowLighter,
   FontDefault,
+  MainShadow,
   createMediaStyles,
   createHeadStyles,
   getHeadSelector,
@@ -38,10 +38,12 @@ export default createStyles({
   postDefault: {
     color: Black.toString(),
     backgroundColor: White.toString(),
-    boxShadow: `0 1px 3px ${Shadow.toString()}`,
+    boxShadow: MainShadow,
     width: mainWidth,
     flexGrow: 0,
     flexShrink: 0,
+    borderRadius: 4,
+    overflow: 'hidden',
 
     ...createMediaStyles<number | string>(mainWidth, '100%', (width) => ({
       width: typeof width === 'number' ? `${width}px` : width,
@@ -63,7 +65,7 @@ export default createStyles({
     },
     '& $postHeaderTitle': {
       color: Black.toString(),
-      fontSize: 30,
+      fontSize: 28,
       margin: 0,
       padding: 0,
       whiteSpace: 'wrap',
@@ -71,7 +73,7 @@ export default createStyles({
     },
     '& $postHeaderCreate': {
       color: BlackLighter.toString(),
-      fontSize: 12,
+      fontSize: 13,
       fontWeight: 'normal',
       fontFamily: FontDefault,
     },
@@ -81,9 +83,11 @@ export default createStyles({
         padding: `16px ${width}px`,
       })),
       ...createHeadStyles('& ', (level) => ({
-        fontSize: `${toRound(1.6 - 0.2 * (level - 1))}em`,
-        marginTop: `${toRound(1.1 - 0.1 * (level - 1))}em`,
-        marginBottom: `${toRound(0.8 - 0.05 * (level - 1))}em`,
+        fontSize: `${toRound(1.5 - 0.15 * (level - 1))}em`,
+        marginTop: `${toRound(1.2 - 0.1 * (level - 1))}em`,
+        marginBottom: `${toRound(0.9 - 0.05 * (level - 1))}em`,
+        lineHeight: '1.3',
+        fontWeight: level === 1 ? '700' : '600',
       })),
       [getHeadSelector('& ')]: {
         position: 'relative',
@@ -115,9 +119,9 @@ export default createStyles({
         marginTop: '0 !important',
       },
       '& p': {
-        lineHeight: 1.7,
+        lineHeight: 1.75,
         textIndent: '2em',
-        margin: '0 0 0.8em 0',
+        margin: '0 0 1em 0',
 
         '&:last-child': {
           marginBottom: 0,
@@ -137,13 +141,23 @@ export default createStyles({
         position: 'relative',
       },
       '& em': {
-        margin: '0 3px',
+        margin: '0 2px',
         fontStyle: 'normal',
         textDecoration: 'none',
-        // eslint-disable-next-line max-len
-        backgroundImage: `linear-gradient(to top, transparent, transparent 0px, ${BlackLighter.toString()} 0px, ${BlackLighter.toString()} 1px, transparent 1px)`,
-        // eslint-disable-next-line max-len
-        textShadow: `-1px -1px 0 #fafafa, 1px -1px 0 ${WhiteBg.toString()}, -1px 1px 0 ${WhiteBg.toString()}, 1px 1px ${WhiteBg.toString()}`,
+        backgroundImage: `linear-gradient(
+          to top,
+          transparent 0px,
+          transparent 1px,
+          ${BlackLighter.toString()} 0px,
+          ${BlackLighter.toString()} 1px,
+          transparent 1px
+        )`,
+        textShadow: `
+          -1px -1px 0 #fafafa,
+          1px -1px 0 ${WhiteBg.toString()},
+          -1px 1px 0 ${WhiteBg.toString()},
+          1px 1px ${WhiteBg.toString()}
+        `,
       },
       '& s': {
         textDecorationColor: 'rgba(32, 32, 32, 0.5)',
@@ -165,21 +179,35 @@ export default createStyles({
         bottom: '-0.3em',
       },
       '& ul, & ol': {
-        lineHeight: 1.4,
-        paddingLeft: '1.5em',
-        marginLeft: '0.4em',
+        lineHeight: 1.5,
+        paddingLeft: '1.8em',
+        marginLeft: '0.5em',
+
+        '& li': {
+          marginBottom: '0.2em',
+          '&:last-child': {
+            marginBottom: 0,
+          },
+        },
+        '& ol': {
+          counterReset: 'list-counter',
+          '& li': {
+            counterIncrement: 'list-counter',
+            position: 'relative',
+          },
+        },
       },
       '& blockquote': {
         padding: '.8em 1.2em',
         margin: '1em 0',
         lineHeight: 1.5,
         fontSize: '90%',
-        borderLeft: `0.3em solid ${BlackExtraLight.darken(0.05).toString()}`,
-        backgroundColor: WhiteBg.toString(),
+        borderLeft: `0.3em solid ${BlackExtraLight.darken(0.04).toString()}`,
+        backgroundColor: WhiteBg.alpha(0.8).toString(),
 
         '> *': {
           marginTop: 0,
-          marginBottom: '.4em',
+          marginBottom: '.5em',
 
           '&:last-child': {
             marginBottom: 0,
@@ -211,10 +239,10 @@ export default createStyles({
         },
       },
       '& hr': {
-        height: 2,
+        height: 1,
         padding: 0,
-        margin: [18, 0],
-        backgroundColor: Gray.toString(),
+        margin: [24, 0],
+        backgroundColor: 'transparent',
         border: 'none',
         overflow: 'hidden',
         boxSizing: 'content-box',
