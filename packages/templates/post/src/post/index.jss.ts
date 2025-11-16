@@ -146,8 +146,8 @@ export default createStyles({
         textDecoration: 'none',
         backgroundImage: `linear-gradient(
           to top,
+          transparent,
           transparent 0px,
-          transparent 1px,
           ${BlackLighter.toString()} 0px,
           ${BlackLighter.toString()} 1px,
           transparent 1px

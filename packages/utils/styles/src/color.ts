@@ -19,7 +19,7 @@ export const YellowLight = Color(0xffeaa7);
 export const YellowLighter = Color(0xfef9ed);
 export const Black = Color(0x303133);
 export const BlackLight = Color(0x606266);
-export const BlackLighter = Color(0x6b7280);
+export const BlackLighter = Color(0x909399);
 export const BlackExtraLight = Color(0xc0c4cc);
 
 export const MainShadow = `
