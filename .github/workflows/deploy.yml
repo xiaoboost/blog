@@ -1,6 +1,9 @@
 name: 发布博客
 
 on:
+  push:
+    branches:
+      - master
   workflow_dispatch:
     inputs:
       branch:
