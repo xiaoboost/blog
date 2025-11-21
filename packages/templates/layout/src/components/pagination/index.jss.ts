@@ -5,6 +5,7 @@ export default createStyles({
     padding: 10,
     backgroundColor: White.toString(),
     boxShadow: `0 1px 3px ${Shadow.toString()}`,
+    borderRadius: '4px',
   },
   pagination: {
     display: 'flex',
