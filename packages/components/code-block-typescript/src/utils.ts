@@ -36,11 +36,12 @@ function getImportModuleTypes(code: string) {
 
     const pkgName = matchResult[2];
 
-    // 跳过路径和 nodejs 内置库还有 blog 内置库
+    // 跳过路径和 nodejs 内置库还有 blog 内置库以及临时包
     if (
       /^(\.)?\//.test(pkgName) ||
       builtinModules.includes(pkgName) ||
-      pkgName.startsWith('@blog/')
+      pkgName.startsWith('@blog/') ||
+      pkgName.startsWith('@@local/')
     ) {
       continue;
     }
@@ -75,9 +76,11 @@ export function removeReference(code: string) {
 export function getTsCodeBlockConfig(node: Mdx.Syntax) {
   if (node.type === 'mdxJsxFlowElement' && node.name === 'TsCodeBlock') {
     const langAttr = node.attributes.find((attr) => attr.name === 'lang');
+    const lspAttr = node.attributes.find((attr) => attr.name === 'lsp');
     const platformAttr = node.attributes.find((attr) => attr.name === 'platform');
     const langVal = (langAttr?.value?.value as string) ?? langAttr?.value ?? '';
     const platformVal = (platformAttr?.value?.value as string) ?? platformAttr?.value ?? 'none';
+    const enableLsp = ((lspAttr?.value?.value as string) ?? lspAttr?.value ?? 'true') === 'true';
 
     if (!langAttr || !TsLangMatcher.test(langVal)) {
       return;
@@ -88,6 +91,7 @@ export function getTsCodeBlockConfig(node: Mdx.Syntax) {
       // FIXME: 暂不处理
       code: (node.children[0] as any).value,
       platform: platformVal as Platform,
+      enableLsp,
     };
   }
 
@@ -97,11 +101,16 @@ export function getTsCodeBlockConfig(node: Mdx.Syntax) {
       .split('&')
       .map((item) => item.split('='))
       .find((item) => item[0] === 'platform');
+    const lspMeta = (meta ?? '')
+      .split('&')
+      .map((item) => item.split('='))
+      .find((item) => item[0] === 'lsp');
 
     return {
       lang,
       code: node.value.trim(),
       platform: (platformMeta?.[1] ?? 'none') as Platform,
+      enableLsp: (lspMeta?.[1] ?? 'true') === 'true',
     };
   }
 }
@@ -114,7 +123,7 @@ export function getImportedByPost(posts: PostData[]) {
     for (const node of post.ast.children) {
       const blockConfig = getTsCodeBlockConfig(node);
 
-      if (blockConfig) {
+      if (blockConfig && blockConfig?.enableLsp) {
         for (const pkg of getImportModuleTypes(blockConfig.code)) {
           result.add(pkg);
         }
