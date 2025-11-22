@@ -3,7 +3,13 @@ import { addSplitLabel } from '@blog/mdx-code-block-normal';
 import { stringifyClass } from '@xiao-ai/utils';
 import { tokenize } from './tokenize';
 import { lsInfoAttrName } from '../constant';
-import { ScriptKind, Platform, DisplaySymbol, DiagnosticData } from './host';
+import {
+  TsServer,
+  type ScriptKind,
+  type Platform,
+  type DisplaySymbol,
+  type DiagnosticData,
+} from './host';
 import styles from '../index.jss';
 
 export { ScriptKind, Platform, DisplaySymbol };
@@ -94,7 +100,19 @@ export function renderTsCode(
   lang: ScriptKind,
   platform: Platform,
   showError: boolean,
+  exportAs?: string,
+  visible?: boolean,
 ) {
+  // 记录导出代码
+  if (exportAs) {
+    TsServer.ExportCode.set(exportAs, code);
+  }
+
+  // 不显示，那当然就不渲染
+  if (!visible) {
+    return [];
+  }
+
   const linesTokens = tokenize(code, baseDir, lang, platform, showError);
   const lineCodes: RenderedTsCodeLine[] = [];
 

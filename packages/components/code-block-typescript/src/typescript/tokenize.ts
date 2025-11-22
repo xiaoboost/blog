@@ -33,13 +33,10 @@ async function getGrammar() {
   }
 
   const wasmContent = await readFile(wasmBinPath);
-  const vscodeOnigurumaLib: Promise<vsctm.IOnigLib> = oniguruma.loadWASM(wasmContent.buffer).then(
-    () =>
-      ({
-        createOnigScanner: (source: string[]) => new oniguruma.OnigScanner(source),
-        createOnigString: (str: string) => new oniguruma.OnigString(str),
-      } as any),
-  );
+  const vscodeOnigurumaLib: Promise<vsctm.IOnigLib> = oniguruma.loadWASM(wasmContent).then(() => ({
+    createOnigScanner: (source: string[]) => new oniguruma.OnigScanner(source),
+    createOnigString: (str: string) => new oniguruma.OnigString(str),
+  }));
 
   const registry = new vsctm.Registry({
     onigLib: vscodeOnigurumaLib,
