@@ -20,7 +20,7 @@ import { name as ComponentPkgName } from '../package.json';
 
 import styles from './index.jss';
 import assets from './code-block-ts.script';
-import { renderTsCode, ScriptKind, Platform, RenderedTsCodeLine } from './typescript';
+import { renderTsCode, RenderedTsCodeLine, type ScriptKind, type Platform } from './typescript';
 
 export { ScriptKind, Platform } from './typescript';
 export const utils = defineUtils(assets);
@@ -29,9 +29,11 @@ const { path: cacheTsServerDir } = Builder.getCacheAccessor(ComponentName);
 
 export interface Options {
   children?: string;
+  exportAs?: string;
   lang?: ScriptKind;
   platform?: Platform;
   showError?: boolean;
+  visible?: boolean;
 }
 
 export function TsCodeBlock({
@@ -39,6 +41,8 @@ export function TsCodeBlock({
   platform = 'none',
   showError = true,
   children = '',
+  visible = true,
+  exportAs,
 }: React.PropsWithChildren<Options> = {}) {
   if (typeof children !== 'string') {
     throw new Error('代码块的子元素必须是字符串');
@@ -59,7 +63,16 @@ export function TsCodeBlock({
       const { code, highlightLines } = getHighlightCode(removedExtractCode);
       const tabWidth = getMinSpaceWidth(code);
       const result = {
-        lines: renderTsCode(code, tabWidth, cacheTsServerDir, lang, platform, showError),
+        lines: renderTsCode(
+          code,
+          tabWidth,
+          cacheTsServerDir,
+          lang,
+          platform,
+          showError,
+          exportAs,
+          visible,
+        ),
         highlight: highlightLines,
       };
       cache.set(key, result);
@@ -84,6 +97,11 @@ export function TsCodeBlock({
       customLines,
     };
   })();
+
+  // 指定不显示的时候不渲染
+  if (!visible) {
+    return;
+  }
 
   return (
     <CodeBlockWrapper

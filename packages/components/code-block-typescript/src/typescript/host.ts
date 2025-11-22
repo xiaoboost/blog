@@ -41,6 +41,9 @@ const infoNoStyleKinds = toBoolMap(['space', 'text', 'lineBreak', 'punctuation']
 
 /** 语言服务器 */
 export class TsServer {
+  /** 全局导出代码缓存 */
+  static ExportCode = new Map<string, string>();
+
   /** script 类型 */
   private scriptKind: ScriptKind = 'ts';
 
@@ -99,7 +102,7 @@ export class TsServer {
         const isJsx = this.scriptKind.endsWith('x');
         const jsx = isJsx ? ts.JsxEmit.React : ts.JsxEmit.None;
         const jsxFactory = isJsx ? 'React' : undefined;
-        const lib = this.platform === 'browser' ? ['lib.dom.d.ts'] : [];
+        const lib = this.platform === 'browser' || isJsx ? ['lib.dom.d.ts'] : [];
         const types = this.platform === 'node' ? ['node'] : [];
 
         lib.push('lib.esnext.d.ts');
@@ -138,7 +141,10 @@ export class TsServer {
           this.files.add(filePath);
           return fileCache[filePath].snapshot;
         } else {
-          const fileText = ts.sys.readFile(filePath) ?? '';
+          const fileText = TsServer.ExportCode.has(filePath)
+            ? TsServer.ExportCode.get(filePath) ?? ''
+            : ts.sys.readFile(filePath) ?? '';
+
           const file: CodeFile = {
             name: filePath,
             code: fileText,
@@ -159,6 +165,15 @@ export class TsServer {
         options,
       ): (ts.ResolvedModule | undefined)[] => {
         return moduleNames.map((name) => {
+          // 内置缓存模块返回其本身即可
+          if (TsServer.ExportCode.has(name)) {
+            return {
+              extension: '.ts',
+              resolvedFileName: name,
+              packageName: name,
+            };
+          }
+
           return ts.resolveModuleName(name, containingFile, options, ts.sys).resolvedModule;
         });
       },
