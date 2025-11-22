@@ -794,7 +794,13 @@ definePlugin(({ registerService }) => {
 DI 系统提供了钩子/服务机制，但如何将钩子/服务与 React 组件连接起来呢？这就需要*驱动层 Driver Layer*。
 驱动层的核心思路是：在组件中创建一个驱动函数，从 DI 系统获取所有注册的钩子/服务，然后将这些钩子/服务绑定到实际的 DOM 事件或 React 生命周期上。
 
-### 定义事件监听钩子
+### 驱动层工作原理
+
+DI 系统提供了钩子机制，但如何将钩子与 React 组件连接起来呢？这就需要*驱动层 Driver Layer*。驱动层的核心思路是：在组件中创建一个驱动函数，从 DI 系统获取所有注册的钩子，然后将这些钩子绑定到实际的 DOM 事件或 React 生命周期上。
+以事件监听器钩子为例，展示驱动层的工作原理。首先，各个插件通过`registerHook`注册事件监听钩子，这些钩子包含了事件处理函数，比如`onMouseDown`、`onMouseUp`等。然后，在组件中创建一个驱动层函数（如`useEventListenerDriver`），这个函数使用`useHook`从 DI 系统获取所有注册的事件监听钩子。接下来，驱动层将这些钩子中的事件处理函数绑定到实际的 DOM 事件监听器上，比如将`onMouseDown`绑定到`mousedown`事件。当事件发生时，驱动层会按顺序调用所有相关的钩子函数，实现事件分发。最后，当组件卸载时，驱动层会清理所有事件监听器，避免内存泄漏。
+这种设计的好处是插件只需要注册钩子，不需要关心事件如何绑定。驱动层统一管理事件监听，避免重复绑定，同时钩子可以按`order`排序，控制执行顺序。更重要的是，这种设计实现了组件与 DI 系统的*解耦*，组件不需要知道有哪些插件注册了钩子，只需要调用驱动层即可，让代码更加模块化和易于维护。
+
+### 驱动层实现示例
 
 首先，定义事件监听钩子接口：
 
@@ -812,8 +818,6 @@ export interface IEventListenerHook {
 /** 事件监听钩子 */
 export const IEventListenerHook = createServiceKey<IEventListenerHook>('IEventListenerHook');
 ```
-
-### 创建驱动层
 
 在组件中创建驱动层，将钩子绑定到 DOM 事件：
 
@@ -872,10 +876,6 @@ export function useEventListenerDriver(ref: React.RefObject<HTMLDivElement>) {
 }
 ```
 
-下面，我将以事件监听器钩子为例，展示驱动层的工作原理。
-
-### 在组件中使用驱动层
-
 最后，将 DI 系统中的钩子与 DOM 事件连接：
 
 ```tsx
@@ -891,12 +891,6 @@ function Component() {
   return <div ref={ref}>组件内容</div>;
 }
 ```
-
-### 驱动层工作原理
-
-DI 系统提供了钩子机制，但如何将钩子与 React 组件连接起来呢？这就需要*驱动层 Driver Layer*。驱动层的核心思路是：在组件中创建一个驱动函数，从 DI 系统获取所有注册的钩子，然后将这些钩子绑定到实际的 DOM 事件或 React 生命周期上。
-以事件监听器钩子为例，展示驱动层的工作原理。首先，各个插件通过`registerHook`注册事件监听钩子，这些钩子包含了事件处理函数，比如`onMouseDown`、`onMouseUp`等。然后，在组件中创建一个驱动层函数（如`useEventListenerDriver`），这个函数使用`useHook`从 DI 系统获取所有注册的事件监听钩子。接下来，驱动层将这些钩子中的事件处理函数绑定到实际的 DOM 事件监听器上，比如将`onMouseDown`绑定到`mousedown`事件。当事件发生时，驱动层会按顺序调用所有相关的钩子函数，实现事件分发。最后，当组件卸载时，驱动层会清理所有事件监听器，避免内存泄漏。
-这种设计的好处是插件只需要注册钩子，不需要关心事件如何绑定。驱动层统一管理事件监听，避免重复绑定，同时钩子可以按`order`排序，控制执行顺序。更重要的是，这种设计实现了组件与 DI 系统的*解耦*，组件不需要知道有哪些插件注册了钩子，只需要调用驱动层即可，让代码更加模块化和易于维护。
 
 ## 实际应用场景
 
@@ -1143,7 +1137,7 @@ export function getHookWithScope<T>(
 
 ## React 集成与 Hooks 实现
 
-在第三部分中，我们看到了如何在组件中使用`useServiceWithGlobal`等快捷方法。现在让我们看看这些 Hooks 的实现：
+在第三部分中，我们看到了如何在组件中使用`useServiceWithGlobal`等方法。现在让我们看看这些 Hooks 的实现。
 
 ### Context 管理
 
