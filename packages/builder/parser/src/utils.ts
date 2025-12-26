@@ -72,6 +72,11 @@ function addImageImport(ast: Mdx.Root, fixer: Fixer) {
 
     importCode += `import img${i} from '${img.url}';\n`;
 
+    // 最后一个图片加一个换行，避免图片和文字连在一起
+    if (i === images.length - 1) {
+      importCode += '\n';
+    }
+
     // 虚拟模板字符串
     const imgCode = img.title
       ? `![${img.alt}](${encodeImageTemplate(`img${i}`)} "${img.title}")`

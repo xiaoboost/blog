@@ -2,7 +2,7 @@
 title: 当超能力成为文明的枷锁
 create: 2025/02/09
 description: 这次介绍的是日本作家贵志祐介所著的作品《来自新世界》。
-tags: 读后感
+tags: 书边碎笔
 toc: false
 ---
 

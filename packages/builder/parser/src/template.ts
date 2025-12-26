@@ -7,27 +7,23 @@ export function encodeImageTemplate(varName: string) {
 
 /** 解码图片模板代码 */
 function decodeImageTemplate(input: string, fixer: Fixer) {
-  const stringMatcher = /['"]%60[\d\D]*%60['"]/;
+  const stringMatcher = /['"]%60[\d\D]*?%60['"]/g;
 
-  let start = 0;
-  let content = input;
-  let result = content.match(stringMatcher);
+  let result: RegExpExecArray | null = stringMatcher.exec(input);
 
-  while (result) {
-    const startOffset = start + result.index!;
+  while (result !== null) {
+    const startOffset = result.index;
     const endOffset = startOffset + result[0].length;
     const decodeStr = decodeURI(result[0]);
     const templateStr = `{${decodeStr.substring(1, decodeStr.length - 1)}}`;
 
     fixer.fix({
       start: startOffset,
-      end: startOffset + result[0].length,
+      end: endOffset,
       newText: templateStr,
     });
 
-    start = endOffset;
-    content = content.substring(endOffset, content.length);
-    result = content.match(stringMatcher);
+    result = stringMatcher.exec(input);
   }
 }
 

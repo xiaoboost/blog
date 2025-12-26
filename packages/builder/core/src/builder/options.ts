@@ -34,7 +34,7 @@ export async function applyPlugin(builder: Builder) {
       name: getAssetNames('fonts', isProduction),
     },
     {
-      test: /\.(svg|jpg|png|ico)$/,
+      test: /\.(svg|jpg|jpeg|png|ico|webp)$/,
       name: getAssetNames('images', isProduction),
     },
   ]).apply(builder);

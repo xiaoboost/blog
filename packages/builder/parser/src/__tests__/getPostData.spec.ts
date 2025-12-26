@@ -85,10 +85,11 @@ import { MathBlock } from '@blog/mdx-katex';
       ...commonData,
       description: '测试内容![测试图片](../images/img.jpg)',
       content: `
-import img0 from '../images/img.jpg';
 import { utils as template } from '@blog/template-post';
 import { defineUtils } from '@blog/context/runtime';
 export const utils = defineUtils(template.getAssetNames());
+
+import img0 from '../images/img.jpg';
 
 测试内容
 
