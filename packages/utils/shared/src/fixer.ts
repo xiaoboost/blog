@@ -52,26 +52,15 @@ export class Fixer {
   /** 应用所有修改 */
   apply() {
     const { fixData: data } = this;
-
     let { content } = this;
 
-    for (let i = 0; i < data.length; i++) {
-      const item = data[i];
+    // 按 start 位置从大到小排序（从后往前处理）
+    const sortedData = [...data].sort((a, b) => b.start - a.start);
+
+    for (const item of sortedData) {
       const startTxt = content.substring(0, item.start);
-      const endTxt = content.substring(item.end, content.length);
-      const offset = (item.newText ?? '').length - (item.end - item.start);
-
-      content = startTxt + item.newText + endTxt;
-
-      for (let j = i + 1; j < data.length; j++) {
-        const restItem = data[j];
-
-        // 在被修改的文本之后，则需要修正偏移量
-        if (restItem.start >= item.end) {
-          restItem.start += offset;
-          restItem.end += offset;
-        }
-      }
+      const endTxt = content.substring(item.end);
+      content = startTxt + (item.newText ?? '') + endTxt;
     }
 
     data.length = 0;

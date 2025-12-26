@@ -2,7 +2,7 @@
 title: 在异世界手搓火车是什么体验
 create: 2025/10/20
 description: 《异界骨龙操作指南》，有些私心，我个人很喜欢这本书。
-tags: 读后感
+tags: 书边碎笔
 toc: false
 ---
 

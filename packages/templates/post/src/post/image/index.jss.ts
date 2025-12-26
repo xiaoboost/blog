@@ -13,7 +13,7 @@ export default createStyles({
       fontSize: 12,
       fontWeight: 300,
       lineHeight: '1.5',
-      margin: '12px 0',
+      margin: '4px 0 12px 0',
       textAlign: 'center',
     },
     '& $postImageInner': {
