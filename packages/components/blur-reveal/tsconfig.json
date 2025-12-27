@@ -1,0 +1,12 @@
+{
+  "extends": "@xiao-ai/tsconfig",
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "outDir": "./dist",
+    "lib": ["DOM", "ESNext"],
+    "declaration": false,
+    "declarationMap": false
+  }
+}

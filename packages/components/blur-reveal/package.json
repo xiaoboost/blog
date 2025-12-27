@@ -1,12 +1,11 @@
 {
-  "name": "@blog/template-post",
-  "description": "blog's template post layout",
+  "name": "@blog/mdx-blur-reveal",
+  "description": "blog's normal content blur mask reveal component",
   "version": "1.0.0",
   "author": "xiaoboost",
   "license": "MIT",
-  "source": "src/index.ts",
-  "module": "src/index.ts",
-  "types": "src/index.ts",
+  "source": "src/index.tsx",
+  "types": "src/index.tsx",
   "scripts": {
     "lint": "eslint --quiet src/**/*.{ts,tsx,js,jsx}",
     "lint:fix": "eslint --quiet --fix src/**/*.{ts,tsx,js,jsx}"
@@ -17,29 +16,20 @@
   },
   "dependencies": {
     "@blog/context": "workspace:*",
-    "@blog/icons": "workspace:*",
-    "@blog/mdx-blur-reveal": "workspace:*",
-    "@blog/mdx-code-block-normal": "workspace:*",
-    "@blog/mdx-code-block-typescript": "workspace:*",
-    "@blog/node": "workspace:*",
-    "@blog/shared": "workspace:*",
     "@blog/styles": "workspace:*",
-    "@blog/template-layout": "workspace:*",
     "@blog/web": "workspace:*",
     "@xiao-ai/utils": "1.6.6",
-    "medium-zoom": "1.1.0",
-    "moment": "2.30.1",
-    "react": "18.3.1",
-    "tslib": "2.6.2"
+    "react": "18.3.1"
   },
   "devDependencies": {
-    "@blog/types": "workspace:*",
+    "@blog/test-toolkit": "workspace:*",
     "@types/blog": "workspace:*",
     "@types/node": "20.12.8",
     "@types/react": "18.3.1",
     "@xiao-ai/eslint-config": "1.0.3",
     "@xiao-ai/tsconfig": "1.0.4",
     "eslint": "8.56.0",
+    "tslib": "2.6.2",
     "typescript": "5.4.5"
   }
 }
