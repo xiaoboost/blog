@@ -30,7 +30,15 @@ function active() {
 
     setTimeout(() => {
       content.style.maxHeight = 'none';
-    }, duration);
+      [classes.blurRevealFogLeft, classes.blurRevealFogRight, classes.blurRevealOverlay].forEach(
+        (className) => {
+          const el = revealEl.querySelector<HTMLElement>(`.${className}`);
+          if (el) {
+            el.style.display = 'none';
+          }
+        },
+      );
+    }, duration * 1000);
   }
 
   list.forEach((el) => {
