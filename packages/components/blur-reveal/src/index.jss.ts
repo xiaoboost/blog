@@ -20,7 +20,7 @@ export default createStyles({
         userSelect: 'text',
       },
       '& $blurRevealFog, & $blurRevealOverlay': {
-        display: 'none !important',
+        opacity: 0,
         pointerEvents: 'none',
       },
     },

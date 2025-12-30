@@ -12,7 +12,7 @@ import * as title from './title';
 import * as code from './code';
 import * as image from './image';
 import * as paragraph from './paragraph';
-
+import * as hr from './hr';
 import { Link } from './link';
 
 export interface PostProps extends LayoutProps {
@@ -46,6 +46,7 @@ export function Post(props: PostProps) {
               ...code,
               ...image,
               ...paragraph,
+              ...hr,
             }}
           />
         </article>

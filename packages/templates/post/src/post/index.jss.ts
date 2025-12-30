@@ -12,6 +12,7 @@ import {
   YellowLight,
   YellowLighter,
   FontDefault,
+  FontSerif,
   MainShadow,
   createMediaStyles,
   createHeadStyles,
@@ -35,6 +36,7 @@ export default createStyles({
   postNoToc: {},
   postSoftBreak: {},
   noIndent: {},
+  splitMark: {},
   postDefault: {
     color: Black.toString(),
     backgroundColor: White.toString(),
@@ -158,6 +160,30 @@ export default createStyles({
           -1px 1px 0 ${WhiteBg.toString()},
           1px 1px ${WhiteBg.toString()}
         `,
+
+        // 三个✳的强调，样式和普通的强调有所不同
+        '& > strong': {
+          backgroundRepeat: 'no-repeat',
+          backgroundSize: '100% 40%',
+          backgroundPosition: '0 85%',
+          borderRadius: 2,
+          boxDecorationBreak: 'clone',
+          fontWeight: 'bold',
+          webkitBoxDecorationBreak: 'clone',
+          backgroundImage: `linear-gradient(
+            120deg,
+            ${Gray.toString()} 0%,
+            ${Gray.toString()} 100%
+          )`,
+          // 这里下面的方向是 2.5，多出来的 0.5 是为了遮住 em 原本的 2px 下划线
+          padding: [0, 2, 2.5, 2],
+          textShadow: `
+            -0.8px -0.8px 0 #fafafa,
+            0.8px -0.8px 0 ${WhiteBg.toString()},
+            -0.8px 0.8px 0 ${WhiteBg.toString()},
+            0.8px 0.8px ${WhiteBg.toString()}
+          `,
+        },
       },
       '& s': {
         textDecorationColor: 'rgba(32, 32, 32, 0.5)',
@@ -198,12 +224,29 @@ export default createStyles({
         },
       },
       '& blockquote': {
+        position: 'relative',
         padding: '.8em 1.2em',
         margin: '1em 0',
         lineHeight: 1.5,
         fontSize: '90%',
         borderLeft: `0.3em solid ${BlackExtraLight.darken(0.04).toString()}`,
         backgroundColor: WhiteBg.alpha(0.8).toString(),
+
+        '&::before': {
+          content: '"“"',
+          position: 'absolute',
+          top: -4,
+          fontSize: 40,
+          fontFamily: FontSerif,
+          color: BlackExtraLight.toString(),
+          zIndex: 0,
+          width: 32,
+          height: 32,
+
+          ...createMediaStyles(-4, 12, (offset) => ({
+            left: `${offset}px`,
+          })),
+        },
 
         '> *': {
           marginTop: 0,
@@ -247,6 +290,27 @@ export default createStyles({
         overflow: 'hidden',
         boxSizing: 'content-box',
         borderBottom: `1px solid ${Gray.toString()}`,
+      },
+      '& $splitMark': {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 0,
+        margin: [20, 0],
+        color: BlackLighter.toString(),
+
+        '&::before, &::after': {
+          content: '""',
+          width: 80,
+          height: 1,
+          backgroundColor: Gray.toString(),
+          margin: [0, 15],
+        },
+
+        '& > span': {
+          fontSize: 20,
+          fontFamily: FontSerif,
+        },
       },
     },
   },
