@@ -61,7 +61,7 @@ export class Bundler implements BundlerInstance {
         mainFields: ['source', 'module', 'main'],
         resolveExtensions: ['.ts', '.tsx', '.mjs', '.js', '.jsx', '.json'],
         publicPath: opt.publicPath,
-        external: builtinModules,
+        external: builtinModules.slice(),
         splitting: false,
         watch: false,
         charset: 'utf8',
