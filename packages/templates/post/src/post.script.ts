@@ -8,6 +8,7 @@ import './to-content/index.script';
 import '@blog/mdx-blur-reveal/src/index.script';
 import '@blog/mdx-code-block-normal/src/code-block.script';
 import '@blog/mdx-code-block-typescript/src/code-block-ts.script';
+import '@blog/mdx-text-gloss/src/index.script';
 import '@blog/icons/src/index.jss';
 
 import { assets } from '@blog/context/web';
