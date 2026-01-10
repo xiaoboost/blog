@@ -2,14 +2,15 @@ import type { BuilderInstance } from '@blog/types';
 import { ParameterizedContext, Next } from 'koa';
 import { join } from 'path';
 import { HMRClientScriptPath } from '@blog/shared';
-import { build, BuildIncremental } from 'esbuild';
+import { BuildContext, BuildResult, context } from 'esbuild';
 import { getCoreRoot } from '../../../utils';
 
 export function transformServe(vfs: Map<string, Buffer>, builder: BuilderInstance) {
-  let instance: BuildIncremental;
+  let instance: BuildContext;
+  let buildResult: BuildResult;
 
   builder.hooks.done.tap('develop-transform', () => {
-    instance?.stop?.();
+    instance?.dispose?.();
   });
 
   return async (ctx: ParameterizedContext, next: Next) => {
@@ -20,9 +21,9 @@ export function transformServe(vfs: Map<string, Buffer>, builder: BuilderInstanc
     const clientPath = join(getCoreRoot(), 'src/plugins/development/runtime/client.ts');
 
     if (instance) {
-      instance = await instance.rebuild();
+      buildResult = await instance.rebuild();
     } else {
-      instance = (await build({
+      instance = await context({
         entryPoints: [clientPath],
         bundle: true,
         minify: false,
@@ -30,14 +31,13 @@ export function transformServe(vfs: Map<string, Buffer>, builder: BuilderInstanc
         write: false,
         format: 'iife',
         outdir: '/',
-        incremental: true,
         platform: 'browser',
         logLevel: 'silent',
         charset: 'utf8',
-      })) as BuildIncremental;
+      });
     }
 
-    const file = instance.outputFiles?.[0]?.contents;
+    const file = buildResult.outputFiles?.[0]?.contents;
 
     if (file) {
       vfs.set(HMRClientScriptPath, Buffer.from(file));

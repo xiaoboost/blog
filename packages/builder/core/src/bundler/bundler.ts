@@ -1,4 +1,4 @@
-import { BuildOptions, BuildIncremental, build as esbuild, OnLoadResult } from 'esbuild';
+import { BuildOptions, BuildContext, BuildResult, context, OnLoadResult } from 'esbuild';
 import { join } from 'path';
 import { builtinModules } from 'module';
 import {
@@ -20,7 +20,9 @@ import { BundleFileName, isBundleFile } from './utils';
 export class Bundler implements BundlerInstance {
   private builder: BuilderInstance;
 
-  private instance?: BuildIncremental;
+  private instance?: BuildContext;
+
+  private buildResult?: BuildResult;
 
   private assets: AssetData[] = [];
 
@@ -43,7 +45,7 @@ export class Bundler implements BundlerInstance {
 
     // 有实例，则直接重新构建
     if (this.instance) {
-      this.instance = await this.instance.rebuild();
+      this.buildResult = await this.instance.rebuild();
     } else {
       const { builder, hooks } = this;
       const { options: opt, root } = builder;
@@ -63,16 +65,15 @@ export class Bundler implements BundlerInstance {
         publicPath: opt.publicPath,
         external: builtinModules.slice(),
         splitting: false,
-        watch: false,
         charset: 'utf8',
-        incremental: opt.watch,
         logLimit: 5,
         platform: 'node',
         define: opt.defined,
         plugins: [BridgePlugin(this)],
       });
 
-      this.instance = (await esbuild(esbuildConfig)) as BuildIncremental;
+      this.instance = await context(esbuildConfig);
+      this.buildResult = await this.instance.rebuild();
     }
   }
 
@@ -81,7 +82,7 @@ export class Bundler implements BundlerInstance {
 
     if (includeOutput) {
       assets.push(
-        ...(this.instance?.outputFiles ?? []).map((item) => ({
+        ...(this.buildResult?.outputFiles ?? []).map((item) => ({
           path: item.path,
           content: Buffer.from(item.contents),
         })),
@@ -92,7 +93,7 @@ export class Bundler implements BundlerInstance {
   }
 
   getBundledCode(): BundlerResult {
-    const output = this.instance?.outputFiles ?? [];
+    const output = this.buildResult?.outputFiles ?? [];
     const source = output.find(({ path }) => isBundleFile(path) && /\.js$/.test(path));
     const sourceMap = output.find(({ path }) => isBundleFile(path) && /\.js\.map$/.test(path));
 
@@ -103,7 +104,6 @@ export class Bundler implements BundlerInstance {
   }
 
   dispose() {
-    this.instance?.stop?.();
-    this.instance?.rebuild?.dispose?.();
+    return this.instance?.dispose?.();
   }
 }
