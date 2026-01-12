@@ -43,10 +43,10 @@
   },
   "devDependencies": {
     "@blog/test-toolkit": "workspace:*",
-    "@types/node": "20.19.27",
+    "@types/node": "20.19.28",
     "@xiao-ai/eslint-config": "1.0.3",
     "@xiao-ai/tsconfig": "1.0.4",
-    "eslint": "8.56.0",
+    "eslint": "8.57.1",
     "mocha": "10.8.2",
     "typescript": "5.9.3"
   }

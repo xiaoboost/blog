@@ -21,11 +21,11 @@
   },
   "devDependencies": {
     "@types/blog": "workspace:*",
-    "@types/node": "20.19.27",
-    "@types/react": "18.3.1",
+    "@types/node": "20.19.28",
+    "@types/react": "18.3.27",
     "@xiao-ai/eslint-config": "1.0.3",
     "@xiao-ai/tsconfig": "1.0.4",
-    "eslint": "8.56.0",
+    "eslint": "8.57.1",
     "tslib": "2.8.1",
     "typescript": "5.9.3"
   }
