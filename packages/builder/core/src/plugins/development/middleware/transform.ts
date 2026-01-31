@@ -20,9 +20,7 @@ export function transformServe(vfs: Map<string, Buffer>, builder: BuilderInstanc
 
     const clientPath = join(getCoreRoot(), 'src/plugins/development/runtime/client.ts');
 
-    if (instance) {
-      buildResult = await instance.rebuild();
-    } else {
+    if (!instance) {
       instance = await context({
         entryPoints: [clientPath],
         bundle: true,
@@ -36,6 +34,8 @@ export function transformServe(vfs: Map<string, Buffer>, builder: BuilderInstanc
         charset: 'utf8',
       });
     }
+
+    buildResult = await instance.rebuild();
 
     const file = buildResult.outputFiles?.[0]?.contents;
 

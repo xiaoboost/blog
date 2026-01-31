@@ -96,10 +96,6 @@ export function renderTagPostListPage({ index, pathname, posts, count, listTitle
   const isStart = index === 0;
   const isEnd = index === count - 1;
 
-  if (index === 1) {
-    debugger;
-  }
-
   return createPostList({
     posts,
     listTitle,
@@ -108,8 +104,8 @@ export function renderTagPostListPage({ index, pathname, posts, count, listTitle
     pathname,
     publicPath: Builder.options.publicPath,
     hmr: Builder.options.hmr,
-    pre: isEnd ? undefined : getTagPostListAssetPath(listTitle, index + 1),
-    next: isStart ? undefined : getTagPostListAssetPath(listTitle, index - 1),
+    pre: isEnd ? undefined : getTagPostListUrlPath(listTitle, index + 1),
+    next: isStart ? undefined : getTagPostListUrlPath(listTitle, index - 1),
     styles: utils.getStyleNames(),
     scripts: utils.getScriptNames(),
   });

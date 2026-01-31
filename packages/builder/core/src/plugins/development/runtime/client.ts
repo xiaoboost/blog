@@ -1,4 +1,4 @@
-import { HMRKind, HMRData, HMRUpdate, HMRUpdateKind } from '../types';
+import { HMRKind, type HMRData, type HMRUpdate, HMRUpdateKind } from '../types';
 import { showError, closeError } from './error';
 
 import {
