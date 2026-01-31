@@ -1,5 +1,5 @@
 import { remove } from '@xiao-ai/utils';
-import { GlobalKey } from '@blog/context';
+import { GlobalKey } from '@blog/context/web';
 import type { ScriptModule, ModuleLoader } from '@blog/types';
 
 interface ModuleData extends ScriptModule {
