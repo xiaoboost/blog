@@ -4,8 +4,6 @@
 export const CustomFont = {
   /** 英文正文 */
   Lato: `"Lato"`,
-  /** 网站大标题 */
-  Dancing: `"Dancing Script"`,
   /** 斜体英文 */
   EMLora: `"EM-Lora"`,
 };
@@ -22,12 +20,12 @@ export const FontDefault = /* @__PURE__ */ [
   '"PingFang SC"',
   /** MacOS 冬青黑 */
   '"Hiragino Sans GB"',
-  /** Windows 微软雅黑 */
-  '"Microsoft YaHei"',
   /** Linux 文泉驿黑体 */
   '"WenQuanYi Micro Hei"',
   /** 安卓默认字体 */
   '"Noto Sans CJK SC"',
+  /** Windows 微软雅黑 */
+  '"Microsoft YaHei"',
   'sans-serif',
 ].join(', ');
 
@@ -40,12 +38,12 @@ export const FontSerif = /* @__PURE__ */ [
   '"Songti SC"',
   /** MacOS 华文宋体 */
   'STSong',
+  /* Android 衬线字体 */
+  '"Noto Serif CJK SC"',
   /** windows 中易中宋 */
   'STZhongsong',
   /** windows 宋体 */
   'SimSun',
-  /* Android 衬线字体 */
-  '"Noto Serif CJK SC"',
   /* 跨平台英文字体 */
   'Georgia',
   '"Times New Roman"',
@@ -60,9 +58,6 @@ export const FontMono = /* @__PURE__ */ [
   '"Courier New"',
   'monospace',
 ].join(', ');
-
-/** 标题字体 */
-export const FontTitle = CustomFont.Dancing;
 
 /** 网站宽度 */
 export const mainWidth = 900;

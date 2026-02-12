@@ -40,11 +40,7 @@ export function createFontFaceStyles(
       fontFamily: family,
       fontStyle: style,
       fontWeight: weight,
-      src: `
-        url('${url}.woff2') format('woff2'),
-        url('${url}.woff') format('woff'),
-        url('${url}.ttf') format('truetype')
-      `.trim(),
+      src: `url('${url}.woff2') format('woff2')`,
     },
   });
 }
