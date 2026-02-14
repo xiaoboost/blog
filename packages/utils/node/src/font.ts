@@ -55,7 +55,7 @@ export class FontBucket {
 
   private chars = new Set<string>();
 
-  private cssCode = '';
+  private cssCode: string | null = null;
 
   private minFont: Buffer | null = null;
 
@@ -80,6 +80,10 @@ export class FontBucket {
   /** 样式文件 URL 路径 */
   private getCssPath() {
     return normalize(this.options.publicPath ?? '/', this.resolvedCssPath ?? this.options.cssPath);
+  }
+
+  get isBuilt() {
+    return this.minFont !== null && this.cssCode !== null;
   }
 
   addText(...texts: string[]) {

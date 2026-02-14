@@ -8,7 +8,7 @@ import {
   mainWidth,
   FontSerif,
 } from '@blog/styles';
-import { FontTitle } from '../../utils';
+import { TitleFontFamily } from '../../utils';
 
 export default createStyles({
   mainTitle: {},
@@ -37,7 +37,7 @@ export default createStyles({
       fontSize: 24,
       color: Black.toString(),
       alignItems: 'center',
-      fontFamily: `${FontTitle}, ${FontSerif}`,
+      fontFamily: `${TitleFontFamily}, ${FontSerif}`,
     },
   },
   mainNav: {
