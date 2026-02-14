@@ -33,15 +33,10 @@ export class CustomFont extends FontBucket implements CustomFontData {
 
   /** 生成静态资源 */
   async getAssets(): Promise<AssetData[]> {
-    let font = this.getFont();
-    let css = this.getCss();
-
-    if (!font.content || !css.content) {
+    if (!this.isBuilt) {
       await this.build();
-      font = this.getFont();
-      css = this.getCss();
     }
 
-    return [font, css];
+    return [this.getFont(), this.getCss()];
   }
 }
