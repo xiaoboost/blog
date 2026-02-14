@@ -10,9 +10,9 @@ import type { FontBlockProps } from './index';
 import { CustomFont } from './font';
 
 /** 字体源文件缓存 */
-const fileCache = getAccessor('fileCache', new Map<string, Buffer>()).get();
+const fileCache = getAccessor('font-block:source', new Map<string, Buffer>()).get();
 /** 字体数据缓存 */
-const fontCache = getAccessor('fontCache', new Map<string, CustomFont>()).get();
+const fontCache = getAccessor('font-block:font', new Map<string, CustomFont>()).get();
 
 /** 获取自定义字体标识符 */
 function getCustomFontKey(data: CustomFontData) {
@@ -62,10 +62,7 @@ export async function getFontContentBySrc(src: string) {
 /** 获取自定义字体 */
 export function getCustomFontByData(data: CustomFontData) {
   const src = resolveFontPath(data.src, data.post);
-  const key = getCustomFontKey({
-    ...data,
-    src,
-  });
+  const key = getCustomFontKey({ ...data, src });
 
   if (fontCache.has(key)) {
     return fontCache.get(key)!;
