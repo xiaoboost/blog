@@ -33,7 +33,11 @@
         "chai",
         "mime"
       ]
-    }
+    },
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "ttf2woff2"
+    ]
   },
   "devDependencies": {
     "@blog/cli": "workspace:*"
