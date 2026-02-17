@@ -27,10 +27,6 @@ export interface FontBucketOptions {
    */
   publicPath?: string;
   /**
-   * 重命名方法
-   */
-  rename?(asset: AssetData): string;
-  /**
    * 最小化
    */
   minify?: boolean;
@@ -48,6 +44,14 @@ export interface FontBucketOptions {
    * 样式回退字体
    */
   fallbackFont?: string;
+  /**
+   * 重命名方法
+   */
+  rename?(asset: AssetData): string;
+  /**
+   * 获取字体文件内容
+   */
+  getFontContent?(fontSource: string): Promise<Buffer>;
 }
 
 export class FontBucket {
@@ -133,7 +137,9 @@ export class FontBucket {
 
   async build() {
     const { options } = this;
-    const fontBuffer = await fs.readFile(options.fontSource);
+    const fontBuffer = options.getFontContent
+      ? await options.getFontContent(options.fontSource)
+      : await fs.readFile(options.fontSource);
     const minify = options.minify !== false;
 
     if (minify) {

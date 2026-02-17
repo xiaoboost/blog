@@ -1,5 +1,5 @@
 import React from 'react';
-import { forEach, defineUtils, RuntimeBuilder as Builder } from '@blog/context/runtime';
+import { forEach, defineUtils, RuntimeBuilder as Builder, isPreBuild } from '@blog/context/runtime';
 import { stringifyClass } from '@xiao-ai/utils';
 import { getCustomTextByPost, getCustomFontByData, getCustomFontByProps } from './utils';
 
@@ -57,6 +57,10 @@ export interface FontBlockProps {
 
 /** 自定义字体块 */
 export function FontBlock(props: FontBlockProps) {
+  if (isPreBuild()) {
+    return;
+  }
+
   const { children } = (props.children as any).props;
   const font = getCustomFontByProps({
     ...props,
@@ -80,7 +84,7 @@ export function FontBlock(props: FontBlockProps) {
     <div
       className={stringifyClass(
         styles.classes.fontBlock,
-        font.className,
+        font.getClassName(),
         direction === 'horizontal'
           ? styles.classes.fontBlockHorizontal
           : direction === 'vertical'
