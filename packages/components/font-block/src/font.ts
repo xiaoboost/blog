@@ -3,6 +3,7 @@ import { FontSerif } from '@blog/styles';
 import { FontBucket, toPinyin } from '@blog/node';
 import type { AssetData } from '@blog/types';
 import { CustomFontData } from './types';
+import { getFontContentBySrc } from './utils';
 
 export class CustomFont extends FontBucket implements CustomFontData {
   readonly src: string;
@@ -14,6 +15,7 @@ export class CustomFont extends FontBucket implements CustomFontData {
   constructor(src: string, post: string, text: string[] = []) {
     const fontFamily = `font-${Date.now()}`;
     const className = toPinyin(fontFamily);
+
     super({
       fontSource: src,
       fontPath: `fonts/${className}.woff2`,
@@ -23,6 +25,7 @@ export class CustomFont extends FontBucket implements CustomFontData {
       fontFamily,
       className,
       fallbackFont: FontSerif,
+      getFontContent: getFontContentBySrc,
       rename: (asset) => Builder.renameAsset(asset) ?? asset.path,
     });
     this.src = src;
