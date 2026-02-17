@@ -1,4 +1,3 @@
-import FontMin from 'fontmin';
 import { dirname, isAbsolute, join, basename } from 'path';
 import { normalize, isRootDirectory } from '@blog/node';
 import { readFile } from 'fs/promises';
@@ -117,38 +116,4 @@ export function getCustomTextByPost({ data: post }: PostExportData) {
   }
 
   return result;
-}
-
-/** 根据文本获取压缩字体数据 */
-export function getMinFontFile(font: Buffer, text: Set<string>) {
-  interface FontFileData {
-    basename: string;
-    contents: Uint8Array;
-  }
-
-  return new Promise<Buffer>((resolve, reject) => {
-    new FontMin()
-      .src(font)
-      .use(
-        FontMin.glyph({
-          text: Array.from(text).join(''),
-          hinting: false,
-        }),
-      )
-      .use(FontMin.ttf2woff2())
-      .run((err, files: any[]) => {
-        if (err) {
-          reject(err);
-          return;
-        }
-
-        const woff2 = files.find((item: FontFileData) => item.basename.endsWith('.woff2'));
-
-        if (woff2?.contents) {
-          resolve(Buffer.from(woff2.contents));
-        } else {
-          reject(new Error(`生成字体失败，当前文本：${text}`));
-        }
-      });
-  });
 }

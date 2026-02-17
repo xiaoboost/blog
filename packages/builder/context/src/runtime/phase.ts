@@ -23,6 +23,13 @@ export function getPhase(): BuildPhase {
 }
 
 /**
+ * 是否为预构建阶段
+ */
+export function isPreBuild(): boolean {
+  return getPhase() === BuildPhase.PreBuild;
+}
+
+/**
  * 推进到下一个合法状态
  */
 export function nextPhase(): BuildPhase {
