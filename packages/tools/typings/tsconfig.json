@@ -1,0 +1,9 @@
+{
+  "extends": "@xiao-ai/tsconfig",
+  "include": ["."],
+  "exclude": ["node_modules", "dist"],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "outDir": "./dist"
+  }
+}

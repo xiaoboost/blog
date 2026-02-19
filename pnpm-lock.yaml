@@ -926,7 +926,14 @@ importers:
         specifier: 5.9.3
         version: 5.9.3
 
-  packages/tools/typings: {}
+  packages/tools/typings:
+    devDependencies:
+      '@types/node':
+        specifier: 20.19.28
+        version: 20.19.28
+      '@xiao-ai/tsconfig':
+        specifier: 1.0.4
+        version: 1.0.4
 
   packages/utils/node:
     dependencies:
