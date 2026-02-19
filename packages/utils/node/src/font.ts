@@ -1,5 +1,5 @@
-import { Buffer } from 'node:buffer';
-import fs from 'node:fs/promises';
+import { Buffer } from 'buffer';
+import fs from 'fs/promises';
 import type { AssetData } from '@blog/types';
 import FontMin from 'fontmin';
 import CleanCss from 'clean-css';
@@ -162,6 +162,61 @@ export class FontBucket {
     });
   }
 
+  /**
+   * 获取 @font-face 的 CSS 代码
+   * @param minify 是否压缩 CSS
+   * @returns @font-face 的 CSS 代码
+   */
+  getFontFaceCss(minify = false): string {
+    if (!this.minFont) {
+      throw new Error('字体文件未生成，请先运行 build 方法');
+    }
+
+    const { fontFamily } = this.options;
+    const fontFaceCode = `@font-face {
+  font-family: "${fontFamily}";
+  src: url("${this.getFontPath()}");
+}`;
+
+    if (minify) {
+      const { errors, styles } = new CleanCss().minify(fontFaceCode);
+      if (errors.length > 0) {
+        throw new Error(errors.join('; '));
+      }
+      return styles;
+    }
+
+    return fontFaceCode;
+  }
+
+  /**
+   * 获取 className 的 CSS 代码
+   * @param minify 是否压缩 CSS
+   * @returns className 的 CSS 代码
+   */
+  getClassNameCss(minify = false): string {
+    if (!this.minFont) {
+      throw new Error('字体文件未生成，请先运行 build 方法');
+    }
+
+    const className = this.getClassName();
+    const { fontFamily, fallbackFont } = this.options;
+    const fallback = fallbackFont ?? 'sans-serif';
+    const classNameCode = `.${className} {
+  font-family: "${fontFamily}", ${fallback};
+}`;
+
+    if (minify) {
+      const { errors, styles } = new CleanCss().minify(classNameCode);
+      if (errors.length > 0) {
+        throw new Error(errors.join('; '));
+      }
+      return styles;
+    }
+
+    return classNameCode;
+  }
+
   async build(buildOptions: FontBucketBuildOptions = {}) {
     const options = { ...this.options, ...buildOptions };
     let fontBuffer: Buffer;
@@ -187,29 +242,10 @@ export class FontBucket {
       ? options.rename({ path: options.fontPath, content: this.minFont })
       : options.fontPath;
 
-    const className = this.getClassName();
-    const { fontFamily, fallbackFont } = options;
-    const fallback = fallbackFont ?? 'sans-serif';
-    const code = `
-      @font-face {
-        font-family: "${fontFamily}";
-        src: url("${this.getFontPath()}");
-      }
-
-      .${className} {
-        font-family: "${fontFamily}", ${fallback};
-      }
-    `;
-
-    if (minify) {
-      const { errors, styles } = new CleanCss().minify(code);
-      if (errors.length > 0) {
-        throw new Error(errors.join('; '));
-      }
-      this.cssCode = styles;
-    } else {
-      this.cssCode = code.trim();
-    }
+    // 组合 font-face 和 className 的 CSS
+    const fontFaceCss = this.getFontFaceCss(minify);
+    const classNameCss = this.getClassNameCss(minify);
+    this.cssCode = minify ? `${fontFaceCss}${classNameCss}` : `${fontFaceCss}\n\n${classNameCss}`;
 
     this.resolvedCssPath = options.rename
       ? options.rename({

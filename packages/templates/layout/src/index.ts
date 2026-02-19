@@ -1,4 +1,5 @@
 import { defineUtils } from '@blog/context/runtime';
+import './title-font';
 
 import assets from './layout.script';
 
