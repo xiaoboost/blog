@@ -3,7 +3,7 @@ import React from 'react';
 import { normalizeUrl } from '@blog/node';
 import { stringifyClass } from '@xiao-ai/utils';
 import { isPreBuild } from '@blog/context/runtime';
-import { TitleFontBucket } from '../../utils/font';
+import { titleFontBucket } from '../../utils/title';
 
 import styles from './index.jss';
 
@@ -54,7 +54,7 @@ export function Header(props: HeaderProps) {
 
   /** 预构建阶段添加标题字体文本 */
   if (isPreBuild()) {
-    TitleFontBucket.addText(props.siteTitle);
+    titleFontBucket.addText(props.siteTitle);
   }
 
   return (
