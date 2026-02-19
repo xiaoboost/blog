@@ -1,23 +1,12 @@
 import { forEach, RuntimeBuilder as Builder } from '@blog/context/runtime';
-import { TitleFontBucket } from './utils/font';
-import TitleFontFile from './assets/font/dancing/dancing.ttf';
+import { titleFontBucket } from './utils/title';
 
 forEach((runtime) => {
-  TitleFontFile;
-
-  Builder.getCacheAccessor();
-
-  debugger;
   runtime.hooks.afterPreBuild.tapPromise('layout:title-font', async () => {
-    await TitleFontBucket.build({
-      publicPath: Builder.options.publicPath,
-      minify: Builder.options.mode === 'production',
-    });
+    // 最小化字体文件
+    await titleFontBucket.build();
 
-    debugger;
-    const titleFont = TitleFontBucket.getFont();
-    const titleFontCss = TitleFontBucket.getCss();
-
-    debugger;
+    // 输出字体文件
+    Builder.emitAsset(titleFontBucket.getFont());
   });
 });
