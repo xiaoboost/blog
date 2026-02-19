@@ -2,6 +2,8 @@ import React from 'react';
 
 import { normalizeUrl } from '@blog/node';
 import { stringifyClass } from '@xiao-ai/utils';
+import { isPreBuild } from '@blog/context/runtime';
+import { TitleFontBucket } from '../../utils/font';
 
 import styles from './index.jss';
 
@@ -27,7 +29,7 @@ export function Header(props: HeaderProps) {
   const aboutHref = normalizeUrl(publicPath, props.aboutPath);
   const tagHref = normalizeUrl(publicPath, props.tagPath);
   const archiveHref = normalizeUrl(publicPath, props.archivePath);
-  const navs = [
+  const navLists = [
     {
       name: '首页',
       href: indexHref,
@@ -50,6 +52,11 @@ export function Header(props: HeaderProps) {
     },
   ];
 
+  /** 预构建阶段添加标题字体文本 */
+  if (isPreBuild()) {
+    TitleFontBucket.addText(props.siteTitle);
+  }
+
   return (
     <header className={styles.classes.mainHeaderWrapper}>
       <span className={styles.classes.mainHeader}>
@@ -57,7 +64,7 @@ export function Header(props: HeaderProps) {
           {props.siteTitle}
         </a>
         <nav className={styles.classes.mainNav}>
-          {navs.map((nav, i) => (
+          {navLists.map((nav, i) => (
             <a
               key={i}
               href={nav.href}

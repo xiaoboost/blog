@@ -6,20 +6,7 @@ import CleanCss from 'clean-css';
 import { normalize } from './path';
 import { toPinyin } from './string';
 
-export interface FontBucketOptions {
-  /**
-   * 原始文件路径
-   * @description 必须是字体文件的完整路径
-   */
-  fontSource: string;
-  /**
-   * 样式文件路径
-   */
-  cssPath: string;
-  /**
-   * 子集文件路径
-   */
-  fontPath: string;
+export interface FontBucketBuildOptions {
   /**
    * 公共 URL 路径
    * @description 用于生成 CSS 中的字体 URL
@@ -30,6 +17,17 @@ export interface FontBucketOptions {
    * 最小化
    */
   minify?: boolean;
+}
+
+interface FontBucketBaseOptions extends FontBucketBuildOptions {
+  /**
+   * 样式文件路径
+   */
+  cssPath: string;
+  /**
+   * 子集文件路径
+   */
+  fontPath: string;
   /**
    * 字体名称
    * @description 用于生成 CSS 中的字体名称
@@ -53,6 +51,35 @@ export interface FontBucketOptions {
    */
   getFontContent?(fontSource: string): Promise<Buffer>;
 }
+
+interface FontBucketPathSourceOptions {
+  /**
+   * 原始文件路径
+   * @description 必须是字体文件的完整路径
+   */
+  fontSource: string;
+  /**
+   * 字体二进制内容
+   * @description 当提供 fontSource 时，不应再直接提供字体内容
+   */
+  fontContent?: undefined;
+}
+
+interface FontBucketBufferSourceOptions {
+  /**
+   * 原始文件路径
+   * @description 当直接提供字体内容时不需要
+   */
+  fontSource?: undefined;
+  /**
+   * 字体二进制内容
+   * @description 与 fontSource 二选一，必须至少提供一个
+   */
+  fontContent: Buffer;
+}
+
+export type FontBucketOptions = FontBucketBaseOptions &
+  (FontBucketPathSourceOptions | FontBucketBufferSourceOptions);
 
 export class FontBucket {
   private options: FontBucketOptions;
@@ -135,11 +162,19 @@ export class FontBucket {
     });
   }
 
-  async build() {
-    const { options } = this;
-    const fontBuffer = options.getFontContent
-      ? await options.getFontContent(options.fontSource)
-      : await fs.readFile(options.fontSource);
+  async build(buildOptions: FontBucketBuildOptions = {}) {
+    const options = { ...this.options, ...buildOptions };
+    let fontBuffer: Buffer;
+
+    if ('fontContent' in options && options.fontContent) {
+      fontBuffer = options.fontContent;
+    } else if (options.fontSource && options.getFontContent) {
+      fontBuffer = await options.getFontContent(options.fontSource);
+    } else if (options.fontSource) {
+      fontBuffer = await fs.readFile(options.fontSource);
+    } else {
+      throw new Error('FontBucket: 需要提供 fontSource 或 fontContent 至少一个');
+    }
     const minify = options.minify !== false;
 
     if (minify) {

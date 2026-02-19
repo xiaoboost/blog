@@ -13,6 +13,7 @@ import { PostLoader } from '../plugins/post-loader';
 import { AssetExtractor } from '../plugins/asset-extractor';
 import { Cname } from '../plugins/cname';
 import { CacheController } from '../plugins/cache';
+import { RawLoader } from '../plugins/raw-loader';
 
 const getAssetNames = (name: string, isProduction: boolean) =>
   isProduction ? `${name}/[name].[hash].[ext]` : `${name}/[name].[ext]`;
@@ -38,6 +39,8 @@ export async function applyPlugin(builder: Builder) {
       name: getAssetNames('images', isProduction),
     },
   ]).apply(builder);
+
+  RawLoader({ test: /\.(woff|woff2|ttf)$/ }).apply(builder);
 
   if (opt.watch) {
     const { Watcher } = await import('../plugins/watcher.js');

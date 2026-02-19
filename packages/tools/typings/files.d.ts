@@ -32,3 +32,8 @@ declare module '*.wasm' {
   const path: string;
   export default path;
 }
+
+declare module '*?raw' {
+  const buffer: Buffer;
+  export default buffer;
+}
