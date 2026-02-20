@@ -1,5 +1,6 @@
-import { forEach, RuntimeBuilder as Builder } from '@blog/context/runtime';
+import { forEach, RuntimeBuilder as Builder, replaceAsset } from '@blog/context/runtime';
 import { titleFontBucket } from './utils/title';
+import exportAssets from './layout.script';
 
 forEach((runtime) => {
   runtime.hooks.afterPreBuild.tapPromise('layout:title-font', async (assets) => {
@@ -25,7 +26,7 @@ forEach((runtime) => {
       `${layoutStylesContent.trim()}${titleFontBucket.getFontFaceCss(minify).trim()}\n`,
     );
     const newLayoutStylePath = Builder.renameAsset({
-      path: layoutStyles.path,
+      path: layoutStyles.path.replace(/\.[a-f0-9]{32}/, ''),
       content: newLayoutStyleBuffer,
     });
 
@@ -39,6 +40,10 @@ forEach((runtime) => {
       path: newLayoutStylePath,
     };
 
+    // 替换导出资源
+    replaceAsset(exportAssets, layoutStyles.path, newLayoutStylePath);
+
+    // 返回新的资源列表
     return assets
       .filter((asset) => asset.path !== layoutStyles.path)
       .concat(newLayoutStyleFile, titleFontBucket.getFont());

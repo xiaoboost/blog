@@ -20,16 +20,25 @@ export function callHook<T extends keyof RuntimeHooks>(
 
 /** 定义工具函数 */
 export function defineUtils(assets: string[] = []): TemplateUtils {
-  const val = unique(assets.slice());
+  const getAssetNames = () => {
+    const val = unique(assets.slice());
+    return process.env.NODE_ENV === 'production'
+      ? val.filter((item) => !item.endsWith('.map'))
+      : val.slice();
+  };
 
   return {
-    addAssetNames: (...assets: string[]) => val.push(...assets),
-    getAssetNames: () => {
-      return process.env.NODE_ENV === 'production'
-        ? val.filter((item) => !item.endsWith('.map'))
-        : val.slice();
-    },
-    getScriptNames: () => val.filter((item) => item.endsWith('.js')),
-    getStyleNames: () => val.filter((item) => item.endsWith('.css')),
+    addAssetNames: (...newAssets: string[]) => assets.push(...newAssets),
+    getAssetNames,
+    getScriptNames: () => getAssetNames().filter((item) => item.endsWith('.js')),
+    getStyleNames: () => getAssetNames().filter((item) => item.endsWith('.css')),
   };
+}
+
+/** 替换资源 */
+export function replaceAsset(assets: string[], oldAsset: string, newAsset: string): void {
+  const index = assets.indexOf(oldAsset);
+  if (index !== -1) {
+    assets[index] = newAsset;
+  }
 }
