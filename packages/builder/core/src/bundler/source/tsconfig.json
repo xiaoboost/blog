@@ -3,6 +3,7 @@
   "include": ["../source"],
   "compilerOptions": {
     "outDir": "./bundle",
+    "skipLibCheck": true,
     "typeRoots": ["./node_modules/@types"]
   }
 }
