@@ -170,6 +170,9 @@ export interface BundlerInstance {
   dispose(): void | Promise<void>;
 }
 
+/** 运行器方法 */
+export type RunnerCb = (assets: AssetData[]) => Promise<AssetData[]>;
+
 /** 运行器实例 */
 export interface RunnerInstance {
   /** 运行代码 */

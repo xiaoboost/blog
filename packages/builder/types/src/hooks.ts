@@ -169,7 +169,7 @@ export interface RuntimeHooks {
   /** 预构建开始前 */
   beforePreBuild: AsyncSeriesHook<[]>;
   /** 预构建完成后 */
-  afterPreBuild: AsyncSeriesHook<[]>;
+  afterPreBuild: AsyncSeriesWaterfallHook<[AssetData[]]>;
   /** 编译文章页面前 */
   beforeEachPost: AsyncSeriesHook<[PostExportData, number, PostExportData[]]>;
   /** 编译文章页面后 */

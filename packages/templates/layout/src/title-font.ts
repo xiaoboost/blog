@@ -2,11 +2,45 @@ import { forEach, RuntimeBuilder as Builder } from '@blog/context/runtime';
 import { titleFontBucket } from './utils/title';
 
 forEach((runtime) => {
-  runtime.hooks.afterPreBuild.tapPromise('layout:title-font', async () => {
-    // 最小化字体文件
-    await titleFontBucket.build();
+  runtime.hooks.afterPreBuild.tapPromise('layout:title-font', async (assets) => {
+    const minify = Builder.options.mode === 'production';
 
-    // 输出字体文件
-    Builder.emitAsset(titleFontBucket.getFont());
+    // 最小化字体文件
+    await titleFontBucket.build({
+      minify,
+      rename: (asset) => Builder.renameAsset(asset) ?? asset.path,
+    });
+
+    const layoutStyles = assets.find((asset) => {
+      return /layout(\.[a-f0-9]{32})?\.css$/.test(asset.path);
+    });
+
+    if (!layoutStyles) {
+      Builder.logger.info('layout 样式文件未找到，跳过字体文件注入');
+      return assets;
+    }
+
+    const layoutStylesContent = layoutStyles.content.toString('utf-8');
+    const newLayoutStyleBuffer = Buffer.from(
+      `${layoutStylesContent.trim()}${titleFontBucket.getFontFaceCss(minify).trim()}\n`,
+    );
+    const newLayoutStylePath = Builder.renameAsset({
+      path: layoutStyles.path,
+      content: newLayoutStyleBuffer,
+    });
+
+    if (!newLayoutStylePath) {
+      Builder.logger.info('生成新的 Layout 样式文件失败，跳过字体文件注入');
+      return assets;
+    }
+
+    const newLayoutStyleFile = {
+      content: newLayoutStyleBuffer,
+      path: newLayoutStylePath,
+    };
+
+    return assets
+      .filter((asset) => asset.path !== layoutStyles.path)
+      .concat(newLayoutStyleFile, titleFontBucket.getFont());
   });
 });

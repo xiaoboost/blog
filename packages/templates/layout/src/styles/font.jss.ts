@@ -1,5 +1,5 @@
 import { createFontFaceStyles, mergeStyles, CustomFont } from '@blog/styles';
-import { getFontPath } from '../utils';
+import { getFontPath } from '../utils/font';
 
 export default mergeStyles(
   // 英文正文
