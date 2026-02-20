@@ -13,7 +13,9 @@ export class CustomFont extends FontBucket implements CustomFontData {
   readonly text: string[] = [];
 
   constructor(src: string, post: string, text: string[] = []) {
-    const fontFamily = `font-${Date.now()}`;
+    const minify = Builder.options.mode === 'production';
+    // 最小化的时候有 hash 值，所以不需要加时间戳
+    const fontFamily = minify ? 'font' : `font-${Date.now()}`;
     const className = toPinyin(fontFamily);
 
     super({
@@ -21,7 +23,7 @@ export class CustomFont extends FontBucket implements CustomFontData {
       fontPath: `fonts/${className}.woff2`,
       cssPath: `styles/${className}.css`,
       publicPath: Builder.options.publicPath,
-      minify: Builder.options.mode === 'production',
+      minify,
       fontFamily,
       className,
       fallbackFont: FontSerif,
