@@ -1,6 +1,11 @@
 import posts from '@blog/posts';
-
-import type { AssetData, PostListData, UrlListData, PostListDataWithTitle } from '@blog/types';
+import type {
+  AssetData,
+  PostListData,
+  UrlListData,
+  PostListDataWithTitle,
+  RunnerCb,
+} from '@blog/types';
 import { cut } from '@xiao-ai/utils';
 import { callHook, waitReady, nextPhase, resetPhase } from '@blog/context/runtime';
 import { renderPost, setPostUrl, getPostAssetPath, filterSortPosts } from './post';
@@ -190,7 +195,7 @@ async function render({ callHooks }: RenderOptions): Promise<AssetData[]> {
   return assets;
 }
 
-export default async function main() {
+const main: RunnerCb = async (assets) => {
   resetPhase();
 
   await waitReady;
@@ -207,16 +212,18 @@ export default async function main() {
 
   await callHook('beforePreBuild');
   await render({ callHooks: false });
-  await callHook('afterPreBuild');
+  const processed = await callHook('afterPreBuild', assets.slice());
 
   nextPhase();
 
-  const assets = await render({ callHooks: true });
-  const processed = await callHook('processAssets', assets.slice());
-  await callHook('afterBuild', processed.slice());
+  const htmlAssets = await render({ callHooks: true });
+  const allProcessed = await callHook('processAssets', processed.concat(htmlAssets));
+  await callHook('afterBuild', allProcessed.slice());
 
   nextPhase();
 
   // 返回所有资源
-  return processed;
-}
+  return allProcessed;
+};
+
+export default main;

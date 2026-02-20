@@ -17,6 +17,10 @@ export interface FontBucketBuildOptions {
    * 最小化
    */
   minify?: boolean;
+  /**
+   * 重命名方法
+   */
+  rename?(asset: AssetData): string;
 }
 
 interface FontBucketBaseOptions extends FontBucketBuildOptions {
@@ -173,8 +177,9 @@ export class FontBucket {
     }
 
     const { fontFamily } = this.options;
+    const realFontFamily = fontFamily.replace(/"/g, '');
     const fontFaceCode = `@font-face {
-  font-family: "${fontFamily}";
+  font-family: "${realFontFamily}";
   src: url("${this.getFontPath()}");
 }`;
 
