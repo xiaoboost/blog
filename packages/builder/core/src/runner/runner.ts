@@ -1,4 +1,10 @@
-import { RunnerInstance, BuilderInstance, AssetData, BundlerResult, ErrorData } from '@blog/types';
+import type {
+  RunnerInstance,
+  BuilderInstance,
+  BundlerResult,
+  ErrorData,
+  RunnerCb,
+} from '@blog/types';
 import { getContext } from '@blog/context';
 import { Instance } from 'chalk';
 import { runScript, RunError } from '@xiao-ai/utils/node';
@@ -39,6 +45,7 @@ export class Runner implements RunnerInstance {
       clearInterval,
       clearTimeout,
       fetch,
+      global,
       console: new Logger(logLevel, printer, printer.blue('[Runtime]')),
     };
   }
@@ -79,7 +86,7 @@ export class Runner implements RunnerInstance {
   async run({ source, sourceMap }: BundlerResult): Promise<void> {
     this.init(source, sourceMap);
 
-    const result = runScript<() => Promise<AssetData[]>>(this.code, {
+    const result = runScript<RunnerCb>(this.code, {
       dirname: __dirname,
       globalParams: this.getContext(),
     });

@@ -15,7 +15,7 @@ export const hooks: RuntimeHooks = {
   beforeStart: new AsyncSeriesHook<[]>(),
   afterPostDataReady: new AsyncSeriesHook<[PostBasicData[]]>(['PostData']),
   beforePreBuild: new AsyncSeriesHook<[]>(),
-  afterPreBuild: new AsyncSeriesHook<[]>(),
+  afterPreBuild: new AsyncSeriesWaterfallHook<[AssetData[]]>(['Assets']),
   beforeEachPost: new AsyncSeriesHook<[PostExportData, number, PostExportData[]]>([
     'PostExportData',
     'Index',
