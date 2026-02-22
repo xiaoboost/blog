@@ -31,7 +31,7 @@ export async function applyPlugin(builder: Builder) {
   PathLoader({ test: /\.(plist|wasm)$/ }).apply(builder);
   FileLoader([
     {
-      test: /\.(woff|woff2|ttf)$/,
+      test: /\.(woff|woff2|ttf|otf)$/,
       name: getAssetNames('fonts', isProduction),
     },
     {
@@ -40,7 +40,7 @@ export async function applyPlugin(builder: Builder) {
     },
   ]).apply(builder);
 
-  RawLoader({ test: /\.(woff|woff2|ttf)$/ }).apply(builder);
+  RawLoader({ test: /\.(woff|woff2|ttf|otf)$/ }).apply(builder);
 
   if (opt.watch) {
     const { Watcher } = await import('../plugins/watcher.js');

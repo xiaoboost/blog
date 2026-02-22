@@ -1,7 +1,7 @@
 import { defineUtils } from '@blog/context/runtime';
-import './title-font';
-
 import assets from './layout.script';
+
+import './font';
 
 export * from './components/layout';
 export * from './views/main-index';

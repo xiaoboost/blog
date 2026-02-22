@@ -1,20 +1,28 @@
 import { forEach, RuntimeBuilder as Builder, replaceAsset } from '@blog/context/runtime';
-import { titleFontBucket } from './utils/title';
+import type { AssetData } from '@blog/types';
+import { SiteTitleFontBucket, ListTitleFontBucket, ListItemTitleFontBucket } from './utils/title';
 import exportAssets from './layout.script';
 
 forEach((runtime) => {
   runtime.hooks.afterPreBuild.tapPromise('layout:title-font', async (assets) => {
     const minify = Builder.options.mode === 'production';
+    const fonts = [SiteTitleFontBucket, ListTitleFontBucket, ListItemTitleFontBucket];
 
     // 最小化字体文件
-    await titleFontBucket.build({
-      minify,
-      rename: (asset) => Builder.renameAsset(asset) ?? asset.path,
-    });
+    await Promise.all(
+      fonts.map((font) =>
+        font.build({
+          minify,
+          rename: (asset: AssetData) => Builder.renameAsset(asset) ?? asset.path,
+        }),
+      ),
+    );
 
     const layoutStyles = assets.find((asset) => {
       return /layout(\.[a-f0-9]{32})?\.css$/.test(asset.path);
     });
+
+    debugger;
 
     if (!layoutStyles) {
       Builder.logger.info('layout 样式文件未找到，跳过字体文件注入');
@@ -23,7 +31,7 @@ forEach((runtime) => {
 
     const layoutStylesContent = layoutStyles.content.toString('utf-8');
     const newLayoutStyleBuffer = Buffer.from(
-      `${layoutStylesContent.trim()}${titleFontBucket.getFontFaceCss(minify).trim()}\n`,
+      `${layoutStylesContent.trim()}${SiteTitleFontBucket.getFontFaceCss(minify).trim()}\n`,
     );
     const newLayoutStylePath = Builder.renameAsset({
       path: layoutStyles.path.replace(/\.[a-f0-9]{32}/, ''),
@@ -46,6 +54,6 @@ forEach((runtime) => {
     // 返回新的资源列表
     return assets
       .filter((asset) => asset.path !== layoutStyles.path)
-      .concat(newLayoutStyleFile, titleFontBucket.getFont());
+      .concat(newLayoutStyleFile, ...fonts.map((font) => font.getFont()));
   });
 });
