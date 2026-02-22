@@ -1,7 +1,7 @@
 import { Buffer } from 'buffer';
 import fs from 'fs/promises';
+import subsetFont from 'subset-font';
 import type { AssetData } from '@blog/types';
-import FontMin from 'fontmin';
 import CleanCss from 'clean-css';
 import { normalize } from './path';
 import { toPinyin } from './string';
@@ -149,39 +149,13 @@ export class FontBucket {
   }
 
   /**
-   * 使用 FontMin 对字体做子集化并转为 woff2
+   * 字体子集化
    */
   private async subsetFont(font: Buffer): Promise<Buffer> {
-    const text = Array.from(this.chars).join('') || '';
-    const fontMin = new FontMin().src(font);
-
-    debugger;
-    if (this.options.fontKind === 'otf') {
-      fontMin.use(FontMin.otf2ttf());
-    }
-
-    return new Promise((resolve, reject) => {
-      fontMin
-        .use(
-          FontMin.glyph({
-            text,
-            hinting: false,
-          }),
-        )
-        .use(FontMin.ttf2woff2())
-        .run((err, files) => {
-          if (err) {
-            reject(err);
-            return;
-          }
-          const out = files as unknown as Array<{ basename: string; contents: Uint8Array }>;
-          const woff2 = out.find((f) => f.basename.endsWith('.woff2'));
-          if (woff2?.contents) {
-            resolve(Buffer.from(woff2.contents));
-          } else {
-            reject(new Error('字体子集化失败'));
-          }
-        });
+    const text = Array.from(this.chars).join('') || ' ';
+    return subsetFont(font, text, {
+      targetFormat: 'woff2',
+      noLayoutClosure: true,
     });
   }
 
