@@ -1,14 +1,20 @@
 import React from 'react';
 import Moment from 'moment';
+import { isPreBuild } from '@blog/context/runtime';
 import type { PostExportData } from '@blog/types';
 import { normalizeUrl } from '@blog/node';
 import { Tags } from '../../components/icons';
 import { Layout, LayoutProps } from '../../components/layout';
 import { Pagination, PaginationProps } from '../../components/pagination';
+import { ListItemTitleFontBucket } from '../../utils/title';
 
 import styles from './index.jss';
 
 function Post({ data: post }: PostExportData) {
+  if (isPreBuild()) {
+    ListItemTitleFontBucket.addText(post.title);
+  }
+
   return (
     <section className={styles.classes.postsListItem}>
       <header className={styles.classes.postsListItemHeader}>

@@ -8,12 +8,12 @@ import {
   FontDefault,
   FontSerif,
 } from '@blog/styles';
+import { ListItemTitleFontFamily } from '../../utils/font';
 
 export const PostTitleStyle = {
   color: Black.toString(),
   lineHeight: 1,
-  fontWeight: 600,
-  fontFamily: FontSerif,
+  fontFamily: `${ListItemTitleFontFamily}, ${FontSerif}`,
 };
 
 export const PostSubTitleStyle = {

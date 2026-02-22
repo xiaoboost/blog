@@ -27,7 +27,7 @@ interface FontBucketBaseOptions extends FontBucketBuildOptions {
   /**
    * 样式文件路径
    */
-  cssPath: string;
+  cssPath?: string;
   /**
    * 子集文件路径
    */
@@ -46,6 +46,11 @@ interface FontBucketBaseOptions extends FontBucketBuildOptions {
    * 样式回退字体
    */
   fallbackFont?: string;
+  /**
+   * 字体类型
+   * @description 用于指定字体类型，默认为 ttf
+   */
+  fontKind?: 'ttf' | 'otf';
   /**
    * 重命名方法
    */
@@ -104,6 +109,11 @@ export class FontBucket {
     this.options = { ...options };
   }
 
+  /** 默认样式文件路径 */
+  private getDefaultCssPath() {
+    return this.options.cssPath ?? './styles/font.css';
+  }
+
   /** 字体文件 URL 路径 */
   private getFontPath() {
     return normalize(
@@ -114,7 +124,10 @@ export class FontBucket {
 
   /** 样式文件 URL 路径 */
   private getCssPath() {
-    return normalize(this.options.publicPath ?? '/', this.resolvedCssPath ?? this.options.cssPath);
+    return normalize(
+      this.options.publicPath ?? '/',
+      this.resolvedCssPath ?? this.getDefaultCssPath(),
+    );
   }
 
   get isBuilt() {
@@ -140,9 +153,15 @@ export class FontBucket {
    */
   private async subsetFont(font: Buffer): Promise<Buffer> {
     const text = Array.from(this.chars).join('') || '';
+    const fontMin = new FontMin().src(font);
+
+    debugger;
+    if (this.options.fontKind === 'otf') {
+      fontMin.use(FontMin.otf2ttf());
+    }
+
     return new Promise((resolve, reject) => {
-      new FontMin()
-        .src(font)
+      fontMin
         .use(
           FontMin.glyph({
             text,
@@ -250,14 +269,15 @@ export class FontBucket {
     // 组合 font-face 和 className 的 CSS
     const fontFaceCss = this.getFontFaceCss(minify);
     const classNameCss = this.getClassNameCss(minify);
-    this.cssCode = minify ? `${fontFaceCss}${classNameCss}` : `${fontFaceCss}\n\n${classNameCss}`;
+    const cssPath = this.getDefaultCssPath();
 
+    this.cssCode = minify ? `${fontFaceCss}${classNameCss}` : `${fontFaceCss}\n\n${classNameCss}`;
     this.resolvedCssPath = options.rename
       ? options.rename({
-          path: options.cssPath,
+          path: cssPath,
           content: Buffer.from(this.cssCode),
         })
-      : options.cssPath;
+      : cssPath;
   }
 
   getFont(): AssetData {

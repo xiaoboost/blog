@@ -1,8 +1,9 @@
 import React from 'react';
 import { normalizeUrl } from '@blog/node';
+import { isPreBuild } from '@blog/context/runtime';
 import { Layout, LayoutProps } from '../../components/layout';
 import { Pagination, PaginationProps } from '../../components/pagination';
-
+import { ListTitleFontBucket, ListItemTitleFontBucket } from '../../utils/title';
 import styles from './index.jss';
 
 interface ItemData {
@@ -17,6 +18,11 @@ export interface ItemListProps extends LayoutProps, PaginationProps {
 }
 
 export function ItemList(props: ItemListProps) {
+  if (isPreBuild()) {
+    ListTitleFontBucket.addText(props.listTitle);
+    ListItemTitleFontBucket.addText(props.data.map((data) => data.title).join(''));
+  }
+
   return (
     <Layout {...props} bodyClassName={styles.classes.itemListBody}>
       <h1 className={styles.classes.itemListTitle}>{props.listTitle}</h1>

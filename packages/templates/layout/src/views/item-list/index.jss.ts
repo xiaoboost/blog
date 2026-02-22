@@ -1,5 +1,6 @@
-import { createStyles, White, Gray, MainShadow } from '@blog/styles';
+import { createStyles, White, Gray, MainShadow, FontSerif } from '@blog/styles';
 import { PostTitleStyle, PostSubTitleStyle } from '../main-index/index.jss';
+import { ListTitleFontFamily } from '../../utils/font';
 
 export default createStyles({
   itemListItem: {},
@@ -11,6 +12,7 @@ export default createStyles({
     '& $itemListTitle': {
       fontSize: '2.4em',
       margin: [0, 10, 20, 10],
+      fontFamily: `${ListTitleFontFamily}, ${FontSerif}`,
     },
     '& $itemList': {
       width: '100%',
