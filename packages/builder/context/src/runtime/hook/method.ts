@@ -26,10 +26,18 @@ export function defineUtils(assets: string[] = []): TemplateUtils {
       ? val.filter((item) => !item.endsWith('.map'))
       : val.slice();
   };
+  const addAssetNames = (...newAssets: string[]) => assets.push(...newAssets);
+  const replaceAssetName = (oldAsset: string, newAsset: string) => {
+    const index = assets.indexOf(oldAsset);
+    if (index !== -1) {
+      assets[index] = newAsset;
+    }
+  };
 
   return {
-    addAssetNames: (...newAssets: string[]) => assets.push(...newAssets),
     getAssetNames,
+    addAssetNames,
+    replaceAssetName,
     getScriptNames: () => getAssetNames().filter((item) => item.endsWith('.js')),
     getStyleNames: () => getAssetNames().filter((item) => item.endsWith('.css')),
   };

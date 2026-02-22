@@ -48,6 +48,7 @@ export function getRenameMethod(builder: BuilderInstance, opt: FileLoaderOptionI
 
     const assetPath = result.getName({
       name: result.parsedPath.name,
+      dir: result.parsedPath.dir,
       // 去掉这里解析出来的第一个点字符
       ext: result.parsedPath.ext.slice(1),
       hash: md5(asset.content),

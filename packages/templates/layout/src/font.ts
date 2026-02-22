@@ -30,9 +30,9 @@ forEach((runtime) => {
     const layoutStylesContent = layoutStyles.content.toString('utf-8');
     const newLayoutStyleBuffer = Buffer.from(
       layoutStylesContent.trim() +
-        SiteTitleFontBucket.getFontFaceCss(minify).trim() +
-        ListTitleFontBucket.getFontFaceCss(minify).trim() +
-        ListItemTitleFontBucket.getFontFaceCss(minify).trim(),
+        SiteTitleFontBucket.getFontFaceCss().trim() +
+        ListTitleFontBucket.getFontFaceCss().trim() +
+        ListItemTitleFontBucket.getFontFaceCss().trim(),
     );
     const newLayoutStylePath = Builder.renameAsset({
       path: layoutStyles.path.replace(/\.[a-f0-9]{32}/, ''),

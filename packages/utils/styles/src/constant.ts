@@ -27,7 +27,7 @@ export const FontDefault = /* @__PURE__ */ [
   /** Windows 微软雅黑 */
   '"Microsoft YaHei"',
   'sans-serif',
-].join(', ');
+].join(',');
 
 /** 衬线字体 */
 export const FontSerif = /* @__PURE__ */ [
@@ -48,7 +48,7 @@ export const FontSerif = /* @__PURE__ */ [
   'Georgia',
   '"Times New Roman"',
   'serif',
-].join(', ');
+].join(',');
 
 /** 等宽字体 */
 export const FontMono = /* @__PURE__ */ [
@@ -57,7 +57,7 @@ export const FontMono = /* @__PURE__ */ [
   'Consolas',
   '"Courier New"',
   'monospace',
-].join(', ');
+].join(',');
 
 /** 网站宽度 */
 export const mainWidth = 900;

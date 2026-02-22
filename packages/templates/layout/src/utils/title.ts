@@ -11,7 +11,6 @@ import ListItemTitleFontFile from '../assets/font/SourceHanSerif/SourceHanSerifS
  */
 export const SiteTitleFontBucket = new FontBucket({
   fontContent: SiteTitleFontFile,
-  fontPath: './fonts/site-title.woff2',
   fontFamily: SiteTitleFontFamily,
 });
 
@@ -22,9 +21,7 @@ export const SiteTitleFontBucket = new FontBucket({
  */
 export const ListTitleFontBucket = new FontBucket({
   fontContent: ListTitleFontFile,
-  fontPath: './fonts/list-title.woff2',
   fontFamily: ListTitleFontFamily,
-  fontKind: 'otf',
 });
 
 /**
@@ -34,7 +31,5 @@ export const ListTitleFontBucket = new FontBucket({
  */
 export const ListItemTitleFontBucket = new FontBucket({
   fontContent: ListItemTitleFontFile,
-  fontPath: './fonts/list-item-title.woff2',
   fontFamily: ListItemTitleFontFamily,
-  fontKind: 'otf',
 });
