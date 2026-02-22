@@ -22,8 +22,6 @@ forEach((runtime) => {
       return /layout(\.[a-f0-9]{32})?\.css$/.test(asset.path);
     });
 
-    debugger;
-
     if (!layoutStyles) {
       Builder.logger.info('layout 样式文件未找到，跳过字体文件注入');
       return assets;
@@ -31,7 +29,10 @@ forEach((runtime) => {
 
     const layoutStylesContent = layoutStyles.content.toString('utf-8');
     const newLayoutStyleBuffer = Buffer.from(
-      `${layoutStylesContent.trim()}${SiteTitleFontBucket.getFontFaceCss(minify).trim()}\n`,
+      layoutStylesContent.trim() +
+        SiteTitleFontBucket.getFontFaceCss(minify).trim() +
+        ListTitleFontBucket.getFontFaceCss(minify).trim() +
+        ListItemTitleFontBucket.getFontFaceCss(minify).trim(),
     );
     const newLayoutStylePath = Builder.renameAsset({
       path: layoutStyles.path.replace(/\.[a-f0-9]{32}/, ''),
