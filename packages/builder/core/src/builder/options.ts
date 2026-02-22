@@ -30,6 +30,12 @@ export async function applyPlugin(builder: Builder) {
   Resolver().apply(builder);
   PathLoader({ test: /\.(plist|wasm)$/ }).apply(builder);
   FileLoader([
+    // 文章自己的资源自己管理
+    {
+      test: /^\/posts\/*/,
+      name: getAssetNames('[dir]', isProduction),
+    },
+    // 全局资源需要统一管理
     {
       test: /\.(woff|woff2|ttf|otf)$/,
       name: getAssetNames('fonts', isProduction),
@@ -86,6 +92,7 @@ export async function applyPlugin(builder: Builder) {
       }).apply(builder);
     }
 
+    // 全局样式和脚本资源
     FileLoader([
       {
         test: /\.css$/,

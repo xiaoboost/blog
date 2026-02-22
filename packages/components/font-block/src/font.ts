@@ -1,6 +1,6 @@
 import { RuntimeBuilder as Builder } from '@blog/context/runtime';
 import { FontSerif } from '@blog/styles';
-import { FontBucket, toPinyin } from '@blog/node';
+import { FontBucket, normalize } from '@blog/node';
 import type { AssetData } from '@blog/types';
 import { CustomFontData } from './types';
 import { getFontContentBySrc } from './utils';
@@ -14,22 +14,18 @@ export class CustomFont extends FontBucket implements CustomFontData {
 
   constructor(src: string, post: string, text: string[] = []) {
     const minify = Builder.options.mode === 'production';
-    // 最小化的时候有 hash 值，所以不需要加时间戳
-    const fontFamily = minify ? 'font' : `font-${Date.now()}`;
-    const className = toPinyin(fontFamily);
 
     super({
-      fontSource: src,
-      fontPath: `fonts/${className}.woff2`,
-      cssPath: `styles/${className}.css`,
+      fontSource: normalize(src),
+      fontFile: normalize(`${post}/fonts/font.woff2`),
+      cssFile: normalize(`${post}/styles/font.css`),
       publicPath: Builder.options.publicPath,
       minify,
-      fontFamily,
-      className,
       fallbackFont: FontSerif,
       getFontContent: getFontContentBySrc,
       rename: (asset) => Builder.renameAsset(asset) ?? asset.path,
     });
+
     this.src = src;
     this.post = post;
     this.text = [...text];
@@ -42,6 +38,7 @@ export class CustomFont extends FontBucket implements CustomFontData {
       await this.build();
     }
 
+    debugger;
     return [this.getFont(), this.getCss()];
   }
 }

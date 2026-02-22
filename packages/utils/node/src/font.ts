@@ -1,8 +1,8 @@
 import { Buffer } from 'buffer';
+import { parse } from 'path';
 import fs from 'fs/promises';
 import subsetFont from 'subset-font';
 import type { AssetData } from '@blog/types';
-import CleanCss from 'clean-css';
 import { normalize } from './path';
 import { toPinyin } from './string';
 
@@ -25,18 +25,23 @@ export interface FontBucketBuildOptions {
 
 interface FontBucketBaseOptions extends FontBucketBuildOptions {
   /**
-   * 样式文件路径
+   * CSS 文件路径
+   *
+   * @default '/styles/font.css'
    */
-  cssPath?: string;
+  cssFile?: string;
   /**
-   * 子集文件路径
+   * 字体文件路径
+   *
+   * @default '/fonts/font.woff2'
    */
-  fontPath: string;
+  fontFile?: string;
   /**
    * 字体名称
-   * @description 用于生成 CSS 中的字体名称
+   *
+   * @default 'font.[hash:16]'
    */
-  fontFamily: string;
+  fontFamily?: string;
   /**
    * 样式类名
    * @description 用于生成 CSS 中的样式类名
@@ -46,11 +51,6 @@ interface FontBucketBaseOptions extends FontBucketBuildOptions {
    * 样式回退字体
    */
   fallbackFont?: string;
-  /**
-   * 字体类型
-   * @description 用于指定字体类型，默认为 ttf
-   */
-  fontKind?: 'ttf' | 'otf';
   /**
    * 重命名方法
    */
@@ -99,6 +99,9 @@ export class FontBucket {
 
   private minFont: Buffer | null = null;
 
+  /** 解析出的字体名称 */
+  private resolvedFontName: string | null = null;
+
   /** 解析出的字体地址 */
   private resolvedFontPath: string | null = null;
 
@@ -107,31 +110,56 @@ export class FontBucket {
 
   constructor(options: FontBucketOptions) {
     this.options = { ...options };
-  }
-
-  /** 默认样式文件路径 */
-  private getDefaultCssPath() {
-    return this.options.cssPath ?? './styles/font.css';
+    this.resolvedFontPath = normalize(
+      this.options.publicPath ?? '/',
+      this.options.fontFile ?? '/fonts/font.woff2',
+    );
+    this.resolvedCssPath = normalize(
+      this.options.publicPath ?? '/',
+      this.options.cssFile ?? '/styles/font.css',
+    );
   }
 
   /** 字体文件 URL 路径 */
-  private getFontPath() {
-    return normalize(
-      this.options.publicPath ?? '/',
-      this.resolvedFontPath ?? this.options.fontPath,
-    );
+  private getFontPath(): string {
+    if (!this.resolvedFontPath) {
+      throw new Error('字体文件路径未解析，请先运行 build 方法');
+    }
+
+    return normalize(this.options.publicPath ?? '/', this.resolvedFontPath);
   }
 
   /** 样式文件 URL 路径 */
-  private getCssPath() {
-    return normalize(
-      this.options.publicPath ?? '/',
-      this.resolvedCssPath ?? this.getDefaultCssPath(),
-    );
+  private getCssPath(): string {
+    if (!this.resolvedCssPath) {
+      throw new Error('样式文件路径未解析，请先运行 build 方法');
+    }
+
+    return normalize(this.options.publicPath ?? '/', this.resolvedCssPath);
+  }
+
+  /** 解析出的字体文件名 */
+  private getFontFamily() {
+    return this.resolvedFontName ?? (this.options.fontFamily ?? 'font').replace(/"/g, '');
   }
 
   get isBuilt() {
     return this.minFont !== null && this.cssCode !== null;
+  }
+
+  /**
+   * 字体子集化
+   */
+  private async subsetFont(font: Buffer): Promise<Buffer> {
+    const text = Array.from(this.chars).join('') || ' ';
+    return subsetFont(font, text, {
+      targetFormat: 'woff2',
+      noLayoutClosure: true,
+    });
+  }
+
+  getClassName(): string {
+    return (this.options.className ?? this.getFontFamily()).replace(/[. "]/g, '-');
   }
 
   addText(...texts: string[]) {
@@ -149,70 +177,28 @@ export class FontBucket {
   }
 
   /**
-   * 字体子集化
-   */
-  private async subsetFont(font: Buffer): Promise<Buffer> {
-    const text = Array.from(this.chars).join('') || ' ';
-    return subsetFont(font, text, {
-      targetFormat: 'woff2',
-      noLayoutClosure: true,
-    });
-  }
-
-  /**
    * 获取 @font-face 的 CSS 代码
-   * @param minify 是否压缩 CSS
-   * @returns @font-face 的 CSS 代码
    */
-  getFontFaceCss(minify = false): string {
+  getFontFaceCss(): string {
     if (!this.minFont) {
       throw new Error('字体文件未生成，请先运行 build 方法');
     }
 
-    const { fontFamily } = this.options;
-    const realFontFamily = fontFamily.replace(/"/g, '');
-    const fontFaceCode = `@font-face {
-  font-family: "${realFontFamily}";
-  src: url("${this.getFontPath()}");
-}`;
-
-    if (minify) {
-      const { errors, styles } = new CleanCss().minify(fontFaceCode);
-      if (errors.length > 0) {
-        throw new Error(errors.join('; '));
-      }
-      return styles;
-    }
-
-    return fontFaceCode;
+    return `@font-face{font-family:"${this.getFontFamily()}";src:url("${this.getFontPath()}")format('woff2')}`;
   }
 
   /**
    * 获取 className 的 CSS 代码
-   * @param minify 是否压缩 CSS
-   * @returns className 的 CSS 代码
    */
-  getClassNameCss(minify = false): string {
+  getClassNameCss(): string {
     if (!this.minFont) {
       throw new Error('字体文件未生成，请先运行 build 方法');
     }
 
     const className = this.getClassName();
-    const { fontFamily, fallbackFont } = this.options;
-    const fallback = fallbackFont ?? 'sans-serif';
-    const classNameCode = `.${className} {
-  font-family: "${fontFamily}", ${fallback};
-}`;
-
-    if (minify) {
-      const { errors, styles } = new CleanCss().minify(classNameCode);
-      if (errors.length > 0) {
-        throw new Error(errors.join('; '));
-      }
-      return styles;
-    }
-
-    return classNameCode;
+    const fontFamily = this.getFontFamily();
+    const fallback = this.options.fallbackFont ?? 'sans-serif';
+    return `.${className}{font-family:"${fontFamily}",${fallback}}`;
   }
 
   async build(buildOptions: FontBucketBuildOptions = {}) {
@@ -228,30 +214,40 @@ export class FontBucket {
     } else {
       throw new Error('FontBucket: 需要提供 fontSource 或 fontContent 至少一个');
     }
-    const minify = options.minify !== false;
 
-    if (minify) {
+    const inputFontPath = normalize(
+      this.options.publicPath ?? '/',
+      options.fontFile ?? '/fonts/font.woff2',
+    );
+    const inputCssPath = normalize(
+      this.options.publicPath ?? '/',
+      options.cssFile ?? '/styles/font.css',
+    );
+
+    if (options.minify !== false) {
       this.minFont = await this.subsetFont(fontBuffer);
     } else {
       this.minFont = fontBuffer;
     }
 
     this.resolvedFontPath = options.rename
-      ? options.rename({ path: options.fontPath, content: this.minFont })
-      : options.fontPath;
+      ? options.rename({ path: inputFontPath, content: this.minFont })
+      : inputFontPath;
+
+    // 外部没有指定字体名称，则使用文件名作为字体名称
+    this.resolvedFontName = toPinyin(
+      options.fontFamily ? options.fontFamily.replace(/"/g, '') : parse(this.resolvedFontPath).name,
+    );
 
     // 组合 font-face 和 className 的 CSS
-    const fontFaceCss = this.getFontFaceCss(minify);
-    const classNameCss = this.getClassNameCss(minify);
-    const cssPath = this.getDefaultCssPath();
+    const fontFaceCss = this.getFontFaceCss();
+    const classNameCss = this.getClassNameCss();
 
-    this.cssCode = minify ? `${fontFaceCss}${classNameCss}` : `${fontFaceCss}\n\n${classNameCss}`;
+    this.cssCode = `${fontFaceCss}${classNameCss}`;
+    debugger;
     this.resolvedCssPath = options.rename
-      ? options.rename({
-          path: cssPath,
-          content: Buffer.from(this.cssCode),
-        })
-      : cssPath;
+      ? options.rename({ path: inputCssPath, content: Buffer.from(this.cssCode) })
+      : inputCssPath;
   }
 
   getFont(): AssetData {
@@ -274,13 +270,5 @@ export class FontBucket {
       path: this.getCssPath(),
       content: Buffer.from(this.cssCode),
     };
-  }
-
-  getClassName(): string {
-    return this.options.className ?? toPinyin(this.options.fontFamily);
-  }
-
-  getFontFamily(): string {
-    return this.options.fontFamily;
   }
 }
