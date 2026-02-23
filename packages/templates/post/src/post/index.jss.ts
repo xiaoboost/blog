@@ -88,6 +88,7 @@ export default createStyles({
       })),
       ...createHeadStyles('& ', (level) => ({
         fontFamily: level === 1 ? FirstTitleFontFamily : SecondTitleFontFamily,
+        textShadow: level === 1 ? 'none' : '0.05px 0 0 currentColor',
         fontSize: `${toRound(1.5 - 0.15 * (level - 1))}em`,
         marginTop: `${toRound(1.2 - 0.1 * (level - 1))}em`,
         marginBottom: `${toRound(0.9 - 0.05 * (level - 1))}em`,

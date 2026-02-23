@@ -34,7 +34,31 @@ function getContext(node: Mdx.Heading | Mdx.PhrasingContent): string {
   }
 }
 
-export function createNavFromAst(ast: Mdx.Root, _: number): NavTitleData[] {
+export function getNavList(ast: Mdx.Root) {
+  const list: NavTitleData[] = [];
+
+  for (let i = 0; i < ast.children.length; i++) {
+    const token = ast.children[i];
+
+    if (token.type !== 'heading') {
+      continue;
+    }
+
+    const content = getContext(token);
+    const level = token.depth;
+
+    list.push({
+      content,
+      level,
+      // 占位，无用字段
+      hash: '',
+    });
+  }
+
+  return list;
+}
+
+function createNavFromAst(ast: Mdx.Root, _: number): NavTitleData[] {
   const root: NavTitleData = {
     content: 'root',
     hash: '',
@@ -103,16 +127,6 @@ export function createNavFromAst(ast: Mdx.Root, _: number): NavTitleData[] {
   }
 
   return root.children!;
-}
-
-export function flattenNavTitles(titles: NavTitleData[]): NavTitleData[] {
-  const result: NavTitleData[] = [];
-  function visit(node: NavTitleData) {
-    result.push(node);
-    node.children?.forEach(visit);
-  }
-  titles.forEach(visit);
-  return result;
 }
 
 function NavTitle({ titles }: NavTitleProps) {

@@ -33,6 +33,7 @@ export default createStyles({
         '& a': {
           ...PostTitleStyle,
           fontSize: 16,
+          lineHeight: 1,
         },
         '& time': {
           ...PostSubTitleStyle,
