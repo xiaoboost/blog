@@ -57,14 +57,20 @@ forEach((runtime) => {
       return;
     }
 
-    // 添加 CSS 资源
-    post.utils.addAssetNames(cssPath);
-    Builder.emitAsset({ path: cssPath, content: cssBuffer });
-    // 添加字体资源
-    fonts.forEach((font) => {
-      const fontAsset = font.getFont();
-      post.utils.addAssetNames(fontAsset.path);
-      Builder.emitAsset(fontAsset);
+    // 所有资源
+    const assets = [
+      {
+        path: cssPath,
+        content: cssBuffer,
+      },
+      ...fonts.map((font) => font.getFont()),
+    ];
+
+    assets.forEach((asset) => {
+      // 资源添加到输出
+      Builder.emitAsset({ path: asset.path, content: asset.content });
+      // 当前资源添加到依赖
+      post.utils.addAssetNames(asset.path);
     });
   });
 });
