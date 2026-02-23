@@ -827,6 +827,9 @@ importers:
       '@blog/node':
         specifier: workspace:*
         version: link:../../utils/node
+      '@blog/parser':
+        specifier: workspace:*
+        version: link:../../builder/parser
       '@blog/shared':
         specifier: workspace:*
         version: link:../../utils/shared
