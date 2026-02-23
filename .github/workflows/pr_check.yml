@@ -78,6 +78,8 @@ jobs:
     steps:
       - name: Checkout Commit
         uses: actions/checkout@v4
+        with:
+          lfs: true
 
       - name: Setup Environment
         uses: './.github/actions/setup-env'
@@ -103,7 +105,9 @@ jobs:
     steps:
       - name: Checkout Commit
         uses: actions/checkout@v4
-      
+        with:
+          lfs: true
+
       - name: Update Env File
         run: |
           echo 'ENV_OUTPUT=${{ env.intercepter_outFile }}' >> .env
