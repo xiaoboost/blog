@@ -67,7 +67,7 @@ export default createStyles({
       })),
     },
     '& $postHeaderTitle': {
-      fontFamily: FirstTitleFontFamily,
+      fontFamily: `${FirstTitleFontFamily},${SecondTitleFontFamily}`,
       color: Black.toString(),
       fontSize: 28,
       margin: 0,
@@ -87,7 +87,7 @@ export default createStyles({
         padding: `16px ${width}px`,
       })),
       ...createHeadStyles('& ', (level) => ({
-        fontFamily: level === 1 ? FirstTitleFontFamily : SecondTitleFontFamily,
+        fontFamily: `${level === 1 ? FirstTitleFontFamily : SecondTitleFontFamily},${FontDefault}`,
         textShadow: level === 1 ? 'none' : '0.05px 0 0 currentColor',
         fontSize: `${toRound(1.5 - 0.15 * (level - 1))}em`,
         marginTop: `${toRound(1.2 - 0.1 * (level - 1))}em`,
