@@ -8,10 +8,10 @@
       "types": "./src/index.ts",
       "require": "./dist/index.js"
     },
-    "./constant": {
-      "import": "./src/constant.ts",
-      "types": "./src/constant.ts",
-      "require": "./dist/constant.js"
+    "./*": {
+      "import": ["./src/*", "./src/*.ts"],
+      "types": ["./src/*", "./src/*.ts"],
+      "require": ["./dist/*", "./dist/*.js"]
     }
   },
   "scripts": {

@@ -6,7 +6,7 @@ import { normalizeUrl } from '@blog/node';
 import { Tags } from '../../components/icons';
 import { Layout, LayoutProps } from '../../components/layout';
 import { Pagination, PaginationProps } from '../../components/pagination';
-import { ListItemTitleFontBucket } from '../../utils/title';
+import { ListItemTitleFontBucket } from '../../constant/title';
 
 import styles from './index.jss';
 

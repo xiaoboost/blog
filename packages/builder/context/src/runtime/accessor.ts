@@ -5,8 +5,8 @@ import { getGlobalContext, GlobalKey } from './constant';
 
 /** 缓存访问器 */
 export function getAccessor<T = any>(name: string): Accessor<T | undefined>;
-export function getAccessor<T = any>(name: string, defaultValue: T): Accessor<T>;
 export function getAccessor<T = any>(name: string, defaultValue: () => T): Accessor<T>;
+export function getAccessor<T = any>(name: string, defaultValue: T): Accessor<T>;
 export function getAccessor<T = any>(name: string, defaultValue?: T | (() => T)): Accessor<T> {
   const key = `var::${name}`;
   const memory = getGlobalContext()[GlobalKey.Memory] as Memory;

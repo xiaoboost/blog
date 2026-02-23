@@ -8,7 +8,7 @@ import {
   FontDefault,
   FontSerif,
 } from '@blog/styles';
-import { ListItemTitleFontFamily } from '../../utils/font';
+import { ListItemTitleFontFamily } from '../../constant/font';
 
 export const PostTitleStyle = {
   color: Black.toString(),

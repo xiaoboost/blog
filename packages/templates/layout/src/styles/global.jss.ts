@@ -56,7 +56,7 @@ const global = createStyles({
     body: {
       display: 'flex',
       flexDirection: 'column',
-      backgroundImage: `url("../assets/image/bg.svg")`,
+      backgroundImage: `url("../assets/images/bg.svg")`,
 
       // 禁用 body 的滚动条
       overflow: '-moz-scrollbars-none',

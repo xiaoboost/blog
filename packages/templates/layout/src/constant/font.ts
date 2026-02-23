@@ -6,5 +6,5 @@ export const ListTitleFontFamily = `list-title`;
 export const ListItemTitleFontFamily = `list-item`;
 /** 获取字体路径 */
 export const getFontPath = (name: string, subName?: string) => {
-  return subName ? `../assets/font/${name}/${name}-${subName}` : `../assets/font/${name}/${name}`;
+  return subName ? `../assets/fonts/${name}/${name}-${subName}` : `../assets/fonts/${name}/${name}`;
 };

@@ -3,7 +3,7 @@ import React from 'react';
 import { normalizeUrl } from '@blog/node';
 import { stringifyClass } from '@xiao-ai/utils';
 import { isPreBuild } from '@blog/context/runtime';
-import { SiteTitleFontBucket } from '../../utils/title';
+import { SiteTitleFontBucket } from '../../constant/title';
 
 import styles from './index.jss';
 

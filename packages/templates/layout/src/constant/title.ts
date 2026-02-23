@@ -1,8 +1,8 @@
 import { FontBucket } from '@blog/node';
+import ListTitleFontFile from '@blog/styles/fonts/SourceHanSerif/SourceHanSerifSC-Bold.otf?raw';
+import ListItemTitleFontFile from '@blog/styles/fonts/SourceHanSerif/SourceHanSerifSC-SemiBold.otf?raw';
+import SiteTitleFontFile from '../assets/fonts/dancing/dancing.ttf?raw';
 import { SiteTitleFontFamily, ListTitleFontFamily, ListItemTitleFontFamily } from './font';
-import SiteTitleFontFile from '../assets/font/dancing/dancing.ttf?raw';
-import ListTitleFontFile from '../assets/font/SourceHanSerif/SourceHanSerifSC-Bold.otf?raw';
-import ListItemTitleFontFile from '../assets/font/SourceHanSerif/SourceHanSerifSC-SemiBold.otf?raw';
 
 /**
  * 网站标题字体

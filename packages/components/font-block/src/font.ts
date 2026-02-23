@@ -38,7 +38,6 @@ export class CustomFont extends FontBucket implements CustomFontData {
       await this.build();
     }
 
-    debugger;
     return [this.getFont(), this.getCss()];
   }
 }
