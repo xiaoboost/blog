@@ -12,7 +12,7 @@ import { ListItemTitleFontFamily } from '../../constant/font';
 
 export const PostTitleStyle = {
   color: Black.toString(),
-  lineHeight: 1,
+  textShadow: '0.05px 0 0 currentColor',
   fontFamily: `${ListItemTitleFontFamily}, ${FontSerif}`,
 };
 
@@ -61,7 +61,8 @@ export default createStyles({
 
       '& a': {
         ...PostTitleStyle,
-        fontSize: 18,
+        fontSize: 19,
+        lineHeight: 1.35,
       },
       '& time': {
         ...PostSubTitleStyle,

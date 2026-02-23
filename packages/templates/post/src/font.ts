@@ -3,7 +3,7 @@ import { FontBucket, normalize } from '@blog/node';
 import FirstTitleFontFile from '@blog/styles/fonts/SourceHanSerif/SourceHanSerifSC-Bold.otf?raw';
 import SecondTitleFontFile from '@blog/styles/fonts/SourceHanSerif/SourceHanSerifSC-SemiBold.otf?raw';
 import { PostTemplate, FirstTitleFontFamily, SecondTitleFontFamily } from './constant';
-import { createNavFromAst, flattenNavTitles } from './to-content';
+import { getNavList } from './to-content';
 
 forEach((runtime) => {
   runtime.hooks.beforeEachPost.tapPromise(PostTemplate, async (post) => {
@@ -30,7 +30,7 @@ forEach((runtime) => {
           minify,
         }),
     ).get();
-    const titles = flattenNavTitles(createNavFromAst(post.data.ast, 6));
+    const titles = getNavList(post.data.ast);
 
     firstTitleFontBucket.addText(post.data.title);
 
