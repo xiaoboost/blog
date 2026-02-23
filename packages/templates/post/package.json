@@ -23,6 +23,7 @@
     "@blog/mdx-code-block-typescript": "workspace:*",
     "@blog/mdx-text-gloss": "workspace:*",
     "@blog/node": "workspace:*",
+    "@blog/parser": "workspace:*",
     "@blog/shared": "workspace:*",
     "@blog/styles": "workspace:*",
     "@blog/template-layout": "workspace:*",

@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { visit } from '@blog/parser/walk';
 import { stringifyClass } from '@xiao-ai/utils';
 import { Mdx } from '@blog/types';
 import { Circle } from '@blog/icons';
@@ -37,23 +38,16 @@ function getContext(node: Mdx.Heading | Mdx.PhrasingContent): string {
 export function getNavList(ast: Mdx.Root) {
   const list: NavTitleData[] = [];
 
-  for (let i = 0; i < ast.children.length; i++) {
-    const token = ast.children[i];
-
-    if (token.type !== 'heading') {
-      continue;
+  visit(ast, (node) => {
+    if (node.type === 'heading') {
+      list.push({
+        content: getContext(node),
+        level: node.depth,
+        // 占位，无用字段
+        hash: '',
+      });
     }
-
-    const content = getContext(token);
-    const level = token.depth;
-
-    list.push({
-      content,
-      level,
-      // 占位，无用字段
-      hash: '',
-    });
-  }
+  });
 
   return list;
 }
@@ -68,11 +62,9 @@ function createNavFromAst(ast: Mdx.Root, _: number): NavTitleData[] {
 
   let current = root;
 
-  for (let i = 0; i < ast.children.length; i++) {
-    const token = ast.children[i];
-
+  visit(ast, (token) => {
     if (token.type !== 'heading' || token.depth > levelLimit) {
-      continue;
+      return;
     }
 
     const content = getContext(token);
@@ -124,7 +116,7 @@ function createNavFromAst(ast: Mdx.Root, _: number): NavTitleData[] {
       parent.children?.push(now);
       current = now;
     }
-  }
+  });
 
   return root.children!;
 }

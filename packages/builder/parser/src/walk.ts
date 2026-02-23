@@ -46,3 +46,14 @@ export function getJsxNodesByTag(node: Mdx.Syntax, tag: string) {
 
   return nodes;
 }
+
+export function visit(node: Mdx.Syntax, visitor: (node: Mdx.Syntax) => void) {
+  visitor(node);
+
+  // 迭代子节点
+  if ('children' in node && Array.isArray(node.children)) {
+    for (const child of node.children ?? []) {
+      visit(child, visitor);
+    }
+  }
+}
