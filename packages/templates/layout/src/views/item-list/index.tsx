@@ -3,7 +3,7 @@ import { normalizeUrl } from '@blog/node';
 import { isPreBuild } from '@blog/context/runtime';
 import { Layout, LayoutProps } from '../../components/layout';
 import { Pagination, PaginationProps } from '../../components/pagination';
-import { ListTitleFontBucket, ListItemTitleFontBucket } from '../../utils/title';
+import { ListTitleFontBucket, ListItemTitleFontBucket } from '../../constant/title';
 import styles from './index.jss';
 
 interface ItemData {

@@ -10,7 +10,7 @@ import { Footer } from '../footer';
 import { Article, ArticleProps } from '../article';
 import { GotoTop } from '../goto-top';
 
-import favicon from '../../assets/image/favicon.ico';
+import favicon from '../../assets/images/favicon.ico';
 
 export interface LayoutProps extends HeaderProps, ArticleProps {
   /** 网站标题 */

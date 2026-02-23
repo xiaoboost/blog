@@ -20,6 +20,7 @@ import {
 } from '@blog/styles';
 
 import { toRound } from '@blog/shared';
+import { FirstTitleFontFamily, SecondTitleFontFamily } from '../constant';
 
 const indent = 24;
 const smallIndent = 14;
@@ -66,6 +67,7 @@ export default createStyles({
       })),
     },
     '& $postHeaderTitle': {
+      fontFamily: FirstTitleFontFamily,
       color: Black.toString(),
       fontSize: 28,
       margin: 0,
@@ -85,11 +87,11 @@ export default createStyles({
         padding: `16px ${width}px`,
       })),
       ...createHeadStyles('& ', (level) => ({
+        fontFamily: level === 1 ? FirstTitleFontFamily : SecondTitleFontFamily,
         fontSize: `${toRound(1.5 - 0.15 * (level - 1))}em`,
         marginTop: `${toRound(1.2 - 0.1 * (level - 1))}em`,
         marginBottom: `${toRound(0.9 - 0.05 * (level - 1))}em`,
         lineHeight: '1.3',
-        fontWeight: level === 1 ? '700' : '600',
       })),
       [getHeadSelector('& ')]: {
         position: 'relative',

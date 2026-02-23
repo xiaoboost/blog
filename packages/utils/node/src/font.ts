@@ -147,6 +147,10 @@ export class FontBucket {
     return this.minFont !== null && this.cssCode !== null;
   }
 
+  get isEmpty() {
+    return this.chars.size === 0;
+  }
+
   /**
    * 字体子集化
    */
@@ -203,6 +207,8 @@ export class FontBucket {
 
   async build(buildOptions: FontBucketBuildOptions = {}) {
     const options = { ...this.options, ...buildOptions };
+    const { minify } = options;
+
     let fontBuffer: Buffer;
 
     if ('fontContent' in options && options.fontContent) {
@@ -217,14 +223,14 @@ export class FontBucket {
 
     const inputFontPath = normalize(
       this.options.publicPath ?? '/',
-      options.fontFile ?? '/fonts/font.woff2',
+      options.fontFile ?? (minify ? '/fonts/font.woff2' : `/fonts/font-${Date.now()}.woff2`),
     );
     const inputCssPath = normalize(
       this.options.publicPath ?? '/',
-      options.cssFile ?? '/styles/font.css',
+      options.cssFile ?? (minify ? '/styles/font.css' : `/styles/font-${Date.now()}.css`),
     );
 
-    if (options.minify !== false) {
+    if (minify !== false) {
       this.minFont = await this.subsetFont(fontBuffer);
     } else {
       this.minFont = fontBuffer;
@@ -244,7 +250,6 @@ export class FontBucket {
     const classNameCss = this.getClassNameCss();
 
     this.cssCode = `${fontFaceCss}${classNameCss}`;
-    debugger;
     this.resolvedCssPath = options.rename
       ? options.rename({ path: inputCssPath, content: Buffer.from(this.cssCode) })
       : inputCssPath;

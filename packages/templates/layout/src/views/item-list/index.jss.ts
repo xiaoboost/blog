@@ -1,6 +1,6 @@
 import { createStyles, White, Gray, MainShadow, FontSerif } from '@blog/styles';
 import { PostTitleStyle, PostSubTitleStyle } from '../main-index/index.jss';
-import { ListTitleFontFamily } from '../../utils/font';
+import { ListTitleFontFamily } from '../../constant/font';
 
 export default createStyles({
   itemListItem: {},

@@ -34,7 +34,7 @@ function getContext(node: Mdx.Heading | Mdx.PhrasingContent): string {
   }
 }
 
-function createNavFromAst(ast: Mdx.Root, _: number): NavTitleData[] {
+export function createNavFromAst(ast: Mdx.Root, _: number): NavTitleData[] {
   const root: NavTitleData = {
     content: 'root',
     hash: '',
@@ -103,6 +103,16 @@ function createNavFromAst(ast: Mdx.Root, _: number): NavTitleData[] {
   }
 
   return root.children!;
+}
+
+export function flattenNavTitles(titles: NavTitleData[]): NavTitleData[] {
+  const result: NavTitleData[] = [];
+  function visit(node: NavTitleData) {
+    result.push(node);
+    node.children?.forEach(visit);
+  }
+  titles.forEach(visit);
+  return result;
 }
 
 function NavTitle({ titles }: NavTitleProps) {

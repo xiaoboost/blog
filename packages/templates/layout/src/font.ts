@@ -1,6 +1,10 @@
-import { forEach, RuntimeBuilder as Builder, replaceAsset } from '@blog/context/runtime';
 import type { AssetData } from '@blog/types';
-import { SiteTitleFontBucket, ListTitleFontBucket, ListItemTitleFontBucket } from './utils/title';
+import { forEach, RuntimeBuilder as Builder, replaceAsset } from '@blog/context/runtime';
+import {
+  SiteTitleFontBucket,
+  ListTitleFontBucket,
+  ListItemTitleFontBucket,
+} from './constant/title';
 import exportAssets from './layout.script';
 
 forEach((runtime) => {

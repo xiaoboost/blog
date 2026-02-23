@@ -8,7 +8,7 @@ import {
   mainWidth,
   FontSerif,
 } from '@blog/styles';
-import { SiteTitleFontFamily } from '../../utils/font';
+import { SiteTitleFontFamily } from '../../constant/font';
 
 export default createStyles({
   mainTitle: {},
