@@ -14,6 +14,10 @@ export function run() {
 
       await builder.init();
       await builder.build();
+
+      if (builder.getErrors().length > 0) {
+        process.exit(1);
+      }
     })
     .command(['watch'], '监听模式', watchOptions, async (argv) => {
       const builder = new Builder({
