@@ -1,18 +1,7 @@
 import { PostData, Mdx, EsTree } from '@blog/types';
 import { Fixer, isUrl } from '@blog/shared';
 import { encodeImageTemplate } from './template';
-
-interface VisitNode {
-  type: string;
-}
-
-function visit(root: Mdx.Root, cb: (node: VisitNode) => void) {
-  cb(root as any);
-
-  for (const no of root.children ?? []) {
-    visit(no as any, cb);
-  }
-}
+import { visit } from './walk';
 
 function getImportComponentNode(ast: Mdx.Root) {
   const importSet = new Set<string>();

@@ -17,6 +17,7 @@
     "@blog/mdx-font-block": "workspace:*",
     "@blog/mdx-text-gloss": "workspace:*",
     "@blog/template-post": "workspace:*",
+    "@blog/styles": "workspace:*",
     "react": "18.3.1"
   },
   "devDependencies": {

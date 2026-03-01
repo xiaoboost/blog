@@ -45,6 +45,18 @@ export interface FontBlockProps {
    */
   paragraphGutter: number;
   /**
+   * 行高
+   *
+   * @default undefined
+   */
+  lineHeight?: number;
+  /**
+   * 外边距
+   *
+   * @default undefined
+   */
+  margin?: string;
+  /**
    * 是否使用首行缩进
    *
    * @description 单位`em`
@@ -77,6 +89,8 @@ export function FontBlock(props: FontBlockProps) {
     indent = 1,
     fontSize = 24,
     paragraphGutter = 0,
+    lineHeight,
+    margin,
   } = props;
   const lines: string[] = children.replace(/\r/g, '').split('\n');
 
@@ -95,12 +109,14 @@ export function FontBlock(props: FontBlockProps) {
       style={{
         textAlign: align,
         fontSize,
+        margin,
       }}
     >
       {lines.map((line, i, arr) => (
         <p
           key={i}
           style={{
+            lineHeight,
             marginBottom: paragraphGutter > 0 ? (i === arr.length - 1 ? 0 : paragraphGutter) : 0,
             textIndent: indent ? `${indent}em` : undefined,
           }}

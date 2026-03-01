@@ -1,8 +1,8 @@
 import { dirname, isAbsolute, join, basename } from 'path';
 import { normalize, isRootDirectory } from '@blog/node';
 import { readFile } from 'fs/promises';
-import { getAccessor } from '@blog/context/runtime';
-import { getChildrenContent, getAttribute } from '@blog/parser/walk';
+import { getAccessor, RuntimeBuilder as Builder } from '@blog/context/runtime';
+import { getChildrenContent, getAttribute, visit } from '@blog/parser/walk';
 import type { PostExportData } from '@blog/types';
 import type { CustomFontData } from './types';
 import type { FontBlockProps } from './index';
@@ -37,6 +37,10 @@ function resolveFontPath(src: string, postPath: string) {
   function getFontFilePath(input: string, file: string) {
     if (input.startsWith('.')) {
       return join(dirname(file), input);
+    } else if (input.startsWith('@blog/')) {
+      return Builder.resolve(input, {
+        importer: file,
+      }).path;
     } else if (isAbsolute(input)) {
       return input;
     } else {
@@ -60,8 +64,7 @@ export async function getFontContentBySrc(src: string) {
 
 /** 获取自定义字体 */
 export function getCustomFontByData(data: CustomFontData) {
-  const src = resolveFontPath(data.src, data.post);
-  const key = getCustomFontKey({ ...data, src });
+  const key = getCustomFontKey({ ...data, src: data.originSrc });
 
   if (fontCache.has(key)) {
     return fontCache.get(key)!;
@@ -74,11 +77,10 @@ export function getCustomFontByData(data: CustomFontData) {
 
 /** 从渲染属性获得自定义字体 */
 export function getCustomFontByProps(props: FontBlockProps) {
-  const src = normalize(props.src).replace(/(\.+\/)+/, '');
   const text = props.children.trim();
 
-  for (const font of fontCache.values()) {
-    if (font.src.includes(src) && font.text.includes(text)) {
+  for (const [key, font] of fontCache.entries()) {
+    if (key.includes(props.src) && font.text.includes(text)) {
       return font;
     }
   }
@@ -88,9 +90,9 @@ export function getCustomFontByProps(props: FontBlockProps) {
 export function getCustomTextByPost({ data: post }: PostExportData) {
   const result: CustomFontData[] = [];
 
-  for (const node of post.ast.children) {
+  visit(post.ast, (node) => {
     if (node.type !== 'mdxJsxFlowElement' || node.name !== 'FontBlock') {
-      continue;
+      return;
     }
 
     const text = getChildrenContent(node);
@@ -108,12 +110,13 @@ export function getCustomTextByPost({ data: post }: PostExportData) {
       oldFontData.text.push(text);
     } else {
       result.push({
+        originSrc: src,
         src: fontPath,
         post: post.pathname,
         text: [text],
       });
     }
-  }
+  });
 
   return result;
 }
