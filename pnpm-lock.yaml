@@ -735,6 +735,9 @@ importers:
       '@blog/mdx-text-gloss':
         specifier: workspace:*
         version: link:../components/text-gloss
+      '@blog/styles':
+        specifier: workspace:*
+        version: link:../utils/styles
       '@blog/template-post':
         specifier: workspace:*
         version: link:../templates/post
