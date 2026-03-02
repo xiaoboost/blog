@@ -12,6 +12,7 @@ import {
   YellowLight,
   YellowLighter,
   FontSerif,
+  FontDefault,
   MainShadow,
   createMediaStyles,
   createHeadStyles,
@@ -66,7 +67,7 @@ export default createStyles({
       })),
     },
     '& $postHeaderTitle': {
-      fontFamily: `${FirstTitleFontFamily},${SecondTitleFontFamily}`,
+      fontFamily: `${FirstTitleFontFamily},${FontSerif}`,
       color: Black.toString(),
       fontSize: 28,
       margin: 0,
@@ -78,7 +79,7 @@ export default createStyles({
       color: BlackLighter.toString(),
       fontSize: 13,
       fontWeight: 'normal',
-      fontFamily: FontSerif,
+      fontFamily: FontDefault,
     },
     '& $postArticle': {
       fontSize: 16,
@@ -245,7 +246,7 @@ export default createStyles({
           width: 32,
           height: 32,
 
-          ...createMediaStyles(-4, 12, (offset) => ({
+          ...createMediaStyles(-4, 0, (offset) => ({
             left: `${offset}px`,
           })),
         },
