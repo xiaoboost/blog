@@ -1,3 +1,3 @@
-# @blog/mdx-blur-reveal
+# @blog/mdx-text-gloss
 
-模糊遮盖组件
+文字遮罩组件

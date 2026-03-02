@@ -1,3 +1,3 @@
-# @blog/mdx-katex
+# @blog/component-scrollbar
 
-数学公式组件
+滚动条组件
