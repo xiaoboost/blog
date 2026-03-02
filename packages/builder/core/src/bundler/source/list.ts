@@ -33,5 +33,6 @@ export function renderListPage({ index, pathname, posts, count }: PostListData) 
     next: isStart ? undefined : getIndexUrlPath(index - 1),
     styles: utils.getStyleNames(),
     scripts: utils.getScriptNames(),
+    preloadAssets: utils.getPreloadAssets(),
   });
 }

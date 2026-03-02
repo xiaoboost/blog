@@ -4,7 +4,7 @@ import type { PostExportDataWithComponent, PostsExportType } from '@blog/types';
 import { normalize, normalizeUrl } from '@blog/node';
 import { Post as PostRender } from '@blog/template-post';
 import { utils as layoutUtils } from '@blog/template-layout';
-import { RuntimeBuilder as Builder } from '@blog/context/runtime';
+import { RuntimeBuilder as Builder, isPreBuild } from '@blog/context/runtime';
 
 import { createHtml } from './react';
 import { site } from '../../constant';
@@ -42,6 +42,10 @@ export function renderSpacePost(posts: PostsExportType) {
 }
 
 export function renderPost(post: PostExportDataWithComponent) {
+  if (!isPreBuild()) {
+    debugger;
+  }
+
   const html = createPost({
     pageTitle: post.data.title,
     siteTitle: site.title,
@@ -52,6 +56,7 @@ export function renderPost(post: PostExportDataWithComponent) {
     hmr: Builder.options.hmr,
     styles: layoutUtils.getStyleNames().concat(post.utils.getStyleNames()),
     scripts: layoutUtils.getScriptNames().concat(post.utils.getScriptNames()),
+    preloadAssets: layoutUtils.getPreloadAssets().concat(post.utils.getPreloadAssets()),
     post,
   });
 

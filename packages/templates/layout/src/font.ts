@@ -52,13 +52,13 @@ forEach((runtime) => {
       content: newLayoutStyleBuffer,
       path: newLayoutStylePath,
     };
+    const fontAssets = fonts.map((font) => font.getFont());
 
     // 替换导出资源
     replaceAsset(exportAssets, layoutStyles.path, newLayoutStylePath);
-
     // 返回新的资源列表
     return assets
       .filter((asset) => asset.path !== layoutStyles.path)
-      .concat(newLayoutStyleFile, ...fonts.map((font) => font.getFont()));
+      .concat(newLayoutStyleFile, ...fontAssets);
   });
 });
