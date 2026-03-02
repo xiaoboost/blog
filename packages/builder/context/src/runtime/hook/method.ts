@@ -27,6 +27,7 @@ export function defineUtils(assets: string[] = []): TemplateUtils {
       : val.slice();
   };
   const addAssetNames = (...newAssets: string[]) => assets.push(...newAssets);
+  const insertAssetNames = (...newAssets: string[]) => assets.unshift(...newAssets);
   const replaceAssetName = (oldAsset: string, newAsset: string) => {
     const index = assets.indexOf(oldAsset);
     if (index !== -1) {
@@ -37,6 +38,7 @@ export function defineUtils(assets: string[] = []): TemplateUtils {
   return {
     getAssetNames,
     addAssetNames,
+    insertAssetNames,
     replaceAssetName,
     getScriptNames: () => getAssetNames().filter((item) => item.endsWith('.js')),
     getStyleNames: () => getAssetNames().filter((item) => item.endsWith('.css')),
@@ -49,4 +51,9 @@ export function replaceAsset(assets: string[], oldAsset: string, newAsset: strin
   if (index !== -1) {
     assets[index] = newAsset;
   }
+}
+
+/** 插入资源 */
+export function insertAsset(assets: string[], index: number, asset: string): void {
+  assets.splice(index, 0, asset);
 }
