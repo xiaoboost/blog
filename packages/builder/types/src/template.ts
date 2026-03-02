@@ -7,8 +7,10 @@ export interface RuntimeData {
 
 /** 模板辅助函数 */
 export interface TemplateUtils {
-  /** 追加资源 */
+  /** 追加到后面 */
   addAssetNames(...assets: string[]): void;
+  /** 插入到最前面 */
+  insertAssetNames(...assets: string[]): void;
   /** 替换资源 */
   replaceAssetName(oldAsset: string, newAsset: string): void;
   /** 获取所有资源 */

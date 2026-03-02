@@ -11,7 +11,6 @@ import {
   BlackExtraLight,
   YellowLight,
   YellowLighter,
-  FontDefault,
   FontSerif,
   MainShadow,
   createMediaStyles,
@@ -79,7 +78,7 @@ export default createStyles({
       color: BlackLighter.toString(),
       fontSize: 13,
       fontWeight: 'normal',
-      fontFamily: FontDefault,
+      fontFamily: FontSerif,
     },
     '& $postArticle': {
       fontSize: 16,
@@ -87,7 +86,7 @@ export default createStyles({
         padding: `16px ${width}px`,
       })),
       ...createHeadStyles('& ', (level) => ({
-        fontFamily: `${level === 1 ? FirstTitleFontFamily : SecondTitleFontFamily},${FontDefault}`,
+        fontFamily: `${level === 1 ? FirstTitleFontFamily : SecondTitleFontFamily},${FontSerif}`,
         textShadow: level === 1 ? 'none' : '0.05px 0 0 currentColor',
         fontSize: `${toRound(1.5 - 0.15 * (level - 1))}em`,
         marginTop: `${toRound(1.2 - 0.1 * (level - 1))}em`,

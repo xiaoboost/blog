@@ -21,6 +21,7 @@
     "@blog/mdx-blur-reveal": "workspace:*",
     "@blog/mdx-code-block-normal": "workspace:*",
     "@blog/mdx-code-block-typescript": "workspace:*",
+    "@blog/mdx-font-block": "workspace:*",
     "@blog/mdx-text-gloss": "workspace:*",
     "@blog/node": "workspace:*",
     "@blog/parser": "workspace:*",
