@@ -47,6 +47,7 @@ forEach((runtime) => {
 
     const cssFile = fonts.map((font) => font.getFontFaceCss()).join('');
     const cssBuffer = Buffer.from(cssFile);
+    const fontAssets = fonts.map((font) => font.getFont());
     const cssPath = Builder.renameAsset({
       path: normalize(`${post.data.pathname}/styles/heading.css`),
       content: cssBuffer,
@@ -57,20 +58,23 @@ forEach((runtime) => {
       return;
     }
 
-    // 所有资源
-    const assets = [
-      {
-        path: cssPath,
-        content: cssBuffer,
-      },
-      ...fonts.map((font) => font.getFont()),
-    ];
+    // CSS 资源
+    const cssAsset = {
+      path: cssPath,
+      content: cssBuffer,
+    };
 
-    assets.forEach((asset) => {
-      // 资源添加到输出
-      Builder.emitAsset({ path: asset.path, content: asset.content });
-      // 当前资源添加到依赖
-      post.utils.addAssetNames(asset.path);
-    });
+    // 资源添加到输出
+    Builder.emitAsset(cssAsset, ...fontAssets);
+    // 当前文章的样式资源
+    post.utils.addAssetNames(cssAsset.path);
+    // 字体资源添加到预加载
+    post.utils.addPreloadAssets(
+      ...fontAssets.map((asset) => ({
+        href: asset.path,
+        as: 'font' as const,
+        type: 'font/woff2',
+      })),
+    );
   });
 });

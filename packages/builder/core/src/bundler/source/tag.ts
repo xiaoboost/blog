@@ -88,6 +88,7 @@ export function renderTagListPage({ index, pathname, data, count, listTitle }: U
     next: isStart ? undefined : getTagListUrlPath(index - 1),
     styles: utils.getStyleNames(),
     scripts: utils.getScriptNames(),
+    preloadAssets: utils.getPreloadAssets(),
   });
 }
 
@@ -108,5 +109,6 @@ export function renderTagPostListPage({ index, pathname, posts, count, listTitle
     next: isStart ? undefined : getTagPostListUrlPath(listTitle, index - 1),
     styles: utils.getStyleNames(),
     scripts: utils.getScriptNames(),
+    preloadAssets: utils.getPreloadAssets(),
   });
 }

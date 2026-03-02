@@ -85,6 +85,7 @@ export function renderYearListPage({ index, pathname, data, count, listTitle }: 
     next: isStart ? undefined : getYearListUrlPath(index - 1),
     styles: utils.getStyleNames(),
     scripts: utils.getScriptNames(),
+    preloadAssets: utils.getPreloadAssets(),
   });
 }
 
@@ -105,5 +106,6 @@ export function renderYearPostListPage({ index, pathname, posts, count, listTitl
     next: isStart ? undefined : getYearListUrlPath(index - 1),
     styles: utils.getStyleNames(),
     scripts: utils.getScriptNames(),
+    preloadAssets: utils.getPreloadAssets(),
   });
 }

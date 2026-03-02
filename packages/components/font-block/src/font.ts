@@ -8,6 +8,9 @@ import { getFontContentBySrc } from './utils';
 export class CustomFont extends FontBucket implements CustomFontData {
   readonly src: string;
 
+  // 原始路径，但是这里只是用来占位
+  readonly originSrc!: string;
+
   readonly post: string;
 
   readonly text: string[] = [];

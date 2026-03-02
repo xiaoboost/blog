@@ -134,14 +134,23 @@ forEach((runtime) => {
   runtime.hooks.beforeEachPost.tapPromise(componentName, async (post) => {
     for (const data of getCustomTextByPost(post)) {
       const font = getCustomFontByData(data);
-      const fontAssets = await font.getAssets();
-      const cssFile = fontAssets.find((item) => item.path.endsWith('.css'));
+      const assets = await font.getAssets();
+      const cssFile = assets.find((item) => item.path.endsWith('.css'));
+      const fontFiles = assets.filter((item) => item.path.endsWith('.woff2'));
 
       if (cssFile) {
         post.utils.addAssetNames(cssFile.path);
       }
 
-      Builder.emitAsset(...fontAssets);
+      post.utils.addPreloadAssets(
+        ...fontFiles.map((item) => ({
+          href: item.path,
+          as: 'font' as const,
+          type: 'font/woff2',
+        })),
+      );
+
+      Builder.emitAsset(...assets);
     }
   });
 });

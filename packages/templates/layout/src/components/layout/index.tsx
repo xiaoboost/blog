@@ -3,6 +3,7 @@ import React from 'react';
 import { PropsWithChildren } from 'react';
 import { normalizeUrl } from '@blog/node';
 
+import type { PreloadAssetData } from '@blog/types';
 import { ScrollBar } from '@blog/component-scrollbar';
 import { HMRClientScriptPath } from '@blog/shared';
 import { Header, HeaderProps } from '../header';
@@ -33,6 +34,8 @@ export interface LayoutProps extends HeaderProps, ArticleProps {
   styles: string[];
   /** 脚本资源列表 */
   scripts: string[];
+  /** 预加载资源列表 */
+  preloadAssets: PreloadAssetData[];
 }
 
 export function Layout(props: PropsWithChildren<LayoutProps>) {
@@ -53,10 +56,21 @@ export function Layout(props: PropsWithChildren<LayoutProps>) {
         <meta name='force-rendering' content='webkit' />
         <meta httpEquiv='X-UA-Compatible' content='IE=edge,chrome=1' />
         <link rel='short icon' href={favicon} />
+        {(props.preloadAssets ?? []).map((asset, i) => (
+          <link
+            key={`preload-${i}`}
+            rel='preload'
+            href={normalizeUrl(publicPath, asset.href)}
+            as={asset.as}
+            type={asset.type}
+            crossOrigin={asset.crossOrigin}
+            media={asset.media}
+          />
+        ))}
         {props.hmr ? <script type='text/javascript' src={HMRClientScriptPath} /> : ''}
         {props.styles.map((pathname, i) => (
           <link
-            key={i}
+            key={`style-${i}`}
             rel='stylesheet'
             type='text/css'
             href={normalizeUrl(publicPath, pathname)}
@@ -70,7 +84,11 @@ export function Layout(props: PropsWithChildren<LayoutProps>) {
         <GotoTop />
         <ScrollBar width={8} mode='y' />
         {props.scripts.map((pathname, i) => (
-          <script key={i} type='text/javascript' src={normalizeUrl(publicPath, pathname)} />
+          <script
+            key={`script-${i}`}
+            type='text/javascript'
+            src={normalizeUrl(publicPath, pathname)}
+          />
         ))}
       </body>
     </html>

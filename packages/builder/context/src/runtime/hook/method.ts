@@ -1,4 +1,4 @@
-import type { TemplateUtils, RuntimeHooks } from '@blog/types';
+import type { TemplateUtils, RuntimeHooks, PreloadAssetData } from '@blog/types';
 import { unique } from '@xiao-ai/utils';
 import { hooks } from './store';
 
@@ -19,13 +19,20 @@ export function callHook<T extends keyof RuntimeHooks>(
 }
 
 /** 定义工具函数 */
-export function defineUtils(assets: string[] = []): TemplateUtils {
+export function defineUtils(
+  assets: string[] = [],
+  preloadAssets: PreloadAssetData[] = [],
+): TemplateUtils {
   const getAssetNames = () => {
     const val = unique(assets.slice());
     return process.env.NODE_ENV === 'production'
       ? val.filter((item) => !item.endsWith('.map'))
       : val.slice();
   };
+  const getPreloadAssets = () => {
+    return unique(preloadAssets.slice(), (v) => v.href);
+  };
+  const addPreloadAssets = (...items: PreloadAssetData[]) => preloadAssets.push(...items);
   const addAssetNames = (...newAssets: string[]) => assets.push(...newAssets);
   const insertAssetNames = (...newAssets: string[]) => assets.unshift(...newAssets);
   const replaceAssetName = (oldAsset: string, newAsset: string) => {
@@ -37,7 +44,9 @@ export function defineUtils(assets: string[] = []): TemplateUtils {
 
   return {
     getAssetNames,
+    getPreloadAssets,
     addAssetNames,
+    addPreloadAssets,
     insertAssetNames,
     replaceAssetName,
     getScriptNames: () => getAssetNames().filter((item) => item.endsWith('.js')),
