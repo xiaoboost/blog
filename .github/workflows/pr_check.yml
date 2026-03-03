@@ -52,6 +52,11 @@ jobs:
     runs-on: ${{ matrix.platform }}
 
     steps:
+      - name: Configure Git
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+
       - name: Checkout Commit
         uses: actions/checkout@v4
 
@@ -76,6 +81,11 @@ jobs:
     runs-on: ${{ matrix.platform }}
 
     steps:
+      - name: Configure Git
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+
       - name: Checkout Commit
         uses: actions/checkout@v4
         with:
@@ -103,6 +113,11 @@ jobs:
     runs-on: ${{ matrix.platform }}
 
     steps:
+      - name: Configure Git
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+
       - name: Checkout Commit
         uses: actions/checkout@v4
         with:
