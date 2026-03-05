@@ -104,7 +104,7 @@ jobs:
           lfs: false
           fetch-depth: 1
 
-      - name: Setup Git
+      - name: Set LFS Cache
         uses: './.github/actions/lfs-cache'
 
       - name: Setup Environment
@@ -142,7 +142,7 @@ jobs:
           lfs: false
           fetch-depth: 1
 
-      - name: Setup Git
+      - name: Set LFS Cache
         uses: './.github/actions/lfs-cache'
 
       - name: Update Env File
