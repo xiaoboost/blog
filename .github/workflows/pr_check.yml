@@ -30,9 +30,14 @@ jobs:
         shell: bash
         run: |
           git config --global core.autocrlf false
+          git config --global user.name "ci-robot"
+          git config --global user.email "robot@git"
 
       - name: Checkout Commit
         uses: actions/checkout@v4
+        with:
+          lfs: false
+          fetch-depth: 1
 
       - name: Setup Environment
         uses: './.github/actions/setup-env'
@@ -56,9 +61,14 @@ jobs:
         shell: bash
         run: |
           git config --global core.autocrlf false
+          git config --global user.name "ci-robot"
+          git config --global user.email "robot@git"
 
       - name: Checkout Commit
         uses: actions/checkout@v4
+        with:
+          lfs: false
+          fetch-depth: 1
 
       - name: Setup Environment
         uses: './.github/actions/setup-env'
@@ -85,11 +95,17 @@ jobs:
         shell: bash
         run: |
           git config --global core.autocrlf false
+          git config --global user.name "ci-robot"
+          git config --global user.email "robot@git"
 
       - name: Checkout Commit
         uses: actions/checkout@v4
         with:
-          lfs: true
+          lfs: false
+          fetch-depth: 1
+
+      - name: Setup Git
+        uses: './.github/actions/lfs-cache'
 
       - name: Setup Environment
         uses: './.github/actions/setup-env'
@@ -117,11 +133,17 @@ jobs:
         shell: bash
         run: |
           git config --global core.autocrlf false
+          git config --global user.name "ci-robot"
+          git config --global user.email "robot@git"
 
       - name: Checkout Commit
         uses: actions/checkout@v4
         with:
-          lfs: true
+          lfs: false
+          fetch-depth: 1
+
+      - name: Setup Git
+        uses: './.github/actions/lfs-cache'
 
       - name: Update Env File
         run: |
