@@ -3,13 +3,6 @@ description: 准备依赖环境
 runs:
   using: "composite"
   steps:
-    - name: Configure Git
-      shell: bash
-      run: |
-        git config --global core.autocrlf false
-        git config --global user.name "ci-robot"
-        git config --global user.email "robot@git"
-
     - name: Create Env File
       shell: bash
       run: |
