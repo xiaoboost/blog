@@ -38,6 +38,7 @@ export default createStyles({
   postSoftBreak: {},
   noIndent: {},
   splitMark: {},
+  blockquoteIcon: {},
   postDefault: {
     color: Black.toString(),
     backgroundColor: White.toString(),
@@ -235,20 +236,13 @@ export default createStyles({
         borderLeft: `0.3em solid ${BlackExtraLight.darken(0.04).toString()}`,
         backgroundColor: WhiteBg.alpha(0.8).toString(),
 
-        '&::before': {
-          content: '"“"',
+        '& $blockquoteIcon': {
           position: 'absolute',
-          top: -4,
-          fontSize: 40,
-          fontFamily: FontSerif,
-          color: BlackExtraLight.toString(),
+          top: 6,
+          left: 12,
+          fontSize: 20,
           zIndex: 0,
-          width: 32,
-          height: 32,
-
-          ...createMediaStyles(-4, 0, (offset) => ({
-            left: `${offset}px`,
-          })),
+          color: BlackExtraLight.toString(),
         },
 
         '> *': {

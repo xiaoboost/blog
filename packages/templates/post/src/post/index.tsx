@@ -13,6 +13,7 @@ import * as code from './code';
 import * as image from './image';
 import * as paragraph from './paragraph';
 import * as hr from './hr';
+import * as blockquote from './blockquote';
 import { Link } from './link';
 
 export interface PostProps extends LayoutProps {
@@ -47,6 +48,7 @@ export function Post(props: PostProps) {
               ...image,
               ...paragraph,
               ...hr,
+              ...blockquote,
             }}
           />
         </article>
