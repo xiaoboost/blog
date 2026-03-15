@@ -10,14 +10,14 @@ runs:
         echo 'ENV=GITHUB_CI' >> .env
 
     - name: Setup Node
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v6
       with:
-        node-version: '20'
+        node-version: '24'
 
     - name: Install Pnpm
-      uses: pnpm/action-setup@v3
+      uses: pnpm/action-setup@v4
       with:
-        version: '9.0.4'
+        version: '10.32.1'
         run_install: false
 
     - name: Get Pnpm Store Directory

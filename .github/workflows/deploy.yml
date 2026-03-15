@@ -31,7 +31,7 @@ jobs:
           git config --global user.email "robot@git"
 
       - name: Checkout Commit
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           lfs: false
           fetch-depth: 1

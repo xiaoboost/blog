@@ -34,7 +34,7 @@ jobs:
           git config --global user.email "robot@git"
 
       - name: Checkout Commit
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           lfs: false
           fetch-depth: 1
@@ -65,7 +65,7 @@ jobs:
           git config --global user.email "robot@git"
 
       - name: Checkout Commit
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           lfs: false
           fetch-depth: 1
@@ -99,7 +99,7 @@ jobs:
           git config --global user.email "robot@git"
 
       - name: Checkout Commit
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           lfs: false
           fetch-depth: 1
@@ -137,7 +137,7 @@ jobs:
           git config --global user.email "robot@git"
 
       - name: Checkout Commit
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           lfs: false
           fetch-depth: 1
@@ -159,8 +159,8 @@ jobs:
         run: pnpm run build:debug
 
       - name: PR comment with file
-        uses: thollander/actions-comment-pull-request@v2
+        uses: thollander/actions-comment-pull-request@v3
         with:
           mode: upsert
-          comment_tag: build
-          filePath: ${{ env.intercepter_outFile }}
+          comment-tag: build
+          file-path: ${{ env.intercepter_outFile }}
