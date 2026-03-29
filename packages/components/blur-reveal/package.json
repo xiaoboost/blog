@@ -30,6 +30,6 @@
     "@xiao-ai/tsconfig": "1.0.4",
     "eslint": "8.57.1",
     "tslib": "2.8.1",
-    "typescript": "5.9.3"
+    "typescript": "6.0.2"
   }
 }

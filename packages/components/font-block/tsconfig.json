@@ -3,7 +3,7 @@
   "include": ["src", "typings"],
   "exclude": ["node_modules", "dist"],
   "compilerOptions": {
-    "baseUrl": ".",
+    "rootDir": ".",
     "outDir": "./dist",
     "lib": ["DOM", "ESNext"],
     "declaration": false,
