@@ -66,6 +66,6 @@
     "@xiao-ai/tsconfig": "1.0.4",
     "eslint": "8.57.1",
     "rimraf": "5.0.5",
-    "typescript": "5.9.3"
+    "typescript": "6.0.2"
   }
 }

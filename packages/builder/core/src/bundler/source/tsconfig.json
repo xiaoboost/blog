@@ -2,8 +2,10 @@
   "extends": "../../../tsconfig.json",
   "include": ["../source"],
   "compilerOptions": {
+    "rootDir": ".",
     "outDir": "./bundle",
     "skipLibCheck": true,
-    "typeRoots": ["./node_modules/@types"]
+    "typeRoots": ["./node_modules/@types"],
+    "types": ["node", "blog", "react", "react-dom"]
   }
 }
