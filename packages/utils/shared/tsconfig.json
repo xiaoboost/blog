@@ -1,9 +1,9 @@
 {
   "extends": "@xiao-ai/tsconfig",
-  "include": ["src", "tests"],
+  "include": ["src"],
   "exclude": ["node_modules", "dist"],
   "compilerOptions": {
-    "rootDir": ".",
+    "rootDir": "./src",
     "module": "NodeNext",
     "outDir": "dist"
   }
