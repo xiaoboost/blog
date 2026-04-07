@@ -5,13 +5,13 @@ import {
   Color,
   mergeStyles,
   FontSerif,
-  FontMono,
   FontDefault,
   FontDefaultSize,
-  CustomFont,
   WhiteBg,
   Black,
   BlackLight,
+  SelectedColor,
+  SelectedBgColor,
 } from '@blog/styles';
 
 const linkColor = Color.rgb(23, 81, 153).alpha(0.6);
@@ -23,6 +23,19 @@ const global = createStyles({
       userSelect: 'inherit',
       boxSizing: 'border-box',
     },
+    [getHeadSelector()]: {
+      fontFamily: FontSerif,
+      position: 'relative',
+    },
+    'html, body': {
+      width: '100%',
+      height: '100%',
+      margin: 0,
+      padding: 0,
+      color: Black.toString(),
+      fontFamily: FontDefault,
+      fontSize: FontDefaultSize,
+    },
     a: {
       cursor: 'pointer',
       textDecoration: 'none',
@@ -33,25 +46,6 @@ const global = createStyles({
         outline: 0,
         color: linkHoverColor.toString(),
       },
-    },
-    [getHeadSelector()]: {
-      fontFamily: FontSerif,
-      position: 'relative',
-    },
-    'code, pre': {
-      fontFamily: FontMono,
-    },
-    em: {
-      fontFamily: `${CustomFont.EMLora}, ${FontDefault}`,
-    },
-    'html, body': {
-      width: '100%',
-      height: '100%',
-      margin: 0,
-      padding: 0,
-      color: Black.toString(),
-      fontFamily: FontDefault,
-      fontSize: FontDefaultSize,
     },
     body: {
       display: 'flex',
@@ -79,6 +73,14 @@ const global = createStyles({
       '&:hover': {
         opacity: '1',
       },
+    },
+    '::selection': {
+      color: SelectedColor.toString(),
+      backgroundColor: SelectedBgColor.toString(),
+    },
+    '::-moz-selection': {
+      color: SelectedColor.toString(),
+      backgroundColor: SelectedBgColor.toString(),
     },
   },
 });

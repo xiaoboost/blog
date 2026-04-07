@@ -14,6 +14,8 @@ import {
   FontSerif,
   FontDefault,
   MainShadow,
+  CustomFont,
+  FontMono,
   createMediaStyles,
   createHeadStyles,
   getHeadSelector,
@@ -136,6 +138,9 @@ export default createStyles({
           textIndent: '0',
         },
       },
+      '& code, & pre': {
+        fontFamily: FontMono,
+      },
       '& code': {
         margin: '0 0.2em',
         padding: '0.2em',
@@ -150,6 +155,7 @@ export default createStyles({
         margin: '0 2px',
         fontStyle: 'normal',
         textDecoration: 'none',
+        fontFamily: `${CustomFont.EMLora}, ${FontDefault}`,
         backgroundImage: `linear-gradient(
           to top,
           transparent,
