@@ -22,6 +22,10 @@ export const BlackLight = Color(0x606266);
 export const BlackLighter = Color(0x909399);
 export const BlackExtraLight = Color(0xc0c4cc);
 
+// 选中时颜色
+export const SelectedColor = Color(0xf0ece8);
+export const SelectedBgColor = Color(0x3a3a3a);
+
 export const MainShadow = `
   0 2px 6px ${Color.rgb(0, 0, 0).alpha(0.06).toString()},
   0 1px 2px ${Color.rgb(0, 0, 0).alpha(0.08).toString()}
