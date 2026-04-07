@@ -3,7 +3,7 @@
   "include": ["src", "tests"],
   "exclude": ["node_modules", "dist"],
   "compilerOptions": {
-    "rootDir": ".",
+    "rootDir": "./src",
     "module": "NodeNext",
     "outDir": "dist"
   }
