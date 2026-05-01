@@ -232,13 +232,19 @@ export class FontBucket {
 
     if (minify !== false) {
       this.minFont = await this.subsetFont(fontBuffer);
+      this.resolvedFontPath = options.rename
+        ? options.rename({ path: inputFontPath, content: this.minFont })
+        : inputFontPath;
     } else {
       this.minFont = fontBuffer;
+      // 不进行最小化时，为了加速构建，这里重命名使用内部的 Text 文本作为 hash
+      this.resolvedFontPath = options.rename
+        ? options.rename({
+            path: inputFontPath,
+            content: Buffer.from(Array.from(this.chars.values()).join('')),
+          })
+        : inputFontPath;
     }
-
-    this.resolvedFontPath = options.rename
-      ? options.rename({ path: inputFontPath, content: this.minFont })
-      : inputFontPath;
 
     // 外部没有指定字体名称，则使用文件名作为字体名称
     this.resolvedFontName = toPinyin(
