@@ -19,8 +19,7 @@ jobs:
       fail-fast: false
       matrix:
         platform:
-          - windows-latest
-          - macos-latest
+          - ubuntu-latest
 
     name: 代码风格检查 ${{ matrix.platform }}
     runs-on: ${{ matrix.platform }}
@@ -50,8 +49,7 @@ jobs:
       fail-fast: false
       matrix:
         platform:
-          - windows-latest
-          - macos-latest
+          - ubuntu-latest
 
     name: 单元测试 ${{ matrix.platform }}
     runs-on: ${{ matrix.platform }}
@@ -84,8 +82,7 @@ jobs:
       fail-fast: false
       matrix:
         platform:
-          - windows-latest
-          - macos-latest
+          - ubuntu-latest
 
     name: 构建测试 ${{ matrix.platform }}
     runs-on: ${{ matrix.platform }}
@@ -121,7 +118,7 @@ jobs:
       fail-fast: false
       matrix:
         platform:
-          - macos-latest
+          - ubuntu-latest
     env:
       intercepter_outFile: './.intercepter/ci_debug.md'
 
