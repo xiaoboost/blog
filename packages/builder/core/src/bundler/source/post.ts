@@ -42,10 +42,6 @@ export function renderSpacePost(posts: PostsExportType) {
 }
 
 export function renderPost(post: PostExportDataWithComponent) {
-  if (!isPreBuild()) {
-    debugger;
-  }
-
   const html = createPost({
     pageTitle: post.data.title,
     siteTitle: site.title,
