@@ -6,6 +6,8 @@ import type { AssetData } from '@blog/types';
 import { normalize } from './path';
 import { toPinyin } from './string';
 
+let index = 1;
+
 export interface FontBucketBuildOptions {
   /**
    * 公共 URL 路径
@@ -206,6 +208,13 @@ export class FontBucket {
   }
 
   async build(buildOptions: FontBucketBuildOptions = {}) {
+    // 已经构建过了，那就直接跳过
+    // 目前并没有需要监听 Char 变更重构建的需求
+    if (this.isBuilt) {
+      return;
+    }
+
+    debugger;
     const options = { ...this.options, ...buildOptions };
     const { minify } = options;
 
@@ -221,13 +230,14 @@ export class FontBucket {
       throw new Error('FontBucket: 需要提供 fontSource 或 fontContent 至少一个');
     }
 
+    const fileBaseName = minify ? '/fonts/font' : `/fonts/font-${index++}`;
     const inputFontPath = normalize(
       this.options.publicPath ?? '/',
-      options.fontFile ?? (minify ? '/fonts/font.woff2' : `/fonts/font-${Date.now()}.woff2`),
+      options.fontFile ?? `${fileBaseName}.woff2`,
     );
     const inputCssPath = normalize(
       this.options.publicPath ?? '/',
-      options.cssFile ?? (minify ? '/styles/font.css' : `/styles/font-${Date.now()}.css`),
+      options.cssFile ?? `${fileBaseName}.css`,
     );
 
     if (minify !== false) {
