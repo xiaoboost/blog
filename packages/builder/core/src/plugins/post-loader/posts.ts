@@ -45,7 +45,8 @@ export const PostsLoader = (): BuilderPlugin => ({
           namespace: pluginName,
           sideEffects: false,
           external: false,
-          path: realPostDir,
+          path: 'virtual:@blog/posts',
+          pluginData: realPostDir,
         };
       });
 
@@ -54,8 +55,9 @@ export const PostsLoader = (): BuilderPlugin => ({
           return;
         }
 
-        const packageFile = join(args.path, 'package.json');
-        const packageJson = require(join(args.path, 'package.json'));
+        const realPostDir: string = args.pluginData;
+        const packageFile = join(realPostDir, 'package.json');
+        const packageJson = require(packageFile);
 
         if (!packageJson.main) {
           return {
@@ -66,16 +68,16 @@ export const PostsLoader = (): BuilderPlugin => ({
               },
             ],
             contents: 'export default []',
-            resolveDir: args.path,
+            resolveDir: realPostDir,
           };
         }
 
-        const postSearcher = join(args.path, packageJson.main);
+        const postSearcher = join(realPostDir, packageJson.main);
         const postFiles = await Glob(normalize(postSearcher));
 
         return {
           contents: getPostsInputCode(postFiles),
-          resolveDir: args.path,
+          resolveDir: realPostDir,
         };
       });
     });

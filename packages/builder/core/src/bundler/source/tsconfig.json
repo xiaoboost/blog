@@ -1,5 +1,5 @@
 {
-  "extends": "../../../tsconfig.json",
+  "extends": "@xiao-ai/tsconfig",
   "include": ["../source"],
   "compilerOptions": {
     "rootDir": ".",

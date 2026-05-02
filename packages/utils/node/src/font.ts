@@ -214,7 +214,6 @@ export class FontBucket {
       return;
     }
 
-    debugger;
     const options = { ...this.options, ...buildOptions };
     const { minify } = options;
 

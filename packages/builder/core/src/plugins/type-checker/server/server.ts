@@ -69,7 +69,7 @@ export class LanguageService {
       this.tsModule.sys,
       this.basePath,
       {},
-      configFile,
+      tsconfigPath,
       undefined,
     );
 
@@ -252,7 +252,18 @@ export class LanguageService {
     ];
 
     return rawScriptDiagnostics
-      .filter((item) => item.code !== 2742)
+      .filter((item) => {
+        // 都是在 Monorepo 中的常见问题
+        // 这里只做 type-checker，不做输出，这些问题都可以忽略
+        return (
+          // TS 可以推断类型，但无法在声明文件中表达
+          item.code !== 2742 &&
+          // 推断类型引用了深层依赖路径
+          item.code !== 2883 &&
+          // 文件不在 rootDir 下
+          item.code !== 6059
+        );
+      })
       .map(({ code, file, messageText, start, length }): ErrorData => {
         const baseData: ErrorData = {
           name: `TS${code}`,
