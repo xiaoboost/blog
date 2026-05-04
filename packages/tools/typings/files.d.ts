@@ -37,3 +37,5 @@ declare module '*?raw' {
   const buffer: Buffer;
   export default buffer;
 }
+
+declare module '*.css';

@@ -5,7 +5,7 @@
   "main": "",
   "types": "index.d.ts",
   "devDependencies": {
-    "@xiao-ai/tsconfig": "1.0.4",
+    "@blog/tsconfig": "workspace:*",
     "@types/node": "20.19.28"
   }
 }

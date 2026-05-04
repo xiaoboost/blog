@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    "outDir": "dist",
+    "sourceMap": true,
+    "strict": true,
+    "declaration": true,
+    "declarationMap": true,
+    "moduleResolution": "NodeNext",
+    "target": "ESNext",
+    "module": "NodeNext",
+    "jsx": "react",
+    "preserveWatchOutput": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "isolatedModules": false,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "noImplicitReturns": false,
+    "strictNullChecks": true,
+    "importHelpers": true,
+    "listFiles": false,
+    "removeComments": false,
+    "skipLibCheck": true,
+    "allowJs": true,
+    "lib": ["ESNext"],
+    "types": ["*"]
+  }
+}

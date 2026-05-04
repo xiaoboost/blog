@@ -16,7 +16,7 @@
     "@types/blog": "workspace:*",
     "@types/node": "20.19.28",
     "@xiao-ai/eslint-config": "1.0.3",
-    "@xiao-ai/tsconfig": "1.0.4",
+    "@blog/tsconfig": "workspace:*",
     "eslint": "8.57.1",
     "typescript": "6.0.2"
   },
