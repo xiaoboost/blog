@@ -10,9 +10,8 @@ import type { AssetData } from '@blog/types';
 function extractLinks(html: string): string[] {
   const links: string[] = [];
   const attrRegex = /\b(?:href|src)="([^"]+)"/gi;
-  let match: RegExpExecArray | null;
 
-  while ((match = attrRegex.exec(html)) !== null) {
+  for (const match of html.matchAll(attrRegex)) {
     const url = match[1];
     if (/^(https?:|\/\/|#|mailto:|tel:|data:)/i.test(url)) {
       continue;
@@ -126,8 +125,7 @@ describe('博客构建 e2e', () => {
       const jsRegex = /<script[^>]+src="([^"]+)"/gi;
 
       for (const regex of [cssRegex, jsRegex]) {
-        let match: RegExpExecArray | null;
-        while ((match = regex.exec(html)) !== null) {
+        for (const match of html.matchAll(regex)) {
           const src = match[1];
           if (/^(https?:|\/\/)/i.test(src)) continue;
 
