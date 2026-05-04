@@ -7,7 +7,7 @@ export default createStyles({
   itemListTitle: {},
   itemList: {},
   itemListBody: {
-    "width": '100%',
+    width: '100%',
 
     '& $itemListTitle': {
       fontSize: '2.4em',
@@ -17,20 +17,20 @@ export default createStyles({
       fontFamily: `${ListTitleFontFamily}, ${FontSerif}`,
     },
     '& $itemList': {
-      "width": '100%',
-      "backgroundColor": White.toString(),
-      "boxShadow": MainShadow,
-      "borderRadius": 4,
-      "overflow": 'hidden',
+      width: '100%',
+      backgroundColor: White.toString(),
+      boxShadow: MainShadow,
+      borderRadius: 4,
+      overflow: 'hidden',
 
       '& $itemListItem': {
-        "margin": 0,
-        "padding": [14, 20],
-        "fontSize": 16,
-        "display": 'flex',
-        "alignItems": 'center',
-        "justifyContent": 'space-between',
-        "borderBottom": `1px solid ${Gray.toString()}`,
+        margin: 0,
+        padding: [14, 20],
+        fontSize: 16,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        borderBottom: `1px solid ${Gray.toString()}`,
 
         '& a': {
           ...PostTitleStyle,

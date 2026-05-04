@@ -26,6 +26,7 @@ export default defineConfig(
         multiline: true,
         minItems: 3,
       }],
+      '@stylistic/quote-props': 'off',
       '@stylistic/semi': ['error', 'always'],
       '@stylistic/quotes': ['warn', 'single', { avoidEscape: true }],
       '@stylistic/brace-style': ['error', 'stroustrup', { 'allowSingleLine': false }],

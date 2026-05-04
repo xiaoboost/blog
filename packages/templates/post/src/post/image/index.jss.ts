@@ -4,9 +4,9 @@ export default createStyles({
   postImageAlt: {},
   postImageInner: {},
   postImageBox: {
-    "margin": [14, 0],
-    "textAlign": 'center',
-    "maxWidth": '100%',
+    margin: [14, 0],
+    textAlign: 'center',
+    maxWidth: '100%',
 
     '& $postImageAlt': {
       color: BlackLight.toString(),

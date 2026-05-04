@@ -9,7 +9,7 @@ export const CustomFont = {
 };
 
 /** 默认字体 */
-export const FontDefault = /* @__PURE__ */ [
+export const FontDefault = /* @__PURE__ */[
   CustomFont.Lato,
   /** 思源黑体 */
   '"Source Han Sans SC"',
@@ -30,7 +30,7 @@ export const FontDefault = /* @__PURE__ */ [
 ].join(',');
 
 /** 衬线字体 */
-export const FontSerif = /* @__PURE__ */ [
+export const FontSerif = /* @__PURE__ */[
   /** 思源宋体 */
   '"Source Han Serif"',
   '"思源宋体"',
@@ -51,7 +51,7 @@ export const FontSerif = /* @__PURE__ */ [
 ].join(',');
 
 /** 等宽字体 */
-export const FontMono = /* @__PURE__ */ [
+export const FontMono = /* @__PURE__ */[
   'Menlo',
   'Monaco',
   'Consolas',
@@ -69,6 +69,8 @@ export const FontDefaultSize = 14;
 export const mediaPhone: string = `@media only screen and (max-width: ${mainWidth}px)`;
 /** PC 端判断 */
 export const mediaPc: string = `@media only screen and (min-width: ${mainWidth}px)`;
+/** 暗色模式 */
+export const DarkMode = '@media (prefers-color-scheme: dark)';
 /** 标题元素选择器 */
 export const getHeadSelector = (pre = '') => {
   return Array(5)
