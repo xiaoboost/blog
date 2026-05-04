@@ -1,5 +1,5 @@
 {
-  "extends": "@xiao-ai/tsconfig",
+  "extends": "@blog/tsconfig",
   "include": ["."],
   "exclude": ["node_modules", "dist"],
   "compilerOptions": {
