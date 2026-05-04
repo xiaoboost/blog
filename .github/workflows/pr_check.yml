@@ -68,6 +68,9 @@ jobs:
           lfs: false
           fetch-depth: 1
 
+      - name: Set LFS Cache
+        uses: './.github/actions/lfs-cache'
+
       - name: Setup Environment
         uses: './.github/actions/setup-env'
 
