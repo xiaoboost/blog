@@ -9,9 +9,18 @@
       "require": "./dist/index.js"
     },
     "./*": {
-      "import": ["./src/*", "./src/*.ts"],
-      "types": ["./src/*", "./src/*.ts"],
-      "require": ["./dist/*", "./dist/*.js"]
+      "import": [
+        "./src/*",
+        "./src/*.ts"
+      ],
+      "types": [
+        "./src/*",
+        "./src/*.ts"
+      ],
+      "require": [
+        "./dist/*",
+        "./dist/*.js"
+      ]
     }
   },
   "scripts": {
@@ -21,11 +30,11 @@
     "lint:fix": "eslint --quiet --fix src/**/*.{ts,tsx,js,jsx}"
   },
   "devDependencies": {
+    "@blog/eslint-config": "workspace:*",
+    "@blog/tsconfig": "workspace:*",
     "@types/color": "3.0.6",
     "@types/node": "20.19.28",
-    "@xiao-ai/eslint-config": "1.0.3",
-    "@blog/tsconfig": "workspace:*",
-    "eslint": "8.57.1",
+    "eslint": "10.2.1",
     "typescript": "6.0.2"
   },
   "dependencies": {

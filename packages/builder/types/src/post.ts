@@ -1,7 +1,7 @@
-import { Root } from 'mdast';
-import { FC } from 'react';
+import type { Root } from 'mdast';
+import type { FC } from 'react';
 
-import { TemplateUtils } from './template';
+import type { TemplateUtils } from './template';
 
 /** 文章原始数据 */
 export interface PostMeta {

@@ -1,13 +1,12 @@
+import { Circle } from '@blog/icons';
+import { visit } from '@blog/parser/walk';
+import type { Mdx } from '@blog/types';
+import { stringifyClass } from '@xiao-ai/utils';
 import React from 'react';
 
-import { visit } from '@blog/parser/walk';
-import { stringifyClass } from '@xiao-ai/utils';
-import { Mdx } from '@blog/types';
-import { Circle } from '@blog/icons';
 import { levelLimit } from './constant';
-import { getHeadAnchor } from './utils';
-
 import styles from './index.jss';
+import { getHeadAnchor } from './utils';
 
 export interface Props {
   data: Mdx.Root;
@@ -28,9 +27,11 @@ export interface NavTitleProps {
 function getContext(node: Mdx.Heading | Mdx.PhrasingContent): string {
   if ('children' in node) {
     return node.children.map(getContext).join('');
-  } else if ('value' in node) {
+  }
+  else if ('value' in node) {
     return node.value;
-  } else {
+  }
+  else {
     return '';
   }
 }
@@ -85,7 +86,8 @@ function createNavFromAst(ast: Mdx.Root, _: number): NavTitleData[] {
 
       current.children.push(now);
       current = now;
-    } else if (level === current.level) {
+    }
+    else if (level === current.level) {
       const now: NavTitleData = {
         content,
         hash,
@@ -95,7 +97,8 @@ function createNavFromAst(ast: Mdx.Root, _: number): NavTitleData[] {
 
       current.parent!.children!.push(now);
       current = now;
-    } else if (level < current.level) {
+    }
+    else if (level < current.level) {
       let parent = current;
 
       while (level <= parent.level) {

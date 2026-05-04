@@ -1,12 +1,12 @@
-import { dirname, isAbsolute, join, basename } from 'path';
-import { normalize, isRootDirectory } from '@blog/node';
 import { readFile } from 'fs/promises';
+import { dirname, isAbsolute, join, basename } from 'path';
 import { getAccessor, RuntimeBuilder as Builder } from '@blog/context/runtime';
+import { normalize, isRootDirectory } from '@blog/node';
 import { getChildrenContent, getAttribute, visit } from '@blog/parser/walk';
 import type { PostExportData } from '@blog/types';
+import { CustomFont } from './font';
 import type { CustomFontData } from './types';
 import type { FontBlockProps } from './index';
-import { CustomFont } from './font';
 
 /** 字体源文件缓存 */
 const fileCache = getAccessor('font-block:source', new Map<string, Buffer>()).get();
@@ -37,13 +37,16 @@ function resolveFontPath(src: string, postPath: string) {
   function getFontFilePath(input: string, file: string) {
     if (input.startsWith('.')) {
       return join(dirname(file), input);
-    } else if (input.startsWith('@blog/')) {
+    }
+    else if (input.startsWith('@blog/')) {
       return Builder.resolve(input, {
         importer: file,
       }).path;
-    } else if (isAbsolute(input)) {
+    }
+    else if (isAbsolute(input)) {
       return input;
-    } else {
+    }
+    else {
       return join(getBasePath(file), input);
     }
   }
@@ -108,7 +111,8 @@ export function getCustomTextByPost({ data: post }: PostExportData) {
 
     if (oldFontData) {
       oldFontData.text.push(text);
-    } else {
+    }
+    else {
       result.push({
         originSrc: src,
         src: fontPath,

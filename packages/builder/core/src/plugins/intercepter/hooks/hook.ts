@@ -1,6 +1,6 @@
-import { table, SpanningCellConfig, ColumnUserConfig } from 'table';
 import { toRound } from '@blog/shared';
 import type { LoggerInstance, BuilderInstance } from '@blog/types';
+import { table, type SpanningCellConfig, type ColumnUserConfig } from 'table';
 import type { DebuggerOptions } from '../types';
 import type { HookDataWithName } from './types';
 import { hookData, interceptHookMap, getHookData } from './utils';
@@ -27,10 +27,14 @@ function getTableData(data: HookDataWithName[]) {
   }
 
   function getTableRow(item: HookDataWithName) {
-    return [item.pluginName, item.mapName, item.tapName, toTimeString(item.cost)];
+    return [
+      item.pluginName, item.mapName, item.tapName, toTimeString(item.cost),
+    ];
   }
 
-  const headers = ['插件名称', '构建阶段', '钩子函数', '总耗时'];
+  const headers = [
+    '插件名称', '构建阶段', '钩子函数', '总耗时',
+  ];
   const tableData = data.map(getTableRow);
   const sortedTableData = data
     .slice()
@@ -72,8 +76,8 @@ function printHookData(data: HookDataWithName[], logger: LoggerInstance) {
     }
 
     if (
-      startCol1Item.pluginName !== currentItem.pluginName ||
-      startCol1Item.mapName !== currentItem.mapName
+      startCol1Item.pluginName !== currentItem.pluginName
+      || startCol1Item.mapName !== currentItem.mapName
     ) {
       if (i - col1Start > 1) {
         cells.push({
@@ -124,7 +128,7 @@ function printHookData(data: HookDataWithName[], logger: LoggerInstance) {
 /** 生成记录数据报告 */
 export function getMdString() {
   const { tableData, sortedTableData } = getTableData(getHookData());
-  const tableHeader = `|插件名称|构建阶段|钩子函数|总耗时|\n|:--|:--|:--|:--|\n`;
+  const tableHeader = '|插件名称|构建阶段|钩子函数|总耗时|\n|:--|:--|:--|:--|\n';
 
   let content = `# 插件数据\n\n## 耗时最多的插件\n\n${tableHeader}`;
 
@@ -147,10 +151,10 @@ export function intercept(name: string, builder: BuilderInstance, options: Debug
   });
 
   builder.hooks.afterInitialized.tap(name, (builder) => {
-    interceptHookMap('Builder', builder.hooks as {}, options);
+    interceptHookMap('Builder', builder.hooks as any, options);
 
     builder.hooks.bundler.tap(name, (bundler) => {
-      interceptHookMap('Bundler', bundler.hooks as {}, options);
+      interceptHookMap('Bundler', bundler.hooks as any, options);
     });
   });
 }

@@ -26,11 +26,11 @@
     "yargs": "17.7.2"
   },
   "devDependencies": {
+    "@blog/eslint-config": "workspace:*",
+    "@blog/tsconfig": "workspace:*",
     "@types/node": "20.19.28",
     "@types/yargs": "17.0.32",
-    "@xiao-ai/eslint-config": "1.0.3",
-    "@blog/tsconfig": "workspace:*",
-    "eslint": "8.57.1",
+    "eslint": "10.2.1",
     "rimraf": "5.0.5",
     "typescript": "6.0.2"
   }

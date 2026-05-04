@@ -1,9 +1,9 @@
-import type { ErrorData, ErrorParam } from '@blog/types';
-import type { Message as EsbuildError } from 'esbuild';
-import { isObject } from '@xiao-ai/utils';
-import { RunError } from '@xiao-ai/utils/node';
 import { readFileSync } from 'fs';
 import { platform } from 'os';
+import type { ErrorData, ErrorParam } from '@blog/types';
+import { isObject } from '@xiao-ai/utils';
+import type { RunError } from '@xiao-ai/utils/node';
+import type { Message as EsbuildError } from 'esbuild';
 import { BuilderError } from './error';
 
 function isRunError(data: unknown): data is RunError {
@@ -12,10 +12,10 @@ function isRunError(data: unknown): data is RunError {
 
 function isErrorData(data: unknown): data is ErrorData {
   return (
-    isObject(data) &&
-    ('codeFrame' in data || 'project' in data) &&
-    'message' in data &&
-    'name' in data
+    isObject(data)
+    && ('codeFrame' in data || 'project' in data)
+    && 'message' in data
+    && 'name' in data
   );
 }
 
@@ -50,23 +50,24 @@ function transformEsbuildError(err: any, opt?: ErrorParam): BuilderError | void 
   if (isEsbuildError(err)) {
     if (err.detail) {
       return transform(err.detail, opt);
-    } else {
+    }
+    else {
       const { text: message, location } = err;
       const filePath = location?.file ? transformFile(location.file)! : undefined;
       const codeFrame = filePath
         ? {
-            content: readFileSync(filePath).toString('utf-8'),
-            range: {
-              start: {
-                line: location!.line,
-                column: location!.column + 1,
-              },
-              end: {
-                line: location!.line,
-                column: location!.column + location!.length + 1,
-              },
+          content: readFileSync(filePath).toString('utf-8'),
+          range: {
+            start: {
+              line: location!.line,
+              column: location!.column + 1,
             },
-          }
+            end: {
+              line: location!.line,
+              column: location!.column + location!.length + 1,
+            },
+          },
+        }
         : undefined;
 
       return new BuilderError({

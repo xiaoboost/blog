@@ -1,4 +1,4 @@
-import yargs from 'yargs';
+import type yargs from 'yargs';
 
 const baseOptions: Record<string, yargs.Options> = {
   mode: {
@@ -16,7 +16,9 @@ const baseOptions: Record<string, yargs.Options> = {
     type: 'string',
     describe: '输出日志等级',
     default: 'Info',
-    choices: ['Debug', 'Info', 'Error'],
+    choices: [
+      'Debug', 'Info', 'Error',
+    ],
   },
   debug: {
     type: 'boolean',

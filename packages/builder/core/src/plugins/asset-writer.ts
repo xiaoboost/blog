@@ -1,6 +1,6 @@
-import type { BuilderPlugin } from '@blog/types';
-import { join, dirname } from 'path';
 import { writeFile, mkdir } from 'fs/promises';
+import { join, dirname } from 'path';
+import type { BuilderPlugin } from '@blog/types';
 
 const pluginName = 'asset-writer';
 

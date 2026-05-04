@@ -1,15 +1,14 @@
-import {
-  CachedInputFileSystem,
-  ResolveOptions as EnhancedResolveOptions,
-  create,
-} from 'enhanced-resolve';
-import type { ImportKind } from 'esbuild';
-import type { Resolver, ResolveCreatorOptions, ResolveOptions, Query, PathData } from '@blog/types';
-import { isUrl } from '@blog/shared';
 import fs from 'fs';
-import { parse } from 'querystring';
-import { dirname, isAbsolute } from 'path';
 import { builtinModules } from 'module';
+import { dirname, isAbsolute } from 'path';
+import { parse } from 'querystring';
+import { isUrl } from '@blog/shared';
+import type { Resolver, ResolveCreatorOptions, ResolveOptions, Query, PathData } from '@blog/types';
+import {
+  type ResolveOptions as EnhancedResolveOptions,
+  CachedInputFileSystem,
+  create } from 'enhanced-resolve';
+import type { ImportKind } from 'esbuild';
 import { BuilderError } from './error';
 
 const ErrorCode = 'RESOLVE_FAILED';
@@ -41,13 +40,19 @@ export function createResolver(options: ResolveCreatorOptions): Resolver {
   const externals = builtinModules.concat(options?.external ?? []);
   const resolveOptions: EnhancedResolveOptions = {
     fileSystem: new CachedInputFileSystem(fs, 4000),
-    conditionNames: ['import', 'require', 'node'],
-    mainFields: ['source', 'module', 'main'],
+    conditionNames: [
+      'import', 'require', 'node',
+    ],
+    mainFields: [
+      'source', 'module', 'main',
+    ],
     ...options,
   };
   const jsResolver = create.sync({
     ...resolveOptions,
-    extensions: ['.jsx', '.tsx', '.mjs', '.js', '.ts', '.json'],
+    extensions: [
+      '.jsx', '.tsx', '.mjs', '.js', '.ts', '.json',
+    ],
     preferRelative: false,
   });
   const cssResolver = create.sync({
@@ -95,7 +100,8 @@ export function createResolver(options: ResolveCreatorOptions): Resolver {
       resolveCache.set(cacheKey, result);
 
       return result;
-    } catch (err: any) {
+    }
+    catch (err: any) {
       throw new BuilderError({
         project: 'Unknown',
         name: ErrorCode,

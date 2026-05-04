@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   defineUtils,
   getReference,
@@ -6,21 +5,21 @@ import {
   forEach,
 } from '@blog/context/runtime';
 import {
+  type WrapperProps,
   styles as normalStyles,
-  WrapperProps,
   CodeBlockWrapper,
   getHighlightCode,
-  getMinSpaceWidth,
-} from '@blog/mdx-code-block-normal';
+  getMinSpaceWidth } from '@blog/mdx-code-block-normal';
 
 import { stringifyClass } from '@xiao-ai/utils';
-import { ComponentName } from './constant';
-import { getImportedByPost, npmInstall, removeReference } from './utils';
+import React from 'react';
 import { name as ComponentPkgName } from '../package.json';
+import assets from './code-block-ts.script';
+import { ComponentName } from './constant';
 
 import styles from './index.jss';
-import assets from './code-block-ts.script';
-import { renderTsCode, RenderedTsCodeLine, type ScriptKind, type Platform } from './typescript';
+import { type RenderedTsCodeLine, renderTsCode, type ScriptKind, type Platform } from './typescript';
+import { getImportedByPost, npmInstall, removeReference } from './utils';
 
 export { ScriptKind, Platform } from './typescript';
 export const utils = defineUtils(assets);

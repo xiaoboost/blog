@@ -1,8 +1,8 @@
-import type { BuilderPlugin } from '@blog/types';
-import { debounce } from '@xiao-ai/utils';
-import { normalize } from '@blog/node';
 import { realpath } from 'fs/promises';
 import { join } from 'path';
+import { normalize } from '@blog/node';
+import type { BuilderPlugin } from '@blog/types';
+import { debounce } from '@xiao-ai/utils';
 
 const pluginName = 'watcher';
 
@@ -53,7 +53,8 @@ export const Watcher = (): BuilderPlugin => ({
       bundler.hooks.resolveResult.tap(pluginName, ({ path, watchFiles }) => {
         if (watchFiles) {
           watchFiles.forEach((file) => builder.addWatchFiles(file));
-        } else if (path) {
+        }
+        else if (path) {
           builder.addWatchFiles(path);
         }
       });

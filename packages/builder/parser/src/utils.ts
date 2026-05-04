@@ -1,5 +1,5 @@
-import { PostData, Mdx, EsTree } from '@blog/types';
-import { Fixer, isUrl } from '@blog/shared';
+import { type Fixer, isUrl } from '@blog/shared';
+import type { PostData, Mdx, EsTree } from '@blog/types';
 import { encodeImageTemplate } from './template';
 import { visit } from './walk';
 
@@ -105,7 +105,8 @@ export function addTemplateUtilsExport(data: PostData, fixer: Fixer) {
   // 添加导出语句
   if (components.length === 0) {
     code += `export const utils = defineUtils(template.getAssetNames());\n\n`;
-  } else {
+  }
+  else {
     code += `export const utils = defineUtils(template.getAssetNames().concat(
 ${components.map((_, i) => `  c${i}.getAssetNames(),`).join('\n')}
 ));\n\n`;

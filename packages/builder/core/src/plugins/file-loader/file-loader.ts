@@ -1,8 +1,8 @@
-import type { BuilderPlugin, ResolveResult } from '@blog/types';
-import path from 'path';
 import { readFile } from 'fs/promises';
-import { getRenameMethod, mergeRename } from './rename';
+import path from 'path';
+import type { BuilderPlugin, ResolveResult } from '@blog/types';
 import { isCssImport } from '../../utils';
+import { getRenameMethod, mergeRename } from './rename';
 import type { FileLoaderOptionInput, Rename } from './types';
 
 const pluginName = 'file-loader';
@@ -20,7 +20,8 @@ export const FileLoader = (opt: FileLoaderOptionInput): BuilderPlugin => ({
     builder.hooks.start.tap(pluginName, () => {
       if ('test' in builder.renameAsset) {
         builder.renameAsset = mergeRename(builder.renameAsset as Rename, rename);
-      } else {
+      }
+      else {
         builder.renameAsset = rename;
       }
     });

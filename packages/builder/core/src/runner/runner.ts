@@ -1,3 +1,4 @@
+import { getContext } from '@blog/context';
 import type {
   RunnerInstance,
   BuilderInstance,
@@ -5,9 +6,8 @@ import type {
   ErrorData,
   RunnerCb,
 } from '@blog/types';
-import { getContext } from '@blog/context';
+import { type RunError, runScript } from '@xiao-ai/utils/node';
 import { Instance } from 'chalk';
-import { runScript, RunError } from '@xiao-ai/utils/node';
 import { Logger, getOriginCodeFrame } from '../utils';
 
 export class Runner implements RunnerInstance {

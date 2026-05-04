@@ -1,7 +1,7 @@
-import { expect, describe, it } from '@blog/test-toolkit';
+import { mkdtempSync, rmSync } from 'fs';
 import { tmpdir } from 'os';
 import { join } from 'path';
-import { mkdtempSync, rmSync } from 'fs';
+import { expect, describe, it } from '@blog/test-toolkit';
 import { CacheController } from '../plugins/cache';
 
 describe('CacheController', () => {
@@ -78,7 +78,8 @@ describe('CacheController', () => {
     if (tmpDir) {
       try {
         rmSync(tmpDir, { recursive: true, force: true });
-      } catch (_) {
+      }
+      catch (_) {
         //
       }
     }

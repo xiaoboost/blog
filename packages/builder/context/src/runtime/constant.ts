@@ -1,7 +1,7 @@
-import type JSS from 'jss';
 import type { BuilderInstance } from '@blog/types';
+import type JSS from 'jss';
 
-import { GlobalKey, Memory } from '../types';
+import type { GlobalKey, Memory } from '../types';
 
 export { GlobalKey } from '../types';
 

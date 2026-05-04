@@ -1,6 +1,6 @@
+import type { BuilderInstance } from '@blog/types';
 import Jss from 'jss';
 import preset from 'jss-preset-default';
-import type { BuilderInstance } from '@blog/types';
 import { GlobalKey } from './types';
 
 Jss.setup(preset());

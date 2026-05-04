@@ -1,5 +1,5 @@
-import { fadeIn, fadeOut, getCurrentScriptSrc } from '@blog/web';
 import { ModuleLoader } from '@blog/context/web';
+import { fadeIn, fadeOut, getCurrentScriptSrc } from '@blog/web';
 import { supportsPassive } from '@xiao-ai/utils/web';
 import { scrollTopLimit, fadeTime } from './constant';
 
@@ -19,9 +19,9 @@ function active() {
   const options: AddEventListenerOptions | boolean = !supportsPassive
     ? false
     : {
-        passive: true,
-        capture: false,
-      };
+      passive: true,
+      capture: false,
+    };
 
   let inScrollTop = false;
 
@@ -34,7 +34,8 @@ function active() {
 
     if (top > scrollTopLimit) {
       fadeIn(btn, fadeTime);
-    } else {
+    }
+    else {
       fadeOut(btn, fadeTime);
       inScrollTop = false;
     }
@@ -73,6 +74,7 @@ if (process.env.NODE_ENV === 'development' && ModuleLoader) {
     currentScript: getCurrentScriptSrc(),
     active,
   });
-} else {
+}
+else {
   active();
 }

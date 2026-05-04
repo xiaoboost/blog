@@ -1,9 +1,9 @@
-import type { PostListData } from '@blog/types';
-import { normalize, normalizeUrl } from '@blog/node';
 import { RuntimeBuilder as Builder } from '@blog/context/runtime';
+import { normalize, normalizeUrl } from '@blog/node';
 import { MainIndex, utils } from '@blog/template-layout';
-import { createHtml } from './react';
+import type { PostListData } from '@blog/types';
 import { site } from '../../constant';
+import { createHtml } from './react';
 
 const createIndex = createHtml(MainIndex);
 

@@ -32,32 +32,32 @@ export default createStyles({
   postsListItemFooterTag: {},
   postsListItemFooterTagSplit: {},
   postsList: {
-    color: Black.toString(),
-    backgroundColor: White.toString(),
-    width: '100%',
-    borderRadius: '4px',
-    overflow: 'hidden',
-    boxShadow: MainShadow,
+    "color": Black.toString(),
+    "backgroundColor": White.toString(),
+    "width": '100%',
+    "borderRadius": '4px',
+    "overflow": 'hidden',
+    "boxShadow": MainShadow,
 
     '& $postsListItem': {
-      margin: 0,
-      padding: '20px 24px',
-      boxShadow: 'none',
-      boxSizing: 'border-box',
-      backgroundColor: White.toString(),
-      borderBottom: `1px solid ${Gray.toString()}`,
-      fontFamily: FontDefault,
-      fontWeight: 'normal',
-      color: Black.toString(),
+      "margin": 0,
+      "padding": '20px 24px',
+      "boxShadow": 'none',
+      "boxSizing": 'border-box',
+      "backgroundColor": White.toString(),
+      "borderBottom": `1px solid ${Gray.toString()}`,
+      "fontFamily": FontDefault,
+      "fontWeight": 'normal',
+      "color": Black.toString(),
 
       '&:last-child': {
         borderBottom: 'none',
       },
     },
     '& $postsListItemHeader': {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
+      "display": 'flex',
+      "alignItems": 'center',
+      "justifyContent": 'space-between',
 
       '& a': {
         ...PostTitleStyle,
@@ -74,9 +74,9 @@ export default createStyles({
       marginTop: 12,
     },
     '& $postsListItemFooter': {
-      fontSize: 12,
-      marginTop: 12,
-      display: 'flex',
+      "fontSize": 12,
+      "marginTop": 12,
+      "display": 'flex',
 
       '& $postsListItemFooterIcon': {
         marginRight: 4,
@@ -87,8 +87,8 @@ export default createStyles({
         cursor: 'default',
       },
       '& $postsListItemFooterTag': {
-        margin: 0,
-        color: BlackLighter.toString(),
+        "margin": 0,
+        "color": BlackLighter.toString(),
 
         '&:hover': {
           color: Black.toString(),

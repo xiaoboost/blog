@@ -1,9 +1,8 @@
-import type { BuilderPlugin } from '@blog/types';
 import { join } from 'path';
 import { writeFile } from '@blog/node';
-import type { DebuggerOptions } from './types';
-
+import type { BuilderPlugin } from '@blog/types';
 import * as Hook from './hooks';
+import type { DebuggerOptions } from './types';
 
 const pluginName = 'intercepter';
 

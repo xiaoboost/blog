@@ -20,6 +20,7 @@ if (process.env.NODE_ENV === 'development' && ModuleLoader) {
     currentScript: getCurrentScriptSrc(),
     active,
   });
-} else {
+}
+else {
   active();
 }

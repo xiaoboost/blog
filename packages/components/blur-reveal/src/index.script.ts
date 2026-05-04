@@ -1,5 +1,5 @@
-import { getCurrentScriptSrc } from '@blog/web';
 import { ModuleLoader, assets } from '@blog/context/web';
+import { getCurrentScriptSrc } from '@blog/web';
 import { duration } from './constant';
 import styles from './index.jss';
 
@@ -30,7 +30,9 @@ function active() {
 
     setTimeout(() => {
       content.style.maxHeight = 'none';
-      [classes.blurRevealFogLeft, classes.blurRevealFogRight, classes.blurRevealOverlay].forEach(
+      [
+        classes.blurRevealFogLeft, classes.blurRevealFogRight, classes.blurRevealOverlay,
+      ].forEach(
         (className) => {
           const el = revealEl.querySelector<HTMLElement>(`.${className}`);
           if (el) {
@@ -63,7 +65,8 @@ if (process.env.NODE_ENV === 'development' && ModuleLoader) {
     currentScript: getCurrentScriptSrc(),
     active,
   });
-} else {
+}
+else {
   active();
 }
 

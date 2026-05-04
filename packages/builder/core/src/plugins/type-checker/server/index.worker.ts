@@ -1,6 +1,6 @@
 import { isMainThread, parentPort } from 'worker_threads';
 import type { PostData, ReturnData } from '../../../utils/index';
-import { EventData, EventName } from '../types';
+import { type EventData, EventName } from '../types';
 import { LanguageService } from './server';
 
 if (isMainThread) {
@@ -35,7 +35,8 @@ if (parentPort) {
             message: `未知的事件名称：${data.name}`,
           };
       }
-    } catch (e: any) {
+    }
+    catch (e: any) {
       result.error = {
         name: e.name,
         message: e.message,

@@ -1,5 +1,5 @@
-import { pinyin } from 'pinyin-pro';
 import { URLSearchParams } from 'url';
+import { pinyin } from 'pinyin-pro';
 
 export type Query = Record<string, string | boolean>;
 
@@ -27,9 +27,11 @@ export function parseQuery(input: string) {
   searchParams.forEach((value, key) => {
     if (value.length === 0 || value === 'true') {
       query[key] = true;
-    } else if (value === 'false') {
+    }
+    else if (value === 'false') {
       query[key] = false;
-    } else {
+    }
+    else {
       query[key] = value;
     }
   });

@@ -1,4 +1,5 @@
-import {
+import { normalize } from '@blog/node';
+import type {
   BuilderHooks,
   BuilderInstance,
   BuilderOptions,
@@ -8,15 +9,13 @@ import {
   ResolveResult,
   CacheAccessor,
 } from '@blog/types';
-import { AsyncSeriesHook, AsyncParallelHook, AsyncSeriesWaterfallHook, SyncHook } from 'tapable';
-import { normalize } from '@blog/node';
 import { Watcher } from '@xiao-ai/utils';
 import { FSWatcher } from 'chokidar';
-import { BuilderError } from '../utils';
-import { applyPlugin, normalizeOptions } from './options';
+import { AsyncSeriesHook, AsyncParallelHook, AsyncSeriesWaterfallHook, SyncHook } from 'tapable';
 import { Bundler } from '../bundler';
 import { Runner } from '../runner';
-import { Logger } from '../utils';
+import { BuilderError, Logger } from '../utils';
+import { applyPlugin, normalizeOptions } from './options';
 
 let _id = 1;
 
@@ -86,9 +85,9 @@ export class Builder implements BuilderInstance {
   get shouldBuild(): boolean {
     if (
       // watchFiles 为空表示是首次构建
-      this.watchFiles.size === 0 ||
+      this.watchFiles.size === 0
       // changedFiles 有值表示有文件变更
-      this.changedFiles.size > 0
+      || this.changedFiles.size > 0
     ) {
       return true;
     }
@@ -141,7 +140,9 @@ export class Builder implements BuilderInstance {
 
     if (watch) {
       this.watcher = new FSWatcher({
-        ignored: ['node_modules', '.git', '.gitignore', outDir],
+        ignored: [
+          'node_modules', '.git', '.gitignore', outDir,
+        ],
         cwd: root,
       });
 
@@ -197,7 +198,8 @@ export class Builder implements BuilderInstance {
 
       if (oldAsset) {
         oldAsset.content = file.content;
-      } else {
+      }
+      else {
         this.assets.push({
           path: assetPath,
           content: file.content,
@@ -242,7 +244,8 @@ export class Builder implements BuilderInstance {
 
       if (errors.length > 0) {
         await this.hooks.failed.promise(errors);
-      } else {
+      }
+      else {
         await this.hooks.success.promise(this.getAssets(), this._getHookContext());
       }
     };
@@ -270,7 +273,8 @@ export class Builder implements BuilderInstance {
       await this.runner.run(this.bundler.getBundledCode());
       await this.hooks.afterRunner.promise(this._getHookContext());
       this.assets = await this.hooks.processAssets.promise(this.getAssets());
-    } catch (e: any) {
+    }
+    catch (e: any) {
       this.errors = this._reportError(e);
     }
 

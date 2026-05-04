@@ -7,11 +7,11 @@ const WhiteAlpha0 = White.alpha(0).toString();
 export default createStyles({
   blurRevealExpanded: {},
   blurReveal: {
-    position: 'relative',
-    margin: 0,
-    width: '100%',
-    overflow: 'hidden',
-    transform: 'translateZ(0)',
+    "position": 'relative',
+    "margin": 0,
+    "width": '100%',
+    "overflow": 'hidden',
+    "transform": 'translateZ(0)',
 
     '&$blurRevealExpanded': {
       '& $blurRevealContent': {
@@ -59,22 +59,22 @@ export default createStyles({
     `,
   },
   blurRevealOverlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
-    zIndex: 10,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    background: `linear-gradient(
+    "position": 'absolute',
+    "top": 0,
+    "left": 0,
+    "width": '100%',
+    "height": '100%',
+    "zIndex": 10,
+    "display": 'flex',
+    "alignItems": 'center',
+    "justifyContent": 'center',
+    "background": `linear-gradient(
       to bottom,
       ${WhiteAlpha0} 30%,
       ${White.alpha(0.8).toString()} 70%,
       ${WhiteStr} 100%
     )`,
-    transition: `opacity ${duration / 2}s ease`,
+    "transition": `opacity ${duration / 2}s ease`,
 
     '&:hover $blurRevealOverlayBtn': {
       boxShadow: `0 8px 24px ${Black.alpha(0.12).toString()}`,

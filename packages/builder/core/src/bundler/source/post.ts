@@ -1,13 +1,12 @@
+import { RuntimeBuilder as Builder } from '@blog/context/runtime';
+import { normalize, normalizeUrl } from '@blog/node';
+import { utils as layoutUtils } from '@blog/template-layout';
+import { Post as PostRender } from '@blog/template-post';
+import type { PostExportDataWithComponent, PostsExportType } from '@blog/types';
 import React from 'react';
 
-import type { PostExportDataWithComponent, PostsExportType } from '@blog/types';
-import { normalize, normalizeUrl } from '@blog/node';
-import { Post as PostRender } from '@blog/template-post';
-import { utils as layoutUtils } from '@blog/template-layout';
-import { RuntimeBuilder as Builder } from '@blog/context/runtime';
-
-import { createHtml } from './react';
 import { site } from '../../constant';
+import { createHtml } from './react';
 
 const createPost = createHtml(PostRender);
 

@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import type * as ts from 'typescript';
 
 export function getScriptSnapshot(code: string): ts.IScriptSnapshot {
@@ -13,7 +15,8 @@ export function requireTs(typescriptPath?: string): typeof ts {
     if (typescriptPath) {
       return require(typescriptPath);
     }
-  } catch (_) {
+  }
+  catch (_) {
     // ..
   }
 

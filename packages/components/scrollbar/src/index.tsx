@@ -1,7 +1,6 @@
 import React from 'react';
+import type { ScrollMode } from './constant';
 import styles from './index.jss';
-
-import { ScrollMode } from './constant';
 
 export interface ScrollBarProps {
   width: number;

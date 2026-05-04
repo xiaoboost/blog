@@ -1,7 +1,6 @@
-import { BuildOptions, BuildContext, BuildResult, context, OnLoadResult } from 'esbuild';
-import { join } from 'path';
 import { builtinModules } from 'module';
-import {
+import { join } from 'path';
+import type {
   BundlerHooks,
   BundlerInstance,
   BuilderInstance,
@@ -13,6 +12,7 @@ import {
   OnResolveCallbackResult,
   OnLoadCallbackResult,
 } from '@blog/types';
+import { type BuildOptions, type BuildContext, type BuildResult, type OnLoadResult, context } from 'esbuild';
 import { AsyncSeriesBailHook, AsyncSeriesHook, SyncWaterfallHook } from 'tapable';
 import { BridgePlugin } from './bridge';
 import { BundleFileName, isBundleFile } from './utils';
@@ -46,7 +46,8 @@ export class Bundler implements BundlerInstance {
     // 有实例，则直接重新构建
     if (this.instance) {
       this.buildResult = await this.instance.rebuild();
-    } else {
+    }
+    else {
       const { builder, hooks } = this;
       const { options: opt, root } = builder;
       const esbuildConfig: BuildOptions = hooks.initialization.call({
@@ -60,8 +61,12 @@ export class Bundler implements BundlerInstance {
         logLevel: 'silent',
         sourcemap: 'external',
         minify: false,
-        mainFields: ['source', 'module', 'main'],
-        resolveExtensions: ['.ts', '.tsx', '.mjs', '.js', '.jsx', '.json'],
+        mainFields: [
+          'source', 'module', 'main',
+        ],
+        resolveExtensions: [
+          '.ts', '.tsx', '.mjs', '.js', '.jsx', '.json',
+        ],
         publicPath: opt.publicPath,
         external: builtinModules.slice(),
         splitting: false,

@@ -1,4 +1,4 @@
-import { forEachStack, forOnceStack, isFirstRun, EachSetupHook, OnceSetupHook } from './store';
+import { type EachSetupHook, type OnceSetupHook, forEachStack, forOnceStack, isFirstRun } from './store';
 
 /** 每次运行都会调用 */
 export function forEach(setup: EachSetupHook) {

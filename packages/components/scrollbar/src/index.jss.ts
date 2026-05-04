@@ -6,10 +6,10 @@ export default createStyles({
   slider: {},
   disable: {},
   scrollbar: {
-    position: 'absolute',
-    background: 'transparent',
-    top: 0,
-    right: 0,
+    "position": 'absolute',
+    "background": 'transparent',
+    "top": 0,
+    "right": 0,
 
     '&$invisible': {
       opacity: 0,
@@ -20,7 +20,7 @@ export default createStyles({
       transition: 'opacity .2s linear',
     },
     '&$disable': {
-      display: 'none',
+      "display": 'none',
       'pointer-events': 'none',
     },
     '& $slider': {

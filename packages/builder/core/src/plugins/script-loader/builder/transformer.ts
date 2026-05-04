@@ -1,6 +1,6 @@
-import type { BuilderPlugin } from '@blog/types';
 import { readFile } from 'fs/promises';
 import { dirname } from 'path';
+import type { BuilderPlugin } from '@blog/types';
 
 import * as ts from 'typescript';
 
@@ -13,8 +13,8 @@ function findExportDefault(sourceFile: ts.SourceFile) {
 
   for (const statement of sourceFile.statements) {
     if (
-      ts.isExportAssignment(statement) &&
-      statement.expression.getFullText(sourceFile).trim() === 'assets'
+      ts.isExportAssignment(statement)
+      && statement.expression.getFullText(sourceFile).trim() === 'assets'
     ) {
       range[0] = statement.getStart(sourceFile);
       range[1] = statement.getEnd();

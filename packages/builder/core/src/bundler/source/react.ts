@@ -1,7 +1,7 @@
-import { AnyObject } from '@xiao-ai/utils';
+import type { AnyObject } from '@xiao-ai/utils';
 
+import { type ReactNode, createElement } from 'react';
 import { renderToString } from 'react-dom/server';
-import { ReactNode, createElement } from 'react';
 import { publicPath, archivePath, tagPath, aboutPath } from '../../constant';
 
 export function createHtml<T extends AnyObject>(
@@ -10,8 +10,8 @@ export function createHtml<T extends AnyObject>(
   const prefix = '<!DOCTYPE html>';
   return (param: Omit<T, 'archivePath' | 'tagPath' | 'aboutPath'>) => {
     return (
-      prefix +
-      renderToString(
+      prefix
+      + renderToString(
         createElement(render as any, {
           publicPath,
           archivePath,

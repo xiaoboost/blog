@@ -1,7 +1,7 @@
-import type { BuilderPlugin } from '@blog/types';
-import { dirname } from 'path';
 import { readFile } from 'fs/promises';
+import { dirname } from 'path';
 import { transform } from '@blog/parser';
+import type { BuilderPlugin } from '@blog/types';
 import { mdxMatcher } from './utils';
 
 const pluginName = 'mdx-loader';

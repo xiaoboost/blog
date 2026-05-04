@@ -1,5 +1,5 @@
-import { expect, describe, it } from '@blog/test-toolkit';
 import { join } from 'path';
+import { expect, describe, it } from '@blog/test-toolkit';
 import { WorkerController } from '../utils/worker';
 
 const fixturesDir = join(__dirname, 'fixtures');
@@ -21,7 +21,9 @@ describe('WorkerController', () => {
       worker.send('third'),
     ]);
 
-    expect(results).deep.eq(['first', 'second', 'third']);
+    expect(results).deep.eq([
+      'first', 'second', 'third',
+    ]);
     await worker.worker.terminate();
   });
 
@@ -31,7 +33,8 @@ describe('WorkerController', () => {
     let caught: Error | undefined;
     try {
       await worker.send('throw');
-    } catch (e) {
+    }
+    catch (e) {
       caught = e as Error;
     }
 
@@ -48,7 +51,8 @@ describe('WorkerController', () => {
     let caught = false;
     try {
       await worker.send('throw');
-    } catch (_) {
+    }
+    catch (_) {
       caught = true;
     }
 

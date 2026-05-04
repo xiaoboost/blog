@@ -1,10 +1,10 @@
-import React from 'react';
 import { forEach, defineUtils, RuntimeBuilder as Builder, isPreBuild } from '@blog/context/runtime';
 import { stringifyClass } from '@xiao-ai/utils';
-import { getCustomTextByPost, getCustomFontByData, getCustomFontByProps } from './utils';
+import React from 'react';
 
-import styles from './index.jss';
 import script from './font-block.script';
+import styles from './index.jss';
+import { getCustomTextByPost, getCustomFontByData, getCustomFontByProps } from './utils';
 
 const componentName = 'font-block';
 
@@ -102,8 +102,8 @@ export function FontBlock(props: FontBlockProps) {
         direction === 'horizontal'
           ? styles.classes.fontBlockHorizontal
           : direction === 'vertical'
-          ? styles.classes.fontBlockVertical
-          : styles.classes.fontBlockVerticalRight,
+            ? styles.classes.fontBlockVertical
+            : styles.classes.fontBlockVerticalRight,
         indent ? '' : styles.classes.fontBlockNoIndent,
       )}
       style={{

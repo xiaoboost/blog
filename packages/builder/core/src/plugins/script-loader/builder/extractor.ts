@@ -1,7 +1,7 @@
-import type { BuilderPlugin, AssetData } from '@blog/types';
 import { basename } from 'path';
-import { EntrySuffix } from '../utils';
+import type { BuilderPlugin, AssetData } from '@blog/types';
 import { isBundleFile, BundleFileName } from '../../../bundler/utils';
+import { EntrySuffix } from '../utils';
 
 const pluginName = 'asset-extractor';
 

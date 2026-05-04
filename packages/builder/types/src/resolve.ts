@@ -1,4 +1,4 @@
-import { ImportKind } from 'esbuild';
+import type { ImportKind } from 'esbuild';
 
 export interface ResolveResult {
   path: string;

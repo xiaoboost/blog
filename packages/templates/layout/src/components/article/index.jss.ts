@@ -3,9 +3,9 @@ import { createStyles, mainWidth, mediaPhone, headerBodyMargin } from '@blog/sty
 export default createStyles({
   mainArticle: {},
   mainArticleWrapper: {
-    flex: '1 auto',
-    display: 'flex',
-    justifyContent: 'center',
+    "flex": '1 auto',
+    "display": 'flex',
+    "justifyContent": 'center',
 
     '& $mainArticle': {
       display: 'flex',

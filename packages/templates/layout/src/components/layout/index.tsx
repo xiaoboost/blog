@@ -1,17 +1,14 @@
-import React from 'react';
-
-import { PropsWithChildren } from 'react';
-import { normalizeUrl } from '@blog/node';
-
-import type { PreloadAssetData } from '@blog/types';
 import { ScrollBar } from '@blog/component-scrollbar';
+import { normalizeUrl } from '@blog/node';
 import { HMRClientScriptPath } from '@blog/shared';
-import { Header, HeaderProps } from '../header';
-import { Footer } from '../footer';
-import { Article, ArticleProps } from '../article';
-import { GotoTop } from '../goto-top';
+import type { PreloadAssetData } from '@blog/types';
+import { default as React, type PropsWithChildren } from 'react';
 
 import favicon from '../../assets/images/favicon.ico';
+import { type ArticleProps, Article } from '../article';
+import { Footer } from '../footer';
+import { GotoTop } from '../goto-top';
+import { type HeaderProps, Header } from '../header';
 
 export interface LayoutProps extends HeaderProps, ArticleProps {
   /** 网站标题 */
@@ -42,24 +39,24 @@ export function Layout(props: PropsWithChildren<LayoutProps>) {
   const publicPath = props.publicPath ?? '/';
 
   return (
-    <html lang='zh-cmn-Hans-CN'>
+    <html lang="zh-cmn-Hans-CN">
       <head>
         <title>{props.pageTitle}</title>
-        <meta name='charset' content='utf-8' />
-        {props.author && <meta name='author' content={props.author} />}
-        {props.description && <meta name='description' content={props.description} />}
+        <meta name="charset" content="utf-8" />
+        {props.author && <meta name="author" content={props.author} />}
+        {props.description && <meta name="description" content={props.description} />}
         {(props.keywords ?? []).length > 0 && (
-          <meta name='keywords' content={props.keywords?.join(',')} />
+          <meta name="keywords" content={props.keywords?.join(',')} />
         )}
-        <meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1' />
-        <meta name='renderer' content='webkit' />
-        <meta name='force-rendering' content='webkit' />
-        <meta httpEquiv='X-UA-Compatible' content='IE=edge,chrome=1' />
-        <link rel='short icon' href={favicon} />
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+        <meta name="renderer" content="webkit" />
+        <meta name="force-rendering" content="webkit" />
+        <meta httpEquiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+        <link rel="short icon" href={favicon} />
         {(props.preloadAssets ?? []).map((asset, i) => (
           <link
             key={`preload-${i}`}
-            rel='preload'
+            rel="preload"
             href={normalizeUrl(publicPath, asset.href)}
             as={asset.as}
             type={asset.type}
@@ -67,12 +64,12 @@ export function Layout(props: PropsWithChildren<LayoutProps>) {
             media={asset.media}
           />
         ))}
-        {props.hmr ? <script type='text/javascript' src={HMRClientScriptPath} /> : ''}
+        {props.hmr ? <script type="text/javascript" src={HMRClientScriptPath} /> : ''}
         {props.styles.map((pathname, i) => (
           <link
             key={`style-${i}`}
-            rel='stylesheet'
-            type='text/css'
+            rel="stylesheet"
+            type="text/css"
             href={normalizeUrl(publicPath, pathname)}
           />
         ))}
@@ -82,11 +79,11 @@ export function Layout(props: PropsWithChildren<LayoutProps>) {
         <Article bodyClassName={props.bodyClassName}>{props.children}</Article>
         <Footer />
         <GotoTop />
-        <ScrollBar width={8} mode='y' />
+        <ScrollBar width={8} mode="y" />
         {props.scripts.map((pathname, i) => (
           <script
             key={`script-${i}`}
-            type='text/javascript'
+            type="text/javascript"
             src={normalizeUrl(publicPath, pathname)}
           />
         ))}

@@ -1,14 +1,13 @@
+import { type Server as HTTPServer, createServer } from 'http';
+import path from 'path';
+import { type AssetData, type BuilderPlugin } from '@blog/types';
+import { remove, delay } from '@xiao-ai/utils';
 import Koa from 'koa';
 import Ws from 'koa-websocket';
-import path from 'path';
 
-import type { BuilderPlugin } from '@blog/types';
-import { createServer, Server as HTTPServer } from 'http';
-import { AssetData } from '@blog/types';
-import { WebSocket } from 'ws';
-import { remove, delay } from '@xiao-ai/utils';
+import type { WebSocket } from 'ws';
 import { staticServe, transformServe } from './middleware';
-import { HMRData, HMRKind, HMRUpdateKind, DevOptions } from './types';
+import { type HMRData, type DevOptions, HMRKind, HMRUpdateKind } from './types';
 import { isFileEqual, getHtmlDiff, getAllLocalIp } from './utils';
 
 const pluginName = 'development';
@@ -35,12 +34,14 @@ function getFilesDiff(files: AssetData[], vfs: Map<string, Buffer>) {
         path: file.path,
         code: file.content.toString(),
       });
-    } else if (ext === '.css') {
+    }
+    else if (ext === '.css') {
       data.updates.push({
         kind: HMRUpdateKind.CSS,
         path: file.path,
       });
-    } else if (ext === '.html') {
+    }
+    else if (ext === '.html') {
       data.updates.push(...getHtmlDiff(oldFile.toString(), file.content.toString(), file.path));
     }
   }
@@ -87,7 +88,8 @@ export const Development = (opt?: DevOptions): BuilderPlugin => ({
           remove(sockets, socket);
         });
       });
-    } else {
+    }
+    else {
       app.use(staticServe(vfs, builder)).listen(port);
     }
 
@@ -125,7 +127,8 @@ export const Development = (opt?: DevOptions): BuilderPlugin => ({
             server = undefined;
             resolve();
           });
-        } else {
+        }
+        else {
           resolve();
         }
       });

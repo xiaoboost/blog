@@ -1,19 +1,19 @@
-import type { BuilderOptions } from '@blog/types';
 import { join } from 'path';
-import type { Builder } from './builder';
+import type { BuilderOptions } from '@blog/types';
 
-import { getCoreRoot } from '../utils';
-import { LocalPackageRequirer } from '../plugins/local-package-requirer';
-import { FileLoader } from '../plugins/file-loader';
-import { PathLoader } from '../plugins/path-loader';
-import { Resolver } from '../plugins/resolver';
-import { JssLoader } from '../plugins/jss-loader';
-import { ScriptLoader } from '../plugins/script-loader';
-import { PostLoader } from '../plugins/post-loader';
 import { AssetExtractor } from '../plugins/asset-extractor';
-import { Cname } from '../plugins/cname';
 import { CacheController } from '../plugins/cache';
+import { Cname } from '../plugins/cname';
+import { FileLoader } from '../plugins/file-loader';
+import { JssLoader } from '../plugins/jss-loader';
+import { LocalPackageRequirer } from '../plugins/local-package-requirer';
+import { PathLoader } from '../plugins/path-loader';
+import { PostLoader } from '../plugins/post-loader';
 import { RawLoader } from '../plugins/raw-loader';
+import { Resolver } from '../plugins/resolver';
+import { ScriptLoader } from '../plugins/script-loader';
+import { getCoreRoot } from '../utils';
+import type { Builder } from './builder';
 
 const getAssetNames = (name: string, isProduction: boolean) =>
   isProduction ? `${name}/[name].[hash].[ext]` : `${name}/[name].[ext]`;
@@ -78,7 +78,9 @@ export async function applyPlugin(builder: Builder) {
     if (opt.debug) {
       const { Intercepter } = await import('../plugins/intercepter/index.js');
       Intercepter({
-        excludes: ['logger', 'watcher', 'cname'],
+        excludes: [
+          'logger', 'watcher', 'cname',
+        ],
         outFile: process.env.ENV === 'GITHUB_CI' ? process.env.ENV_OUTPUT : undefined,
       }).apply(builder);
     }

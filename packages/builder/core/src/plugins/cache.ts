@@ -1,7 +1,7 @@
-import type { CacheAccessor, BuilderPlugin } from '@blog/types';
+import { readFile, writeFile, mkdir } from 'fs/promises';
 import { join, dirname } from 'path';
 import { normalize } from '@blog/node';
-import { readFile, writeFile, mkdir } from 'fs/promises';
+import type { CacheAccessor, BuilderPlugin } from '@blog/types';
 
 export const CacheController = (): BuilderPlugin => ({
   name: 'cacheController',

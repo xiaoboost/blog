@@ -28,7 +28,8 @@ export class FileMemory extends Map<string, FileData> {
         version: 1,
         snapshot: getScriptSnapshot(code),
       });
-    } else {
+    }
+    else {
       const oldData = this.get(file)!;
       const oldCode = oldData.snapshot.getText(0, Infinity);
 

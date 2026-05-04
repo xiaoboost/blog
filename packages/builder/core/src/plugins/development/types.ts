@@ -14,31 +14,31 @@ export enum HMRUpdateKind {
 /** HMR 更新数据 */
 export type HMRUpdate =
   | {
-      kind: HMRUpdateKind.CSS;
-      path: string;
-    }
+    kind: HMRUpdateKind.CSS;
+    path: string;
+  }
   | {
-      kind: HMRUpdateKind.JS;
-      path: string;
-      code: string;
-    }
+    kind: HMRUpdateKind.JS;
+    path: string;
+    code: string;
+  }
   | {
-      kind: HMRUpdateKind.HTML;
-      path: string;
-      selector: string;
-      content: string;
-    };
+    kind: HMRUpdateKind.HTML;
+    path: string;
+    selector: string;
+    content: string;
+  };
 
 /** HMR 数据 */
 export type HMRData =
   | {
-      kind: HMRKind.Error;
-      errors: string[];
-    }
+    kind: HMRKind.Error;
+    errors: string[];
+  }
   | {
-      kind: HMRKind.Update;
-      updates: HMRUpdate[];
-    };
+    kind: HMRKind.Update;
+    updates: HMRUpdate[];
+  };
 
 /** 服务器选项 */
 export interface DevOptions {

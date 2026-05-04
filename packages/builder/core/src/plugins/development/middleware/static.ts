@@ -1,8 +1,8 @@
-import { ParameterizedContext } from 'koa';
 import { join } from 'path';
-import { getType } from 'mime';
 import { normalize } from '@blog/node';
 import type { BuilderInstance } from '@blog/types';
+import type { ParameterizedContext } from 'koa';
+import { getType } from 'mime';
 
 export function staticServe(vfs: Map<string, Buffer>, builder: BuilderInstance) {
   return (ctx: ParameterizedContext) => {

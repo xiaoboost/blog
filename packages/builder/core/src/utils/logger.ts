@@ -1,4 +1,4 @@
-import { LogLevel, LogLevelEnum, LoggerInstance } from '@blog/types';
+import { type LogLevel, type LoggerInstance, LogLevelEnum } from '@blog/types';
 import type { Chalk } from 'chalk';
 
 import Moment from 'moment';

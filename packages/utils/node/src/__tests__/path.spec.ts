@@ -1,5 +1,5 @@
-import { expect, describe, it } from '@blog/test-toolkit';
 import { platform } from 'process';
+import { expect, describe, it } from '@blog/test-toolkit';
 import { isRootDirectory } from '../path';
 
 describe('path', () => {
@@ -8,7 +8,8 @@ describe('path', () => {
       expect(isRootDirectory('C:/')).true;
       expect(isRootDirectory('D:/')).true;
       expect(isRootDirectory('C:/test/tmp')).false;
-    } else {
+    }
+    else {
       expect(isRootDirectory('/')).true;
       expect(isRootDirectory('/test/tmp')).false;
     }

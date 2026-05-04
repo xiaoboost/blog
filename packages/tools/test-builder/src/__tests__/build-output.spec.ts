@@ -1,7 +1,7 @@
-import { expect, describe, it } from '@blog/test-toolkit';
-import { before } from 'mocha';
 import { Builder } from '@blog/core';
+import { expect, describe, it } from '@blog/test-toolkit';
 import type { AssetData } from '@blog/types';
+import { before } from 'mocha';
 
 /**
  * HTML 链接提取：从 HTML 中提取所有 href 和 src
@@ -49,7 +49,9 @@ function linkToAssetPaths(link: string): string[] {
   }
 
   // 无扩展名无斜杠 → 既可能是文件也可能是目录
-  return [normalized, `${normalized}/index.html`, `${normalized}.html`];
+  return [
+    normalized, `${normalized}/index.html`, `${normalized}.html`,
+  ];
 }
 
 describe('博客构建 e2e', () => {

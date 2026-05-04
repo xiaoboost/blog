@@ -1,11 +1,11 @@
+import { ModuleLoader } from '@blog/context/web';
 import { headerBodyMargin, mainWidth } from '@blog/styles/constant';
 import { getCurrentScriptSrc } from '@blog/web';
-import { ModuleLoader } from '@blog/context/web';
 import { supportsPassive, addClassName, removeClassName } from '@xiao-ai/utils/web';
 
-import tocStyles from './index.jss';
 import postStyles from '../post/index.jss';
 import { levelLimit, tocMarginLeft, tocWidth } from './constant';
+import tocStyles from './index.jss';
 
 const enum Status {
   Init,
@@ -41,9 +41,9 @@ function active() {
   const options: AddEventListenerOptions | boolean = !supportsPassive
     ? false
     : {
-        passive: true,
-        capture: false,
-      };
+      passive: true,
+      capture: false,
+    };
 
   let titlePosition: TitlePosition[] = [];
   let status = Status.Init;
@@ -60,7 +60,8 @@ function active() {
       menu.style.position = 'fixed';
       menu.style.top = `${headerBodyMargin}px`;
       menu.style.right = `calc(50vw - ${mainWidth / 2}px - ${tocWidth}px - ${tocMarginLeft}px)`;
-    } else if (top <= bodyTop && (status === Status.Follow || status === Status.Init)) {
+    }
+    else if (top <= bodyTop && (status === Status.Follow || status === Status.Init)) {
       status = Status.Static;
       menu.style.position = '';
       menu.style.top = '';
@@ -75,7 +76,8 @@ function active() {
     menuItems.forEach((el) => {
       if (el === highLightItem) {
         addClassName(highLightItem, tocStyles.classes.menuItemHighlight);
-      } else {
+      }
+      else {
         removeClassName(el, tocStyles.classes.menuItemHighlight);
       }
     });
@@ -83,7 +85,8 @@ function active() {
     menuLists.forEach((el) => {
       if (el === highLightListItem) {
         addClassName(highLightListItem, tocStyles.classes.menuListHighlight);
-      } else {
+      }
+      else {
         removeClassName(el, tocStyles.classes.menuListHighlight);
       }
     });
@@ -135,6 +138,7 @@ if (process.env.NODE_ENV === 'development' && ModuleLoader) {
     currentScript: getCurrentScriptSrc(),
     active,
   });
-} else {
+}
+else {
   active();
 }

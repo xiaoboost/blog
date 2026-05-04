@@ -1,9 +1,8 @@
-import React from 'react';
-
-import { isString, isUndef } from '@xiao-ai/utils';
-import { parseQuery } from '@blog/node';
 import { CodeBlock } from '@blog/mdx-code-block-normal';
-import { TsCodeBlock, ScriptKind, Platform } from '@blog/mdx-code-block-typescript';
+import { type ScriptKind, type Platform, TsCodeBlock } from '@blog/mdx-code-block-typescript';
+import { parseQuery } from '@blog/node';
+import { isString, isUndef } from '@xiao-ai/utils';
+import React from 'react';
 
 export interface Props {
   children?: React.ReactElement<{
@@ -43,7 +42,8 @@ export function pre(props: Props) {
         {data.children}
       </TsCodeBlock>
     );
-  } else {
+  }
+  else {
     return <CodeBlock lang={lang}>{data.children}</CodeBlock>;
   }
 }

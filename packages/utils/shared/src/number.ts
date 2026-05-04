@@ -22,11 +22,14 @@ export function toRound(origin: number, bits = 6) {
   let str = '';
   if (toInt === 0) {
     str = round;
-  } else if (toInt > 0) {
+  }
+  else if (toInt > 0) {
     str = round + '0'.repeat(toInt);
-  } else if (-toInt >= bits) {
+  }
+  else if (-toInt >= bits) {
     str = `0.${'0'.repeat(-toInt - bits)}${round}`;
-  } else {
+  }
+  else {
     str = `${round.slice(0, toInt)}.${round.slice(toInt)}`;
   }
 
