@@ -9,16 +9,16 @@ export default createStyles({
   glossActive: {},
   glossSeparator: {},
   glossWrapper: {
-    "position": 'relative',
-    "margin": [0, 2],
+    position: 'relative',
+    margin: [0, 2],
 
     '& $glossContent': {
-      "display": 'inline',
-      "cursor": 'pointer',
-      "position": 'relative',
-      "padding": [2, 0],
-      "transition": `padding ${duration} ease-in-out, background-color ${duration} ease-in-out`,
-      "backgroundImage": `repeating-linear-gradient(
+      display: 'inline',
+      cursor: 'pointer',
+      position: 'relative',
+      padding: [2, 0],
+      transition: `padding ${duration} ease-in-out, background-color ${duration} ease-in-out`,
+      backgroundImage: `repeating-linear-gradient(
         to right,
         /* 实线部分从 0px 开始 */
         ${BlackLighter.toString()} 0,
@@ -29,9 +29,9 @@ export default createStyles({
         /* 透明部分到 7px 结束 */
         transparent 7px
       )`,
-      "backgroundSize": [7, 1],
-      "backgroundRepeat": 'repeat-x',
-      "backgroundPosition": [0, 19],
+      backgroundSize: [7, 1],
+      backgroundRepeat: 'repeat-x',
+      backgroundPosition: [0, 19],
 
       '&:hover': {
         backgroundSize: [4, 1],

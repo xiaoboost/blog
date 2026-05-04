@@ -12,6 +12,7 @@ import {
   BlackLight,
   SelectedColor,
   SelectedBgColor,
+  DarkMode,
 } from '@blog/styles';
 
 const linkColor = Color.rgb(23, 81, 153).alpha(0.6);
@@ -36,24 +37,24 @@ const global = createStyles({
       fontFamily: FontDefault,
       fontSize: FontDefaultSize,
     },
-    'a': {
-      'cursor': 'pointer',
-      'textDecoration': 'none',
-      'color': linkColor.toString(),
-      'transition': 'color .2s, background .4s',
+    a: {
+      cursor: 'pointer',
+      textDecoration: 'none',
+      color: linkColor.toString(),
+      transition: 'color .2s, background .4s',
 
       '&:hover, &:focus': {
         outline: 0,
         color: linkHoverColor.toString(),
       },
     },
-    'body': {
-      'display': 'flex',
-      'flexDirection': 'column',
-      'backgroundImage': "url('../assets/images/bg.svg')",
+    body: {
+      display: 'flex',
+      flexDirection: 'column',
+      backgroundImage: "url('../assets/images/bg.svg')",
 
       // 禁用 body 的滚动条
-      'overflow': '-moz-scrollbars-none',
+      overflow: '-moz-scrollbars-none',
       '&::-webkit-scrollbar': {
         width: '0 !important',
       },
@@ -81,6 +82,11 @@ const global = createStyles({
     '::-moz-selection': {
       color: SelectedColor.toString(),
       backgroundColor: SelectedBgColor.toString(),
+    },
+    [DarkMode]: {
+      body: {
+        backgroundImage: 'none',
+      },
     },
   },
 });

@@ -47,7 +47,7 @@ export default createStyles({
       transition: 'border-color .3s',
     },
     '& $lspErrorToken': {
-      backgroundImage: `url("./assets/red-under-wave-line.svg")`,
+      backgroundImage: 'url("./assets/red-under-wave-line.svg")',
       backgroundAttachment: 'scroll',
       backgroundClip: 'border-box',
       backgroundOrigin: 'padding-box',
@@ -65,9 +65,9 @@ export default createStyles({
       marginBottom: '0.2em !important',
     },
     '& $lspError': {
-      "backgroundColor": ErrorBgColor.toString(),
-      "borderLeft": `2px solid ${ErrorBorderColor.toString()}`,
-      "transition": 'background-color 200ms ease',
+      backgroundColor: ErrorBgColor.toString(),
+      borderLeft: `2px solid ${ErrorBorderColor.toString()}`,
+      transition: 'background-color 200ms ease',
 
       '&$lspErrorLineHighlight': {
         backgroundColor: ErrorBgHoverColor.toString(),
@@ -231,16 +231,16 @@ export default createStyles({
     },
   },
   lsInfoBox: {
-    "position": 'fixed',
-    "fontSize": 12,
-    "fontFamily": FontMono,
-    "transform": 'translateY(14px)',
-    "color": Black.toString(),
-    "border": `1px solid ${Gray.toString()}`,
-    "backgroundColor": GrayLight.toString(),
-    "lineHeight": '1.5em',
-    "padding": '4px 6px',
-    "boxShadow": '0 0 6px rgb(0 0 0 / 20%)',
+    position: 'fixed',
+    fontSize: 12,
+    fontFamily: FontMono,
+    transform: 'translateY(14px)',
+    color: Black.toString(),
+    border: `1px solid ${Gray.toString()}`,
+    backgroundColor: GrayLight.toString(),
+    lineHeight: '1.5em',
+    padding: '4px 6px',
+    boxShadow: '0 0 6px rgb(0 0 0 / 20%)',
 
     '& pre': {
       margin: 0,
