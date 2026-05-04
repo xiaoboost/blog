@@ -1,8 +1,8 @@
-import React from 'react';
-
+import { isPreBuild } from '@blog/context/runtime';
 import { normalizeUrl } from '@blog/node';
 import { stringifyClass } from '@xiao-ai/utils';
-import { isPreBuild } from '@blog/context/runtime';
+import React from 'react';
+
 import { SiteTitleFontBucket } from '../../constant/title';
 
 import styles from './index.jss';

@@ -1,5 +1,5 @@
-import type { RuntimeHooks } from './hooks';
 import type { PreloadAssetData } from './asset';
+import type { RuntimeHooks } from './hooks';
 
 /** 运行时数据 */
 export interface RuntimeData {

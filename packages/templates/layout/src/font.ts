@@ -1,5 +1,5 @@
-import type { AssetData } from '@blog/types';
 import { forEach, RuntimeBuilder as Builder, replaceAsset } from '@blog/context/runtime';
+import type { AssetData } from '@blog/types';
 import {
   SiteTitleFontBucket,
   ListTitleFontBucket,
@@ -10,7 +10,9 @@ import exportAssets from './layout.script';
 forEach((runtime) => {
   runtime.hooks.afterPreBuild.tapPromise('layout:title-font', async (assets) => {
     const minify = Builder.options.mode === 'production';
-    const fonts = [SiteTitleFontBucket, ListTitleFontBucket, ListItemTitleFontBucket];
+    const fonts = [
+      SiteTitleFontBucket, ListTitleFontBucket, ListItemTitleFontBucket,
+    ];
 
     // 最小化字体文件
     await Promise.all(
@@ -33,10 +35,10 @@ forEach((runtime) => {
 
     const layoutStylesContent = layoutStyles.content.toString('utf-8');
     const newLayoutStyleBuffer = Buffer.from(
-      layoutStylesContent.trim() +
-        SiteTitleFontBucket.getFontFaceCss().trim() +
-        ListTitleFontBucket.getFontFaceCss().trim() +
-        ListItemTitleFontBucket.getFontFaceCss().trim(),
+      layoutStylesContent.trim()
+      + SiteTitleFontBucket.getFontFaceCss().trim()
+      + ListTitleFontBucket.getFontFaceCss().trim()
+      + ListItemTitleFontBucket.getFontFaceCss().trim(),
     );
     const newLayoutStylePath = Builder.renameAsset({
       path: layoutStyles.path.replace(/\.[a-f0-9]{32}/, ''),

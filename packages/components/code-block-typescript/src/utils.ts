@@ -1,10 +1,10 @@
-import type { PostExportData as PostData, Mdx } from '@blog/types';
+import { spawn } from 'child_process';
+import { mkdir, writeFile, stat } from 'fs/promises';
 import { builtinModules } from 'module';
 import { join } from 'path';
-import { mkdir, writeFile, stat } from 'fs/promises';
-import { spawn } from 'child_process';
-import type { ScriptKind as Kind, Platform } from './typescript';
+import type { PostExportData as PostData, Mdx } from '@blog/types';
 import { devDependencies as devPkg } from '../package.json';
+import type { ScriptKind as Kind, Platform } from './typescript';
 
 const TsLangMatcher = /^(t|j)sx?($|\?)/;
 const DefaultLibs = ['@types/react', `@types/node@${devPkg['@types/node']}`];
@@ -38,10 +38,10 @@ function getImportModuleTypes(code: string) {
 
     // 跳过路径和 nodejs 内置库还有 blog 内置库以及临时包
     if (
-      /^(\.)?\//.test(pkgName) ||
-      builtinModules.includes(pkgName) ||
-      pkgName.startsWith('@blog/') ||
-      pkgName.startsWith('@@local/')
+      /^(\.)?\//.test(pkgName)
+      || builtinModules.includes(pkgName)
+      || pkgName.startsWith('@blog/')
+      || pkgName.startsWith('@@local/')
     ) {
       continue;
     }
@@ -54,13 +54,15 @@ function getImportModuleTypes(code: string) {
       }
 
       result.add(pkgName);
-    } else {
+    }
+    else {
       const typePkgName = `@types/${pkgName}`;
 
       // 如果已经有 type 库，则跳过当前
       if (result.has(typePkgName)) {
         continue;
-      } else {
+      }
+      else {
         result.add(pkgName);
       }
     }
@@ -145,7 +147,8 @@ export async function npmInstall(libs: string[], cwd: string, log?: (msg: string
 
   try {
     await stat(cachePackageJsonPath);
-  } catch (_) {
+  }
+  catch (_) {
     await writeFile(
       cachePackageJsonPath,
       JSON.stringify(
@@ -160,7 +163,9 @@ export async function npmInstall(libs: string[], cwd: string, log?: (msg: string
   }
 
   return new Promise<void>((resolve, reject) => {
-    const args = ['install', ...libs, '-D', '--ignore-scripts'];
+    const args = [
+      'install', ...libs, '-D', '--ignore-scripts',
+    ];
     const childProcess = spawn('npm', args, {
       shell: true,
       stdio: 'pipe',
@@ -184,7 +189,8 @@ export async function npmInstall(libs: string[], cwd: string, log?: (msg: string
     childProcess.on('exit', (code) => {
       if (code === 0) {
         resolve();
-      } else {
+      }
+      else {
         reject(new Error(`npm install 运行出错，请使用 --log-level=Debug 参数来查看错误日志`));
       }
     });

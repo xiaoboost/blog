@@ -1,6 +1,6 @@
-import type { BuilderPlugin } from '@blog/types';
 import { dirname } from 'path';
 import { normalize } from '@blog/node';
+import type { BuilderPlugin } from '@blog/types';
 import { isCssImport } from '../utils';
 
 const pluginName = 'path-loader';

@@ -4,7 +4,8 @@ import { dirname } from 'path';
 export async function writeFile(path: string, data: string | Buffer) {
   try {
     await rm(path);
-  } catch (err: any) {
+  }
+  catch (err: any) {
     if (err.code !== 'ENOENT') {
       throw err;
     }

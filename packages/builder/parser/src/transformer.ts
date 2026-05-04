@@ -1,9 +1,9 @@
-import { parse as parseYaml } from 'yaml';
-import type { PostMeta, PostData } from '@blog/types';
-import { toPinyin, normalize } from '@blog/node';
-import { Fixer } from '@blog/shared';
 import { stat } from 'fs/promises';
 import { join } from 'path';
+import { toPinyin, normalize } from '@blog/node';
+import { Fixer } from '@blog/shared';
+import type { PostMeta, PostData } from '@blog/types';
+import { parse as parseYaml } from 'yaml';
 
 import { parse, compile } from './parser';
 import { addTemplateUtilsExport, addPostAssetImport } from './utils';
@@ -24,7 +24,9 @@ export function getPostMetaData(content: string, fileName: string) {
     };
   }
 
-  const [, metaStr, mdContent] = result;
+  const [
+    , metaStr, mdContent,
+  ] = result;
   const meta = parseYaml(metaStr) as PostMeta;
 
   meta.content = mdContent.trim();
@@ -71,8 +73,8 @@ export async function getPostData(content: string, fileName: string) {
     ast: await parse(fileName, postContent),
     template: meta.template ?? 'post',
     description:
-      meta.description ??
-      meta.content
+      meta.description
+      ?? meta.content
         .trim()
         .slice(0, 200)
         .replace(/[\n\r]/g, ''),

@@ -1,5 +1,5 @@
-import React, { SVGProps } from 'react';
 import { stringifyClass } from '@xiao-ai/utils';
+import { default as React, type SVGProps } from 'react';
 
 import styles from './index.jss';
 
@@ -27,10 +27,10 @@ export function IconBox({
   return (
     <i className={stringifyClass(styles.classes.iconBox, className)} style={style}>
       <svg
-        version='1.1'
-        width='1em'
-        height='1em'
-        aria-hidden='true'
+        version="1.1"
+        width="1em"
+        height="1em"
+        aria-hidden="true"
         viewBox={viewBox}
         fill={fill}
         stroke={stroke}

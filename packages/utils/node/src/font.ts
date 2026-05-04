@@ -1,8 +1,8 @@
 import { Buffer } from 'buffer';
-import { parse } from 'path';
 import fs from 'fs/promises';
-import subsetFont from 'subset-font';
+import { parse } from 'path';
 import type { AssetData } from '@blog/types';
+import subsetFont from 'subset-font';
 import { normalize } from './path';
 import { toPinyin } from './string';
 
@@ -89,8 +89,8 @@ interface FontBucketBufferSourceOptions {
   fontContent: Buffer;
 }
 
-export type FontBucketOptions = FontBucketBaseOptions &
-  (FontBucketPathSourceOptions | FontBucketBufferSourceOptions);
+export type FontBucketOptions = FontBucketBaseOptions
+  & (FontBucketPathSourceOptions | FontBucketBufferSourceOptions);
 
 export class FontBucket {
   private options: FontBucketOptions;
@@ -221,11 +221,14 @@ export class FontBucket {
 
     if ('fontContent' in options && options.fontContent) {
       fontBuffer = options.fontContent;
-    } else if (options.fontSource && options.getFontContent) {
+    }
+    else if (options.fontSource && options.getFontContent) {
       fontBuffer = await options.getFontContent(options.fontSource);
-    } else if (options.fontSource) {
+    }
+    else if (options.fontSource) {
       fontBuffer = await fs.readFile(options.fontSource);
-    } else {
+    }
+    else {
       throw new Error('FontBucket: 需要提供 fontSource 或 fontContent 至少一个');
     }
 
@@ -244,14 +247,15 @@ export class FontBucket {
       this.resolvedFontPath = options.rename
         ? options.rename({ path: inputFontPath, content: this.minFont })
         : inputFontPath;
-    } else {
+    }
+    else {
       this.minFont = fontBuffer;
       // 不进行最小化时，为了加速构建，这里重命名使用内部的 Text 文本作为 hash
       this.resolvedFontPath = options.rename
         ? options.rename({
-            path: inputFontPath,
-            content: Buffer.from(Array.from(this.chars.values()).join('')),
-          })
+          path: inputFontPath,
+          content: Buffer.from(Array.from(this.chars.values()).join('')),
+        })
         : inputFontPath;
     }
 

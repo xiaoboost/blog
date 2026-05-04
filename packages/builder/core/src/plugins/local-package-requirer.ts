@@ -1,8 +1,7 @@
-import type { BuilderPlugin } from '@blog/types';
-
-import { dirname, isAbsolute } from 'path';
 import { builtinModules } from 'module';
+import { dirname, isAbsolute } from 'path';
 import { normalize } from '@blog/node';
+import type { BuilderPlugin } from '@blog/types';
 import { isCssImport } from '../utils';
 
 const pluginName = 'local-package';
@@ -70,7 +69,8 @@ export const LocalPackageRequirer = (): BuilderPlugin => ({
               namespace: pluginName,
             };
           }
-        } else if (isExternal(args.path)) {
+        }
+        else if (isExternal(args.path)) {
           return {
             path: `${normalize(args.importer)}_${args.path}_${moduleSuffix}`,
             namespace: pluginName,
@@ -93,7 +93,8 @@ import { createRequire } from "module";
 export default createRequire("${file}");
             `.trim(),
           };
-        } else if (moduleSuffixMatcher.test(args.path)) {
+        }
+        else if (moduleSuffixMatcher.test(args.path)) {
           const [file, moduleName] = parsePathFromModulePath(args.path);
           return {
             resolveDir: dirname(file),

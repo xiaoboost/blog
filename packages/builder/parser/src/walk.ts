@@ -11,7 +11,8 @@ export function getChildrenContent(paragraph: Mdx.Syntax) {
     if (child.type === 'text') {
       content += child.value;
       continue;
-    } else {
+    }
+    else {
       content += getChildrenContent(child);
     }
   }

@@ -1,7 +1,7 @@
-import React from 'react';
 import { forEach } from '@blog/context/runtime';
 import { normalize } from '@blog/node';
 import type { PostBasicData } from '@blog/types';
+import React from 'react';
 
 export interface Props {
   href: string;
@@ -38,7 +38,7 @@ export function Link(post: PostBasicData) {
     }
 
     return (
-      <a target='_blank' rel='noreferrer' href={href}>
+      <a target="_blank" rel="noreferrer" href={href}>
         {children}
       </a>
     );

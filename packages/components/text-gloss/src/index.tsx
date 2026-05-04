@@ -1,6 +1,6 @@
-import React from 'react';
-import { stringifyClass } from '@xiao-ai/utils';
 import { defineUtils } from '@blog/context/runtime';
+import { stringifyClass } from '@xiao-ai/utils';
+import React from 'react';
 
 import styles from './index.jss';
 import assets from './index.script';

@@ -1,6 +1,6 @@
-import { supportsPassive, addClassName, removeClassName, MouseButtons } from '@xiao-ai/utils/web';
 import { getScrollContainer, getDataFromEl, device } from '@blog/web';
-import { ScrollMode } from './constant';
+import { supportsPassive, addClassName, removeClassName, MouseButtons } from '@xiao-ai/utils/web';
+import type { ScrollMode } from './constant';
 
 import styles from './index.jss';
 
@@ -106,7 +106,8 @@ export class ScrollBar {
       scrollbar.style.height = '100%';
       scrollbar.style.width = `${width}px`;
       slider.style.width = `${width}px`;
-    } else {
+    }
+    else {
       scrollbar.style.width = '100%';
       scrollbar.style.height = `${width}px`;
       slider.style.height = `${width}px`;
@@ -117,9 +118,9 @@ export class ScrollBar {
     const options: AddEventListenerOptions | boolean = !supportsPassive
       ? false
       : {
-          passive: true,
-          capture: false,
-        };
+        passive: true,
+        capture: false,
+      };
 
     const triggerTrue = () => {
       mouse.isOver = true;
@@ -160,7 +161,8 @@ export class ScrollBar {
       scrollbar.style.position = 'fixed';
       window.addEventListener('resize', this.setSliderPositionFromContainer, options);
       window.addEventListener('scroll', this.setSliderPositionFromContainer, options);
-    } else {
+    }
+    else {
       // TODO: 内部元素应该用 ResizeObserver 监听
     }
 
@@ -177,7 +179,8 @@ export class ScrollBar {
       if (isScrollWindow) {
         window.removeEventListener('resize', this.setSliderPositionFromContainer, options);
         window.removeEventListener('scroll', this.setSliderPositionFromContainer, options);
-      } else {
+      }
+      else {
         // TODO: 内部元素应该用 ResizeObserver 监听
       }
     };
@@ -211,7 +214,8 @@ export class ScrollBar {
     if (isVertical) {
       slider.style.height = `${scrollbarLen}px`;
       slider.style.top = `${scrollOffset}px`;
-    } else {
+    }
+    else {
       slider.style.width = `${scrollbarLen}px`;
       slider.style.left = `${scrollOffset}px`;
     }

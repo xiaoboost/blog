@@ -1,5 +1,5 @@
-import type { AnyObject } from '@xiao-ai/utils';
 import type { AssetData } from '@blog/types';
+import type { AnyObject } from '@xiao-ai/utils';
 
 /** 获取文件名 */
 export type GetName = (opt: AnyObject) => string;

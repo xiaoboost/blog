@@ -1,6 +1,6 @@
-import React from 'react';
-import Katex, { KatexOptions } from 'katex';
 import { defineUtils } from '@blog/context/runtime';
+import { default as Katex, type KatexOptions } from 'katex';
+import React from 'react';
 
 import styles from './index.jss';
 import assets from './katex.script';

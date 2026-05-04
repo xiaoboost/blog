@@ -1,8 +1,8 @@
 import { RuntimeBuilder as Builder } from '@blog/context/runtime';
-import { FontSerif } from '@blog/styles';
 import { FontBucket, normalize } from '@blog/node';
+import { FontSerif } from '@blog/styles';
 import type { AssetData } from '@blog/types';
-import { CustomFontData } from './types';
+import type { CustomFontData } from './types';
 import { getFontContentBySrc } from './utils';
 
 export class CustomFont extends FontBucket implements CustomFontData {

@@ -1,5 +1,5 @@
-import React from 'react';
 import { isBaseType, isArray, isObject } from '@xiao-ai/utils';
+import React from 'react';
 import { getHeadAnchor } from '../to-content/utils';
 
 import styles from './index.jss';
@@ -13,14 +13,18 @@ function getHeadContent(props: React.ReactNode): string {
   try {
     if (isBaseType(props)) {
       return String(props);
-    } else if (isArray(props)) {
+    }
+    else if (isArray(props)) {
       return props.map(getHeadContent).join('');
-    } else if (isObject(props)) {
+    }
+    else if (isObject(props)) {
       return getHeadContent((props as any)?.props?.children ?? '');
-    } else {
+    }
+    else {
       return '';
     }
-  } catch (e: any) {
+  }
+  catch (e: any) {
     throw new Error(e);
   }
 }

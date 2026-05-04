@@ -1,6 +1,6 @@
+import { Builder } from '@blog/core';
 import yargs from 'yargs';
 
-import { Builder } from '@blog/core';
 import { buildOptions, watchOptions } from './utils';
 
 export function run() {

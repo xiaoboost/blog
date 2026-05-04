@@ -1,21 +1,21 @@
 import styles from './index.jss';
 
 const langLabel: Record<string, string> = {
-  html: 'HTML',
-  js: 'JavaScript',
-  jsx: 'JavaScript React',
-  javascript: 'JavaScript',
-  ts: 'TypeScript',
-  tsx: 'TypeScript React',
-  typescript: 'TypeScript',
-  c: 'C',
+  "html": 'HTML',
+  "js": 'JavaScript',
+  "jsx": 'JavaScript React',
+  "javascript": 'JavaScript',
+  "ts": 'TypeScript',
+  "tsx": 'TypeScript React',
+  "typescript": 'TypeScript',
+  "c": 'C',
   'c++': 'C++',
   'c#': 'C#',
-  c艹: 'C++',
-  python: 'Python',
-  bash: 'Bash',
-  haskell: 'Haskell',
-  json: 'JSON',
+  "c艹": 'C++',
+  "python": 'Python',
+  "bash": 'Bash',
+  "haskell": 'Haskell',
+  "json": 'JSON',
 };
 
 /**
@@ -104,7 +104,8 @@ function getTabCount(code: string, tabWidth: number) {
 
   if (space) {
     return Math.ceil(space[0].length / tabWidth);
-  } else {
+  }
+  else {
     return 0;
   }
 }
@@ -126,7 +127,8 @@ function addSplitLabelInCode(code: string, tabWidth: number, label = splitTag) {
       chars.splice(index, 0, label);
       index++;
       spaceIndex = 1;
-    } else {
+    }
+    else {
       spaceIndex++;
     }
 
@@ -146,7 +148,8 @@ export function addSplitLabel(code: string | string[], tabWidth: number, label =
 
     if (isSpace) {
       return addSplitLabelInSpace(currentTab, tabWidth, label);
-    } else {
+    }
+    else {
       currentTab = getTabCount(line, tabWidth);
       return addSplitLabelInCode(line, tabWidth, label);
     }
@@ -169,12 +172,15 @@ export function getMinSpaceWidth(str: string) {
 
       if (ans === 0 || space < ans) {
         return space;
-      } else {
+      }
+      else {
         return ans;
       }
     }, 0);
 
-  const widths = [2, 4, 8, 16].sort((pre, next) => {
+  const widths = [
+    2, 4, 8, 16,
+  ].sort((pre, next) => {
     const preRes = Math.abs(pre - result);
     const nextRes = Math.abs(next - result);
 

@@ -1,6 +1,6 @@
-import type { BuilderPlugin } from '@blog/types';
 import { dirname } from 'path';
 import { normalize } from '@blog/node';
+import type { BuilderPlugin } from '@blog/types';
 import { parsePath } from '../utils';
 
 const pluginName = 'raw-loader';

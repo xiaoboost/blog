@@ -1,5 +1,5 @@
 import path from 'path';
-import { AnyObject } from '@xiao-ai/utils';
+import type { AnyObject } from '@xiao-ai/utils';
 
 /** 标准化路径 */
 export function normalize(...paths: string[]) {

@@ -37,7 +37,8 @@ forEach((runtime) => {
     for (const title of titles) {
       if (title.level === 1) {
         firstTitleFontBucket.addText(title.content);
-      } else {
+      }
+      else {
         secondTitleFontBucket.addText(title.content);
       }
     }

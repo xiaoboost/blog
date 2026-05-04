@@ -36,24 +36,24 @@ const global = createStyles({
       fontFamily: FontDefault,
       fontSize: FontDefaultSize,
     },
-    a: {
-      cursor: 'pointer',
-      textDecoration: 'none',
-      color: linkColor.toString(),
-      transition: 'color .2s, background .4s',
+    'a': {
+      'cursor': 'pointer',
+      'textDecoration': 'none',
+      'color': linkColor.toString(),
+      'transition': 'color .2s, background .4s',
 
       '&:hover, &:focus': {
         outline: 0,
         color: linkHoverColor.toString(),
       },
     },
-    body: {
-      display: 'flex',
-      flexDirection: 'column',
-      backgroundImage: `url("../assets/images/bg.svg")`,
+    'body': {
+      'display': 'flex',
+      'flexDirection': 'column',
+      'backgroundImage': "url('../assets/images/bg.svg')",
 
       // 禁用 body 的滚动条
-      overflow: '-moz-scrollbars-none',
+      'overflow': '-moz-scrollbars-none',
       '&::-webkit-scrollbar': {
         width: '0 !important',
       },
@@ -66,9 +66,9 @@ const global = createStyles({
       backgroundColor: WhiteBg.toString(),
     },
     '::-webkit-scrollbar-thumb': {
-      opacity: '0.7',
-      backgroundColor: BlackLight.toString(),
-      transition: 'opacity ease-in-out 200ms',
+      'opacity': '0.7',
+      'backgroundColor': BlackLight.toString(),
+      'transition': 'opacity ease-in-out 200ms',
 
       '&:hover': {
         opacity: '1',

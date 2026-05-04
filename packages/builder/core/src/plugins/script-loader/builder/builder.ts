@@ -1,20 +1,22 @@
 import type { BuilderInstance } from '@blog/types';
+import { JssLoader } from '../../jss-loader';
+import { builderCache } from '../utils';
 import { AssetExtractor } from './extractor';
 import { Transformer } from './transformer';
-import { builderCache } from '../utils';
-import { JssLoader } from '../../jss-loader';
 
 export async function getScriptBuilder(entry: string, parent: BuilderInstance) {
   const key = `${entry}:${parent.name}:${parent.options.entry}`;
   const childBuilder = builderCache.has(key)
     ? builderCache.get(key)!
     : await parent.createChild({
-        entry,
-        name: 'Script',
-        write: false,
-        logLevel: 'Silence',
-        plugins: [AssetExtractor(), Transformer(), JssLoader({ extractAsset: true })],
-      });
+      entry,
+      name: 'Script',
+      write: false,
+      logLevel: 'Silence',
+      plugins: [
+        AssetExtractor(), Transformer(), JssLoader({ extractAsset: true }),
+      ],
+    });
 
   if (!builderCache.has(key)) {
     builderCache.set(key, childBuilder);

@@ -1,5 +1,5 @@
-import { getCurrentScriptSrc } from '@blog/web';
 import { ModuleLoader, assets } from '@blog/context/web';
+import { getCurrentScriptSrc } from '@blog/web';
 import styles from './index.jss';
 
 const { classes } = styles;
@@ -34,7 +34,8 @@ if (process.env.NODE_ENV === 'development' && ModuleLoader) {
     currentScript: getCurrentScriptSrc(),
     active,
   });
-} else {
+}
+else {
   active();
 }
 

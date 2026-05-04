@@ -1,5 +1,5 @@
-import React from 'react';
 import { isArray, isString } from '@xiao-ai/utils';
+import React from 'react';
 
 import styles from './index.jss';
 
@@ -40,14 +40,16 @@ export function p(props: Props) {
           children.push(<span key={`span-${i}`} className={styles.classes.postSoftBreak} />);
         }
       }
-    } else {
+    }
+    else {
       children.push(node);
     }
   }
 
   if (hasStartIndent(nodes)) {
     return <p>{children}</p>;
-  } else {
+  }
+  else {
     return <p className={styles.classes.noIndent}>{children}</p>;
   }
 }

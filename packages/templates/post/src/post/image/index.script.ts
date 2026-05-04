@@ -1,6 +1,6 @@
-import mediumZoom from 'medium-zoom';
-import { getCurrentScriptSrc } from '@blog/web';
 import { ModuleLoader } from '@blog/context/web';
+import { getCurrentScriptSrc } from '@blog/web';
+import mediumZoom from 'medium-zoom';
 
 import styles from './index.jss';
 
@@ -20,6 +20,7 @@ if (process.env.NODE_ENV === 'development' && ModuleLoader) {
     currentScript: getCurrentScriptSrc(),
     active,
   });
-} else {
+}
+else {
   active();
 }

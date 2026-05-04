@@ -26,11 +26,11 @@ export default createStyles({
     justifyContent: 'center',
   },
   mainHeader: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: mainWidth,
-    padding: [0, 10],
+    "display": 'flex',
+    "justifyContent": 'space-between',
+    "alignItems": 'center',
+    "width": mainWidth,
+    "padding": [0, 10],
 
     '& $mainTitle': {
       display: 'flex',
@@ -46,13 +46,13 @@ export default createStyles({
     height: '100%',
   },
   mainNavItem: {
-    marginLeft: 20,
-    color: BlackLighter.toString(),
-    display: 'flex',
-    alignItems: 'center',
-    position: 'relative',
-    height: '100%',
-    transition: 'color .2s',
+    "marginLeft": 20,
+    "color": BlackLighter.toString(),
+    "display": 'flex',
+    "alignItems": 'center',
+    "position": 'relative',
+    "height": '100%',
+    "transition": 'color .2s',
 
     '&$mainNavItemHighlight': {
       color: Black.toString(),

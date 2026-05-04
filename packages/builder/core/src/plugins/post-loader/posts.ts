@@ -1,11 +1,11 @@
-import type { BuilderPlugin } from '@blog/types';
-import { lookItUp } from 'look-it-up';
-import { join } from 'path';
 import { realpath } from 'fs/promises';
+import { join } from 'path';
 import { normalize } from '@blog/node';
 import { getImportCode } from '@blog/parser';
+import type { BuilderPlugin } from '@blog/types';
 
 import Glob from 'fast-glob';
+import { lookItUp } from 'look-it-up';
 
 const pluginName = 'posts-loader';
 
@@ -57,6 +57,7 @@ export const PostsLoader = (): BuilderPlugin => ({
 
         const realPostDir: string = args.pluginData;
         const packageFile = join(realPostDir, 'package.json');
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
         const packageJson = require(packageFile);
 
         if (!packageJson.main) {

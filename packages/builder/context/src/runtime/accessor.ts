@@ -14,7 +14,8 @@ export function getAccessor<T = any>(name: string, defaultValue?: T | (() => T))
   if (memory && !memory.has(key) && isDef(defaultValue)) {
     if (typeof defaultValue === 'function') {
       memory.set(key, (defaultValue as any)());
-    } else {
+    }
+    else {
       memory.set(key, defaultValue);
     }
   }
@@ -54,7 +55,8 @@ export function getReference<T = any>(name: string, initVal: T): T {
   if (memory) {
     if (memory.has(key)) {
       return memory.get(key);
-    } else if (isDef(initVal)) {
+    }
+    else if (isDef(initVal)) {
       memory.set(key, initVal);
     }
   }

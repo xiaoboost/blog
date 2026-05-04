@@ -52,7 +52,8 @@ export class WorkerController {
 
       if (data.error) {
         event.reject(data.error);
-      } else {
+      }
+      else {
         event.resolve(data.return);
       }
     });

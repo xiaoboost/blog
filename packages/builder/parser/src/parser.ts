@@ -1,10 +1,8 @@
 /* eslint-disable no-eval */
+import type { ErrorData, Parser, Mdx as MdxAst } from '@blog/types';
+import type * as Mdx from '@mdx-js/mdx';
 
-// @ts-ignore
-import type Mdx from '@mdx-js/mdx';
-
-import prettier from 'prettier';
-import { ErrorData, Parser, Mdx as MdxAst } from '@blog/types';
+import { format as formatCode } from 'prettier';
 import { decodeTemplate } from './template';
 
 const parserThen: Promise<Parser> = Promise.all([
@@ -12,7 +10,9 @@ const parserThen: Promise<Parser> = Promise.all([
   eval("import('remark-mdx')"),
   eval("import('remark-parse')"),
   eval("import('remark-stringify')"),
-]).then(([{ unified }, mdx, parse, stringify]) => {
+]).then(([
+  { unified }, mdx, parse, stringify,
+]) => {
   return unified().use(parse.default, { position: false }).use(stringify.default).use(mdx.default);
 });
 
@@ -35,7 +35,7 @@ export async function compile(code: string, format = false) {
   let jsxCode = compiled.toString();
 
   if (format) {
-    jsxCode = await prettier.format(jsxCode, {
+    jsxCode = await formatCode(jsxCode, {
       parser: 'babel',
     });
   }
@@ -49,7 +49,8 @@ export async function parse(fileName: string, content: string) {
 
   try {
     return parser.parse(content) as MdxAst.Root;
-  } catch (err: any) {
+  }
+  catch (err: any) {
     const data: ErrorData = {
       project: 'UNKNOWN',
       name: err.source,

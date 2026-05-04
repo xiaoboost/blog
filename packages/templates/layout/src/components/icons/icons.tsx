@@ -1,6 +1,6 @@
+import { stringifyClass } from '@xiao-ai/utils';
 import React from 'react';
 
-import { stringifyClass } from '@xiao-ai/utils';
 import styles from './index.jss';
 
 type SpanProps = React.DetailedHTMLProps<React.HTMLAttributes<HTMLSpanElement>, HTMLSpanElement>;

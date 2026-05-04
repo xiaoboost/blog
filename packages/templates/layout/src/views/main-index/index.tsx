@@ -1,11 +1,11 @@
-import React from 'react';
-import Moment from 'moment';
 import { isPreBuild } from '@blog/context/runtime';
-import type { PostExportData } from '@blog/types';
 import { normalizeUrl } from '@blog/node';
+import type { PostExportData } from '@blog/types';
+import Moment from 'moment';
+import React from 'react';
 import { Tags } from '../../components/icons';
-import { Layout, LayoutProps } from '../../components/layout';
-import { Pagination, PaginationProps } from '../../components/pagination';
+import { type LayoutProps, Layout } from '../../components/layout';
+import { type PaginationProps, Pagination } from '../../components/pagination';
 import { ListItemTitleFontBucket } from '../../constant/title';
 
 import styles from './index.jss';

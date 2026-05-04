@@ -1,10 +1,10 @@
 import type { CacheAccessor } from './accessor';
-import type { BuilderHooks, BundlerHooks } from './hooks';
-import type { ErrorData } from './error';
 import type { AssetData } from './asset';
-import type { Resolver } from './resolve';
-import type { BuilderPlugin } from './plugin';
+import type { ErrorData } from './error';
+import type { BuilderHooks, BundlerHooks } from './hooks';
 import type { LogLevel, LoggerInstance } from './logger';
+import type { BuilderPlugin } from './plugin';
+import type { Resolver } from './resolve';
 
 /** 构建器选项 */
 export type BuilderOptions = ExtendOptions & CommandOptions;

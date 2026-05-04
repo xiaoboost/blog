@@ -1,6 +1,6 @@
-import type { CodeFrameData, ErrorData, ErrorParam } from '@blog/types';
-import { default as chalk, Chalk } from 'chalk';
 import { codeFrameColumns } from '@babel/code-frame';
+import type { CodeFrameData, ErrorData, ErrorParam } from '@blog/types';
+import { type Chalk, default as chalk } from 'chalk';
 import { transform } from './transform';
 
 export class BuilderError extends Error implements ErrorData {
@@ -50,7 +50,8 @@ export class BuilderError extends Error implements ErrorData {
       message += `\n${codeFrameColumns(codeFrame.content, codeFrame.range, {
         highlightCode: true,
       })}`;
-    } else if (this.stack) {
+    }
+    else if (this.stack) {
       message += `\n${this.stack}`;
     }
 

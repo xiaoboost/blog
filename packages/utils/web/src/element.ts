@@ -20,7 +20,8 @@ export function getStyle(el: HTMLElement, name: string): string {
 
     const computed = document.defaultView?.getComputedStyle(el);
     return computed ? getStyleDeclarationValue(computed, name) : '';
-  } catch (_) {
+  }
+  catch (_) {
     return getStyleDeclarationValue(el.style, name);
   }
 }
@@ -30,8 +31,8 @@ export function isScroll(el: HTMLElement, mode: ScrollMode) {
     mode === 'all'
       ? getStyle(el, 'overflow')
       : mode === 'x'
-      ? getStyle(el, 'overflow-x')
-      : getStyle(el, 'overflow-y');
+        ? getStyle(el, 'overflow-x')
+        : getStyle(el, 'overflow-y');
 
   return overflow.match(/(scroll|auto)/);
 }
@@ -40,7 +41,9 @@ export function getScrollContainer(el: HTMLElement, mode: ScrollMode): Window | 
   let parent = el;
 
   while (parent) {
-    if ([window, document, document.documentElement].includes(parent)) {
+    if ([
+      window, document, document.documentElement,
+    ].includes(parent)) {
       return window;
     }
 
@@ -71,7 +74,8 @@ export function getCurrentScript() {
   // IE 11+ & Firefox support stack trace
   try {
     throw new Error();
-  } catch (err: any) {
+  }
+  catch (err: any) {
     // Find the second match for the "at" string to get file src url from stack.
     const ieStackRegExp = /.*at [^(]*\((.*):(.+):(.+)\)$/gi;
     const ffStackRegExp = /@([^@]*):(\d+):(\d+)\s*$/gi;
@@ -136,7 +140,8 @@ export function createElement(
   for (const [key, value] of Object.entries(props)) {
     if (key === 'className') {
       el.setAttribute('class', String(value));
-    } else {
+    }
+    else {
       el.setAttribute(key, String(value));
     }
   }
@@ -144,7 +149,8 @@ export function createElement(
   for (const child of children) {
     if (isString(child)) {
       el.appendChild(new Text(child));
-    } else {
+    }
+    else {
       el.appendChild(child);
     }
   }

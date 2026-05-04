@@ -1,8 +1,8 @@
-import type { BuilderInstance } from '@blog/types';
-import { ParameterizedContext, Next } from 'koa';
 import { join } from 'path';
 import { HMRClientScriptPath } from '@blog/shared';
-import { BuildContext, BuildResult, context } from 'esbuild';
+import type { BuilderInstance } from '@blog/types';
+import { type BuildContext, type BuildResult, context } from 'esbuild';
+import type { ParameterizedContext, Next } from 'koa';
 import { getCoreRoot } from '../../../utils';
 
 export function transformServe(vfs: Map<string, Buffer>, builder: BuilderInstance) {
@@ -41,7 +41,8 @@ export function transformServe(vfs: Map<string, Buffer>, builder: BuilderInstanc
 
     if (file) {
       vfs.set(HMRClientScriptPath, Buffer.from(file));
-    } else {
+    }
+    else {
       throw new Error('未能生成文件');
     }
 

@@ -1,6 +1,6 @@
 import type { ModuleLoader } from '@blog/types';
 
-import { GlobalKey } from '../types';
+import type { GlobalKey } from '../types';
 
 export { GlobalKey } from '../types';
 

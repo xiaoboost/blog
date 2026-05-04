@@ -1,6 +1,6 @@
+import { relative } from 'path';
 import type { BuilderPlugin, AssetData } from '@blog/types';
 import { Instance } from 'chalk';
-import { relative } from 'path';
 
 import createSpinner from 'ora';
 
@@ -11,16 +11,22 @@ const pluginName = 'logger';
 function getShortString(current: number, unit: string) {
   if (current > 100) {
     return `${current} ${unit}`;
-  } else if (current > 10) {
+  }
+  else if (current > 10) {
     return `${Number(current.toFixed(1))} ${unit}`;
-  } else {
+  }
+  else {
     return `${Number(current.toFixed(2))} ${unit}`;
   }
 }
 
 function getShortTime(time: number) {
-  const units = ['毫秒', '秒', '分钟', '小时'];
-  const ranks = [1000, 60, 60, Infinity];
+  const units = [
+    '毫秒', '秒', '分钟', '小时',
+  ];
+  const ranks = [
+    1000, 60, 60, Infinity,
+  ];
 
   let current = time;
   let level = 0;
@@ -34,7 +40,9 @@ function getShortTime(time: number) {
 }
 
 function getShortSize(size: number) {
-  const units = ['B', 'kB', 'MB', 'GB'];
+  const units = [
+    'B', 'kB', 'MB', 'GB',
+  ];
 
   let current = size;
   let rank = 0;
@@ -100,9 +108,9 @@ export const Logger = (): BuilderPlugin => ({
     builder.hooks.success.tap(pluginName, (assets) => {
       if (!options.watch) {
         logger.info(
-          '网站已生成，' +
-            `文件 ${printer.yellow(`${assets.length}`)} 个，` +
-            `总大小 ${printer.green(getShortSize(getSize(assets)))}`,
+          '网站已生成，'
+          + `文件 ${printer.yellow(`${assets.length}`)} 个，`
+          + `总大小 ${printer.green(getShortSize(getSize(assets)))}`,
         );
       }
     });

@@ -1,8 +1,8 @@
-import type { CodeFrameData, Range } from '@blog/types';
-import { SourceMapConsumer } from 'source-map';
-import { lookItUp } from 'look-it-up';
-import { isAbsolute } from 'path';
 import { readFile } from 'fs/promises';
+import { isAbsolute } from 'path';
+import type { CodeFrameData, Range } from '@blog/types';
+import { lookItUp } from 'look-it-up';
+import { SourceMapConsumer } from 'source-map';
 
 function getSource(sourceMap: SourceMapConsumer, raw: string, fullPath: string) {
   try {
@@ -11,7 +11,8 @@ function getSource(sourceMap: SourceMapConsumer, raw: string, fullPath: string) 
     if (result) {
       return result;
     }
-  } catch (_) {
+  }
+  catch (_) {
     // ..
   }
 

@@ -1,12 +1,12 @@
-import type ts from 'typescript';
 import path from 'path';
-
 import { unique, isString } from '@xiao-ai/utils';
+import type ts from 'typescript';
+
+import type { ErrorData } from '../../../utils';
+import type { TypeScriptConfig, TypeCheckerOptions } from '../types';
 import { FileMemory } from './files';
-import { requireTs } from './utils';
 import { ModuleResolutionMemory } from './resolution';
-import { TypeScriptConfig, TypeCheckerOptions } from '../types';
-import { ErrorData } from '../../../utils';
+import { requireTs } from './utils';
 
 /** 语言服务器 */
 export class LanguageService {
@@ -156,9 +156,9 @@ export class LanguageService {
           const resolveOptions =
             name === 'highlight.js'
               ? {
-                  ...compilerOptions,
-                  moduleResolution: tsModule.ModuleResolutionKind.NodeJs,
-                }
+                ...compilerOptions,
+                moduleResolution: tsModule.ModuleResolutionKind.NodeJs,
+              }
               : compilerOptions;
 
           const { resolvedModule } = tsModule.resolveModuleName(
@@ -257,11 +257,11 @@ export class LanguageService {
         // 这里只做 type-checker，不做输出，这些问题都可以忽略
         return (
           // TS 可以推断类型，但无法在声明文件中表达
-          item.code !== 2742 &&
+          item.code !== 2742
           // 推断类型引用了深层依赖路径
-          item.code !== 2883 &&
+          && item.code !== 2883
           // 文件不在 rootDir 下
-          item.code !== 6059
+          && item.code !== 6059
         );
       })
       .map(({ code, file, messageText, start, length }): ErrorData => {

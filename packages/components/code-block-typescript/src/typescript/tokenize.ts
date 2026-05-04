@@ -1,15 +1,18 @@
-import * as vsctm from 'vscode-textmate';
-import * as oniguruma from 'vscode-oniguruma';
-
 import { readFile } from 'fs/promises';
 import { getAccessor, forEach } from '@blog/context/runtime';
-import { ScriptKind, Platform, TsServer, DiagnosticData } from './host';
-import { ComponentName } from '../constant';
+import * as oniguruma from 'vscode-oniguruma';
+import * as vsctm from 'vscode-textmate';
 
+import wasmBinPath from '../../node_modules/vscode-oniguruma/release/onig.wasm';
 import tsPlistPath from '../../tmLanguage/ts.plist';
 import tsxPlistPath from '../../tmLanguage/tsx.plist';
-// eslint-disable-next-line import/no-relative-packages
-import wasmBinPath from '../../node_modules/vscode-oniguruma/release/onig.wasm';
+import { ComponentName } from '../constant';
+import {
+  type ScriptKind,
+  type Platform,
+  TsServer,
+  type DiagnosticData,
+} from './host';
 
 const tsGrammar = getAccessor<vsctm.IGrammar>('tsGrammar');
 const tsxGrammar = getAccessor<vsctm.IGrammar>('tsxGrammar');
@@ -43,9 +46,11 @@ async function getGrammar() {
     loadGrammar: async (scopeName) => {
       if (scopeName === 'source.ts') {
         return vsctm.parseRawGrammar((await readFile(tsPlistPath)).toString('utf-8'));
-      } else if (scopeName === 'source.tsx') {
+      }
+      else if (scopeName === 'source.tsx') {
         return vsctm.parseRawGrammar((await readFile(tsxPlistPath)).toString('utf-8'));
-      } else {
+      }
+      else {
         throw new Error(`Unknown scopeName: ${scopeName}.`);
       }
     },
@@ -64,8 +69,12 @@ async function getGrammar() {
 
 /** 不需要获取语法提示的字符 */
 const noInfoChar = Array.from('{}:();,+-*/.\'"=[]%`<>|^&~!')
-  .concat(['=>', '**', '>>', '<<', '>>>', '&&', '||'])
-  .concat(['==', '===', '!=', '!==', '>=', '<=', '++', '--'])
+  .concat([
+    '=>', '**', '>>', '<<', '>>>', '&&', '||',
+  ])
+  .concat([
+    '==', '===', '!=', '!==', '>=', '<=', '++', '--',
+  ])
   .concat(['new', 'function'])
   .reduce((ans, item) => ((ans[item] = true), ans), {} as Record<string, boolean>);
 

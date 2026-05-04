@@ -1,10 +1,10 @@
-import React from 'react';
-import highlight from 'highlight.js';
-import { stringifyClass } from '@xiao-ai/utils';
 import { defineUtils, getReference } from '@blog/context/runtime';
+import { stringifyClass } from '@xiao-ai/utils';
+import highlight from 'highlight.js';
+import React from 'react';
 
-import styles from './index.jss';
 import script from './code-block.script';
+import styles from './index.jss';
 
 import { getHighlightCode, getMinSpaceWidth, addSplitLabel, getLangLabel } from './utils';
 

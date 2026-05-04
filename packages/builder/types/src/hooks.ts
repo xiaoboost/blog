@@ -1,3 +1,11 @@
+import type { FSWatcher } from 'chokidar';
+import type {
+  OnResolveArgs,
+  OnResolveResult,
+  OnLoadResult,
+  OnLoadArgs,
+  BuildOptions,
+} from 'esbuild';
 import type {
   AsyncParallelHook,
   AsyncSeriesHook,
@@ -6,17 +14,9 @@ import type {
   SyncWaterfallHook,
   SyncHook,
 } from 'tapable';
-import type {
-  OnResolveArgs,
-  OnResolveResult,
-  OnLoadResult,
-  OnLoadArgs,
-  BuildOptions,
-} from 'esbuild';
-import type { FSWatcher } from 'chokidar';
+import type { AssetData } from './asset';
 import type { BuilderOptions, BuilderInstance, BundlerInstance, RunnerInstance } from './builder';
 import type { ErrorData } from './error';
-import type { AssetData } from './asset';
 import type { PostExportData, PostBasicData } from './post';
 
 export { OnResolveArgs, OnResolveResult, OnLoadResult, OnLoadArgs } from 'esbuild';

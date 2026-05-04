@@ -22,8 +22,8 @@ export default createStyles({
     })),
   },
   mainFooterHref: {
-    color: Black.toString(),
-    transition: 'color .2s ease-out',
+    "color": Black.toString(),
+    "transition": 'color .2s ease-out',
 
     '&:hover': {
       color: RedLight.toString(),

@@ -1,5 +1,5 @@
-import type { BuilderPlugin } from '@blog/types';
 import { dirname } from 'path';
+import type { BuilderPlugin } from '@blog/types';
 import { getScriptBuilder } from './builder';
 import { EntrySuffix, builderCache } from './utils';
 

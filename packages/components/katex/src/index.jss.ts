@@ -7,11 +7,11 @@ export default createStyles({
       display: 'none',
     },
   },
-  mathBlock: {
+  "mathBlock": {
     margin: '1em 0',
     position: 'relative',
   },
-  mathInline: {
+  "mathInline": {
     margin: '0 0.2em',
   },
 });

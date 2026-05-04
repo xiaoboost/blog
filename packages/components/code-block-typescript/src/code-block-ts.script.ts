@@ -1,13 +1,13 @@
 /* eslint-disable max-classes-per-file */
 
-import { isString } from '@xiao-ai/utils';
-import { computePosition, autoUpdate, flip, shift, offset, inline } from '@floating-ui/dom';
-import { getCurrentScriptSrc } from '@blog/web';
 import { ModuleLoader, assets } from '@blog/context/web';
+import { getCurrentScriptSrc } from '@blog/web';
+import { computePosition, autoUpdate, flip, shift, offset, inline } from '@floating-ui/dom';
+import { isString } from '@xiao-ai/utils';
 
-import styles from './index.jss';
-import { DisplaySymbol } from './typescript';
 import { lsInfoAttrName } from './constant';
+import styles from './index.jss';
+import type { DisplaySymbol } from './typescript';
 
 class InfoElement {
   private el: HTMLElement;
@@ -44,7 +44,8 @@ class InfoElement {
 
       if (list[i]) {
         text = list[i];
-      } else {
+      }
+      else {
         text = document.createElement('span');
         list.push(text);
         pre.appendChild(text);
@@ -53,7 +54,8 @@ class InfoElement {
       if (isString(info)) {
         text.removeAttribute('class');
         text.textContent = info;
-      } else {
+      }
+      else {
         text.setAttribute('class', info[0]);
         [, text.textContent] = info;
       }
@@ -162,7 +164,8 @@ if (process.env.NODE_ENV === 'development' && ModuleLoader) {
     currentScript: getCurrentScriptSrc(),
     active,
   });
-} else {
+}
+else {
   active();
 }
 

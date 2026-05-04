@@ -1,13 +1,13 @@
+import { RuntimeBuilder as Builder } from '@blog/context/runtime';
+import { normalize, normalizeUrl } from '@blog/node';
+import { PostList, ItemList, utils } from '@blog/template-layout';
 import type {
   UrlListData,
   PostListDataWithTitle as PostListData,
   PostExportData,
 } from '@blog/types';
-import { normalize, normalizeUrl } from '@blog/node';
-import { RuntimeBuilder as Builder } from '@blog/context/runtime';
-import { PostList, ItemList, utils } from '@blog/template-layout';
-import { createHtml } from './react';
 import { site, archivePath } from '../../constant';
+import { createHtml } from './react';
 
 const createYearList = createHtml(ItemList);
 const createYearPostList = createHtml(PostList);
@@ -30,7 +30,8 @@ export function getYearData(posts: PostExportData[]) {
 
     if (data) {
       data.posts.push(post);
-    } else {
+    }
+    else {
       years.push({ name: year, posts: [post] });
     }
   }

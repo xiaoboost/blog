@@ -1,5 +1,5 @@
-import React from 'react';
 import { normalizeUrl } from '@blog/node';
+import React from 'react';
 
 import { ArrowRight, ArrowLeft } from '../icons';
 
@@ -19,20 +19,28 @@ export function Pagination({ next, pre }: PaginationProps) {
 
   return (
     <section className={classes.pagination}>
-      {next ? (
-        <a className={classes.paginationAction} href={normalizeUrl(next)}>
-          <ArrowLeft /> 下一页
-        </a>
-      ) : (
-        <div></div>
-      )}
-      {pre ? (
-        <a className={classes.paginationAction} href={normalizeUrl(pre)}>
-          上一页 <ArrowRight />
-        </a>
-      ) : (
-        <div></div>
-      )}
+      {next
+        ? (
+          <a className={classes.paginationAction} href={normalizeUrl(next)}>
+            <ArrowLeft />
+            {' '}
+            下一页
+          </a>
+        )
+        : (
+          <div></div>
+        )}
+      {pre
+        ? (
+          <a className={classes.paginationAction} href={normalizeUrl(pre)}>
+            上一页
+            {' '}
+            <ArrowRight />
+          </a>
+        )
+        : (
+          <div></div>
+        )}
     </section>
   );
 }

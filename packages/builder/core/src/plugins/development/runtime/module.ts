@@ -1,6 +1,6 @@
-import { remove } from '@xiao-ai/utils';
 import { GlobalKey } from '@blog/context/web';
 import type { ScriptModule, ModuleLoader } from '@blog/types';
+import { remove } from '@xiao-ai/utils';
 
 interface ModuleData extends ScriptModule {
   /** 卸载函数 */

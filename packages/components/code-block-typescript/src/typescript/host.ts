@@ -1,8 +1,7 @@
-import ts from 'typescript';
-
+import { getAccessor } from '@blog/context/runtime';
 import { normalize } from '@blog/node';
 import { toBoolMap, isString } from '@xiao-ai/utils';
-import { getAccessor } from '@blog/context/runtime';
+import ts from 'typescript';
 
 export type ScriptKind = 'ts' | 'tsx' | 'js' | 'jsx';
 export type Platform = 'browser' | 'node' | 'none';
@@ -37,7 +36,9 @@ export interface DiagnosticData {
 }
 
 /** 不需要样式的数据类型 */
-const infoNoStyleKinds = toBoolMap(['space', 'text', 'lineBreak', 'punctuation']);
+const infoNoStyleKinds = toBoolMap([
+  'space', 'text', 'lineBreak', 'punctuation',
+]);
 
 /** 语言服务器 */
 export class TsServer {
@@ -137,10 +138,12 @@ export class TsServer {
       getScriptSnapshot: (filePath) => {
         if (filePath === this.current.name) {
           return this.current.snapshot;
-        } else if (fileCache[filePath]) {
+        }
+        else if (fileCache[filePath]) {
           this.files.add(filePath);
           return fileCache[filePath].snapshot;
-        } else {
+        }
+        else {
           const fileText = TsServer.ExportCode.has(filePath)
             ? TsServer.ExportCode.get(filePath) ?? ''
             : ts.sys.readFile(filePath) ?? '';
@@ -203,10 +206,12 @@ export class TsServer {
 
         if (isString(lastText)) {
           result.splice(result.length - 1, 1, lastText + token.text);
-        } else {
+        }
+        else {
           result.push(token.text);
         }
-      } else {
+      }
+      else {
         result.push([token.kind, token.text]);
       }
     }

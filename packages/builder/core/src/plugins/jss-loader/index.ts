@@ -1,8 +1,8 @@
-import type { BuilderPlugin, ErrorData } from '@blog/types';
-import { replaceExt } from '@blog/node';
 import { dirname } from 'path';
-import { cssCodeCache } from './store';
+import { replaceExt } from '@blog/node';
+import type { BuilderPlugin, ErrorData } from '@blog/types';
 import { getJssBuilder, cssClassesName, cssFileName } from './builder';
+import { cssCodeCache } from './store';
 
 export interface JssLoaderOptions {
   /** 是否提取资源 */
@@ -48,11 +48,11 @@ export const JssLoader = ({ extractAsset = true }: JssLoaderOptions = {}): Build
             errors: cssCode
               ? undefined
               : [
-                  {
-                    detail: error,
-                    text: error.message,
-                  },
-                ],
+                {
+                  detail: error,
+                  text: error.message,
+                },
+              ],
           };
         });
       });

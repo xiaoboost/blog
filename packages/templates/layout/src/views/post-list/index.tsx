@@ -1,9 +1,9 @@
-import React from 'react';
-import Moment from 'moment';
 import type { PostExportData } from '@blog/types';
-import { LayoutProps } from '../../components/layout';
-import { PaginationProps } from '../../components/pagination';
-import { ItemListProps, ItemList } from '../item-list';
+import Moment from 'moment';
+import React from 'react';
+import type { LayoutProps } from '../../components/layout';
+import type { PaginationProps } from '../../components/pagination';
+import { type ItemListProps, ItemList } from '../item-list';
 
 interface PostListProps extends LayoutProps, PaginationProps {
   listTitle: string;

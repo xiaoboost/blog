@@ -74,6 +74,7 @@ if ('WebSocket' in window) {
   const socket = new WebSocket(getSocketUrl(), 'blog-dev-server');
   socket.addEventListener('message', ReceiveHMRData);
   wbsLog('Dev Server is running...');
-} else {
+}
+else {
   wbsLog('WebSocket is not supported.');
 }

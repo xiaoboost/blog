@@ -1,7 +1,5 @@
-import React from 'react';
-
-import { PropsWithChildren } from 'react';
 import { stringifyClass } from '@xiao-ai/utils';
+import { default as React, type PropsWithChildren } from 'react';
 
 import styles from './index.jss';
 

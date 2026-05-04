@@ -1,20 +1,19 @@
-import React from 'react';
-import Moment from 'moment';
-import { stringifyClass } from '@xiao-ai/utils';
-import { Layout, LayoutProps } from '@blog/template-layout';
+import { type LayoutProps, Layout } from '@blog/template-layout';
 import type { PostExportDataWithComponent } from '@blog/types';
-
-import styles from './index.jss';
+import { stringifyClass } from '@xiao-ai/utils';
+import Moment from 'moment';
+import React from 'react';
 
 import { ToContent } from '../to-content';
 
-import * as title from './title';
-import * as code from './code';
-import * as image from './image';
-import * as paragraph from './paragraph';
-import * as hr from './hr';
 import * as blockquote from './blockquote';
+import * as code from './code';
+import * as hr from './hr';
+import * as image from './image';
+import styles from './index.jss';
 import { Link } from './link';
+import * as paragraph from './paragraph';
+import * as title from './title';
 
 export interface PostProps extends LayoutProps {
   /** 文章数据 */

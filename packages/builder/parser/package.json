@@ -42,11 +42,11 @@
     "yaml": "2.8.2"
   },
   "devDependencies": {
+    "@blog/eslint-config": "workspace:*",
     "@blog/test-toolkit": "workspace:*",
-    "@types/node": "20.19.28",
-    "@xiao-ai/eslint-config": "1.0.3",
     "@blog/tsconfig": "workspace:*",
-    "eslint": "8.57.1",
+    "@types/node": "20.19.28",
+    "eslint": "10.2.1",
     "mocha": "10.8.2",
     "typescript": "6.0.2"
   }

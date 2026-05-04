@@ -1,7 +1,7 @@
 import { join } from 'path';
 import type { BuilderPlugin } from '@blog/types';
-import { TypeCheckerOptions, EventName } from './types';
-import { WorkerController, ErrorData } from '../../utils';
+import { type ErrorData, WorkerController } from '../../utils';
+import { type TypeCheckerOptions, EventName } from './types';
 
 export { TypeCheckerOptions, TypeScriptConfig } from './types';
 

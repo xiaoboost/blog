@@ -1,9 +1,11 @@
-import type { BuilderPlugin, ErrorData } from '@blog/types';
 import { extname } from 'path';
+import type { BuilderPlugin, ErrorData } from '@blog/types';
 import { createResolver } from '../utils';
 
 const pluginName = 'resolver';
-const defaultExts = ['.mjs', '.js', '.jsx', '.ts', '.tsx', '.json', '.css'];
+const defaultExts = [
+  '.mjs', '.js', '.jsx', '.ts', '.tsx', '.json', '.css',
+];
 
 export const Resolver = (): BuilderPlugin => ({
   name: pluginName,

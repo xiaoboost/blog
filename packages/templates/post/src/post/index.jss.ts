@@ -1,3 +1,4 @@
+import { toRound } from '@blog/shared';
 import {
   createStyles,
   mainWidth,
@@ -21,7 +22,6 @@ import {
   getHeadSelector,
 } from '@blog/styles';
 
-import { toRound } from '@blog/shared';
 import { FirstTitleFontFamily, SecondTitleFontFamily } from '../constant';
 
 const indent = 24;
@@ -42,14 +42,14 @@ export default createStyles({
   splitMark: {},
   blockquoteIcon: {},
   postDefault: {
-    color: Black.toString(),
-    backgroundColor: White.toString(),
-    boxShadow: MainShadow,
-    width: mainWidth,
-    flexGrow: 0,
-    flexShrink: 0,
-    borderRadius: 4,
-    overflow: 'hidden',
+    "color": Black.toString(),
+    "backgroundColor": White.toString(),
+    "boxShadow": MainShadow,
+    "width": mainWidth,
+    "flexGrow": 0,
+    "flexShrink": 0,
+    "borderRadius": 4,
+    "overflow": 'hidden',
 
     ...createMediaStyles<number | string>(mainWidth, '100%', (width) => ({
       width: typeof width === 'number' ? `${width}px` : width,
@@ -85,7 +85,7 @@ export default createStyles({
       fontFamily: FontDefault,
     },
     '& $postArticle': {
-      fontSize: 16,
+      "fontSize": 16,
       ...createMediaStyles(indent, smallIndent, (width) => ({
         padding: `16px ${width}px`,
       })),
@@ -98,9 +98,9 @@ export default createStyles({
         lineHeight: '1.3',
       })),
       [getHeadSelector('& ')]: {
-        position: 'relative',
-        display: 'flex',
-        alignItems: 'center',
+        "position": 'relative',
+        "display": 'flex',
+        "alignItems": 'center',
         ...createMediaStyles(indent, smallIndent, (indent) => ({
           marginLeft: `${-1 * indent}px`,
           marginRight: `${-1 * indent}px`,
@@ -127,9 +127,9 @@ export default createStyles({
         marginTop: '0 !important',
       },
       '& p': {
-        lineHeight: 1.75,
-        textIndent: '2em',
-        margin: '0 0 1em 0',
+        "lineHeight": 1.75,
+        "textIndent": '2em',
+        "margin": '0 0 1em 0',
 
         '&:last-child': {
           marginBottom: 0,
@@ -152,11 +152,11 @@ export default createStyles({
         position: 'relative',
       },
       '& em': {
-        margin: '0 2px',
-        fontStyle: 'normal',
-        textDecoration: 'none',
-        fontFamily: `${CustomFont.EMLora}, ${FontDefault}`,
-        backgroundImage: `linear-gradient(
+        "margin": '0 2px',
+        "fontStyle": 'normal',
+        "textDecoration": 'none',
+        "fontFamily": `${CustomFont.EMLora}, ${FontDefault}`,
+        "backgroundImage": `linear-gradient(
           to top,
           transparent,
           transparent 0px,
@@ -164,7 +164,7 @@ export default createStyles({
           ${BlackLighter.toString()} 1px,
           transparent 1px
         )`,
-        textShadow: `
+        "textShadow": `
           -1px -1px 0 #fafafa,
           1px -1px 0 ${WhiteBg.toString()},
           -1px 1px 0 ${WhiteBg.toString()},
@@ -186,7 +186,9 @@ export default createStyles({
             ${Gray.toString()} 100%
           )`,
           // 这里下面的方向是 2.5，多出来的 0.5 是为了遮住 em 原本的 2px 下划线
-          padding: [0, 2, 2.5, 2],
+          padding: [
+            0, 2, 2.5, 2,
+          ],
           textShadow: `
             -0.8px -0.8px 0 #fafafa,
             0.8px -0.8px 0 ${WhiteBg.toString()},
@@ -215,18 +217,18 @@ export default createStyles({
         bottom: '-0.3em',
       },
       '& ul, & ol': {
-        lineHeight: 1.5,
-        paddingLeft: '1.8em',
-        marginLeft: '0.5em',
+        "lineHeight": 1.5,
+        "paddingLeft": '1.8em',
+        "marginLeft": '0.5em',
 
         '& li': {
-          marginBottom: '0.2em',
+          "marginBottom": '0.2em',
           '&:last-child': {
             marginBottom: 0,
           },
         },
         '& ol': {
-          counterReset: 'list-counter',
+          "counterReset": 'list-counter',
           '& li': {
             counterIncrement: 'list-counter',
             position: 'relative',
@@ -234,13 +236,13 @@ export default createStyles({
         },
       },
       '& blockquote': {
-        position: 'relative',
-        padding: '.8em 1.2em',
-        margin: '1em 0',
-        lineHeight: 1.5,
-        fontSize: '90%',
-        borderLeft: `0.3em solid ${BlackExtraLight.darken(0.04).toString()}`,
-        backgroundColor: WhiteBg.alpha(0.8).toString(),
+        "position": 'relative',
+        "padding": '.8em 1.2em',
+        "margin": '1em 0',
+        "lineHeight": 1.5,
+        "fontSize": '90%',
+        "borderLeft": `0.3em solid ${BlackExtraLight.darken(0.04).toString()}`,
+        "backgroundColor": WhiteBg.alpha(0.8).toString(),
 
         '& $blockquoteIcon': {
           position: 'absolute',
@@ -252,8 +254,8 @@ export default createStyles({
         },
 
         '> *': {
-          marginTop: 0,
-          marginBottom: '.5em',
+          "marginTop": 0,
+          "marginBottom": '.5em',
 
           '&:last-child': {
             marginBottom: 0,
@@ -261,13 +263,13 @@ export default createStyles({
         },
       },
       '& table': {
-        display: 'block',
-        width: 'max-content',
-        maxWidth: '100%',
-        overflow: 'auto',
-        margin: '0 auto 0.8em',
-        borderSpacing: 0,
-        borderCollapse: 'collapse',
+        "display": 'block',
+        "width": 'max-content',
+        "maxWidth": '100%',
+        "overflow": 'auto',
+        "margin": '0 auto 0.8em',
+        "borderSpacing": 0,
+        "borderCollapse": 'collapse',
 
         '& tr': {
           backgroundColor: White.toString(),
@@ -295,12 +297,12 @@ export default createStyles({
         borderBottom: `1px solid ${Gray.toString()}`,
       },
       '& $splitMark': {
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: 0,
-        margin: [20, 0],
-        color: BlackLighter.toString(),
+        "display": 'flex',
+        "justifyContent": 'center',
+        "alignItems": 'center',
+        "padding": 0,
+        "margin": [20, 0],
+        "color": BlackLighter.toString(),
 
         '&::before, &::after': {
           content: '""',

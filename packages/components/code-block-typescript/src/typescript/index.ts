@@ -1,8 +1,8 @@
-import { escape } from 'html-escaper';
 import { addSplitLabel } from '@blog/mdx-code-block-normal';
 import { stringifyClass } from '@xiao-ai/utils';
-import { tokenize } from './tokenize';
+import { escape } from 'html-escaper';
 import { lsInfoAttrName } from '../constant';
+import styles from '../index.jss';
 import {
   TsServer,
   type ScriptKind,
@@ -10,7 +10,7 @@ import {
   type DisplaySymbol,
   type DiagnosticData,
 } from './host';
-import styles from '../index.jss';
+import { tokenize } from './tokenize';
 
 export { ScriptKind, Platform, DisplaySymbol };
 
@@ -47,11 +47,11 @@ function renderTsError(diagnostic: DiagnosticData): RenderedTsCodeLine[] {
     }
 
     if (index === 0) {
-      code +=
-        `<a class="${styles.classes.lspErrorGoto}" ` +
-        `target="_blank" rel="noreferrer" ` +
-        `href="https://typescript.tv/errors/#ts${errCode}" ` +
-        `title="点击查看错误详细信息">[TS${errCode}]</a> `;
+      code
+        += `<a class="${styles.classes.lspErrorGoto}" `
+          + `target="_blank" rel="noreferrer" `
+          + `href="https://typescript.tv/errors/#ts${errCode}" `
+          + `title="点击查看错误详细信息">[TS${errCode}]</a> `;
     }
 
     code += text;
@@ -155,7 +155,8 @@ export function renderTsCode(
         }
 
         code += `>${tokenText}</span>`;
-      } else {
+      }
+      else {
         code += tokenText;
       }
     }

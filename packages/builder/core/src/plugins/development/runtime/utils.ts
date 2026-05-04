@@ -1,8 +1,6 @@
-/* eslint-disable import/no-import-module-exports */
-
 import { debounce } from '@xiao-ai/utils';
-import { module } from './module';
 import { createLogger } from './logger';
+import { module } from './module';
 
 export const hmrLog = createLogger('HMR');
 export const wbsLog = createLogger('Socket');

@@ -1,9 +1,9 @@
 import path from 'path';
-import md5 from 'md5';
 
-import { isArray } from '@xiao-ai/utils';
 import { getPathFormatter } from '@blog/node';
 import type { AssetData, BuilderInstance } from '@blog/types';
+import { isArray } from '@xiao-ai/utils';
+import md5 from 'md5';
 import type { FileLoaderOptionInput, Rename } from './types';
 
 /** 安装重命名方法 */
