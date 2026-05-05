@@ -1,4 +1,9 @@
-import { Gray, createThemeStylesByVars } from '@blog/styles/compile';
+import {
+  Gray,
+  BgSecondary,
+  createThemeStylesByVars,
+  colorAlpha,
+} from '@blog/styles/compile';
 import {
   FogGradientLeftToken,
   FogGradientRightToken,
@@ -11,20 +16,20 @@ import {
 
 export default createThemeStylesByVars({
   [FogGradientLeftToken]: {
-    light: `linear-gradient(to right, ${Gray[0]} 25%, transparent 100%)`,
-    dark: `linear-gradient(to right, ${Gray[900]} 25%, transparent 100%)`,
+    light: `linear-gradient(to right, ${BgSecondary} 25%, transparent 100%)`,
+    dark: `linear-gradient(to right, ${BgSecondary} 25%, transparent 100%)`,
   },
   [FogGradientRightToken]: {
-    light: `linear-gradient(to left, ${Gray[0]} 25%, transparent 100%)`,
-    dark: `linear-gradient(to left, ${Gray[900]} 25%, transparent 100%)`,
+    light: `linear-gradient(to left, ${BgSecondary} 25%, transparent 100%)`,
+    dark: `linear-gradient(to left, ${BgSecondary} 25%, transparent 100%)`,
   },
   [OverlayGradientToken]: {
-    light: `linear-gradient(to bottom, transparent 30%, ${Gray[0].alpha(0.8)} 70%, ${Gray[0]} 100%)`,
-    dark: `linear-gradient(to bottom, transparent 30%, ${Gray[900].alpha(0.8)} 70%, ${Gray[900]} 100%)`,
+    light: `linear-gradient(to bottom, transparent 30%, ${colorAlpha(BgSecondary, 0.8)} 70%, ${BgSecondary} 100%)`,
+    dark: `linear-gradient(to bottom, transparent 30%, ${colorAlpha(BgSecondary, 0.8)} 70%, ${BgSecondary} 100%)`,
   },
   [BlurBtnBgToken]: {
-    light: Gray[0].alpha(0.85).toString(),
-    dark: Gray[900].alpha(0.85).toString(),
+    light: colorAlpha(BgSecondary, 0.85),
+    dark: colorAlpha(BgSecondary, 0.85),
   },
   [BlurBtnShadowToken]: {
     light: `0 4px 20px ${Gray[300].alpha(0.2)}`,
