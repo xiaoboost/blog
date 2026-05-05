@@ -35,9 +35,7 @@ function createHead(level: number) {
     const id = getHeadAnchor(getHeadContent(props.children));
     return (
       <Tag id={id}>
-        <a className={styles.classes.postAnchor} href={`#${id}`}>
-          §
-        </a>
+        <a className={styles.classes.postAnchor} href={`#${id}`}>§</a>
         {props.children}
       </Tag>
     );

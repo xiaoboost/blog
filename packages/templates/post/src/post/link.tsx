@@ -24,15 +24,10 @@ export function Link(post: PostBasicData) {
       const linkPost = postPathMap.get(fullPath);
 
       if (linkPost) {
-        return React.createElement(
-          'a',
-          {
-            target: '_blank',
-            rel: 'noreferrer',
-            title: children,
-            href: linkPost.pathname,
-          },
-          [`《${linkPost.title}》`],
+        return (
+          <a target="_blank" rel="noreferrer" title={children} href={linkPost.pathname}>
+            {`《${linkPost.title}》`}
+          </a>
         );
       }
     }

@@ -1,4 +1,4 @@
-import { createStyles, TextSecondary } from '@blog/styles';
+import { createStyles, TextSecondary } from '@blog/styles/compile';
 
 export default createStyles({
   invisible: {},

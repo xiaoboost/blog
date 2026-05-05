@@ -1,4 +1,4 @@
-import { createStyles, Color, FontCode } from '@blog/styles';
+import { createStyles, Color, FontCode } from '@blog/styles/compile';
 import { lsInfoAttrName } from './constant';
 import {
   LspInfoBg,
@@ -9,7 +9,7 @@ import {
   LspErrorBg,
   LspErrorBorder,
   LspErrorBgHover,
-} from './theme';
+} from './theme/token';
 
 const Black = Color(0x383a42);
 const Blue = Color(0x4078f2);

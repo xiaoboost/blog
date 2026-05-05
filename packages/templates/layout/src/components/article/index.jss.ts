@@ -1,5 +1,5 @@
-import { createStyles, WidthMain, mediaPhone } from '@blog/styles';
-import { SpacingHeaderBody } from '../../styles/theme';
+import { createStyles, WidthMain, mediaPhone } from '@blog/styles/compile';
+import { SpacingHeaderBody } from '../../styles/theme/token';
 
 export default createStyles({
   mainArticle: {},

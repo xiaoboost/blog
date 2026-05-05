@@ -1,9 +1,4 @@
-/**
- * 将 token 名包裹为 CSS 自定义属性引用。
- */
-function cssVar(token: string): string {
-  return `var(${token})`;
-}
+import { cssVar } from './theme';
 
 // ═══════════════════════════════════════════════════════════
 // 文本色

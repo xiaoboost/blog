@@ -11,14 +11,14 @@ import {
   FontBody,
   FontHeading,
   FontSizeBase,
-} from '@blog/styles';
+} from '@blog/styles/compile';
 
-import themeStyles, {
+import {
   LinkDefault,
   LinkHover,
   SelectionText,
   SelectionBg,
-} from './theme';
+} from './theme/token';
 
 /** body 背景图在暗色模式下关闭 */
 const bodyBg = createThemeStyles({
@@ -100,7 +100,6 @@ const global = createStyles({
 });
 
 export default mergeStyles(
-  themeStyles,
   global,
   createStyles({
     '@global': createScrollbarWidth(6),

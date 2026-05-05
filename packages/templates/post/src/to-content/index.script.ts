@@ -1,5 +1,5 @@
 import { ModuleLoader } from '@blog/context/web';
-import { headerBodyMargin, mainWidth } from '@blog/styles/constant';
+import { headerBodyMargin, mainWidth } from '@blog/styles/common';
 import { getCurrentScriptSrc } from '@blog/web';
 import { supportsPassive, addClassName, removeClassName } from '@xiao-ai/utils/web';
 

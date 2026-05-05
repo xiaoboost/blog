@@ -6,9 +6,9 @@ import {
   BgSecondary,
   FontHeading,
   WidthMain,
-} from '@blog/styles';
+} from '@blog/styles/compile';
 import { SiteTitleFontFamily } from '../../constant/font';
-import { ShadowHeader } from '../../styles/theme';
+import { ShadowHeader } from '../../styles/theme/token';
 
 export default createStyles({
   mainTitle: {},

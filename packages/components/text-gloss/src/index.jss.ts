@@ -1,4 +1,4 @@
-import { createStyles, TextSecondary, TextTertiary, BorderPrimary } from '@blog/styles';
+import { createStyles, TextSecondary, TextTertiary, BorderPrimary } from '@blog/styles/compile';
 
 const duration = '0.2s';
 const durationGloss = '0.5s';
