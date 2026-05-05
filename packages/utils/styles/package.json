@@ -5,22 +5,27 @@
   "exports": {
     ".": {
       "import": "./src/common/index.ts",
+      "require": "./dist/common/index.js",
       "types": "./src/common/index.ts"
     },
     "./common": {
       "import": "./src/common/index.ts",
+      "require": "./dist/common/index.js",
       "types": "./src/common/index.ts"
     },
     "./common/*": {
       "import": ["./src/common/*", "./src/common/*.ts"],
+      "require": ["./dist/common/*", "./dist/common/*.js"],
       "types": ["./src/common/*", "./src/common/*.ts"]
     },
     "./compile": {
       "import": "./src/compile/index.ts",
+      "require": "./dist/compile/index.js",
       "types": "./src/compile/index.ts"
     },
     "./compile/*": {
       "import": ["./src/compile/*", "./src/compile/*.ts"],
+      "require": ["./dist/compile/*", "./dist/compile/*.js"],
       "types": ["./src/compile/*", "./src/compile/*.ts"]
     },
     "./fonts/*": {
