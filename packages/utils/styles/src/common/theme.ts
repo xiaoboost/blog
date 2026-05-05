@@ -2,6 +2,17 @@ import type { Styles } from '@blog/context/runtime';
 import { DarkMode } from './constant';
 
 /**
+ * 给 CSS 颜色变量动态叠加透明度。
+ *
+ * @description
+ * 使用 CSS 相对颜色语法，在浏览器侧应用 alpha，自动跟随亮/暗模式。
+ * `color` 必须是一个合法的 CSS 颜色值（变量或直接值均可）。
+ */
+export function colorAlpha(color: string, alpha: number): string {
+  return `rgb(from ${color} r g b / ${alpha})`;
+}
+
+/**
  * 将 token 名包裹为 CSS 自定义属性引用。
  *
  * @example
