@@ -5,6 +5,7 @@ import Moment from 'moment';
 import React from 'react';
 
 import { ToContent } from '../to-content';
+import { resetAnchorPointer } from '../to-content/utils';
 
 import * as blockquote from './blockquote';
 import * as code from './code';
@@ -23,6 +24,10 @@ export interface PostProps extends LayoutProps {
 export function Post(props: PostProps) {
   const { post } = props;
   const a = Link(post.data);
+
+  if (post.data.toc) {
+    resetAnchorPointer();
+  }
 
   return (
     <Layout {...props}>

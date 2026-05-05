@@ -73,23 +73,23 @@ function active() {
     const highLightItem = anchor?.parentElement;
     const highLightListItem = highLightItem?.parentElement;
 
-    menuItems.forEach((el) => {
+    for (const el of menuItems) {
       if (el === highLightItem) {
         addClassName(highLightItem, tocStyles.classes.menuItemHighlight);
       }
       else {
         removeClassName(el, tocStyles.classes.menuItemHighlight);
       }
-    });
+    }
 
-    menuLists.forEach((el) => {
+    for (const el of menuLists) {
       if (el === highLightListItem) {
         addClassName(highLightListItem, tocStyles.classes.menuListHighlight);
       }
       else {
         removeClassName(el, tocStyles.classes.menuListHighlight);
       }
-    });
+    }
   };
   const recordTitlePosition = () => {
     const article = document.querySelector<HTMLElement>(`.${postStyles.classes.postDefault}`);

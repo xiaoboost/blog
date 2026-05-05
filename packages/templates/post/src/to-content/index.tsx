@@ -6,7 +6,7 @@ import React from 'react';
 
 import { levelLimit } from './constant';
 import styles from './index.jss';
-import { getHeadAnchor } from './utils';
+import { getHeadAnchor, getNodeText, resetAnchorPointer } from './utils';
 
 export interface Props {
   data: Mdx.Root;
@@ -24,25 +24,13 @@ export interface NavTitleProps {
   titles: NavTitleData[];
 }
 
-function getContext(node: Mdx.Heading | Mdx.PhrasingContent): string {
-  if ('children' in node) {
-    return node.children.map(getContext).join('');
-  }
-  else if ('value' in node) {
-    return node.value;
-  }
-  else {
-    return '';
-  }
-}
-
 export function getNavList(ast: Mdx.Root) {
   const list: NavTitleData[] = [];
 
   visit(ast, (node) => {
     if (node.type === 'heading') {
       list.push({
-        content: getContext(node),
+        content: getNodeText(node),
         level: node.depth,
         // 占位，无用字段
         hash: '',
@@ -64,12 +52,17 @@ function createNavFromAst(ast: Mdx.Root, _: number): NavTitleData[] {
   let current = root;
 
   visit(ast, (token) => {
-    if (token.type !== 'heading' || token.depth > levelLimit) {
+    if (token.type !== 'heading') {
       return;
     }
 
-    const content = getContext(token);
+    const content = getNodeText(token);
     const hash = getHeadAnchor(content);
+
+    if (token.depth > levelLimit) {
+      return;
+    }
+
     const level = token.depth;
 
     if (level > current.level) {
@@ -149,6 +142,9 @@ function NavTitle({ titles }: NavTitleProps) {
 }
 
 export function ToContent({ data }: Props) {
+  // 先重置计数器
+  resetAnchorPointer();
+
   const titles = createNavFromAst(data, levelLimit);
 
   return (
