@@ -1,8 +1,9 @@
+import './theme/style.jss';
+
 import { ModuleLoader, assets } from '@blog/context/web';
 import { getCurrentScriptSrc } from '@blog/web';
 import { computePosition, autoUpdate, flip, shift, offset, inline } from '@floating-ui/dom';
 import { isString } from '@xiao-ai/utils';
-
 import { lsInfoAttrName } from './constant';
 import styles from './index.jss';
 import type { DisplaySymbol } from './typescript';
