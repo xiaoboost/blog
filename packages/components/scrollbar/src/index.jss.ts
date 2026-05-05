@@ -1,4 +1,4 @@
-import { createStyles, TextSecondary } from '@blog/styles/compile';
+import { createStyles, TextTertiary } from '@blog/styles/compile';
 
 export default createStyles({
   invisible: {},
@@ -28,7 +28,7 @@ export default createStyles({
       left: 0,
       transform: 'translate3d(0px, 0px, 0px)',
       contain: 'strict',
-      background: TextSecondary,
+      background: TextTertiary,
     },
   },
 });
