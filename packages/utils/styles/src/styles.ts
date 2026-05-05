@@ -1,8 +1,8 @@
 import { type StyleSheet, type Styles, jss } from '@blog/context/runtime';
 import { hyphenate } from '@xiao-ai/utils';
-import { mediaPhone, mediaPc } from './constant';
 
-type JssStyle<C extends string | number = string> = Pick<StyleSheet<C>, 'classes'>;
+export { type StyleSheet, type Styles } from '@blog/context/runtime';
+export type JssStyle<C extends string | number = string> = Pick<StyleSheet<C>, 'classes'>;
 
 export function createStyles<C extends string = string>(styles: Styles<C>): JssStyle<C> {
   return jss.createStyleSheet(styles, {
@@ -53,13 +53,6 @@ export function mergeStyles(...styles: JssStyle[]): JssStyle {
   }
 
   return style;
-}
-
-export function createMediaStyles<T>(pcParam: T, phoneParam: T, template: (param: T) => Styles) {
-  return {
-    [mediaPc]: template(pcParam),
-    [mediaPhone]: template(phoneParam),
-  };
 }
 
 /** 迭代标题元素 */

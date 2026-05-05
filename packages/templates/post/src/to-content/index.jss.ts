@@ -1,15 +1,13 @@
 import {
   createStyles,
-  Black,
-  White,
-  Shadow,
-  BlackLight,
-  Gray,
-  GrayLight,
-  BlueLight,
-  mediaPhone,
+  TextPrimary,
+  TextSecondary,
+  BgPrimary,
+  BorderPrimary,
+  ShadowControl,
+  createMediaStyles,
 } from '@blog/styles';
-
+import { AccentLight, BgCode, BgTertiary } from '../theme';
 import { tocMarginLeft, tocWidth } from './constant';
 
 export default createStyles({
@@ -23,25 +21,25 @@ export default createStyles({
   menuLevel2: {},
   menuIcon: {},
   toContent: {
-    [mediaPhone]: {
-      display: 'none',
-    },
+    ...createMediaStyles({
+      phone: { display: 'none' },
+    }),
 
-    color: Black.toString(),
-    backgroundColor: White.toString(),
-    boxShadow: `0 1px 3px ${Shadow.toString()}`,
+    color: TextPrimary,
+    backgroundColor: BgPrimary,
+    boxShadow: ShadowControl,
     position: 'absolute',
     width: 200,
     right: 0 - tocWidth - tocMarginLeft,
     boxSizing: 'border-box',
-    padding: `0 14px`,
+    padding: '0 14px',
     fontSize: 14,
     flexGrow: 0,
     flexShrink: 0,
 
     '& $menuListHeader': {
       padding: '8px 0',
-      borderBottom: `1px solid ${GrayLight.toString()}`,
+      borderBottom: `1px solid ${BgTertiary}`,
     },
 
     '& $menuList': {
@@ -52,11 +50,11 @@ export default createStyles({
         paddingLeft: 14,
         marginBottom: 4,
         marginLeft: 3,
-        borderLeft: `1px solid ${Gray.toString()}`,
+        borderLeft: `1px solid ${BorderPrimary}`,
         transition: 'border-color .1s linear',
 
         '&$menuListHighlight': {
-          borderColor: BlackLight.toString(),
+          borderColor: TextSecondary,
         },
       },
     },
@@ -79,12 +77,12 @@ export default createStyles({
     },
 
     '& $menuItemHighlight > a': {
-      color: BlueLight.toString(),
+      color: AccentLight,
     },
 
     '& a': {
-      transition: `color .1s linear`,
-      color: Black.toString(),
+      transition: 'color .1s linear',
+      color: TextPrimary,
       textDecoration: 'none',
       display: 'flex',
       alignItems: 'center',
@@ -94,7 +92,7 @@ export default createStyles({
       padding: '0.1em',
       fontSize: '0.85em',
       borderRadius: 4,
-      backgroundColor: '#fef9ed',
+      backgroundColor: BgCode,
 
       '&:first-child': {
         marginLeft: '-0.2em',

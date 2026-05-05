@@ -1,4 +1,4 @@
-import { createStyles, White, Gray, MainShadow, FontSerif } from '@blog/styles';
+import { createStyles, BgPrimary, BorderPrimary, ShadowCard, FontHeading } from '@blog/styles';
 import { ListTitleFontFamily } from '../../constant/font';
 import { PostTitleStyle, PostSubTitleStyle } from '../main-index/index.jss';
 
@@ -14,12 +14,12 @@ export default createStyles({
       margin: [
         0, 10, 20, 10,
       ],
-      fontFamily: `${ListTitleFontFamily}, ${FontSerif}`,
+      fontFamily: `${ListTitleFontFamily}, ${FontHeading}`,
     },
     '& $itemList': {
       width: '100%',
-      backgroundColor: White.toString(),
-      boxShadow: MainShadow,
+      backgroundColor: BgPrimary,
+      boxShadow: ShadowCard,
       borderRadius: 4,
       overflow: 'hidden',
 
@@ -30,7 +30,7 @@ export default createStyles({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        borderBottom: `1px solid ${Gray.toString()}`,
+        borderBottom: `1px solid ${BorderPrimary}`,
 
         '& a': {
           ...PostTitleStyle,

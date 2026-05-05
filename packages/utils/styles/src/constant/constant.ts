@@ -3,9 +3,9 @@
 /** 自定义字体名称枚举 */
 export const CustomFont = {
   /** 英文正文 */
-  Lato: `"Lato"`,
+  Lato: '"Lato"',
   /** 斜体英文 */
-  EMLora: `"EM-Lora"`,
+  EMLora: '"EM-Lora"',
 };
 
 /** 默认字体 */

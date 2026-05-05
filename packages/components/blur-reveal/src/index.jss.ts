@@ -1,8 +1,14 @@
-import { createStyles, White, Black, Shadow, FontDefaultSize } from '@blog/styles';
+import { createStyles, TextPrimary, FontSizeBase } from '@blog/styles';
 import { duration, maxHeight } from './constant';
-
-const WhiteStr = White.toString();
-const WhiteAlpha0 = White.alpha(0).toString();
+import {
+  FogGradientLeft,
+  FogGradientRight,
+  OverlayGradient,
+  BlurBtnBg,
+  BlurBtnShadow,
+  BlurBtnHoverShadow,
+  BlurBtnBorder,
+} from './theme';
 
 export default createStyles({
   blurRevealExpanded: {},
@@ -37,11 +43,11 @@ export default createStyles({
   },
   blurRevealFogLeft: {
     left: 0,
-    background: `linear-gradient(to right, ${WhiteStr} 25%, ${WhiteAlpha0} 100%)`,
+    background: FogGradientLeft,
   },
   blurRevealFogRight: {
     right: 0,
-    background: `linear-gradient(to left, ${WhiteStr} 25%, ${WhiteAlpha0} 100%)`,
+    background: FogGradientRight,
   },
   blurRevealContent: {
     position: 'relative',
@@ -68,29 +74,23 @@ export default createStyles({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    background: `linear-gradient(
-      to bottom,
-      ${WhiteAlpha0} 30%,
-      ${White.alpha(0.8).toString()} 70%,
-      ${WhiteStr} 100%
-    )`,
+    background: OverlayGradient,
     transition: `opacity ${duration / 2}s ease`,
 
     '&:hover $blurRevealOverlayBtn': {
-      boxShadow: `0 8px 24px ${Black.alpha(0.12).toString()}`,
-      color: Black.toString(),
+      boxShadow: BlurBtnHoverShadow,
     },
   },
   blurRevealOverlayBtn: {
-    background: White.alpha(0.85).toString(),
+    background: BlurBtnBg,
     backdropFilter: 'blur(8px)',
-    border: '1px solid rgba(0, 0, 0, 0.08)',
+    border: BlurBtnBorder,
     padding: [10, 24],
     borderRadius: 6,
-    fontSize: FontDefaultSize + 2,
+    fontSize: FontSizeBase + 2,
     fontWeight: 600,
-    color: Black.toString(),
-    boxShadow: `0 4px 20px ${Shadow.alpha(0.2).toString()}`,
+    color: TextPrimary,
+    boxShadow: BlurBtnShadow,
     transition: `all ${duration / 4}s ease`,
     cursor: 'pointer',
   },

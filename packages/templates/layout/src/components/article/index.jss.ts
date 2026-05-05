@@ -1,4 +1,5 @@
-import { createStyles, mainWidth, mediaPhone, headerBodyMargin } from '@blog/styles';
+import { createStyles, WidthMain, mediaPhone } from '@blog/styles';
+import { SpacingHeaderBody } from '../../styles/theme';
 
 export default createStyles({
   mainArticle: {},
@@ -9,9 +10,9 @@ export default createStyles({
 
     '& $mainArticle': {
       display: 'flex',
-      width: mainWidth,
+      width: WidthMain,
       position: 'relative',
-      marginTop: headerBodyMargin,
+      marginTop: SpacingHeaderBody,
       justifyContent: 'flex-start',
       alignItems: 'flex-start',
       flexDirection: 'column',

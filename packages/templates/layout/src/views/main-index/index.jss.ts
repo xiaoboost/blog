@@ -1,26 +1,26 @@
 import {
   createStyles,
-  Black,
-  White,
-  Gray,
-  MainShadow,
-  BlackLighter,
-  FontDefault,
-  FontSerif,
+  TextPrimary,
+  BgPrimary,
+  BorderPrimary,
+  ShadowCard,
+  TextTertiary,
+  FontBody,
+  FontHeading,
 } from '@blog/styles';
 import { ListItemTitleFontFamily } from '../../constant/font';
 
 export const PostTitleStyle = {
-  color: Black.toString(),
+  color: TextPrimary,
   textShadow: '0.05px 0 0 currentColor',
-  fontFamily: `${ListItemTitleFontFamily}, ${FontSerif}`,
+  fontFamily: `${ListItemTitleFontFamily}, ${FontHeading}`,
 };
 
 export const PostSubTitleStyle = {
-  color: BlackLighter.toString(),
+  color: TextTertiary,
   fontSize: 12,
   fontWeight: 'normal',
-  fontFamily: FontDefault,
+  fontFamily: FontBody,
 };
 
 export default createStyles({
@@ -32,23 +32,23 @@ export default createStyles({
   postsListItemFooterTag: {},
   postsListItemFooterTagSplit: {},
   postsList: {
-    color: Black.toString(),
-    backgroundColor: White.toString(),
+    color: TextPrimary,
+    backgroundColor: BgPrimary,
     width: '100%',
     borderRadius: '4px',
     overflow: 'hidden',
-    boxShadow: MainShadow,
+    boxShadow: ShadowCard,
 
     '& $postsListItem': {
       margin: 0,
       padding: '20px 24px',
       boxShadow: 'none',
       boxSizing: 'border-box',
-      backgroundColor: White.toString(),
-      borderBottom: `1px solid ${Gray.toString()}`,
-      fontFamily: FontDefault,
+      backgroundColor: BgPrimary,
+      borderBottom: `1px solid ${BorderPrimary}`,
+      fontFamily: FontBody,
       fontWeight: 'normal',
-      color: Black.toString(),
+      color: TextPrimary,
 
       '&:last-child': {
         borderBottom: 'none',
@@ -80,18 +80,18 @@ export default createStyles({
 
       '& $postsListItemFooterIcon': {
         marginRight: 4,
-        color: BlackLighter.toString(),
+        color: TextTertiary,
       },
       '& $postsListItemFooterTagSplit': {
-        color: BlackLighter.toString(),
+        color: TextTertiary,
         cursor: 'default',
       },
       '& $postsListItemFooterTag': {
         margin: 0,
-        color: BlackLighter.toString(),
+        color: TextTertiary,
 
         '&:hover': {
-          color: Black.toString(),
+          color: TextPrimary,
         },
       },
     },

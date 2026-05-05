@@ -1,3 +1,4 @@
+import './theme';
 import './post/index.jss';
 import './post/image/index.jss';
 import './post/image/index.script';

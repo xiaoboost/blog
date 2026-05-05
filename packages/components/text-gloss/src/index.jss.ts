@@ -1,4 +1,4 @@
-import { createStyles, BlackLight, BlackLighter, Gray } from '@blog/styles';
+import { createStyles, TextSecondary, TextTertiary, BorderPrimary } from '@blog/styles';
 
 const duration = '0.2s';
 const durationGloss = '0.5s';
@@ -21,9 +21,9 @@ export default createStyles({
       backgroundImage: `repeating-linear-gradient(
         to right,
         /* 实线部分从 0px 开始 */
-        ${BlackLighter.toString()} 0,
+        ${TextTertiary} 0,
         /* 实线部分到 4px 结束 */
-        ${BlackLighter.toString()} 4px,
+        ${TextTertiary} 4px,
         /* 透明部分从 4px 开始 */
         transparent 4px,
         /* 透明部分到 7px 结束 */
@@ -40,9 +40,9 @@ export default createStyles({
         backgroundImage: `repeating-linear-gradient(
           to right,
           /* 实线部分从 0px 开始 */
-          ${BlackLighter.toString()} 0,
+          ${TextTertiary} 0,
           /* 实线部分到 4px 结束 */
-          ${BlackLighter.toString()} 4px
+          ${TextTertiary} 4px
         )`,
       },
     },
@@ -56,11 +56,11 @@ export default createStyles({
       verticalAlign: 'bottom',
       transition: `all ${durationGloss} ease`,
       fontSize: '90%',
-      color: BlackLight.toString(),
+      color: TextSecondary,
     },
     '&$glossActive': {
       '& $glossContent': {
-        backgroundColor: `${Gray.toString()} !important`,
+        backgroundColor: `${BorderPrimary} !important`,
         backgroundImage: 'none !important',
         borderRadius: 2,
         padding: [2, 4],
@@ -75,7 +75,7 @@ export default createStyles({
       '& $glossDescription': {
         paddingRight: 10,
         marginRight: 8,
-        borderRight: `1px solid ${BlackLighter.toString()}`,
+        borderRight: `1px solid ${TextTertiary}`,
       },
     },
   },

@@ -1,5 +1,3 @@
-/* eslint-disable max-classes-per-file */
-
 import { ModuleLoader, assets } from '@blog/context/web';
 import { getCurrentScriptSrc } from '@blog/web';
 import { computePosition, autoUpdate, flip, shift, offset, inline } from '@floating-ui/dom';

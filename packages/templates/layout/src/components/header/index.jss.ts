@@ -1,13 +1,13 @@
 import {
   createStyles,
-  Black,
-  Color,
-  BlackLight,
-  BlackLighter,
-  White,
-  mainWidth,
-  FontSerif,
+  TextPrimary,
+  TextSecondary,
+  TextTertiary,
+  BgPrimary,
+  FontHeading,
+  WidthMain,
 } from '@blog/styles';
+import { ShadowHeader } from '../../styles/theme';
 import { SiteTitleFontFamily } from '../../constant/font';
 
 export default createStyles({
@@ -16,11 +16,8 @@ export default createStyles({
   mainHeaderWrapper: {
     width: '100%',
     height: 42,
-    backgroundColor: White.toString(),
-    boxShadow: `
-      0 1px 3px ${Color.rgb(0, 0, 0).alpha(0.08).toString()}, 
-      0 1px 1px ${Color.rgb(0, 0, 0).alpha(0.04).toString()}
-    `,
+    backgroundColor: BgPrimary,
+    boxShadow: ShadowHeader,
     flex: '0 0 auto',
     display: 'flex',
     justifyContent: 'center',
@@ -29,15 +26,15 @@ export default createStyles({
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    width: mainWidth,
+    width: WidthMain,
     padding: [0, 10],
 
     '& $mainTitle': {
       display: 'flex',
       fontSize: 24,
-      color: Black.toString(),
+      color: TextPrimary,
       alignItems: 'center',
-      fontFamily: `${SiteTitleFontFamily}, ${FontSerif}`,
+      fontFamily: `${SiteTitleFontFamily}, ${FontHeading}`,
     },
   },
   mainNav: {
@@ -47,7 +44,7 @@ export default createStyles({
   },
   mainNavItem: {
     marginLeft: 20,
-    color: BlackLighter.toString(),
+    color: TextTertiary,
     display: 'flex',
     alignItems: 'center',
     position: 'relative',
@@ -55,11 +52,11 @@ export default createStyles({
     transition: 'color .2s',
 
     '&$mainNavItemHighlight': {
-      color: Black.toString(),
+      color: TextPrimary,
     },
 
     '&:hover': {
-      color: BlackLight.toString(),
+      color: TextSecondary,
     },
   },
   mainNavItemBar: {
@@ -68,6 +65,6 @@ export default createStyles({
     left: 0,
     height: 3,
     width: '100%',
-    background: Black.toString(),
+    background: TextPrimary,
   },
 });
