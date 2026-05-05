@@ -1,3 +1,4 @@
+import './theme/style.jss';
 import './index.jss';
 import { assets } from '@blog/context/web';
 

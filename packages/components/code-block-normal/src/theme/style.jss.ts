@@ -16,11 +16,11 @@ export default createThemeStylesByVars({
   },
   [CodeBgToken]: {
     light: Gray[50].toString(),
-    dark: Gray[800].toString(),
+    dark: Gray[800].mix(Gray[950], 0.15).toString(),
   },
   [CodeGutterBgToken]: {
     light: Gray[50].mix(Gray[300], 0.25).toString(),
-    dark: Gray[800].mix(Gray[950], 0.3).toString(),
+    dark: Gray[900].toString(),
   },
   [CodeGutterColorToken]: {
     light: Gray[400].toString(),
@@ -28,7 +28,7 @@ export default createThemeStylesByVars({
   },
   [CodeSplitToken]: {
     light: Gray[200].toString(),
-    dark: Gray[700].toString(),
+    dark: Gray[600].toString(),
   },
   [CodeHighlightBgToken]: {
     light: Gray[100].toString(),
