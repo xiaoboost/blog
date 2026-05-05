@@ -1,35 +1,36 @@
 import { toRound } from '@blog/shared';
 import {
   createStyles,
-  mainWidth,
-  Color,
-  Black,
-  White,
-  WhiteBg,
-  Gray,
-  BlackLight,
-  BlackLighter,
-  BlackExtraLight,
-  YellowLight,
-  YellowLighter,
-  FontSerif,
-  FontDefault,
-  MainShadow,
-  CustomFont,
-  FontMono,
-  createMediaStyles,
+  TextPrimary,
+  TextSecondary,
+  TextTertiary,
+  BgPrimary,
+  BgSecondary,
+  BorderPrimary,
+  ShadowCard,
+  FontBody,
+  FontHeading,
+  FontCode,
+  WidthMain,
   createHeadStyles,
   getHeadSelector,
-  DarkMode,
+  createMediaStylesByTemplate,
 } from '@blog/styles';
-
 import { FirstTitleFontFamily, SecondTitleFontFamily } from '../constant';
+import {
+  TextQuaternary,
+  BgTertiary,
+  BgCode,
+  CodeUnderline,
+  EmphasisUnderline,
+  EmphasisShadow,
+  EmphasisStrongBg,
+  EmphasisStrongShadow,
+  FontEm,
+} from '../theme';
 
 const indent = 24;
 const smallIndent = 14;
-const tableHeaderBorderColor = Color.hsl(210, 18, 87, 1);
-const tableBorderColor = Color(0xd0d7de);
-const tableRowBgColor = Color(0xf6f9fa);
 
 export default createStyles({
   postAnchor: {},
@@ -43,18 +44,24 @@ export default createStyles({
   splitMark: {},
   blockquoteIcon: {},
   postDefault: {
-    color: Black.toString(),
-    backgroundColor: White.toString(),
-    boxShadow: MainShadow,
-    width: mainWidth,
+    color: TextPrimary,
+    backgroundColor: BgPrimary,
+    boxShadow: ShadowCard,
+    width: WidthMain,
     flexGrow: 0,
     flexShrink: 0,
     borderRadius: 4,
     overflow: 'hidden',
 
-    ...createMediaStyles<number | string>(mainWidth, '100%', (width) => ({
-      width: typeof width === 'number' ? `${width}px` : width,
-    })),
+    ...createMediaStylesByTemplate<number | string>(
+      (width) => ({
+        width: typeof width === 'number' ? `${width}px` : String(width),
+      }),
+      {
+        pc: 900,
+        phone: '100%',
+      },
+    ),
 
     '&$postNoToc': {
       width: '100%',
@@ -64,15 +71,16 @@ export default createStyles({
       minHeight: 50,
       justifyContent: 'space-between',
       alignItems: 'center',
-      borderBottom: `1px solid ${Gray.toString()}`,
+      borderBottom: `1px solid ${BorderPrimary}`,
 
-      ...createMediaStyles(indent, smallIndent, (width) => ({
-        margin: `0 ${width}px`,
-      })),
+      ...createMediaStylesByTemplate(
+        (width) => ({ margin: `0 ${width}px` }),
+        { pc: indent, phone: smallIndent },
+      ),
     },
     '& $postHeaderTitle': {
-      fontFamily: `${FirstTitleFontFamily},${FontSerif}`,
-      color: Black.toString(),
+      fontFamily: `${FirstTitleFontFamily},${FontHeading}`,
+      color: TextPrimary,
       fontSize: 28,
       margin: 0,
       padding: 0,
@@ -80,18 +88,19 @@ export default createStyles({
       width: 'calc(100% - 100px)',
     },
     '& $postHeaderCreate': {
-      color: BlackLighter.toString(),
+      color: TextTertiary,
       fontSize: 13,
       fontWeight: 'normal',
-      fontFamily: FontDefault,
+      fontFamily: FontBody,
     },
     '& $postArticle': {
       fontSize: 16,
-      ...createMediaStyles(indent, smallIndent, (width) => ({
-        padding: `16px ${width}px`,
-      })),
+      ...createMediaStylesByTemplate(
+        (width) => ({ padding: `16px ${width}px` }),
+        { pc: indent, phone: smallIndent },
+      ),
       ...createHeadStyles('& ', (level) => ({
-        fontFamily: `${level === 1 ? FirstTitleFontFamily : SecondTitleFontFamily},${FontSerif}`,
+        fontFamily: `${level === 1 ? FirstTitleFontFamily : SecondTitleFontFamily},${FontHeading}`,
         textShadow: level === 1 ? 'none' : '0.05px 0 0 currentColor',
         fontSize: `${toRound(1.5 - 0.15 * (level - 1))}em`,
         marginTop: `${toRound(1.2 - 0.1 * (level - 1))}em`,
@@ -102,13 +111,16 @@ export default createStyles({
         position: 'relative',
         display: 'flex',
         alignItems: 'center',
-        ...createMediaStyles(indent, smallIndent, (indent) => ({
-          marginLeft: `${-1 * indent}px`,
-          marginRight: `${-1 * indent}px`,
-        })),
+        ...createMediaStylesByTemplate(
+          (width) => ({
+            marginLeft: `${-1 * width}px`,
+            marginRight: `${-1 * width}px`,
+          }),
+          { pc: indent, phone: smallIndent },
+        ),
         '& $postAnchor': {
           fontSize: '.8em',
-          color: BlackLight.toString(),
+          color: TextSecondary,
           cursor: 'pointer',
           opacity: 0,
           width: indent,
@@ -140,14 +152,14 @@ export default createStyles({
         },
       },
       '& code, & pre': {
-        fontFamily: FontMono,
+        fontFamily: FontCode,
       },
       '& code': {
         margin: '0 0.2em',
         padding: '0.2em',
         fontSize: '0.85em',
-        backgroundColor: YellowLighter.toString(),
-        borderBottom: `0.1em solid ${YellowLight.toString()}`,
+        backgroundColor: BgCode,
+        borderBottom: `0.1em solid ${CodeUnderline}`,
         top: -1.5,
         borderRadius: 2,
         position: 'relative',
@@ -156,38 +168,9 @@ export default createStyles({
         margin: '0 2px',
         fontStyle: 'normal',
         textDecoration: 'none',
-        fontFamily: `${CustomFont.EMLora}, ${FontDefault}`,
-        backgroundImage: `linear-gradient(
-          to top,
-          transparent,
-          transparent 0px,
-          ${BlackLighter.toString()} 0px,
-          ${BlackLighter.toString()} 1px,
-          transparent 1px
-        )`,
-        textShadow: `
-          -1px -1px 0 #fafafa,
-          1px -1px 0 ${WhiteBg.toString()},
-          -1px 1px 0 ${WhiteBg.toString()},
-          1px 1px ${WhiteBg.toString()}
-        `,
-
-        [DarkMode]: {
-          textShadow: `
-            -1px -1px 0 transparent,
-            1px -1px 0 transparent,
-            -1px 1px 0 transparent,
-            1px 1px transparent
-          `,
-          backgroundImage: `linear-gradient(
-            to top,
-            transparent,
-            transparent 0px,
-            ${BlackExtraLight.toString()} 0px,
-            ${BlackExtraLight.toString()} 1px,
-            transparent 1px
-          )`,
-        },
+        fontFamily: FontEm,
+        backgroundImage: EmphasisUnderline,
+        textShadow: EmphasisShadow,
 
         // 三个✳的强调，样式和普通的强调有所不同
         '& > strong': {
@@ -198,39 +181,16 @@ export default createStyles({
           boxDecorationBreak: 'clone',
           fontWeight: 'bold',
           webkitBoxDecorationBreak: 'clone',
-          backgroundImage: `linear-gradient(
-            120deg,
-            ${Gray.toString()} 0%,
-            ${Gray.toString()} 100%
-          )`,
+          backgroundImage: EmphasisStrongBg,
           // 这里下面的方向是 2.5，多出来的 0.5 是为了遮住 em 原本的 2px 下划线
           padding: [
             0, 2, 2.5, 2,
           ],
-          textShadow: `
-            -0.8px -0.8px 0 #fafafa,
-            0.8px -0.8px 0 ${WhiteBg.toString()},
-            -0.8px 0.8px 0 ${WhiteBg.toString()},
-            0.8px 0.8px ${WhiteBg.toString()}
-          `,
-
-          [DarkMode]: {
-            textShadow: `
-              -0.8px -0.8px 0 transparent,
-              0.8px -0.8px 0 transparent,
-              -0.8px 0.8px 0 transparent,
-              0.8px 0.8px transparent
-            `,
-            backgroundImage: `linear-gradient(
-              120deg,
-              ${Color(0x4a4a4e).toString()} 0%,
-              ${Color(0x4a4a4e).toString()} 100%
-            )`,
-          },
+          textShadow: EmphasisStrongShadow,
         },
       },
       '& s': {
-        textDecorationColor: 'rgba(32, 32, 32, 0.5)',
+        textDecorationColor: TextTertiary,
       },
       '& small': {
         fontSize: '0.8em',
@@ -273,8 +233,8 @@ export default createStyles({
         margin: '1em 0',
         lineHeight: 1.5,
         fontSize: '90%',
-        borderLeft: `0.3em solid ${BlackExtraLight.darken(0.04).toString()}`,
-        backgroundColor: WhiteBg.alpha(0.8).toString(),
+        borderLeft: `0.3em solid ${TextQuaternary}`,
+        backgroundColor: BgSecondary,
 
         '& $blockquoteIcon': {
           position: 'absolute',
@@ -282,7 +242,7 @@ export default createStyles({
           left: 12,
           fontSize: 20,
           zIndex: 0,
-          color: BlackExtraLight.toString(),
+          color: TextQuaternary,
         },
 
         '> *': {
@@ -304,15 +264,15 @@ export default createStyles({
         borderCollapse: 'collapse',
 
         '& tr': {
-          backgroundColor: White.toString(),
-          borderTop: `1px solid ${tableHeaderBorderColor.toString()}`,
+          backgroundColor: BgPrimary,
+          borderTop: `1px solid ${BorderPrimary}`,
         },
         '& tbody tr:nth-child(2n+1)': {
-          backgroundColor: tableRowBgColor.toString(),
+          backgroundColor: BgTertiary,
         },
         '& th, & td': {
           padding: [6, 13],
-          border: `1px solid ${tableBorderColor.toString()}`,
+          border: `1px solid ${BorderPrimary}`,
         },
         '& th': {
           fontWeight: 600,
@@ -326,7 +286,7 @@ export default createStyles({
         border: 'none',
         overflow: 'hidden',
         boxSizing: 'content-box',
-        borderBottom: `1px solid ${Gray.toString()}`,
+        borderBottom: `1px solid ${BorderPrimary}`,
       },
       '& $splitMark': {
         display: 'flex',
@@ -334,19 +294,19 @@ export default createStyles({
         alignItems: 'center',
         padding: 0,
         margin: [20, 0],
-        color: BlackLighter.toString(),
+        color: TextTertiary,
 
         '&::before, &::after': {
           content: '""',
           width: 80,
           height: 1,
-          backgroundColor: Gray.toString(),
+          backgroundColor: BorderPrimary,
           margin: [0, 15],
         },
 
         '& > span': {
           fontSize: 20,
-          fontFamily: FontSerif,
+          fontFamily: FontHeading,
         },
       },
     },

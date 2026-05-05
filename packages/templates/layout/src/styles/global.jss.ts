@@ -2,21 +2,28 @@ import {
   createStyles,
   createScrollbarWidth,
   getHeadSelector,
-  Color,
   mergeStyles,
-  FontSerif,
-  FontDefault,
-  FontDefaultSize,
-  WhiteBg,
-  Black,
-  BlackLight,
-  SelectedColor,
-  SelectedBgColor,
-  DarkMode,
+  createThemeStyles,
+  TextPrimary,
+  TextSecondary,
+  BgSecondary,
+  FontBody,
+  FontHeading,
+  FontSizeBase,
 } from '@blog/styles';
 
-const linkColor = Color.rgb(23, 81, 153).alpha(0.6);
-const linkHoverColor = Color.rgb(23, 81, 153);
+import themeStyles, {
+  LinkDefault,
+  LinkHover,
+  SelectionText,
+  SelectionBg,
+} from './theme';
+
+/** body 背景图在暗色模式下关闭 */
+const bodyBg = createThemeStyles({
+  light: { backgroundImage: "url('../assets/images/bg.svg')" },
+  dark: { backgroundImage: 'none' },
+});
 
 const global = createStyles({
   '@global': {
@@ -25,7 +32,7 @@ const global = createStyles({
       boxSizing: 'border-box',
     },
     [getHeadSelector()]: {
-      fontFamily: FontSerif,
+      fontFamily: FontHeading,
       position: 'relative',
     },
     'html, body': {
@@ -33,25 +40,25 @@ const global = createStyles({
       height: '100%',
       margin: 0,
       padding: 0,
-      color: Black.toString(),
-      fontFamily: FontDefault,
-      fontSize: FontDefaultSize,
+      color: TextPrimary,
+      fontFamily: FontBody,
+      fontSize: FontSizeBase,
     },
     a: {
       cursor: 'pointer',
       textDecoration: 'none',
-      color: linkColor.toString(),
+      color: LinkDefault,
       transition: 'color .2s, background .4s',
 
       '&:hover, &:focus': {
         outline: 0,
-        color: linkHoverColor.toString(),
+        color: LinkHover,
       },
     },
     body: {
       display: 'flex',
       flexDirection: 'column',
-      backgroundImage: "url('../assets/images/bg.svg')",
+      ...bodyBg,
 
       // 禁用 body 的滚动条
       overflow: '-moz-scrollbars-none',
@@ -61,37 +68,32 @@ const global = createStyles({
     },
     '::-webkit-scrollbar': {
       width: '0 !important',
-      // backgroundColor: WhiteBg.toString(),
     },
     '::-webkit-scrollbar-track': {
-      backgroundColor: WhiteBg.toString(),
+      backgroundColor: BgSecondary,
     },
     '::-webkit-scrollbar-thumb': {
-      'opacity': '0.7',
-      'backgroundColor': BlackLight.toString(),
-      'transition': 'opacity ease-in-out 200ms',
+      opacity: '0.7',
+      backgroundColor: TextSecondary,
+      transition: 'opacity ease-in-out 200ms',
 
       '&:hover': {
         opacity: '1',
       },
     },
     '::selection': {
-      color: SelectedColor.toString(),
-      backgroundColor: SelectedBgColor.toString(),
+      color: SelectionText,
+      backgroundColor: SelectionBg,
     },
     '::-moz-selection': {
-      color: SelectedColor.toString(),
-      backgroundColor: SelectedBgColor.toString(),
-    },
-    [DarkMode]: {
-      body: {
-        backgroundImage: 'none',
-      },
+      color: SelectionText,
+      backgroundColor: SelectionBg,
     },
   },
 });
 
 export default mergeStyles(
+  themeStyles,
   global,
   createStyles({
     '@global': createScrollbarWidth(6),

@@ -17,6 +17,7 @@ export default defineConfig(
       '**/draft/',
       '**/node_modules/',
       '**/ava.config.js',
+      '**/.mocharc.js',
     ],
   },
   {

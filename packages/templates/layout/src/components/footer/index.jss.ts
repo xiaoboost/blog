@@ -1,32 +1,38 @@
 import {
   createStyles,
-  BlackLighter,
-  FontDefault,
-  createMediaStyles,
-  Black,
-  RedLight,
+  TextTertiary,
+  FontBody,
+  TextPrimary,
+  createMediaStylesByTemplate,
 } from '@blog/styles';
+import { AccentDanger } from '../../styles/theme';
 
 export default createStyles({
   mainFooter: {
     flex: '0 auto',
-    fontFamily: FontDefault,
+    fontFamily: FontBody,
     fontWeight: 'normal',
     width: '100%',
-    color: BlackLighter.toString(),
+    color: TextTertiary,
     textAlign: 'center',
     fontSize: 12,
 
-    ...createMediaStyles(40, 24, (width) => ({
-      padding: `${width}px 0 18px 0`,
-    })),
+    ...createMediaStylesByTemplate(
+      (width) => ({
+        padding: `${width}px 0 18px 0`,
+      }),
+      {
+        pc: 40,
+        phone: 24,
+      },
+    ),
   },
   mainFooterHref: {
-    color: Black.toString(),
+    color: TextPrimary,
     transition: 'color .2s ease-out',
 
     '&:hover': {
-      color: RedLight.toString(),
+      color: AccentDanger,
       cursor: 'pointer',
     },
   },

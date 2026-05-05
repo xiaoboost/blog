@@ -1,21 +1,18 @@
 import {
   createStyles,
   createScrollbarWidth,
-  BlackLight,
-  WhiteBg,
-  Gray,
-  BlackExtraLight,
-  mediaPhone,
-  Color,
+  createMediaStyles,
+  RadiusSm,
 } from '@blog/styles';
-
-const CodeColor = Color(BlackLight);
-const CodeBgColor = Color(WhiteBg);
-const SplitColor = Color(Gray);
-const highlightBgColor = Color(BlackExtraLight.rgbNumber() + 0x222222);
-const GutterBgColor = Color(CodeBgColor.rgbNumber() - 0x101010);
-const GutterColor = Color(GutterBgColor.rgbNumber() - 0x303030);
-const borderRadius = 4;
+import {
+  CodeText,
+  CodeBg,
+  CodeGutterBg,
+  CodeGutterColor,
+  CodeSplit,
+  CodeHighlightBg,
+  CodeHighlightGutter,
+} from './theme';
 
 // 小屏幕时的两边宽度，此值和 layout 中相等
 const SmallIndent = 14;
@@ -38,14 +35,16 @@ export default createStyles({
     margin: '.8em 0',
     backgroundColor: 'transparent',
 
-    [mediaPhone]: {
-      marginLeft: -1 * SmallIndent,
-      marginRight: -1 * SmallIndent,
-    },
+    ...createMediaStyles({
+      phone: {
+        marginLeft: `${-1 * SmallIndent}px`,
+        marginRight: `${-1 * SmallIndent}px`,
+      },
+    }),
 
     '& $codeBlockLabel': {
       position: 'absolute',
-      color: GutterColor.toString(),
+      color: CodeGutterColor,
       backgroundColor: 'transparent',
       fontSize: '0.8em',
       right: 4,
@@ -71,18 +70,20 @@ export default createStyles({
         flexShrink: 0,
         flexGrow: 0,
         listStyleType: 'none',
-        color: GutterColor.toString(),
-        backgroundColor: GutterBgColor.toString(),
-        borderTopLeftRadius: borderRadius,
-        borderBottomLeftRadius: borderRadius,
+        color: CodeGutterColor,
+        backgroundColor: CodeGutterBg,
+        borderTopLeftRadius: RadiusSm,
+        borderBottomLeftRadius: RadiusSm,
 
-        [mediaPhone]: {
-          borderTopLeftRadius: 0,
-          borderBottomLeftRadius: 0,
-        },
+        ...createMediaStyles({
+          phone: {
+            borderTopLeftRadius: '0px',
+            borderBottomLeftRadius: '0px',
+          },
+        }),
 
         '& $codeBlockHighlightLine': {
-          color: BlackLight.toString(),
+          color: CodeHighlightGutter,
         },
 
         '& > li': {
@@ -100,7 +101,9 @@ export default createStyles({
       overflowX: 'auto',
       display: 'inline-flex',
 
-      [mediaPhone]: createScrollbarWidth(4, '&'),
+      ...createMediaStyles({
+        phone: createScrollbarWidth(4, '&'),
+      }),
 
       '& $codeBlockCode': {
         padding: '.4em 0',
@@ -108,15 +111,17 @@ export default createStyles({
         flexGrow: 1,
         flexShrink: 0,
         listStyleType: 'none',
-        color: CodeColor.toString(),
-        backgroundColor: CodeBgColor.toString(),
-        borderTopRightRadius: borderRadius,
-        borderBottomRightRadius: borderRadius,
+        color: CodeText,
+        backgroundColor: CodeBg,
+        borderTopRightRadius: RadiusSm,
+        borderBottomRightRadius: RadiusSm,
 
-        [mediaPhone]: {
-          borderTopLeftRadius: 0,
-          borderBottomLeftRadius: 0,
-        },
+        ...createMediaStyles({
+          phone: {
+            borderTopLeftRadius: '0px',
+            borderBottomLeftRadius: '0px',
+          },
+        }),
 
         '& > li': {
           position: 'relative',
@@ -126,7 +131,7 @@ export default createStyles({
         },
 
         '& > li:after': {
-          content: `" "`,
+          content: '" "',
         },
       },
     },
@@ -135,11 +140,11 @@ export default createStyles({
       width: 1,
       height: '100%',
       position: 'absolute',
-      backgroundColor: SplitColor.toString(),
+      backgroundColor: CodeSplit,
     },
 
     '& $codeBlockHighlightLine': {
-      backgroundColor: highlightBgColor.toString(),
+      backgroundColor: CodeHighlightBg,
     },
   },
 });

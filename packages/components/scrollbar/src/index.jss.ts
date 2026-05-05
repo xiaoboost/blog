@@ -1,4 +1,4 @@
-import { createStyles } from '@blog/styles';
+import { createStyles, TextSecondary } from '@blog/styles';
 
 export default createStyles({
   invisible: {},
@@ -28,7 +28,7 @@ export default createStyles({
       left: 0,
       transform: 'translate3d(0px, 0px, 0px)',
       contain: 'strict',
-      background: 'rgba(100, 100, 100, 0.5)',
+      background: TextSecondary,
     },
   },
 });

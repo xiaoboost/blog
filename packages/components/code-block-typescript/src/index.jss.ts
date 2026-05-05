@@ -1,5 +1,15 @@
-import { createStyles, Color, FontMono, Gray, GrayLight } from '@blog/styles';
+import { createStyles, Color, FontCode } from '@blog/styles';
 import { lsInfoAttrName } from './constant';
+import {
+  LspInfoBg,
+  LspInfoText,
+  LspInfoBorder,
+  LspInfoShadow,
+  LspInfoTypeBorder,
+  LspErrorBg,
+  LspErrorBorder,
+  LspErrorBgHover,
+} from './theme';
 
 const Black = Color(0x383a42);
 const Blue = Color(0x4078f2);
@@ -10,9 +20,6 @@ const LightBrown = Color(0xc18401);
 const Brown = Color(0x986801);
 const Violet = Color(0xa626a4);
 const LightViolet = Color(0xda70d6);
-const ErrorBgColor = Color(0xffeeee);
-const ErrorBorderColor = Color(0xbf1818);
-const ErrorBgHoverColor = Color(0xffcccc);
 
 function addTsxSelector(selector: string) {
   const selectorList = selector
@@ -39,7 +46,7 @@ export default createStyles({
   lspErrorGoto: {},
   codeBlockLs: {
     [`&:hover [${lsInfoAttrName}]`]: {
-      borderColor: '#747474',
+      borderColor: LspInfoTypeBorder,
     },
     [`& [${lsInfoAttrName}]`]: {
       borderBottom: '1px dotted transparent',
@@ -65,12 +72,12 @@ export default createStyles({
       marginBottom: '0.2em !important',
     },
     '& $lspError': {
-      backgroundColor: ErrorBgColor.toString(),
-      borderLeft: `2px solid ${ErrorBorderColor.toString()}`,
+      backgroundColor: LspErrorBg,
+      borderLeft: `2px solid ${LspErrorBorder}`,
       transition: 'background-color 200ms ease',
 
       '&$lspErrorLineHighlight': {
-        backgroundColor: ErrorBgHoverColor.toString(),
+        backgroundColor: LspErrorBgHover,
       },
     },
 
@@ -233,14 +240,14 @@ export default createStyles({
   lsInfoBox: {
     position: 'fixed',
     fontSize: 12,
-    fontFamily: FontMono,
+    fontFamily: FontCode,
     transform: 'translateY(14px)',
-    color: Black.toString(),
-    border: `1px solid ${Gray.toString()}`,
-    backgroundColor: GrayLight.toString(),
+    color: LspInfoText,
+    border: `1px solid ${LspInfoBorder}`,
+    backgroundColor: LspInfoBg,
     lineHeight: '1.5em',
     padding: '4px 6px',
-    boxShadow: '0 0 6px rgb(0 0 0 / 20%)',
+    boxShadow: LspInfoShadow,
 
     '& pre': {
       margin: 0,

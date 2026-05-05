@@ -1,4 +1,4 @@
-import { createStyles, BlackLight, WhiteBg, Gray } from '@blog/styles';
+import { createStyles, TextSecondary, BgSecondary, BorderPrimary } from '@blog/styles';
 import { fadeTime } from './constant';
 
 export default createStyles({
@@ -21,13 +21,13 @@ export default createStyles({
       height: 36,
       border: 0,
       cursor: 'pointer',
-      color: BlackLight.toString(),
-      backgroundColor: WhiteBg.toString(),
+      color: TextSecondary,
+      backgroundColor: BgSecondary,
       transition: `background-color ${fadeTime}ms ease`,
-      boxShadow: `0 0px 5px ${BlackLight.toString()}`,
+      boxShadow: `0 0px 5px ${TextSecondary}`,
 
       '&:hover': {
-        backgroundColor: Gray.toString(),
+        backgroundColor: BorderPrimary,
       },
     },
   },

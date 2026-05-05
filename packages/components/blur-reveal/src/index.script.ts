@@ -1,3 +1,4 @@
+import './theme';
 import { ModuleLoader, assets } from '@blog/context/web';
 import { getCurrentScriptSrc } from '@blog/web';
 import { duration } from './constant';

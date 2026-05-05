@@ -1,4 +1,4 @@
-import { createStyles, BlackLight } from '@blog/styles';
+import { createStyles, TextSecondary } from '@blog/styles';
 
 export default createStyles({
   postImageAlt: {},
@@ -9,7 +9,7 @@ export default createStyles({
     maxWidth: '100%',
 
     '& $postImageAlt': {
-      color: BlackLight.toString(),
+      color: TextSecondary,
       fontSize: 12,
       fontWeight: 300,
       lineHeight: '1.5',
