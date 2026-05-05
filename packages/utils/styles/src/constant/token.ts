@@ -47,8 +47,7 @@ export const TextTertiary = cssVar(TextTertiaryToken);
  * 主背景色
  *
  * @description
- * 页面主体、卡片容器。跨 layout / post / blur-reveal 使用。
- * 亮色模式映射至 `gray[0]`（原 `White`）。
+ * 页面主体
  */
 export const BgPrimaryToken = '--color-bg-primary';
 export const BgPrimary = cssVar(BgPrimaryToken);
@@ -57,8 +56,7 @@ export const BgPrimary = cssVar(BgPrimaryToken);
  * 次级背景色
  *
  * @description
- * 引用块、滚动条轨道。跨 layout / post 使用。
- * 亮色模式映射至 `gray[50]`（原 `WhiteBg`）。
+ * 次级背景色，主要用于卡片等视图。
  */
 export const BgSecondaryToken = '--color-bg-secondary';
 export const BgSecondary = cssVar(BgSecondaryToken);
@@ -71,9 +69,7 @@ export const BgSecondary = cssVar(BgSecondaryToken);
  * 主分割线 / 边框色
  *
  * @description
- * 列表分割线、hr、表格单元格边框。跨 layout / post / text-gloss 使用。
- * 合并了原 `Gray`、`tableBorderColor`、`tableHeaderBorderColor`。
- * 亮色模式映射至 `gray[200]`。
+ * 列表分割线、hr、表格单元格边框。
  */
 export const BorderPrimaryToken = '--color-border-primary';
 export const BorderPrimary = cssVar(BorderPrimaryToken);
@@ -86,8 +82,7 @@ export const BorderPrimary = cssVar(BorderPrimaryToken);
  * 主强调色
  *
  * @description
- * 当前文章内未直接使用，预留给暗色模式链接色等跨包场景。
- * 亮色模式映射至 `blue[500]`（原 `Blue`）。
+ * 链接色等跨包场景。
  */
 export const AccentPrimaryToken = '--color-accent-primary';
 export const AccentPrimary = cssVar(AccentPrimaryToken);
@@ -100,25 +95,10 @@ export const AccentPrimary = cssVar(AccentPrimaryToken);
  * 卡片级阴影
  *
  * @description
- * 用于文章卡片、文章列表等大容器。跨 layout / post 使用。
- *
- * @remarks
- * 亮色模式：`0 2px 6px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.08)`
+ * 用于文章卡片、文章列表等大容器
  */
 export const ShadowCardToken = '--shadow-card';
 export const ShadowCard = cssVar(ShadowCardToken);
-
-/**
- * 小控件阴影
- *
- * @description
- * 用于分页按钮、TOC 浮窗等小型控件。跨 layout / post 使用。
- *
- * @remarks
- * 亮色模式：`0 1px 3px gray[300]`（原 `Shadow`）
- */
-export const ShadowControlToken = '--shadow-control';
-export const ShadowControl = cssVar(ShadowControlToken);
 
 // ═══════════════════════════════════════════════════════════
 // 排版
@@ -127,8 +107,7 @@ export const ShadowControl = cssVar(ShadowControlToken);
 /**
  * 正文字体
  *
- * @description
- * 跨 layout / post 使用。亮色模式映射至 `FontDefault`。
+ * @description 黑体字。
  */
 export const FontBodyToken = '--font-body';
 export const FontBody = cssVar(FontBodyToken);
@@ -136,8 +115,7 @@ export const FontBody = cssVar(FontBodyToken);
 /**
  * 标题字体
  *
- * @description
- * 跨 layout / post 使用。亮色模式映射至 `FontSerif`。
+ * @description 衬线字体。
  */
 export const FontHeadingToken = '--font-heading';
 export const FontHeading = cssVar(FontHeadingToken);
@@ -145,8 +123,7 @@ export const FontHeading = cssVar(FontHeadingToken);
 /**
  * 等宽字体
  *
- * @description
- * 跨 layout / post / code-block-normal 使用。亮色模式映射至 `FontMono`。
+ * @description 行内代码、代码块时用的字体
  */
 export const FontCodeToken = '--font-code';
 export const FontCode = cssVar(FontCodeToken);
@@ -158,8 +135,7 @@ export const FontCode = cssVar(FontCodeToken);
 /**
  * 主内容区宽度
  *
- * @description
- * 亮色模式映射至 `mainWidth`（`900px`）。
+ * @description 主内容宽度，也用来作为响应式变化的宽度界限。
  */
 export const WidthMainToken = '--width-main';
 export const WidthMain = cssVar(WidthMainToken);
@@ -167,8 +143,7 @@ export const WidthMain = cssVar(WidthMainToken);
 /**
  * 基准字号
  *
- * @description
- * 亮色模式映射至 `FontDefaultSize`（`14px`）。
+ * @description 正文的主字体大小。
  */
 export const FontSizeBaseToken = '--font-size-base';
 export const FontSizeBase = cssVar(FontSizeBaseToken);

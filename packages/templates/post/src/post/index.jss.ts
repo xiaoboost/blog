@@ -45,7 +45,7 @@ export default createStyles({
   blockquoteIcon: {},
   postDefault: {
     color: TextPrimary,
-    backgroundColor: BgPrimary,
+    backgroundColor: BgSecondary,
     boxShadow: ShadowCard,
     width: WidthMain,
     flexGrow: 0,

@@ -6,6 +6,7 @@ import {
   createThemeStyles,
   TextPrimary,
   TextSecondary,
+  BgPrimary,
   BgSecondary,
   FontBody,
   FontHeading,
@@ -21,8 +22,14 @@ import themeStyles, {
 
 /** body 背景图在暗色模式下关闭 */
 const bodyBg = createThemeStyles({
-  light: { backgroundImage: "url('../assets/images/bg.svg')" },
-  dark: { backgroundImage: 'none' },
+  light: {
+    backgroundColor: 'transparent',
+    backgroundImage: "url('../assets/images/bg.svg')",
+  },
+  dark: {
+    backgroundColor: BgPrimary,
+    backgroundImage: 'none',
+  },
 });
 
 const global = createStyles({

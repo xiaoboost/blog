@@ -10,7 +10,6 @@ import {
   BorderPrimaryToken,
   AccentPrimaryToken,
   ShadowCardToken,
-  ShadowControlToken,
   FontBodyToken,
   FontHeadingToken,
   FontCodeToken,
@@ -31,12 +30,15 @@ import {
 
 // ─── Layout 私有 token ────────────────────────────────────
 
+export const [ItemBgToken, ItemBg] = createToken('item-bg');
 export const [LinkDefaultToken, LinkDefault] = createToken('link-default');
 export const [LinkHoverToken, LinkHover] = createToken('link-hover');
 export const [AccentDangerToken, AccentDanger] = createToken('accent-danger');
 export const [SelectionTextToken, SelectionText] = createToken('selection-text');
 export const [SelectionBgToken, SelectionBg] = createToken('selection-bg');
 export const [ShadowHeaderToken, ShadowHeader] = createToken('shadow-header');
+export const [GotoTopShadowToken, GotoTopShadow] = createToken('goto-top-shadow');
+export const [PaginationShadowToken, PaginationShadow] = createToken('pagination-shadow');
 export const [SpacingHeaderBodyToken, SpacingHeaderBody] = createToken('spacing-header-body');
 
 // ─── 派生色 ───────────────────────────────────────────────
@@ -78,7 +80,7 @@ export default createThemeStylesByVars({
     dark: Gray[900].toString(),
   },
   [BgSecondaryToken]: {
-    light: Gray[50].toString(),
+    light: Gray[0].toString(),
     dark: Gray[800].toString(),
   },
 
@@ -101,6 +103,10 @@ export default createThemeStylesByVars({
   // ═══════════════════════════════════════════════════════
   // 阴影
   // ═══════════════════════════════════════════════════════
+  [PaginationShadowToken]: {
+    light: `0 1px 3px ${Gray[300]}`,
+    dark: 'none',
+  },
   [ShadowCardToken]: {
     light: [
       `0 2px 6px ${Gray[950].alpha(0.06)}`,
@@ -111,11 +117,6 @@ export default createThemeStylesByVars({
       `0 1px 2px ${Gray[950].alpha(0.35)}`,
     ].join(', '),
   },
-  [ShadowControlToken]: {
-    light: `0 1px 3px ${Gray[300]}`,
-    dark: `0 1px 3px ${Gray[950].alpha(0.3)}`,
-  },
-
   // ═══════════════════════════════════════════════════════
   // 排版
   // ═══════════════════════════════════════════════════════
@@ -195,6 +196,12 @@ export default createThemeStylesByVars({
       `0 1px 3px ${Gray[950].alpha(0.3)}`,
       `0 1px 1px ${Gray[950].alpha(0.2)}`,
     ].join(', '),
+  },
+
+  // goto-top 按钮阴影
+  [GotoTopShadowToken]: {
+    light: `0 0px 5px ${Gray[500]}`,
+    dark: 'none',
   },
 
   // ═══════════════════════════════════════════════════════

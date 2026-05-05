@@ -1,4 +1,4 @@
-import { createStyles, BgPrimary, BorderPrimary, ShadowCard, FontHeading } from '@blog/styles';
+import { createStyles, BgSecondary, BorderPrimary, ShadowCard, FontHeading } from '@blog/styles';
 import { ListTitleFontFamily } from '../../constant/font';
 import { PostTitleStyle, PostSubTitleStyle } from '../main-index/index.jss';
 
@@ -18,7 +18,7 @@ export default createStyles({
     },
     '& $itemList': {
       width: '100%',
-      backgroundColor: BgPrimary,
+      backgroundColor: BgSecondary,
       boxShadow: ShadowCard,
       borderRadius: 4,
       overflow: 'hidden',
@@ -31,6 +31,10 @@ export default createStyles({
         alignItems: 'center',
         justifyContent: 'space-between',
         borderBottom: `1px solid ${BorderPrimary}`,
+
+        '&:last-child': {
+          borderBottom: 'none',
+        },
 
         '& a': {
           ...PostTitleStyle,
