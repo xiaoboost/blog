@@ -1,7 +1,7 @@
 import {
   createStyles,
   TextPrimary,
-  BgPrimary,
+  BgSecondary,
   BorderPrimary,
   ShadowCard,
   TextTertiary,
@@ -33,7 +33,7 @@ export default createStyles({
   postsListItemFooterTagSplit: {},
   postsList: {
     color: TextPrimary,
-    backgroundColor: BgPrimary,
+    backgroundColor: BgSecondary,
     width: '100%',
     borderRadius: '4px',
     overflow: 'hidden',
@@ -44,7 +44,6 @@ export default createStyles({
       padding: '20px 24px',
       boxShadow: 'none',
       boxSizing: 'border-box',
-      backgroundColor: BgPrimary,
       borderBottom: `1px solid ${BorderPrimary}`,
       fontFamily: FontBody,
       fontWeight: 'normal',

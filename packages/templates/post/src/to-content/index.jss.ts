@@ -4,10 +4,9 @@ import {
   TextSecondary,
   BgPrimary,
   BorderPrimary,
-  ShadowControl,
   createMediaStyles,
 } from '@blog/styles';
-import { AccentLight, BgCode, BgTertiary } from '../theme';
+import { AccentLight, BgCode, BgTertiary, TocShadow } from '../theme';
 import { tocMarginLeft, tocWidth } from './constant';
 
 export default createStyles({
@@ -27,7 +26,7 @@ export default createStyles({
 
     color: TextPrimary,
     backgroundColor: BgPrimary,
-    boxShadow: ShadowControl,
+    boxShadow: TocShadow,
     position: 'absolute',
     width: 200,
     right: 0 - tocWidth - tocMarginLeft,

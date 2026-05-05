@@ -1,4 +1,5 @@
 import { createStyles, TextSecondary, BgSecondary, BorderPrimary } from '@blog/styles';
+import { GotoTopShadow } from '../../styles/theme';
 import { fadeTime } from './constant';
 
 export default createStyles({
@@ -24,7 +25,7 @@ export default createStyles({
       color: TextSecondary,
       backgroundColor: BgSecondary,
       transition: `background-color ${fadeTime}ms ease`,
-      boxShadow: `0 0px 5px ${TextSecondary}`,
+      boxShadow: GotoTopShadow,
 
       '&:hover': {
         backgroundColor: BorderPrimary,

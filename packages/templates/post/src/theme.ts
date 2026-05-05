@@ -15,6 +15,7 @@ export const [BgTertiaryToken, BgTertiary] = createToken('bg-tertiary');
 export const [BgCodeToken, BgCode] = createToken('bg-code');
 export const [AccentLightToken, AccentLight] = createToken('accent-light');
 export const [CodeUnderlineToken, CodeUnderline] = createToken('code-underline');
+export const [TocShadowToken, TocShadow] = createToken('toc-shadow');
 export const [FontEmToken, FontEm] = createToken('font-em');
 
 // em 强调复合 token
@@ -57,6 +58,12 @@ export default createThemeStylesByVars({
   [CodeUnderlineToken]: {
     light: Yellow[200].toString(),
     dark: Yellow[500].toString(),
+  },
+
+  // TOC 阴影
+  [TocShadowToken]: {
+    light: `0 1px 3px ${Gray[300]}`,
+    dark: `0 1px 3px ${Gray[950].alpha(0.3)}`,
   },
 
   // 排版

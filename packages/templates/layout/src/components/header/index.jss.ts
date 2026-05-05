@@ -3,12 +3,12 @@ import {
   TextPrimary,
   TextSecondary,
   TextTertiary,
-  BgPrimary,
+  BgSecondary,
   FontHeading,
   WidthMain,
 } from '@blog/styles';
-import { ShadowHeader } from '../../styles/theme';
 import { SiteTitleFontFamily } from '../../constant/font';
+import { ShadowHeader } from '../../styles/theme';
 
 export default createStyles({
   mainTitle: {},
@@ -16,7 +16,7 @@ export default createStyles({
   mainHeaderWrapper: {
     width: '100%',
     height: 42,
-    backgroundColor: BgPrimary,
+    backgroundColor: BgSecondary,
     boxShadow: ShadowHeader,
     flex: '0 0 auto',
     display: 'flex',

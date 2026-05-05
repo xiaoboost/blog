@@ -1,10 +1,11 @@
-import { createStyles, BgPrimary, ShadowControl } from '@blog/styles';
+import { createStyles, BgSecondary } from '@blog/styles';
+import { PaginationShadow } from '../../styles/theme';
 
 export default createStyles({
   paginationAction: {
     padding: 10,
-    backgroundColor: BgPrimary,
-    boxShadow: ShadowControl,
+    backgroundColor: BgSecondary,
+    boxShadow: PaginationShadow,
     borderRadius: '4px',
   },
   pagination: {
