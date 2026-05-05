@@ -2,11 +2,11 @@ import {
   createStyles,
   TextPrimary,
   TextSecondary,
-  BgPrimary,
+  BgSecondary,
   BorderPrimary,
   createMediaStyles,
 } from '@blog/styles';
-import { AccentLight, BgCode, BgTertiary, TocShadow } from '../theme';
+import { AccentLight, BgCode, BgTertiary, TocShadow } from '../theme.jss';
 import { tocMarginLeft, tocWidth } from './constant';
 
 export default createStyles({
@@ -25,7 +25,7 @@ export default createStyles({
     }),
 
     color: TextPrimary,
-    backgroundColor: BgPrimary,
+    backgroundColor: BgSecondary,
     boxShadow: TocShadow,
     position: 'absolute',
     width: 200,
