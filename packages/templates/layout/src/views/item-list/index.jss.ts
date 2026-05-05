@@ -1,4 +1,4 @@
-import { createStyles, BgSecondary, BorderPrimary, ShadowCard, FontHeading } from '@blog/styles';
+import { createStyles, BgSecondary, BorderPrimary, ShadowCard, FontHeading } from '@blog/styles/compile';
 import { ListTitleFontFamily } from '../../constant/font';
 import { PostTitleStyle, PostSubTitleStyle } from '../main-index/index.jss';
 

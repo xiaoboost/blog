@@ -1,5 +1,5 @@
+import type { Styles } from '@blog/context/runtime';
 import { DarkMode } from './constant';
-import { createStyles, type Styles, type JssStyle } from './styles';
 
 /**
  * 将 token 名包裹为 CSS 自定义属性引用。
@@ -10,7 +10,7 @@ import { createStyles, type Styles, type JssStyle } from './styles';
  * // => 'var(--emphasis-underline)'
  * ```
  */
-function cssVar(name: string): string {
+export function cssVar(name: string): string {
   return `var(${name})`;
 }
 
@@ -33,7 +33,7 @@ export function createToken(name: string): readonly [token: string, value: strin
 }
 
 /** 单 Token 主题定义 */
-interface TokenDef {
+export interface TokenDef {
   light: string;
   dark?: string;
 }
@@ -63,25 +63,9 @@ export function defineVars(
 }
 
 /**
- * 创建主题样式
+ * 创建主题样式（不含 CSS 变量注入）
  *
- * @description 屏蔽主题样式设置细节，主要是在自定义的情况下使用，使用时直接在对应选择器展开即可。
- *
- * @example
- * ```ts
- * export default createStyles({
- *   toContent: {
- *     ...createThemeStyles({
- *       light: {
- *         body: { backgroundImage: "url('./bg.svg')" },
- *       },
- *       dark: {
- *         body: { backgroundImage: 'none' },
- *       },
- *     }),
- *   },
- * });
- * ```
+ * @description 屏蔽主题样式设置细节，主要是纯对象拼接，不依赖 JSS 运行时。
  */
 export function createThemeStyles(def: {
   light: Styles;
@@ -93,39 +77,4 @@ export function createThemeStyles(def: {
       ...def.dark,
     },
   };
-}
-
-/**
- * 通过 CSS 变量创建主题样式
- *
- * @description
- * 输入 token 定义，自动完成：token 定义 → CSS 变量映射 → JSS `@global` 注入。
- * 返回值可直接与组件其他 `createStyles` 通过 `mergeStyles` 合并。
- *
- * @example
- * ```ts
- * import { gray, createToken, createThemeStylesByVars } from '@blog/styles';
- *
- * const [UnderlineToken, Underline] = createToken('emphasis-underline');
- *
- * const themeStyles = createThemeStylesByVars({
- *   [UnderlineToken]: {
- *     light: `linear-gradient(..., ${gray[400]} 0px, ...)`,
- *     dark:  `linear-gradient(..., ${gray[300]} 0px, ...)`,
- *   },
- * });
- *
- * export default mergeStyles(themeStyles, myStyles);
- * ```
- */
-export function createThemeStylesByVars(def: Record<string, TokenDef>): JssStyle {
-  const { light, dark } = defineVars(def);
-  return createStyles({
-    '@global': {
-      ':root': light,
-      '@media (prefers-color-scheme: dark)': {
-        ':root': dark,
-      },
-    },
-  });
 }

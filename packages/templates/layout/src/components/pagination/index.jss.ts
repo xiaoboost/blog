@@ -1,5 +1,5 @@
-import { createStyles, BgSecondary } from '@blog/styles';
-import { PaginationShadow } from '../../styles/theme';
+import { createStyles, BgSecondary } from '@blog/styles/compile';
+import { PaginationShadow } from '../../styles/theme/token';
 
 export default createStyles({
   paginationAction: {

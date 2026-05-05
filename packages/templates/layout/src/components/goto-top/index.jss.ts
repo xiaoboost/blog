@@ -1,5 +1,5 @@
-import { createStyles, TextSecondary, BgSecondary, BorderPrimary } from '@blog/styles';
-import { GotoTopShadow } from '../../styles/theme';
+import { createStyles, TextSecondary, BgSecondary, BorderPrimary } from '@blog/styles/compile';
+import { GotoTopShadow } from '../../styles/theme/token';
 import { fadeTime } from './constant';
 
 export default createStyles({

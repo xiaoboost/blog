@@ -1,4 +1,4 @@
-import { createStyles } from '@blog/styles';
+import { createStyles } from '@blog/styles/compile';
 
 export default createStyles({
   '@import': "'katex/dist/katex.css'",

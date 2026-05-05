@@ -1,4 +1,4 @@
-import { createStyles, TextPrimary, FontSizeBase } from '@blog/styles';
+import { createStyles, TextPrimary, FontSizeBase } from '@blog/styles/compile';
 import { duration, maxHeight } from './constant';
 import {
   FogGradientLeft,
@@ -8,7 +8,7 @@ import {
   BlurBtnShadow,
   BlurBtnHoverShadow,
   BlurBtnBorder,
-} from './theme';
+} from './theme/token';
 
 export default createStyles({
   blurRevealExpanded: {},

@@ -7,7 +7,7 @@ import {
   TextTertiary,
   FontBody,
   FontHeading,
-} from '@blog/styles';
+} from '@blog/styles/compile';
 import { ListItemTitleFontFamily } from '../../constant/font';
 
 export const PostTitleStyle = {

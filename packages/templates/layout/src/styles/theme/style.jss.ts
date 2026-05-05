@@ -1,7 +1,4 @@
 import {
-  Gray,
-  Blue,
-  Red,
   TextPrimaryToken,
   TextSecondaryToken,
   TextTertiaryToken,
@@ -18,28 +15,25 @@ import {
   RadiusSmToken,
   RadiusMdToken,
   RadiusLgToken,
-  createToken,
-  createThemeStylesByVars,
   FontDefault,
   FontSerif,
   FontMono,
   mainWidth,
   FontDefaultSize,
   headerBodyMargin,
-} from '@blog/styles';
-
-// ─── Layout 私有 token ────────────────────────────────────
-
-export const [ItemBgToken, ItemBg] = createToken('item-bg');
-export const [LinkDefaultToken, LinkDefault] = createToken('link-default');
-export const [LinkHoverToken, LinkHover] = createToken('link-hover');
-export const [AccentDangerToken, AccentDanger] = createToken('accent-danger');
-export const [SelectionTextToken, SelectionText] = createToken('selection-text');
-export const [SelectionBgToken, SelectionBg] = createToken('selection-bg');
-export const [ShadowHeaderToken, ShadowHeader] = createToken('shadow-header');
-export const [GotoTopShadowToken, GotoTopShadow] = createToken('goto-top-shadow');
-export const [PaginationShadowToken, PaginationShadow] = createToken('pagination-shadow');
-export const [SpacingHeaderBodyToken, SpacingHeaderBody] = createToken('spacing-header-body');
+} from '@blog/styles/common';
+import { Gray, Blue, Red, createThemeStylesByVars } from '@blog/styles/compile';
+import {
+  LinkDefaultToken,
+  LinkHoverToken,
+  AccentDangerToken,
+  SelectionTextToken,
+  SelectionBgToken,
+  ShadowHeaderToken,
+  GotoTopShadowToken,
+  PaginationShadowToken,
+  SpacingHeaderBodyToken,
+} from './token';
 
 // ─── 派生色 ───────────────────────────────────────────────
 
@@ -48,13 +42,6 @@ const linkBase = Blue[500].mix(Gray[700], 0.35);
 
 // ─── 主题定义 ─────────────────────────────────────────────
 
-/**
- * 全局 + layout 私有 token 的亮 / 暗映射。
- *
- * @remarks
- * 字体与尺寸在两端保持不变，但仍通过 CSS 变量引用，方便未来配置。
- * 阴影在暗色模式下提高不透明度以保证可见性。
- */
 export default createThemeStylesByVars({
   // ═══════════════════════════════════════════════════════
   // 文本
@@ -117,6 +104,7 @@ export default createThemeStylesByVars({
       `0 1px 2px ${Gray[950].alpha(0.35)}`,
     ].join(', '),
   },
+
   // ═══════════════════════════════════════════════════════
   // 排版
   // ═══════════════════════════════════════════════════════
@@ -198,7 +186,6 @@ export default createThemeStylesByVars({
     ].join(', '),
   },
 
-  // goto-top 按钮阴影
   [GotoTopShadowToken]: {
     light: `0 0px 5px ${Gray[500]}`,
     dark: 'none',

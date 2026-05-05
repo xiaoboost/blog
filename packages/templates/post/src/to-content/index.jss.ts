@@ -5,8 +5,8 @@ import {
   BgSecondary,
   BorderPrimary,
   createMediaStyles,
-} from '@blog/styles';
-import { AccentLight, BgCode, BgTertiary, TocShadow } from '../theme.jss';
+} from '@blog/styles/compile';
+import { AccentLight, BgCode, BgTertiary, TocShadow } from '../theme/token';
 import { tocMarginLeft, tocWidth } from './constant';
 
 export default createStyles({

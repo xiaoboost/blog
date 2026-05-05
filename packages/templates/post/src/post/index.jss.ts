@@ -15,7 +15,7 @@ import {
   createHeadStyles,
   getHeadSelector,
   createMediaStylesByTemplate,
-} from '@blog/styles';
+} from '@blog/styles/compile';
 import { FirstTitleFontFamily, SecondTitleFontFamily } from '../constant';
 import {
   BlockquoteBg,
@@ -28,7 +28,7 @@ import {
   EmphasisStrongBg,
   EmphasisStrongShadow,
   FontEm,
-} from '../theme.jss';
+} from '../theme/token';
 
 const indent = 24;
 const smallIndent = 14;

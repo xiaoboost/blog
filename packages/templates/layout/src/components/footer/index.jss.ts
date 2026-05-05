@@ -4,8 +4,8 @@ import {
   FontBody,
   TextPrimary,
   createMediaStylesByTemplate,
-} from '@blog/styles';
-import { AccentDanger } from '../../styles/theme';
+} from '@blog/styles/compile';
+import { AccentDanger } from '../../styles/theme/token';
 
 export default createStyles({
   mainFooter: {

@@ -1,4 +1,4 @@
-import { createFontFaceStyles, mergeStyles, CustomFont } from '@blog/styles';
+import { createFontFaceStyles, mergeStyles, CustomFont } from '@blog/styles/compile';
 import { getFontPath } from '../constant/font';
 
 export default mergeStyles(

@@ -3,7 +3,7 @@ import {
   createScrollbarWidth,
   createMediaStyles,
   RadiusSm,
-} from '@blog/styles';
+} from '@blog/styles/compile';
 import {
   CodeText,
   CodeBg,
@@ -12,7 +12,7 @@ import {
   CodeSplit,
   CodeHighlightBg,
   CodeHighlightGutter,
-} from './theme';
+} from './theme/token';
 
 // 小屏幕时的两边宽度，此值和 layout 中相等
 const SmallIndent = 14;
