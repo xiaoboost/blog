@@ -1,6 +1,6 @@
 import { RuntimeBuilder as Builder } from '@blog/context/runtime';
 import { FontBucket, normalize } from '@blog/node';
-import { FontSerif } from '@blog/styles';
+import { FontSerif } from '@blog/styles/common';
 import type { AssetData } from '@blog/types';
 import type { CustomFontData } from './types';
 import { getFontContentBySrc } from './utils';
