@@ -18,6 +18,7 @@ import {
 } from '@blog/styles';
 import { FirstTitleFontFamily, SecondTitleFontFamily } from '../constant';
 import {
+  BlockquoteBg,
   TextQuaternary,
   BgTertiary,
   BgCode,
@@ -27,7 +28,7 @@ import {
   EmphasisStrongBg,
   EmphasisStrongShadow,
   FontEm,
-} from '../theme';
+} from '../theme.jss';
 
 const indent = 24;
 const smallIndent = 14;
@@ -234,7 +235,7 @@ export default createStyles({
         lineHeight: 1.5,
         fontSize: '90%',
         borderLeft: `0.3em solid ${TextQuaternary}`,
-        backgroundColor: BgSecondary,
+        backgroundColor: BlockquoteBg,
 
         '& $blockquoteIcon': {
           position: 'absolute',

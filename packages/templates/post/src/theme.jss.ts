@@ -12,6 +12,7 @@ import {
 
 export const [TextQuaternaryToken, TextQuaternary] = createToken('text-quaternary');
 export const [BgTertiaryToken, BgTertiary] = createToken('bg-tertiary');
+export const [BlockquoteBgToken, BlockquoteBg] = createToken('blockquote-bg');
 export const [BgCodeToken, BgCode] = createToken('bg-code');
 export const [AccentLightToken, AccentLight] = createToken('accent-light');
 export const [CodeUnderlineToken, CodeUnderline] = createToken('code-underline');
@@ -46,6 +47,10 @@ export default createThemeStylesByVars({
   [BgCodeToken]: {
     light: Yellow[100].toString(),
     dark: Yellow[100].mix(Gray[900], 0.85).toString(),
+  },
+  [BlockquoteBgToken]: {
+    light: Gray[50].toString(),
+    dark: Gray[700].alpha(0.5).toString(),
   },
 
   // 强调
