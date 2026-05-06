@@ -7,7 +7,8 @@ import type { Resolver, ResolveCreatorOptions, ResolveOptions, Query, PathData }
 import {
   type ResolveOptions as EnhancedResolveOptions,
   CachedInputFileSystem,
-  create } from 'enhanced-resolve';
+  create,
+} from 'enhanced-resolve';
 import type { ImportKind } from 'esbuild';
 import { BuilderError } from './error';
 
@@ -39,6 +40,7 @@ export function createResolver(options: ResolveCreatorOptions): Resolver {
   const resolveCache = new Map<string, string>();
   const externals = builtinModules.concat(options?.external ?? []);
   const resolveOptions: EnhancedResolveOptions = {
+    // @ts-expect-error 文件系统兼容
     fileSystem: new CachedInputFileSystem(fs, 4000),
     conditionNames: [
       'import', 'require', 'node',
