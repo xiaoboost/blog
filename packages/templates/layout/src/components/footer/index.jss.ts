@@ -3,6 +3,7 @@ import {
   TextTertiary,
   FontBody,
   TextPrimary,
+  DurationFast,
   createMediaStylesByTemplate,
 } from '@blog/styles/compile';
 import { AccentDanger } from '../../styles/theme/token';
@@ -29,7 +30,7 @@ export default createStyles({
   },
   mainFooterHref: {
     color: TextPrimary,
-    transition: 'color .2s ease-out',
+    transition: `color ${DurationFast} ease-out`,
 
     '&:hover': {
       color: AccentDanger,

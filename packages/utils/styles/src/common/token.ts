@@ -169,3 +169,39 @@ export const RadiusMd = cssVar(RadiusMdToken);
  */
 export const RadiusLgToken = '--radius-large';
 export const RadiusLg = cssVar(RadiusLgToken);
+
+// ═══════════════════════════════════════════════════════════
+// 过渡时长
+// ═══════════════════════════════════════════════════════════
+
+/**
+ * 瞬间过渡
+ *
+ * @description 用于即时反馈的微交互。
+ */
+export const DurationInstantToken = '--duration-instant';
+export const DurationInstant = cssVar(DurationInstantToken);
+
+/**
+ * 快速过渡
+ *
+ * @description 用于 hover 状态切换、颜色渐变等常规交互。
+ */
+export const DurationFastToken = '--duration-fast';
+export const DurationFast = cssVar(DurationFastToken);
+
+/**
+ * 常规过渡
+ *
+ * @description 用于展开/收起、淡入/淡出等中等时长动画。
+ */
+export const DurationNormalToken = '--duration-normal';
+export const DurationNormal = cssVar(DurationNormalToken);
+
+/**
+ * 慢速过渡
+ *
+ * @description 用于大范围动画。
+ */
+export const DurationSlowToken = '--duration-slow';
+export const DurationSlow = cssVar(DurationSlowToken);

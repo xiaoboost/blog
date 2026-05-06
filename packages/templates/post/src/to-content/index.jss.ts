@@ -5,6 +5,7 @@ import {
   BgSecondary,
   BorderPrimary,
   RadiusMd,
+  DurationInstant,
   createMediaStyles,
 } from '@blog/styles/compile';
 import { AccentLight, BgCode, BgTertiary, TocShadow } from '../theme/token';
@@ -51,7 +52,7 @@ export default createStyles({
         marginBottom: 4,
         marginLeft: 3,
         borderLeft: `1px solid ${BorderPrimary}`,
-        transition: 'border-color .1s linear',
+        transition: `border-color ${DurationInstant} linear`,
 
         '&$menuListHighlight': {
           borderColor: TextSecondary,
@@ -81,7 +82,7 @@ export default createStyles({
     },
 
     '& a': {
-      transition: 'color .1s linear',
+      transition: `color ${DurationInstant} linear`,
       color: TextPrimary,
       textDecoration: 'none',
       display: 'flex',

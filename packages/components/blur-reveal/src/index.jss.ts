@@ -1,5 +1,5 @@
-import { createStyles, TextPrimary, FontSizeBase, RadiusLg } from '@blog/styles/compile';
-import { duration, maxHeight } from './constant';
+import { createStyles, TextPrimary, FontSizeBase, RadiusLg, DurationSlow, DurationNormal, DurationFast } from '@blog/styles/compile';
+import { maxHeight } from './constant';
 import {
   FogGradientLeft,
   FogGradientRight,
@@ -38,7 +38,7 @@ export default createStyles({
     width: 60,
     zIndex: 5,
     pointerEvents: 'none',
-    transition: `opacity ${duration}s ease`,
+    transition: `opacity ${DurationSlow} ease`,
     opacity: 1,
   },
   blurRevealFogLeft: {
@@ -59,9 +59,9 @@ export default createStyles({
     opacity: 0.6,
     userSelect: 'none',
     transition: `
-      max-height ${duration}s cubic-bezier(0.25, 1, 0.5, 1),
-      filter ${duration}s ease,
-      opacity ${duration}s ease
+      max-height ${DurationSlow} cubic-bezier(0.25, 1, 0.5, 1),
+      filter ${DurationSlow} ease,
+      opacity ${DurationSlow} ease
     `,
   },
   blurRevealOverlay: {
@@ -75,7 +75,7 @@ export default createStyles({
     alignItems: 'center',
     justifyContent: 'center',
     background: OverlayGradient,
-    transition: `opacity ${duration / 2}s ease`,
+    transition: `opacity ${DurationNormal} ease`,
 
     '&:hover $blurRevealOverlayBtn': {
       boxShadow: BlurBtnHoverShadow,
@@ -91,7 +91,7 @@ export default createStyles({
     fontWeight: 600,
     color: TextPrimary,
     boxShadow: BlurBtnShadow,
-    transition: `all ${duration / 4}s ease`,
+    transition: `all ${DurationFast} ease`,
     cursor: 'pointer',
   },
 });

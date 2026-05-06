@@ -15,12 +15,20 @@ import {
   RadiusSmToken,
   RadiusMdToken,
   RadiusLgToken,
+  DurationInstantToken,
+  DurationFastToken,
+  DurationNormalToken,
+  DurationSlowToken,
   FontDefault,
   FontSerif,
   FontMono,
   mainWidth,
   FontDefaultSize,
   headerBodyMargin,
+  DURATION_INSTANT,
+  DURATION_FAST,
+  DURATION_NORMAL,
+  DURATION_SLOW,
 } from '@blog/styles/common';
 import { Gray, Blue, Red, createThemeStylesByVars } from '@blog/styles/compile';
 import {
@@ -137,6 +145,20 @@ export default createThemeStylesByVars({
   },
   [RadiusLgToken]: {
     light: '8px',
+  },
+
+  // 过渡时长
+  [DurationInstantToken]: {
+    light: `${DURATION_INSTANT}s`,
+  },
+  [DurationFastToken]: {
+    light: `${DURATION_FAST}s`,
+  },
+  [DurationNormalToken]: {
+    light: `${DURATION_NORMAL}s`,
+  },
+  [DurationSlowToken]: {
+    light: `${DURATION_SLOW}s`,
   },
 
   // Layout 私有
