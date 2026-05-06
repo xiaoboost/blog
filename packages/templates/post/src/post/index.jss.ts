@@ -15,6 +15,10 @@ import {
   RadiusSm,
   RadiusMd,
   DurationFast,
+  FontSizeXxl,
+  FontSizeRegular,
+  FontSizeMd,
+  FontSizeLg,
   createHeadStyles,
   getHeadSelector,
   createMediaStylesByTemplate,
@@ -85,7 +89,7 @@ export default createStyles({
     '& $postHeaderTitle': {
       fontFamily: `${FirstTitleFontFamily},${FontHeading}`,
       color: TextPrimary,
-      fontSize: 28,
+      fontSize: FontSizeXxl,
       margin: 0,
       padding: 0,
       whiteSpace: 'wrap',
@@ -93,12 +97,12 @@ export default createStyles({
     },
     '& $postHeaderCreate': {
       color: TextTertiary,
-      fontSize: 13,
+      fontSize: `calc(${FontSizeRegular} - 1px)`,
       fontWeight: 'normal',
       fontFamily: FontBody,
     },
     '& $postArticle': {
-      fontSize: 16,
+      fontSize: FontSizeMd,
       ...createMediaStylesByTemplate(
         (width) => ({ padding: `16px ${width}px` }),
         { pc: indent, phone: smallIndent },
@@ -244,7 +248,7 @@ export default createStyles({
           position: 'absolute',
           top: 6,
           left: 12,
-          fontSize: 20,
+          fontSize: FontSizeLg,
           zIndex: 0,
           color: TextQuaternary,
         },
@@ -309,7 +313,7 @@ export default createStyles({
         },
 
         '& > span': {
-          fontSize: 20,
+          fontSize: FontSizeLg,
           fontFamily: FontHeading,
         },
       },

@@ -7,6 +7,7 @@ import {
   FontHeading,
   WidthMain,
   DurationFast,
+  FontSizeXl,
 } from '@blog/styles/compile';
 import { SiteTitleFontFamily } from '../../constant/font';
 import { ShadowHeader } from '../../styles/theme/token';
@@ -32,7 +33,7 @@ export default createStyles({
 
     '& $mainTitle': {
       display: 'flex',
-      fontSize: 24,
+      fontSize: FontSizeXl,
       color: TextPrimary,
       alignItems: 'center',
       fontFamily: `${SiteTitleFontFamily}, ${FontHeading}`,

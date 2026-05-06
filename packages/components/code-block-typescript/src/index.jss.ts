@@ -1,4 +1,4 @@
-import { createStyles, Color, FontCode, DurationNormal, DurationFast } from '@blog/styles/compile';
+import { createStyles, Color, FontCode, DurationNormal, DurationFast, FontSizeSm } from '@blog/styles/compile';
 import { lsInfoAttrName } from './constant';
 import {
   LspInfoBg,
@@ -239,7 +239,7 @@ export default createStyles({
   },
   lsInfoBox: {
     position: 'fixed',
-    fontSize: 12,
+    fontSize: FontSizeSm,
     fontFamily: FontCode,
     transform: 'translateY(14px)',
     color: LspInfoText,

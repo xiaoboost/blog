@@ -10,7 +10,7 @@ import {
   BgSecondary,
   FontBody,
   FontHeading,
-  FontSizeBase,
+  FontSizeRegular,
   DurationFast,
   DurationNormal,
 } from '@blog/styles/compile';
@@ -51,7 +51,7 @@ const global = createStyles({
       padding: 0,
       color: TextPrimary,
       fontFamily: FontBody,
-      fontSize: FontSizeBase,
+      fontSize: FontSizeRegular,
     },
     a: {
       cursor: 'pointer',

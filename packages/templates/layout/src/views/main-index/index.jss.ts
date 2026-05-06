@@ -8,6 +8,9 @@ import {
   TextTertiary,
   FontBody,
   FontHeading,
+  FontSizeSm,
+  FontSizeRegular,
+  FontSizeLg,
 } from '@blog/styles/compile';
 import { ListItemTitleFontFamily } from '../../constant/font';
 
@@ -19,7 +22,7 @@ export const PostTitleStyle = {
 
 export const PostSubTitleStyle = {
   color: TextTertiary,
-  fontSize: 12,
+  fontSize: FontSizeSm,
   fontWeight: 'normal',
   fontFamily: FontBody,
 };
@@ -61,20 +64,20 @@ export default createStyles({
 
       '& a': {
         ...PostTitleStyle,
-        fontSize: 19,
+        fontSize: `calc(${FontSizeLg} - 1px)`,
         lineHeight: 1.35,
       },
       '& time': {
         ...PostSubTitleStyle,
-        fontSize: 13,
+        fontSize: `calc(${FontSizeRegular} - 1px)`,
       },
     },
     '& $postsListItemDescription': {
-      fontSize: 14,
+      fontSize: FontSizeRegular,
       marginTop: 12,
     },
     '& $postsListItemFooter': {
-      fontSize: 12,
+      fontSize: FontSizeSm,
       marginTop: 12,
       display: 'flex',
 

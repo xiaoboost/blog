@@ -1,4 +1,4 @@
-import { createStyles, TextSecondary } from '@blog/styles/compile';
+import { createStyles, TextSecondary, FontSizeSm } from '@blog/styles/compile';
 
 export default createStyles({
   postImageAlt: {},
@@ -10,7 +10,7 @@ export default createStyles({
 
     '& $postImageAlt': {
       color: TextSecondary,
-      fontSize: 12,
+      fontSize: FontSizeSm,
       fontWeight: 300,
       lineHeight: '1.5',
       margin: '4px 0 12px 0',

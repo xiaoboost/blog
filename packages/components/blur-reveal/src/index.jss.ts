@@ -1,4 +1,4 @@
-import { createStyles, TextPrimary, FontSizeBase, RadiusLg, DurationSlow, DurationNormal, DurationFast } from '@blog/styles/compile';
+import { createStyles, TextPrimary, FontSizeMd, RadiusLg, DurationSlow, DurationNormal, DurationFast } from '@blog/styles/compile';
 import { maxHeight } from './constant';
 import {
   FogGradientLeft,
@@ -87,7 +87,7 @@ export default createStyles({
     border: BlurBtnBorder,
     padding: [10, 24],
     borderRadius: RadiusLg,
-    fontSize: FontSizeBase + 2,
+    fontSize: FontSizeMd,
     fontWeight: 600,
     color: TextPrimary,
     boxShadow: BlurBtnShadow,
