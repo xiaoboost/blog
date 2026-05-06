@@ -1,4 +1,4 @@
-import { createStyles, TextTertiary } from '@blog/styles/compile';
+import { createStyles, TextTertiary, DurationNormal, DurationFast } from '@blog/styles/compile';
 
 export default createStyles({
   invisible: {},
@@ -13,11 +13,11 @@ export default createStyles({
 
     '&$invisible': {
       opacity: 0,
-      transition: 'opacity .5s linear',
+      transition: `opacity ${DurationNormal} linear`,
     },
     '&$visible': {
       opacity: 1,
-      transition: 'opacity .2s linear',
+      transition: `opacity ${DurationFast} linear`,
     },
     '&$disable': {
       display: 'none',

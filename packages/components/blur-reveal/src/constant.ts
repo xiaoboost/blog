@@ -1,4 +1,4 @@
-/** 动画时长 */
-export const duration = 0.8;
+export { DURATION_SLOW as duration } from '@blog/styles/common';
+
 /** 限制的最大高度 */
 export const maxHeight = 240;

@@ -11,6 +11,8 @@ import {
   FontBody,
   FontHeading,
   FontSizeBase,
+  DurationFast,
+  DurationNormal,
 } from '@blog/styles/compile';
 
 import {
@@ -55,7 +57,7 @@ const global = createStyles({
       cursor: 'pointer',
       textDecoration: 'none',
       color: LinkDefault,
-      transition: 'color .2s, background .4s',
+      transition: `color ${DurationFast}, background ${DurationNormal}`,
 
       '&:hover, &:focus': {
         outline: 0,
@@ -82,7 +84,7 @@ const global = createStyles({
     '::-webkit-scrollbar-thumb': {
       opacity: '0.7',
       backgroundColor: TextSecondary,
-      transition: 'opacity ease-in-out 200ms',
+      transition: `opacity ease-in-out ${DurationFast}`,
 
       '&:hover': {
         opacity: '1',

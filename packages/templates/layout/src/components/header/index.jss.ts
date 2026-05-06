@@ -6,6 +6,7 @@ import {
   BgSecondary,
   FontHeading,
   WidthMain,
+  DurationFast,
 } from '@blog/styles/compile';
 import { SiteTitleFontFamily } from '../../constant/font';
 import { ShadowHeader } from '../../styles/theme/token';
@@ -49,7 +50,7 @@ export default createStyles({
     alignItems: 'center',
     position: 'relative',
     height: '100%',
-    transition: 'color .2s',
+    transition: `color ${DurationFast}`,
 
     '&$mainNavItemHighlight': {
       color: TextPrimary,

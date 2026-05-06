@@ -1,4 +1,4 @@
-import { createStyles, Color, FontCode } from '@blog/styles/compile';
+import { createStyles, Color, FontCode, DurationNormal, DurationFast } from '@blog/styles/compile';
 import { lsInfoAttrName } from './constant';
 import {
   LspInfoBg,
@@ -51,7 +51,7 @@ export default createStyles({
     [`& [${lsInfoAttrName}]`]: {
       borderBottom: '1px dotted transparent',
       transitionTimingFunction: 'ease',
-      transition: 'border-color .3s',
+      transition: `border-color ${DurationNormal}`,
     },
     '& $lspErrorToken': {
       backgroundImage: 'url("./assets/red-under-wave-line.svg")',
@@ -74,7 +74,7 @@ export default createStyles({
     '& $lspError': {
       backgroundColor: LspErrorBg,
       borderLeft: `2px solid ${LspErrorBorder}`,
-      transition: 'background-color 200ms ease',
+      transition: `background-color ${DurationFast} ease`,
 
       '&$lspErrorLineHighlight': {
         backgroundColor: LspErrorBgHover,

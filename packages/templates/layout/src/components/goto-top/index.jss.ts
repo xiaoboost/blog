@@ -1,6 +1,5 @@
-import { createStyles, TextSecondary, BgSecondary, BorderPrimary } from '@blog/styles/compile';
+import { createStyles, TextSecondary, BgSecondary, BorderPrimary, DurationNormal } from '@blog/styles/compile';
 import { GotoTopShadow } from '../../styles/theme/token';
-import { fadeTime } from './constant';
 
 export default createStyles({
   gotoTopBtn: {},
@@ -24,7 +23,7 @@ export default createStyles({
       cursor: 'pointer',
       color: TextSecondary,
       backgroundColor: BgSecondary,
-      transition: `background-color ${fadeTime}ms ease`,
+      transition: `background-color ${DurationNormal} ease`,
       boxShadow: GotoTopShadow,
 
       '&:hover': {

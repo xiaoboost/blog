@@ -1,7 +1,4 @@
-import { createStyles, TextSecondary, TextTertiary, BorderPrimary, RadiusSm } from '@blog/styles/compile';
-
-const duration = '0.2s';
-const durationGloss = '0.5s';
+import { createStyles, TextSecondary, TextTertiary, BorderPrimary, RadiusSm, DurationFast, DurationNormal } from '@blog/styles/compile';
 
 export default createStyles({
   glossContent: {},
@@ -17,7 +14,7 @@ export default createStyles({
       cursor: 'pointer',
       position: 'relative',
       padding: [2, 0],
-      transition: `padding ${duration} ease-in-out, background-color ${duration} ease-in-out`,
+      transition: `padding ${DurationFast} ease-in-out, background-color ${DurationFast} ease-in-out`,
       backgroundImage: `repeating-linear-gradient(
         to right,
         /* 实线部分从 0px 开始 */
@@ -54,7 +51,7 @@ export default createStyles({
       textIndent: 0,
       overflow: 'hidden',
       verticalAlign: 'bottom',
-      transition: `all ${durationGloss} ease`,
+      transition: `all ${DurationNormal} ease`,
       fontSize: '90%',
       color: TextSecondary,
     },
