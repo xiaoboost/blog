@@ -130,13 +130,13 @@ export default createThemeStylesByVars({
 
   // 圆角
   [RadiusSmToken]: {
-    light: '4px',
+    light: '2px',
   },
   [RadiusMdToken]: {
-    light: '8px',
+    light: '4px',
   },
   [RadiusLgToken]: {
-    light: '16px',
+    light: '8px',
   },
 
   // Layout 私有

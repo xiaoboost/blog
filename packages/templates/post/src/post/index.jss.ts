@@ -12,6 +12,8 @@ import {
   FontHeading,
   FontCode,
   WidthMain,
+  RadiusSm,
+  RadiusMd,
   createHeadStyles,
   getHeadSelector,
   createMediaStylesByTemplate,
@@ -51,7 +53,7 @@ export default createStyles({
     width: WidthMain,
     flexGrow: 0,
     flexShrink: 0,
-    borderRadius: 4,
+    borderRadius: RadiusMd,
     overflow: 'hidden',
 
     ...createMediaStylesByTemplate<number | string>(
@@ -162,7 +164,7 @@ export default createStyles({
         backgroundColor: BgCode,
         borderBottom: `0.1em solid ${CodeUnderline}`,
         top: -1.5,
-        borderRadius: 2,
+        borderRadius: RadiusSm,
         position: 'relative',
       },
       '& em': {
@@ -178,7 +180,7 @@ export default createStyles({
           backgroundRepeat: 'no-repeat',
           backgroundSize: '100% 40%',
           backgroundPosition: '0 85%',
-          borderRadius: 2,
+          borderRadius: RadiusSm,
           boxDecorationBreak: 'clone',
           fontWeight: 'bold',
           webkitBoxDecorationBreak: 'clone',

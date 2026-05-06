@@ -1,4 +1,4 @@
-import { createStyles, BgSecondary } from '@blog/styles/compile';
+import { createStyles, BgSecondary, RadiusMd } from '@blog/styles/compile';
 import { PaginationShadow } from '../../styles/theme/token';
 
 export default createStyles({
@@ -6,7 +6,7 @@ export default createStyles({
     padding: 10,
     backgroundColor: BgSecondary,
     boxShadow: PaginationShadow,
-    borderRadius: '4px',
+    borderRadius: RadiusMd,
   },
   pagination: {
     display: 'flex',

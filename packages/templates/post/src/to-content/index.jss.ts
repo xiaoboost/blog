@@ -4,6 +4,7 @@ import {
   TextSecondary,
   BgSecondary,
   BorderPrimary,
+  RadiusMd,
   createMediaStyles,
 } from '@blog/styles/compile';
 import { AccentLight, BgCode, BgTertiary, TocShadow } from '../theme/token';
@@ -90,7 +91,7 @@ export default createStyles({
       margin: '0 0.2em',
       padding: '0.1em',
       fontSize: '0.85em',
-      borderRadius: 4,
+      borderRadius: RadiusMd,
       backgroundColor: BgCode,
 
       '&:first-child': {
