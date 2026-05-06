@@ -1,4 +1,4 @@
-import { createStyles, BgSecondary, BorderPrimary, ShadowCard, FontHeading } from '@blog/styles/compile';
+import { createStyles, BgSecondary, BorderPrimary, RadiusMd, ShadowCard, FontHeading } from '@blog/styles/compile';
 import { ListTitleFontFamily } from '../../constant/font';
 import { PostTitleStyle, PostSubTitleStyle } from '../main-index/index.jss';
 
@@ -20,7 +20,7 @@ export default createStyles({
       width: '100%',
       backgroundColor: BgSecondary,
       boxShadow: ShadowCard,
-      borderRadius: 4,
+      borderRadius: RadiusMd,
       overflow: 'hidden',
 
       '& $itemListItem': {

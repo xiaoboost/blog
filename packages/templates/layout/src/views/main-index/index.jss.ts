@@ -3,6 +3,7 @@ import {
   TextPrimary,
   BgSecondary,
   BorderPrimary,
+  RadiusMd,
   ShadowCard,
   TextTertiary,
   FontBody,
@@ -35,7 +36,7 @@ export default createStyles({
     color: TextPrimary,
     backgroundColor: BgSecondary,
     width: '100%',
-    borderRadius: '4px',
+    borderRadius: RadiusMd,
     overflow: 'hidden',
     boxShadow: ShadowCard,
 

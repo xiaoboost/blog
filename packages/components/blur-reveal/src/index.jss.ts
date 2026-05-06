@@ -1,4 +1,4 @@
-import { createStyles, TextPrimary, FontSizeBase } from '@blog/styles/compile';
+import { createStyles, TextPrimary, FontSizeBase, RadiusLg } from '@blog/styles/compile';
 import { duration, maxHeight } from './constant';
 import {
   FogGradientLeft,
@@ -86,7 +86,7 @@ export default createStyles({
     backdropFilter: 'blur(8px)',
     border: BlurBtnBorder,
     padding: [10, 24],
-    borderRadius: 6,
+    borderRadius: RadiusLg,
     fontSize: FontSizeBase + 2,
     fontWeight: 600,
     color: TextPrimary,

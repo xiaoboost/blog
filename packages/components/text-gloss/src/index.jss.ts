@@ -1,4 +1,4 @@
-import { createStyles, TextSecondary, TextTertiary, BorderPrimary } from '@blog/styles/compile';
+import { createStyles, TextSecondary, TextTertiary, BorderPrimary, RadiusSm } from '@blog/styles/compile';
 
 const duration = '0.2s';
 const durationGloss = '0.5s';
@@ -62,7 +62,7 @@ export default createStyles({
       '& $glossContent': {
         backgroundColor: `${BorderPrimary} !important`,
         backgroundImage: 'none !important',
-        borderRadius: 2,
+        borderRadius: RadiusSm,
         padding: [2, 4],
       },
       '& $glossDescription': {
