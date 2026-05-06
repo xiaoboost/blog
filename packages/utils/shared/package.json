@@ -16,7 +16,7 @@
     "@blog/eslint-config": "workspace:*",
     "@blog/tsconfig": "workspace:*",
     "@types/blog": "workspace:*",
-    "@types/node": "20.19.28",
+    "@types/node": "24.12.2",
     "eslint": "10.2.1",
     "typescript": "6.0.2"
   },

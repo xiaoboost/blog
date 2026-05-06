@@ -40,7 +40,7 @@
     "@blog/tsconfig": "workspace:*",
     "@blog/types": "workspace:*",
     "@types/blog": "workspace:*",
-    "@types/node": "20.19.28",
+    "@types/node": "24.12.2",
     "@types/react": "18.3.27",
     "eslint": "10.2.1",
     "typescript": "6.0.2"

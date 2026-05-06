@@ -14,7 +14,7 @@ runs:
       run: mkdir -p .git/lfs
 
     - name: Cache Git LFS
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: .git/lfs
         key: ${{ runner.os }}-git-lfs-${{ hashFiles('.gitattributes') }}
