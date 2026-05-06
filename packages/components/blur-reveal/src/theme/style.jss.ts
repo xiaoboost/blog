@@ -17,19 +17,15 @@ import {
 export default createThemeStylesByVars({
   [FogGradientLeftToken]: {
     light: `linear-gradient(to right, ${BgSecondary} 25%, transparent 100%)`,
-    dark: `linear-gradient(to right, ${BgSecondary} 25%, transparent 100%)`,
   },
   [FogGradientRightToken]: {
     light: `linear-gradient(to left, ${BgSecondary} 25%, transparent 100%)`,
-    dark: `linear-gradient(to left, ${BgSecondary} 25%, transparent 100%)`,
   },
   [OverlayGradientToken]: {
     light: `linear-gradient(to bottom, transparent 30%, ${colorAlpha(BgSecondary, 0.8)} 70%, ${BgSecondary} 100%)`,
-    dark: `linear-gradient(to bottom, transparent 30%, ${colorAlpha(BgSecondary, 0.8)} 70%, ${BgSecondary} 100%)`,
   },
   [BlurBtnBgToken]: {
     light: colorAlpha(BgSecondary, 0.85),
-    dark: colorAlpha(BgSecondary, 0.85),
   },
   [BlurBtnShadowToken]: {
     light: `0 4px 20px ${Gray[300].alpha(0.2)}`,
