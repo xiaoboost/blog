@@ -1,4 +1,4 @@
-import { createStyles, BgSecondary, BorderPrimary, RadiusMd, ShadowCard, FontHeading } from '@blog/styles/compile';
+import { createStyles, BgSecondary, BorderPrimary, RadiusMd, ShadowCard, FontHeading, FontSizeMd } from '@blog/styles/compile';
 import { ListTitleFontFamily } from '../../constant/font';
 import { PostTitleStyle, PostSubTitleStyle } from '../main-index/index.jss';
 
@@ -26,7 +26,7 @@ export default createStyles({
       '& $itemListItem': {
         margin: 0,
         padding: [14, 20],
-        fontSize: 16,
+        fontSize: FontSizeMd,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -38,7 +38,7 @@ export default createStyles({
 
         '& a': {
           ...PostTitleStyle,
-          fontSize: 16,
+          fontSize: FontSizeMd,
           lineHeight: 1,
         },
         '& time': {

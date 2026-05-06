@@ -4,6 +4,7 @@ import {
   FontBody,
   TextPrimary,
   DurationFast,
+  FontSizeSm,
   createMediaStylesByTemplate,
 } from '@blog/styles/compile';
 import { AccentDanger } from '../../styles/theme/token';
@@ -16,7 +17,7 @@ export default createStyles({
     width: '100%',
     color: TextTertiary,
     textAlign: 'center',
-    fontSize: 12,
+    fontSize: FontSizeSm,
 
     ...createMediaStylesByTemplate(
       (width) => ({

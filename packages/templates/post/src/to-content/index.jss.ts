@@ -6,6 +6,8 @@ import {
   BorderPrimary,
   RadiusMd,
   DurationInstant,
+  FontSizeRegular,
+  FontSizeSm,
   createMediaStyles,
 } from '@blog/styles/compile';
 import { AccentLight, BgCode, BgTertiary, TocShadow } from '../theme/token';
@@ -34,7 +36,7 @@ export default createStyles({
     right: 0 - tocWidth - tocMarginLeft,
     boxSizing: 'border-box',
     padding: '0 14px',
-    fontSize: 14,
+    fontSize: FontSizeRegular,
     flexGrow: 0,
     flexShrink: 0,
 
@@ -69,11 +71,11 @@ export default createStyles({
       marginTop: 4,
 
       '&$menuLevel1': {
-        fontSize: 14,
+        fontSize: FontSizeRegular,
       },
 
       '&$menuLevel2': {
-        fontSize: 12,
+        fontSize: FontSizeSm,
       },
     },
 

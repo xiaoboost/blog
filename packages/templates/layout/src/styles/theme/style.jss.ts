@@ -11,7 +11,12 @@ import {
   FontHeadingToken,
   FontCodeToken,
   WidthMainToken,
-  FontSizeBaseToken,
+  FontSizeSmToken,
+  FontSizeRegularToken,
+  FontSizeMdToken,
+  FontSizeLgToken,
+  FontSizeXlToken,
+  FontSizeXxlToken,
   RadiusSmToken,
   RadiusMdToken,
   RadiusLgToken,
@@ -23,14 +28,18 @@ import {
   FontSerif,
   FontMono,
   mainWidth,
-  FontDefaultSize,
   headerBodyMargin,
   DURATION_INSTANT,
   DURATION_FAST,
   DURATION_NORMAL,
   DURATION_SLOW,
 } from '@blog/styles/common';
-import { Gray, Blue, Red, createThemeStylesByVars } from '@blog/styles/compile';
+import {
+  Gray,
+  Blue,
+  Red,
+  createThemeStylesByVars,
+} from '@blog/styles/compile';
 import {
   LinkDefaultToken,
   LinkHoverToken,
@@ -132,8 +141,23 @@ export default createThemeStylesByVars({
   [WidthMainToken]: {
     light: `${mainWidth}px`,
   },
-  [FontSizeBaseToken]: {
-    light: `${FontDefaultSize}px`,
+  [FontSizeSmToken]: {
+    light: '12px',
+  },
+  [FontSizeRegularToken]: {
+    light: '14px',
+  },
+  [FontSizeMdToken]: {
+    light: '16px',
+  },
+  [FontSizeLgToken]: {
+    light: '20px',
+  },
+  [FontSizeXlToken]: {
+    light: '24px',
+  },
+  [FontSizeXxlToken]: {
+    light: '28px',
   },
 
   // 圆角

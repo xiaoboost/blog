@@ -63,8 +63,6 @@ export const FontMono = /* @__PURE__ */[
 export const mainWidth = 900;
 /** 文章主体和顶栏的空隙高度 */
 export const headerBodyMargin = 20;
-/** 默认字体大小 */
-export const FontDefaultSize = 14;
 /** 移动端判断 */
 export const mediaPhone: string = `@media only screen and (max-width: ${mainWidth}px)`;
 /** PC 端判断 */
