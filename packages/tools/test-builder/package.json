@@ -20,7 +20,7 @@
     "@blog/test-toolkit": "workspace:*",
     "@blog/tsconfig": "workspace:*",
     "@types/mocha": "10.0.10",
-    "@types/node": "20.19.28",
+    "@types/node": "24.12.2",
     "eslint": "10.2.1",
     "mocha": "10.8.2",
     "tsx": "4.21.0",

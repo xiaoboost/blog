@@ -45,7 +45,7 @@
     "@blog/eslint-config": "workspace:*",
     "@blog/test-toolkit": "workspace:*",
     "@blog/tsconfig": "workspace:*",
-    "@types/node": "20.19.28",
+    "@types/node": "24.12.2",
     "eslint": "10.2.1",
     "mocha": "10.8.2",
     "typescript": "6.0.2"

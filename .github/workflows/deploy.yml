@@ -11,6 +11,15 @@ on:
         required: true
         default: master
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
 jobs:
   setup:
     strategy:
@@ -20,6 +29,7 @@ jobs:
           - ubuntu-latest
 
     name: 发布流程 ${{ matrix.platform }}
+    environment: github-pages
     runs-on: ${{ matrix.platform }}
 
     steps:
@@ -48,10 +58,10 @@ jobs:
       - name: Build Blog
         run: pnpm run build
 
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Upload Pages Artifact
+        uses: actions/upload-pages-artifact@v5
         with:
-          deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
-          publish_branch: gh-pages
-          publish_dir: ./dist
-          force_orphan: true
+          path: ./dist
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v5

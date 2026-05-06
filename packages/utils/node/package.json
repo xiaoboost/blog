@@ -25,7 +25,7 @@
     "@blog/test-toolkit": "workspace:*",
     "@blog/tsconfig": "workspace:*",
     "@types/blog": "workspace:*",
-    "@types/node": "20.19.28",
+    "@types/node": "24.12.2",
     "@types/subset-font": "2.3.0",
     "eslint": "10.2.1",
     "mocha": "10.8.2",
