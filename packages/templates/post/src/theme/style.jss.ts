@@ -104,12 +104,7 @@ export default createThemeStylesByVars({
       `-1px 1px 0 ${Gray[50]},`,
       `1px 1px ${Gray[50]}`,
     ].join(' '),
-    dark: [
-      '-1px -1px 0 transparent,',
-      '1px -1px 0 transparent,',
-      '-1px 1px 0 transparent,',
-      '1px 1px transparent',
-    ].join(' '),
+    dark: 'none',
   },
 
   // em > strong — 填充背景
@@ -126,11 +121,6 @@ export default createThemeStylesByVars({
       `-0.8px 0.8px 0 ${Gray[50]},`,
       `0.8px 0.8px ${Gray[50]}`,
     ].join(' '),
-    dark: [
-      '-0.8px -0.8px 0 transparent,',
-      '0.8px -0.8px 0 transparent,',
-      '-0.8px 0.8px 0 transparent,',
-      '0.8px 0.8px transparent',
-    ].join(' '),
+    dark: 'none',
   },
 });
