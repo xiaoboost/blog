@@ -21,11 +21,6 @@ import {
   EmphasisStrongShadowToken,
 } from './token';
 
-// ─── 派生色 ───────────────────────────────────────────────
-
-/** em 镂空阴影中硬编码的 #fafafa（白光），用 Gray[0] 近似 */
-const emShadowLightBase = Gray[0];
-
 // ─── 主题定义 ─────────────────────────────────────────────
 
 export default createThemeStylesByVars({
@@ -99,7 +94,7 @@ export default createThemeStylesByVars({
   // em 强调 — 镂空阴影
   [EmphasisShadowToken]: {
     light: [
-      `-1px -1px 0 ${emShadowLightBase},`,
+      `-1px -1px 0 ${Gray[0]},`,
       `1px -1px 0 ${Gray[50]},`,
       `-1px 1px 0 ${Gray[50]},`,
       `1px 1px ${Gray[50]}`,
@@ -116,7 +111,7 @@ export default createThemeStylesByVars({
   // em > strong — 镂空阴影
   [EmphasisStrongShadowToken]: {
     light: [
-      `-0.8px -0.8px 0 ${emShadowLightBase},`,
+      `-0.8px -0.8px 0 ${Gray[0]},`,
       `0.8px -0.8px 0 ${Gray[50]},`,
       `-0.8px 0.8px 0 ${Gray[50]},`,
       `0.8px 0.8px ${Gray[50]}`,
