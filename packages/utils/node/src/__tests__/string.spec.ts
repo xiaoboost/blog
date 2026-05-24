@@ -7,5 +7,6 @@ describe('string', () => {
     expect(toPinyin('test 测试')).eq('test-ce4-shi4');
     expect(toPinyin('test \n 测1试')).eq('test-ce4-1-shi4');
     expect(toPinyin('test测---试---实验')).eq('test-ce4-shi4-shi2-yan4');
+    expect(toPinyin('test测-·---试---实验')).eq('test-ce4-shi4-shi2-yan4');
   });
 });
