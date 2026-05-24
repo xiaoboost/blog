@@ -12,7 +12,10 @@ const createPost = createHtml(PostRender);
 
 export function filterSortPosts(posts: PostsExportType) {
   return posts
+    // 过滤不公开文章
     .filter(({ data }) => data.public)
+    // 生产模式不开放草稿文章
+    .filter(({ data }) => process.env.NODE_ENV !== 'production' || !data.draft)
     .sort((pre, next) => (pre.data.create > next.data.create ? -1 : 1));
 }
 

@@ -25,6 +25,8 @@ export interface PostMeta {
   update?: string;
   /** 文章模板 */
   template?: string;
+  /** 是否是草稿 */
+  draft?: boolean;
 }
 
 /** 标签数据 */
@@ -57,6 +59,8 @@ export interface PostBasicData {
   toc: boolean;
   /** 文章模板 */
   template: string;
+  /** 是否是草稿 */
+  draft: boolean;
 }
 
 /** 文章属性 */

@@ -72,6 +72,7 @@ export async function getPostData(content: string, fileName: string) {
     toc: meta.toc ?? true,
     ast: await parse(fileName, postContent),
     template: meta.template ?? 'post',
+    draft: meta.draft ?? false,
     description:
       meta.description
       ?? meta.content
