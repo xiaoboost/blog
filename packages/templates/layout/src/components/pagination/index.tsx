@@ -8,32 +8,32 @@ import styles from './index.jss';
 const { classes } = styles;
 
 export interface PaginationProps {
-  next?: string;
-  pre?: string;
+  newer?: string;
+  older?: string;
 }
 
-export function Pagination({ next, pre }: PaginationProps) {
-  if (!next && !pre) {
+export function Pagination({ newer, older }: PaginationProps) {
+  if (!newer && !older) {
     return <></>;
   }
 
   return (
     <section className={classes.pagination}>
-      {next
+      {older
         ? (
-          <a className={classes.paginationAction} href={normalizeUrl(next)}>
+          <a className={classes.paginationAction} href={normalizeUrl(older)}>
             <ArrowLeft />
             {' '}
-            下一页
+            旧闻
           </a>
         )
         : (
           <div></div>
         )}
-      {pre
+      {newer
         ? (
-          <a className={classes.paginationAction} href={normalizeUrl(pre)}>
-            上一页
+          <a className={classes.paginationAction} href={normalizeUrl(newer)}>
+            新篇
             {' '}
             <ArrowRight />
           </a>
