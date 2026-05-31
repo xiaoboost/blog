@@ -166,7 +166,8 @@ export async function npmInstall(libs: string[], cwd: string, log?: (msg: string
     const args = [
       'install', ...libs, '-D', '--ignore-scripts',
     ];
-    const childProcess = spawn('npm', args, {
+    // shell: true 必需（Windows 上 npm 是脚本），拼成完整命令字符串避免 DEP0190
+    const childProcess = spawn(`npm ${args.join(' ')}`, {
       shell: true,
       stdio: 'pipe',
       cwd,
@@ -191,7 +192,7 @@ export async function npmInstall(libs: string[], cwd: string, log?: (msg: string
         resolve();
       }
       else {
-        reject(new Error(`npm install 运行出错，请使用 --log-level=Debug 参数来查看错误日志`));
+        reject(new Error('npm install 运行出错，请使用 --log-level=Debug 参数来查看错误日志'));
       }
     });
 
