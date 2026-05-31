@@ -1,5 +1,4 @@
 import { onBuild } from '@blog/context/runtime';
-import { normalize } from '@blog/node';
 import FirstTitleFontFile from '@blog/styles/fonts/SourceHanSerif/SourceHanSerifSC-Bold.otf?raw';
 import SecondTitleFontFile from '@blog/styles/fonts/SourceHanSerif/SourceHanSerifSC-SemiBold.otf?raw';
 import type { BuildContext, PageDataMap } from '@blog/types';
@@ -39,9 +38,9 @@ onBuild((runtime) => {
 
           await page.buildFonts({
             families: [FirstTitleFontFamily, SecondTitleFontFamily],
-            cssFile: normalize(`${page.pathname}/styles/heading.css`),
-            fontFile: normalize(`${page.pathname}/fonts/{family}.woff2`),
-            rename,
+            scope: page.pathname,
+            fileName: 'heading',
+            format: rename,
           });
         }),
     );

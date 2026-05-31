@@ -24,22 +24,6 @@
     "node": ">=24",
     "pnpm": ">=10"
   },
-  "pnpm": {
-    "updateConfig": {
-      "ignoreDependencies": [
-        "@types/node",
-        "esbuild",
-        "ora",
-        "chalk",
-        "eslint",
-        "chai",
-        "mime"
-      ]
-    },
-    "onlyBuiltDependencies": [
-      "esbuild"
-    ]
-  },
   "devDependencies": {
     "@blog/cli": "workspace:*",
     "sirv-cli": "3.0.1"

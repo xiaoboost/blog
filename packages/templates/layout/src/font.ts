@@ -22,18 +22,22 @@ onBuild((runtime) => {
 
   // 构建 + 产出
   runtime.hooks.beforeBuild.tapPromise('layout:fonts-build', async ({ site, pages, rename }: BuildContext) => {
-    // 全局字体构建
-    await site.buildFonts({ cssFile: '/styles/layout-fonts.css', rename });
-    // 每个页面字体构建
+    // 全局字体
+    await site.buildFonts({
+      scope: '/',
+      fileName: 'layout-fonts',
+      format: rename,
+    });
+
+    // 每个页面字体
     await Promise.all(
       pages
         .filter((page) => page.type !== 'post')
-        .map((page) =>
-          page.buildFonts({
-            cssFile: `${page.pathname}/styles/page-fonts.css`,
-            rename,
-          }),
-        ),
+        .map((page) => page.buildFonts({
+          scope: page.pathname,
+          fileName: 'content-fonts',
+          format: rename,
+        })),
     );
   });
 });
