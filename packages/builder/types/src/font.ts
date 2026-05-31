@@ -84,4 +84,12 @@ export interface IBuildFontsOptions extends Omit<IFontBucketBuildOptions, 'minif
    *   - 不传则构建所有已注册的字体桶
    */
   families?: string[];
+  /**
+   * CSS 合并模式
+   *   - `font-face`：仅合并 @font-face 声明
+   *   - `full`：合并完整 CSS
+   *
+   * @default 'font-face'
+   */
+  cssMode?: 'font-face' | 'full';
 }
