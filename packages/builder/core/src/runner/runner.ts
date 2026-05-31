@@ -1,4 +1,4 @@
-import { getContext } from '@blog/context';
+import { initGlobalContext } from '@blog/context';
 import type {
   RunnerInstance,
   BuilderInstance,
@@ -35,7 +35,7 @@ export class Runner implements RunnerInstance {
     const printer = new Instance({ level: color ? 3 : 0 });
 
     return {
-      ...getContext(this.builder),
+      ...initGlobalContext(this.builder),
       process,
       Buffer,
       setTimeout,

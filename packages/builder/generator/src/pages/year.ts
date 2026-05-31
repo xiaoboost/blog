@@ -1,6 +1,6 @@
 import { normalize, normalizeUrl } from '@blog/node';
 import { PostList, ItemList, utils, type ItemListProps, type PostListProps, type PaginationProps } from '@blog/template-layout';
-import type { IBuildRenderProps, ISite, PostExportData } from '@blog/types';
+import type { IRenderContext, ISite, PostExportData } from '@blog/types';
 import { createHtml } from '../react';
 
 const createYearList = createHtml(ItemList);
@@ -64,7 +64,7 @@ export function getYearPostListAssetPath(site: ISite, year: string, index: numbe
 }
 
 export interface YearListPageRenderProps
-  extends IBuildRenderProps, Pick<ItemListProps, 'listTitle' | 'data'>, PaginationProps {
+  extends IRenderContext, Pick<ItemListProps, 'listTitle' | 'data'>, PaginationProps {
   index: number;
   count: number;
 }
@@ -114,7 +114,7 @@ export function renderYearListPage({
 }
 
 export interface YearPostListPageRenderProps
-  extends IBuildRenderProps, Pick<PostListProps, 'listTitle' | 'posts'>, PaginationProps {
+  extends IRenderContext, Pick<PostListProps, 'listTitle' | 'posts'>, PaginationProps {
   index: number;
   count: number;
 }

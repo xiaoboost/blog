@@ -72,36 +72,46 @@ export abstract class ResourceSet implements IResourceSet {
   }
 
   async buildFonts({
-    cssPath,
+    cssFile,
     rename,
     families,
+    fontFile,
   }: IBuildFontsOptions): Promise<void> {
-    let buckets: FontBucket[];
+    let entries: [string, FontBucket][];
 
     if (families) {
       for (const name of families) {
         this.getFontBucket(name); // 不存在会 throw
       }
-      buckets = families
-        .map((name) => this.#fontBuckets.get(name)!)
-        .filter((b) => !b.isEmpty && !b.isBuilt);
+      entries = families
+        .map((name) => [name, this.#fontBuckets.get(name)!] as [string, FontBucket])
+        .filter(([, b]) => !b.isEmpty && !b.isBuilt);
     }
     else {
-      buckets = [...this.#fontBuckets.values()]
-        .filter((b) => !b.isEmpty && !b.isBuilt);
+      entries = [...this.#fontBuckets.entries()]
+        .filter(([, b]) => !b.isEmpty && !b.isBuilt);
     }
 
-    if (buckets.length === 0) return;
+    if (entries.length === 0) return;
 
-    await Promise.all(buckets.map((b) => b.build()));
+    await Promise.all(
+      entries.map(([family, b]) =>
+        b.build({
+          rename,
+          ...(fontFile ? { fontFile: fontFile.replace('{family}', family) } : {}),
+        }),
+      ),
+    );
 
-    const css = buckets.map((b) => b.getFontFaceCss()).join('');
-    const finalPath = rename({ path: cssPath, content: Buffer.from(css) });
+    const css = entries.map(([, b]) => b.getFontFaceCss()).join('');
+    const finalPath = rename
+      ? rename({ path: cssFile, content: Buffer.from(css) })
+      : cssFile;
 
     this.addStyle(finalPath);
     this.addAsset({ path: finalPath, content: Buffer.from(css) });
 
-    for (const b of buckets) {
+    for (const [, b] of entries) {
       const fontAsset = b.getFont();
       this.addAsset(fontAsset);
       this.addPreload({ href: fontAsset.path, as: 'font', type: 'font/woff2' });

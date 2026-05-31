@@ -1,5 +1,5 @@
+import { useRenderContext } from '@blog/context/runtime';
 import { normalizeUrl } from '@blog/node';
-import type { IBuildRenderProps } from '@blog/types';
 import React from 'react';
 import { type LayoutProps, Layout } from '../../components/layout';
 import { type PaginationProps, Pagination } from '../../components/pagination';
@@ -12,16 +12,18 @@ interface ItemData {
   url: string;
 }
 
-export interface ItemListProps extends LayoutProps, PaginationProps, IBuildRenderProps {
+export interface ItemListProps extends LayoutProps, PaginationProps {
   listTitle: string;
   data: ItemData[];
 }
 
 export function ItemList(props: ItemListProps) {
+  const { isPreBuild, site, page } = useRenderContext();
+
   // 预构建阶段收集标题字体字符
-  if (props.isPreBuild && props.site) {
-    props.site.getFontBucket(ListTitleFontFamily).addText(props.listTitle);
-    props.page.getFontBucket(ListItemTitleFontFamily).addText(
+  if (isPreBuild) {
+    site.getFontBucket(ListTitleFontFamily).addText(props.listTitle);
+    page.getFontBucket(ListItemTitleFontFamily).addText(
       props.data.map((d) => d.title).join(''),
     );
   }

@@ -96,7 +96,7 @@ export function FontBlock(props: FontBlockProps) {
     <div
       className={stringifyClass(
         styles.classes.fontBlock,
-        className,
+        `font-${className}`,
         direction === 'horizontal'
           ? styles.classes.fontBlockHorizontal
           : direction === 'vertical'
@@ -129,34 +129,37 @@ export function FontBlock(props: FontBlockProps) {
 export const utils = defineUtils(script);
 
 onBuild((runtime) => {
-  runtime.hooks.beforeBuild.tapPromise(componentName, async ({ pages, rename }) => {
-    for (const page of pages) {
-      if (page.type !== 'post') continue;
+  // 预构建之前执行
+  runtime.hooks.afterReady.tapPromise(componentName, async ({ pages, rename }) => {
+    await Promise.all(
+      pages
+        .filter((page) => page.type === 'post')
+        .map(async (page) => {
+          const d = page.data as PageDataMap['post'];
+          const post = d.post;
+          const fontDataList = getCustomTextByPost(post);
 
-      const d = page.data as PageDataMap['post'];
-      const post = d.post;
-      const fontDataList = getCustomTextByPost(post);
+          if (fontDataList.length === 0) return;
 
-      if (fontDataList.length === 0) continue;
+          const families: string[] = [];
 
-      const families: string[] = [];
+          for (const data of fontDataList) {
+            const content = await getFontContentBySrc(data.src);
+            const bucket = page.ensureFontBucket(data.family, content);
 
-      for (const data of fontDataList) {
-        const content = await getFontContentBySrc(data.src);
-        const family = `font-block:${data.src}`;
-        const bucket = page.ensureFontBucket(family, content);
+            bucket.addText(...data.text);
+            setFontClass(data.originSrc, bucket.getClassName());
+            setFontClass(data.src, bucket.getClassName());
+            families.push(data.family);
+          }
 
-        bucket.addText(...data.text);
-        setFontClass(data.originSrc, bucket.getClassName());
-        setFontClass(data.src, bucket.getClassName());
-        families.push(family);
-      }
-
-      await page.buildFonts({
-        families,
-        cssPath: `${page.pathname}/fonts/font-block.css`,
-        rename,
-      });
-    }
+          await page.buildFonts({
+            families,
+            cssFile: `${page.pathname}/fonts/font-block.css`,
+            fontFile: `${page.pathname}/fonts/{family}.woff2`,
+            rename,
+          });
+        }),
+    );
   });
 });

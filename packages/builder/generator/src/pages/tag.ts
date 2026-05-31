@@ -1,6 +1,6 @@
 import { normalize, normalizeUrl, toPinyin } from '@blog/node';
 import { PostList, ItemList, utils, type ItemListProps, type PostListProps, type PaginationProps } from '@blog/template-layout';
-import type { IBuildRenderProps, ISite, PostExportData } from '@blog/types';
+import type { IRenderContext, ISite, PostExportData } from '@blog/types';
 import { createHtml } from '../react';
 
 const createTagList = createHtml(ItemList);
@@ -67,7 +67,7 @@ export function getTagPostListAssetPath(site: ISite, tag: string, index: number)
 }
 
 export interface TagListPageRenderProps
-  extends IBuildRenderProps, Pick<ItemListProps, 'listTitle' | 'data'>, PaginationProps {
+  extends IRenderContext, Pick<ItemListProps, 'listTitle' | 'data'>, PaginationProps {
   index: number;
   count: number;
 }
@@ -117,7 +117,7 @@ export function renderTagListPage({
 }
 
 export interface TagPostListPageRenderProps
-  extends IBuildRenderProps, Pick<PostListProps, 'listTitle' | 'posts'>, PaginationProps {
+  extends IRenderContext, Pick<PostListProps, 'listTitle' | 'posts'>, PaginationProps {
   index: number;
   count: number;
 }

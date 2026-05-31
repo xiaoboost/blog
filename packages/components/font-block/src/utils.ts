@@ -1,7 +1,7 @@
 import { readFile } from 'fs/promises';
-import { dirname, isAbsolute, join, basename } from 'path';
-import { getAccessor, RuntimeBuilder as Builder } from '@blog/context/runtime';
-import { normalize, isRootDirectory } from '@blog/node';
+import { dirname, isAbsolute, join, basename, parse } from 'path';
+import { getAccessor, Builder } from '@blog/context/runtime';
+import { normalize, isRootDirectory, toPinyin } from '@blog/node';
 import { getChildrenContent, getAttribute, visit } from '@blog/parser/walk';
 import type { PostExportData } from '@blog/types';
 
@@ -10,6 +10,8 @@ export interface FontBlockData {
   originSrc: string;
   /** 字体文件解析后的路径 */
   src: string;
+  /** 字体名称 */
+  family: string;
   /** 原文文本 */
   text: string[];
 }
@@ -94,6 +96,7 @@ export function getCustomTextByPost({ data: post }: PostExportData) {
     }
 
     const fontPath = resolveFontPath(src, post.filePath);
+    const family = toPinyin(parse(fontPath).name);
     const oldFontData = result.find((item) => item.src === fontPath);
 
     if (oldFontData) {
@@ -103,6 +106,7 @@ export function getCustomTextByPost({ data: post }: PostExportData) {
       result.push({
         originSrc: src,
         src: fontPath,
+        family,
         text: [text],
       });
     }
