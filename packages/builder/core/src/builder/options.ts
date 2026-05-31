@@ -119,7 +119,7 @@ export function normalizeOptions(opt: BuilderOptions): Required<BuilderOptions> 
 
   return {
     root,
-    entry: require.resolve('@blog/builder-generator'),
+    entry: opt.entry ?? require.resolve('@blog/builder-generator'),
     name: opt.name ?? 'Main',
     outDir: join(root, opt.outDir ?? 'dist'),
     mode: isProduction ? 'production' : 'development',
