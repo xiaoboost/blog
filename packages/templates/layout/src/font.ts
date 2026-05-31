@@ -36,6 +36,7 @@ onBuild((runtime) => {
         .map((page) => page.buildFonts({
           scope: page.pathname,
           cssFileName: 'content-fonts',
+          cssMode: 'font-face',
           format: rename,
         })),
     );

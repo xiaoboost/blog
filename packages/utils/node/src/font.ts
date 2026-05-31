@@ -117,7 +117,6 @@ export class FontBucket implements IFontBucket {
     );
 
     this.fontPath = normalize(scope, format({ path: `${this.fontName}.woff2`, content: this.minFont }));
-
     this.cssCode = `${this.getFontFaceCss()}${this.getClassNameCss()}`;
     this.cssPath = normalize(scope, format({ path: `${cssFileName}.css`, content: Buffer.from(this.cssCode) }));
   }

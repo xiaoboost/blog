@@ -96,7 +96,7 @@ export function FontBlock(props: FontBlockProps) {
     <div
       className={stringifyClass(
         styles.classes.fontBlock,
-        `font-${className}`,
+        className,
         direction === 'horizontal'
           ? styles.classes.fontBlockHorizontal
           : direction === 'vertical'
@@ -156,7 +156,8 @@ onBuild((runtime) => {
           await page.buildFonts({
             families,
             scope: page.pathname,
-            fileName: 'font-block',
+            cssFileName: 'font-block',
+            cssMode: 'full',
             format: rename,
           });
         }),

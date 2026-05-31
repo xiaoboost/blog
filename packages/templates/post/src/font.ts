@@ -40,6 +40,7 @@ onBuild((runtime) => {
             families: [FirstTitleFontFamily, SecondTitleFontFamily],
             scope: page.pathname,
             cssFileName: 'heading',
+            cssMode: 'font-face',
             format: rename,
           });
         }),

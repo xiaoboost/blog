@@ -74,6 +74,7 @@ export abstract class ResourceSet implements IResourceSet {
   async buildFonts({
     scope = '/',
     cssFileName = 'font',
+    cssMode = 'font-face',
     format,
     families,
   }: IBuildFontsOptions): Promise<void> {
@@ -98,7 +99,13 @@ export abstract class ResourceSet implements IResourceSet {
     await Promise.all(entries.map(([, b]) => b.build({ format, cssFileName, scope })));
 
     // 合并 CSS
-    const css = entries.map(([, b]) => b.getFontFaceCss()).join('');
+    const css = entries
+      .map(([, b]) => (
+        cssMode === 'full'
+          ? b.getCss().content
+          : b.getFontFaceCss()
+      ))
+      .join('');
     const cssFinal = normalize(scope, format({ path: `${cssFileName}.css`, content: Buffer.from(css) }));
 
     this.addStyle(cssFinal);
