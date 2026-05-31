@@ -2,26 +2,28 @@ import type { AssetData } from './asset';
 
 // ── 构建参数 ──
 
-/** 字体桶构建阶段的参数 */
+/** 字体桶 build() 参数 */
 export interface IFontBucketBuildOptions {
-  /** CSS 文件产出路径 */
-  cssFile?: string;
+  /** 格式化文件路径 */
+  format(asset: AssetData): string;
   /**
-   * 字体文件产出路径模板
+   * 产出路径前缀
    *
-   * 必须包含占位符 `{family}`，构建时会被替换为对应字体桶的 family 名，
-   * 然后经 {@link rename} 做内容寻址得到最终路径。
-   *
-   * @example `/posts/slug/fonts/{family}.woff2`
-   * @default '/fonts/font.woff2'
+   * @default '/'
    */
-  fontFile?: string;
-  /** 公共 URL 路径前缀，用于生成 CSS 中的字体 URL @default '/' */
-  publicPath?: string;
-  /** 是否启用子集化最小化（默认开启，关闭用于调试） */
+  scope?: string;
+  /**
+   * 文件名称
+   *
+   * @default 'font'
+   */
+  fileName?: string;
+  /**
+   * 是否启用子集化最小化
+   *
+   * @default true
+   */
   minify?: boolean;
-  /** 文件重命名 */
-  rename?(asset: AssetData): string;
 }
 
 // ── 构造函数参数 ──
@@ -41,10 +43,10 @@ export interface IFontBucketBufferSource {
 }
 
 /** 字体桶构造函数参数 */
-export type IFontBucketOptions = IFontBucketBuildOptions & {
-  /** 字体家族名 @default 由 fontFile 文件名推导 */
+export type IFontBucketOptions = {
+  /** 字体家族名（CSS font-family） */
   fontFamily?: string;
-  /** CSS 类名 @default 由 fontFamily 推导 */
+  /** CSS 类名（不传则由 fontFamily 推导） */
   className?: string;
   /** 回退字体 @default 'sans-serif' */
   fallbackFont?: string;
@@ -67,16 +69,14 @@ export interface IFontBucket {
   getClassName(): string;
   /** 获取子集化后的字体 AssetData */
   getFont(): AssetData;
-  /** 构建字体（子集化 + 生成 CSS） */
-  build(buildOptions?: IFontBucketBuildOptions): Promise<void>;
+  /** 构建字体 */
+  build(buildOptions: IFontBucketBuildOptions): Promise<void>;
 }
 
 // ── 资源集聚合构建参数 ──
 
 /** 聚合构建参数 */
-export interface IBuildFontsOptions extends IFontBucketBuildOptions {
-  /** CSS 文件产出路径 */
-  cssFile: string;
+export interface IBuildFontsOptions extends Omit<IFontBucketBuildOptions, 'minify'> {
   /**
    * 指定构建的字体家族
    *   - 不传则构建所有已注册的字体桶

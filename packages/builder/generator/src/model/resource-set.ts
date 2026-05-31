@@ -1,4 +1,4 @@
-import { FontBucket } from '@blog/node';
+import { FontBucket, normalize } from '@blog/node';
 import type {
   AssetData,
   IFontBucket,
@@ -72,16 +72,16 @@ export abstract class ResourceSet implements IResourceSet {
   }
 
   async buildFonts({
-    cssFile,
-    rename,
+    scope = '/',
+    fileName = 'font',
+    format,
     families,
-    fontFile,
   }: IBuildFontsOptions): Promise<void> {
     let entries: [string, FontBucket][];
 
     if (families) {
       for (const name of families) {
-        this.getFontBucket(name); // 不存在会 throw
+        this.getFontBucket(name);
       }
       entries = families
         .map((name) => [name, this.#fontBuckets.get(name)!] as [string, FontBucket])
@@ -94,23 +94,17 @@ export abstract class ResourceSet implements IResourceSet {
 
     if (entries.length === 0) return;
 
-    await Promise.all(
-      entries.map(([family, b]) =>
-        b.build({
-          rename,
-          ...(fontFile ? { fontFile: fontFile.replace('{family}', family) } : {}),
-        }),
-      ),
-    );
+    // 构建字体桶
+    await Promise.all(entries.map(([, b]) => b.build({ format, fileName, scope })));
 
+    // 合并 CSS
     const css = entries.map(([, b]) => b.getFontFaceCss()).join('');
-    const finalPath = rename
-      ? rename({ path: cssFile, content: Buffer.from(css) })
-      : cssFile;
+    const cssFinal = normalize(scope, format({ path: `${fileName}.css`, content: Buffer.from(css) }));
 
-    this.addStyle(finalPath);
-    this.addAsset({ path: finalPath, content: Buffer.from(css) });
+    this.addStyle(cssFinal);
+    this.addAsset({ path: cssFinal, content: Buffer.from(css) });
 
+    // 字体文件（路径已含 scope）
     for (const [, b] of entries) {
       const fontAsset = b.getFont();
       this.addAsset(fontAsset);

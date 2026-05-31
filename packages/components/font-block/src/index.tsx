@@ -155,9 +155,9 @@ onBuild((runtime) => {
 
           await page.buildFonts({
             families,
-            cssFile: `${page.pathname}/fonts/font-block.css`,
-            fontFile: `${page.pathname}/fonts/{family}.woff2`,
-            rename,
+            scope: page.pathname,
+            fileName: 'font-block',
+            format: rename,
           });
         }),
     );
