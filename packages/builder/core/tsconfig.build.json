@@ -1,5 +1,5 @@
 {
   "extends": "./tsconfig.json",
   "include": ["src"],
-  "exclude": ["src/__tests__", "src/bundler/source", "src/plugins/development/runtime", "dist"]
+  "exclude": ["src/__tests__", "src/plugins/development/runtime", "dist"]
 }
