@@ -16,6 +16,7 @@ export function getRenameMethod(builder: BuilderInstance, opt: FileLoaderOptionI
       name,
       test: item.test,
       getName: getPathFormatter(path.join(publicPath, name)),
+      hasHash: name.includes('[hash]'),
     };
   });
 
@@ -51,7 +52,7 @@ export function getRenameMethod(builder: BuilderInstance, opt: FileLoaderOptionI
       dir: result.parsedPath.dir,
       // 去掉这里解析出来的第一个点字符
       ext: result.parsedPath.ext.slice(1),
-      hash: md5(asset.content),
+      hash: result.hasHash ? md5(asset.content) : '',
     });
 
     return assetPath;
