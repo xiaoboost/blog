@@ -70,6 +70,6 @@ describe('normalizeOptions', () => {
 
   it('未指定 entry 时自动生成默认 entry 路径', () => {
     const opt = normalizeOptions({});
-    expect(opt.entry).match(/src[/\\]bundler[/\\]source[/\\]index\.ts$/);
+    expect(opt.entry).match(/builder[\\/]generator[\\/]src[\\/]index.ts$/);
   });
 });
