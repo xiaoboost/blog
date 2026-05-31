@@ -4,19 +4,20 @@ import { getAccessor, RuntimeBuilder as Builder } from '@blog/context/runtime';
 import { normalize, isRootDirectory } from '@blog/node';
 import { getChildrenContent, getAttribute, visit } from '@blog/parser/walk';
 import type { PostExportData } from '@blog/types';
-import { CustomFont } from './font';
-import type { CustomFontData } from './types';
-import type { FontBlockProps } from './index';
+
+export interface FontBlockData {
+  /** 字体文件原始路径 */
+  originSrc: string;
+  /** 字体文件解析后的路径 */
+  src: string;
+  /** 原文文本 */
+  text: string[];
+}
 
 /** 字体源文件缓存 */
 const fileCache = getAccessor('font-block:source', new Map<string, Buffer>()).get();
-/** 字体数据缓存 */
-const fontCache = getAccessor('font-block:font', new Map<string, CustomFont>()).get();
-
-/** 获取自定义字体标识符 */
-function getCustomFontKey(data: CustomFontData) {
-  return `${data.post}:${data.src}:${data.text.join(',')}`;
-}
+/** 字体 className 缓存 */
+const classCache = getAccessor('font-block:class', new Map<string, string>()).get();
 
 /** 获取字体完整路径 */
 function resolveFontPath(src: string, postPath: string) {
@@ -65,33 +66,19 @@ export async function getFontContentBySrc(src: string) {
   return content;
 }
 
-/** 获取自定义字体 */
-export function getCustomFontByData(data: CustomFontData) {
-  const key = getCustomFontKey({ ...data, src: data.originSrc });
-
-  if (fontCache.has(key)) {
-    return fontCache.get(key)!;
-  }
-
-  const font = new CustomFont(data.src, data.post, data.text);
-  fontCache.set(key, font);
-  return font;
+/** 缓存字体 className */
+export function setFontClass(src: string, className: string): void {
+  classCache.set(src, className);
 }
 
-/** 从渲染属性获得自定义字体 */
-export function getCustomFontByProps(props: FontBlockProps) {
-  const text = props.children.trim();
-
-  for (const [key, font] of fontCache.entries()) {
-    if (key.includes(props.src) && font.text.includes(text)) {
-      return font;
-    }
-  }
+/** 渲染时查找字体 className */
+export function getFontClass(src: string): string | undefined {
+  return classCache.get(src);
 }
 
 /** 获取文章内所有自定义文本 */
 export function getCustomTextByPost({ data: post }: PostExportData) {
-  const result: CustomFontData[] = [];
+  const result: FontBlockData[] = [];
 
   visit(post.ast, (node) => {
     if (node.type !== 'mdxJsxFlowElement' || node.name !== 'FontBlock') {
@@ -103,7 +90,7 @@ export function getCustomTextByPost({ data: post }: PostExportData) {
     const src = (srcAttr ?? (srcAttr as any)?.value) as string;
 
     if (!src) {
-      throw new Error(`FontBlock 组件必须含有\`src\`属性`);
+      throw new Error('FontBlock 组件必须含有`src`属性');
     }
 
     const fontPath = resolveFontPath(src, post.filePath);
@@ -116,7 +103,6 @@ export function getCustomTextByPost({ data: post }: PostExportData) {
       result.push({
         originSrc: src,
         src: fontPath,
-        post: post.pathname,
         text: [text],
       });
     }

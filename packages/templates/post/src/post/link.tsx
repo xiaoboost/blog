@@ -1,4 +1,4 @@
-import { forEach } from '@blog/context/runtime';
+import { onBuild } from '@blog/context/runtime';
 import { normalize } from '@blog/node';
 import type { PostBasicData } from '@blog/types';
 import React from 'react';
@@ -10,7 +10,7 @@ export interface Props {
 
 const postPathMap = new Map<string, PostBasicData>();
 
-forEach((runtime) => {
+onBuild((runtime) => {
   runtime.hooks.afterPostDataReady.tap('component-link', (posts) => {
     postPathMap.clear();
     posts.forEach((post) => postPathMap.set(post.filePath, post));

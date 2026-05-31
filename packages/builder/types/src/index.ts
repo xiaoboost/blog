@@ -10,3 +10,4 @@ export * from './resolve';
 export * from './post';
 export * from './logger';
 export * from './nodes';
+export * from './page';

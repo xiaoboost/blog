@@ -1,3 +1,3 @@
 export { defineUtils, callHook, replaceAsset } from './method';
-export { forEach, forOnce } from './hook';
+export { onBuild, onInit } from './hook';
 export { waitReady } from './store';

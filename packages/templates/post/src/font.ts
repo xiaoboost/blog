@@ -1,81 +1,46 @@
-import { forEach, RuntimeBuilder as Builder, getAccessor } from '@blog/context/runtime';
-import { FontBucket, normalize } from '@blog/node';
+import { onBuild } from '@blog/context/runtime';
+import { normalize } from '@blog/node';
 import FirstTitleFontFile from '@blog/styles/fonts/SourceHanSerif/SourceHanSerifSC-Bold.otf?raw';
 import SecondTitleFontFile from '@blog/styles/fonts/SourceHanSerif/SourceHanSerifSC-SemiBold.otf?raw';
+import type { BuildContext, PageDataMap } from '@blog/types';
 import { PostTemplate, FirstTitleFontFamily, SecondTitleFontFamily } from './constant';
 import { getNavList } from './to-content';
 
-forEach((runtime) => {
-  runtime.hooks.beforeEachPost.tapPromise(PostTemplate, async (post) => {
-    const minify = Builder.options.mode === 'production';
-    const firstTitleFontBucket = getAccessor(
-      `${post.data.pathname}:${FirstTitleFontFamily}`,
-      () =>
-        new FontBucket({
-          fontContent: FirstTitleFontFile,
-          fontFamily: FirstTitleFontFamily,
-          fontFile: normalize(`${post.data.pathname}/fonts/primary.woff2`),
-          rename: (asset) => Builder.renameAsset(asset) ?? asset.path,
-          minify,
-        }),
-    ).get();
-    const secondTitleFontBucket = getAccessor(
-      `${post.data.pathname}:${SecondTitleFontFamily}`,
-      () =>
-        new FontBucket({
-          fontContent: SecondTitleFontFile,
-          fontFamily: SecondTitleFontFamily,
-          fontFile: normalize(`${post.data.pathname}/fonts/secondary.woff2`),
-          rename: (asset) => Builder.renameAsset(asset) ?? asset.path,
-          minify,
-        }),
-    ).get();
-    const titles = getNavList(post.data.ast);
-
-    firstTitleFontBucket.addText(post.data.title);
-
-    for (const title of titles) {
-      if (title.level === 1) {
-        firstTitleFontBucket.addText(title.content);
-      }
-      else {
-        secondTitleFontBucket.addText(title.content);
-      }
+onBuild((runtime) => {
+  // 注册字体桶
+  runtime.hooks.afterReady.tap(PostTemplate, (ctx: BuildContext) => {
+    for (const page of ctx.pages) {
+      if (page.type !== 'post') continue;
+      page.ensureFontBucket(FirstTitleFontFamily, FirstTitleFontFile);
+      page.ensureFontBucket(SecondTitleFontFamily, SecondTitleFontFile);
     }
+  });
 
-    const fonts = [firstTitleFontBucket, secondTitleFontBucket].filter((font) => !font.isEmpty);
-    await Promise.all(fonts.map((font) => font.build()));
+  // 收集字符 + 构建字体
+  runtime.hooks.beforeBuild.tapPromise(PostTemplate, async ({ rename, pages }: BuildContext) => {
+    for (const page of pages) {
+      if (page.type !== 'post') continue;
 
-    const cssFile = fonts.map((font) => font.getFontFaceCss()).join('');
-    const cssBuffer = Buffer.from(cssFile);
-    const fontAssets = fonts.map((font) => font.getFont());
-    const cssPath = Builder.renameAsset({
-      path: normalize(`${post.data.pathname}/styles/heading.css`),
-      content: cssBuffer,
-    });
+      const d = page.data as PageDataMap['post'];
+      const post = d.post;
+      const titles = getNavList(post.data.ast);
 
-    if (!cssPath) {
-      Builder.logger.info('生成新的 Title 样式文件失败，跳过字体文件注入');
-      return;
+      page.getFontBucket(FirstTitleFontFamily).addText(post.data.title);
+
+      for (const title of titles) {
+        if (title.level === 1) {
+          page.getFontBucket(FirstTitleFontFamily).addText(title.content);
+        }
+        else {
+          page.getFontBucket(SecondTitleFontFamily).addText(title.content);
+        }
+      }
+
+      await page.buildFonts({
+        families: [FirstTitleFontFamily, SecondTitleFontFamily],
+        cssPath: normalize(`${page.pathname}/styles/heading.css`),
+        rename,
+      });
     }
-
-    // CSS 资源
-    const cssAsset = {
-      path: cssPath,
-      content: cssBuffer,
-    };
-
-    // 资源添加到输出
-    Builder.emitAsset(cssAsset, ...fontAssets);
-    // 当前文章的样式资源
-    post.utils.addAssetNames(cssAsset.path);
-    // 字体资源添加到预加载
-    post.utils.addPreloadAssets(
-      ...fontAssets.map((asset) => ({
-        href: asset.path,
-        as: 'font' as const,
-        type: 'font/woff2',
-      })),
-    );
   });
 });

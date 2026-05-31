@@ -39,6 +39,6 @@
     "@blog/tsconfig": "workspace:*",
     "@types/node": "24.12.2",
     "eslint": "10.2.1",
-    "typescript": "6.0.2"
+    "typescript": "6.0.3"
   }
 }

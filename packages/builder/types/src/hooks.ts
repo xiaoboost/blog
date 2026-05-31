@@ -17,7 +17,8 @@ import type {
 import type { AssetData } from './asset';
 import type { BuilderOptions, BuilderInstance, BundlerInstance, RunnerInstance } from './builder';
 import type { ErrorData } from './error';
-import type { PostExportData, PostBasicData } from './post';
+import type { BuildContext, BuildContextWithPage } from './page';
+import type { PostBasicData, PostExportData } from './post';
 
 export { OnResolveArgs, OnResolveResult, OnLoadResult, OnLoadArgs } from 'esbuild';
 
@@ -166,34 +167,14 @@ export interface RuntimeHooks {
   beforeStart: AsyncSeriesHook<[]>;
   /** 文章数据准备完成 */
   afterPostDataReady: AsyncSeriesHook<[PostBasicData[]]>;
-  /** 预构建开始前 */
-  beforePreBuild: AsyncSeriesHook<[]>;
-  /** 预构建完成后 */
-  afterPreBuild: AsyncSeriesWaterfallHook<[AssetData[]]>;
-  /** 编译文章页面前 */
-  beforeEachPost: AsyncSeriesHook<[PostExportData, number, PostExportData[]]>;
-  /** 编译文章页面后 */
-  afterEachPost: AsyncSeriesHook<[AssetData, number, PostExportData[]]>;
-  /** 编译标签列表页前 */
-  beforeEachTagList: AsyncSeriesHook<[UrlListData]>;
-  /** 编译标签列表页后 */
-  afterEachTagList: AsyncSeriesHook<[AssetData]>;
-  /** 编译标签文章列表页前 */
-  beforeEachTagPostList: AsyncSeriesHook<[PostListDataWithTitle]>;
-  /** 编译标签文章列表页后 */
-  afterEachTagPostList: AsyncSeriesHook<[AssetData]>;
-  /** 编译年份列表页前 */
-  beforeEachYearList: AsyncSeriesHook<[UrlListData]>;
-  /** 编译年份列表页后 */
-  afterEachYearList: AsyncSeriesHook<[AssetData]>;
-  /** 编译年份文章列表页前 */
-  beforeEachYearPostList: AsyncSeriesHook<[PostListDataWithTitle]>;
-  /** 编译年份文章列表页后 */
-  afterEachYearPostList: AsyncSeriesHook<[AssetData]>;
-  /** 编译主列表页前 */
-  beforeEachMainIndexList: AsyncSeriesHook<[PostListData]>;
-  /** 编译列主表页后 */
-  afterEachMainIndexList: AsyncSeriesHook<[AssetData]>;
+  /** 所有实例就绪 */
+  afterReady: AsyncSeriesHook<[BuildContext]>;
+  /** 预构建完成后，正式构建前 */
+  beforeBuild: AsyncSeriesHook<[BuildContext]>;
+  /** 页面渲染前 */
+  beforePageRender: AsyncSeriesHook<[BuildContextWithPage]>;
+  /** 页面渲染后 */
+  afterPageRender: AsyncSeriesHook<[BuildContextWithPage]>;
   /**
    * 处理资源
    *   - 返回资源列表数组

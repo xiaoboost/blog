@@ -32,6 +32,6 @@
     "@types/yargs": "17.0.32",
     "eslint": "10.2.1",
     "rimraf": "5.0.5",
-    "typescript": "6.0.2"
+    "typescript": "6.0.3"
   }
 }
