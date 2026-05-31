@@ -69,6 +69,9 @@ importers:
       jss-preset-default:
         specifier: 10.10.0
         version: 10.10.0
+      react:
+        specifier: 18.3.1
+        version: 18.3.1
       tapable:
         specifier: 2.2.1
         version: 2.2.1
@@ -85,6 +88,9 @@ importers:
       '@types/node':
         specifier: 24.12.2
         version: 24.12.2
+      '@types/react':
+        specifier: 18.3.27
+        version: 18.3.27
       eslint:
         specifier: 10.2.1
         version: 10.2.1
@@ -1721,6 +1727,9 @@ packages:
 
   '@types/react@18.3.27':
     resolution: {integrity: sha512-cisd7gxkzjBKU2GgdYrTdtQx1SORymWyaAFhaxQPK9bYO9ot3Y5OikQRvY0VYQtvwjeQnizCINJAenh/V7MK2w==}
+
+  '@types/react@19.2.15':
+    resolution: {integrity: sha512-eRwcGNHve+E8qtEQSSRl6urh+rFop4v8gm6O8rGv25CodbvFdLjA1vVQ1KkiFE0w0UPOnb8tDiFKL5lp0rtY5Q==}
 
   '@types/send@0.17.4':
     resolution: {integrity: sha512-x2EM6TJOybec7c52BX0ZspPodMsQUd5L6PRwOunVyVUhXiBSKf3AezDL8Dgvgt5o0UfKNfuA0eMLr2wLT4AiBA==}
@@ -4127,11 +4136,15 @@ snapshots:
 
   '@types/react-dom@18.3.0':
     dependencies:
-      '@types/react': 18.3.27
+      '@types/react': 19.2.15
 
   '@types/react@18.3.27':
     dependencies:
       '@types/prop-types': 15.7.12
+      csstype: 3.2.3
+
+  '@types/react@19.2.15':
+    dependencies:
       csstype: 3.2.3
 
   '@types/send@0.17.4':

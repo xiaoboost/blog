@@ -18,29 +18,32 @@ onBuild((runtime) => {
 
   // 收集字符 + 构建字体
   runtime.hooks.beforeBuild.tapPromise(PostTemplate, async ({ rename, pages }: BuildContext) => {
-    for (const page of pages) {
-      if (page.type !== 'post') continue;
+    await Promise.all(
+      pages
+        .filter((page) => page.type === 'post')
+        .map(async (page) => {
+          const d = page.data as PageDataMap['post'];
+          const post = d.post;
+          const titles = getNavList(post.data.ast);
 
-      const d = page.data as PageDataMap['post'];
-      const post = d.post;
-      const titles = getNavList(post.data.ast);
+          page.getFontBucket(FirstTitleFontFamily).addText(post.data.title);
 
-      page.getFontBucket(FirstTitleFontFamily).addText(post.data.title);
+          for (const title of titles) {
+            if (title.level === 1) {
+              page.getFontBucket(FirstTitleFontFamily).addText(title.content);
+            }
+            else {
+              page.getFontBucket(SecondTitleFontFamily).addText(title.content);
+            }
+          }
 
-      for (const title of titles) {
-        if (title.level === 1) {
-          page.getFontBucket(FirstTitleFontFamily).addText(title.content);
-        }
-        else {
-          page.getFontBucket(SecondTitleFontFamily).addText(title.content);
-        }
-      }
-
-      await page.buildFonts({
-        families: [FirstTitleFontFamily, SecondTitleFontFamily],
-        cssPath: normalize(`${page.pathname}/styles/heading.css`),
-        rename,
-      });
-    }
+          await page.buildFonts({
+            families: [FirstTitleFontFamily, SecondTitleFontFamily],
+            cssFile: normalize(`${page.pathname}/styles/heading.css`),
+            fontFile: normalize(`${page.pathname}/fonts/{family}.woff2`),
+            rename,
+          });
+        }),
+    );
   });
 });

@@ -1,99 +1,20 @@
 import { Buffer } from 'buffer';
 import fs from 'fs/promises';
 import { parse } from 'path';
-import type { AssetData } from '@blog/types';
+import type {
+  AssetData,
+  IFontBucket,
+  IFontBucketBuildOptions,
+  IFontBucketOptions,
+} from '@blog/types';
 import subsetFont from 'subset-font';
 import { normalize } from './path';
 import { toPinyin } from './string';
 
 let index = 1;
 
-export interface FontBucketBuildOptions {
-  /**
-   * 公共 URL 路径
-   * @description 用于生成 CSS 中的字体 URL
-   * @default '/'
-   */
-  publicPath?: string;
-  /**
-   * 最小化
-   */
-  minify?: boolean;
-  /**
-   * 重命名方法
-   */
-  rename?(asset: AssetData): string;
-}
-
-interface FontBucketBaseOptions extends FontBucketBuildOptions {
-  /**
-   * CSS 文件路径
-   *
-   * @default '/styles/font.css'
-   */
-  cssFile?: string;
-  /**
-   * 字体文件路径
-   *
-   * @default '/fonts/font.woff2'
-   */
-  fontFile?: string;
-  /**
-   * 字体名称
-   *
-   * @default 'font.[hash:16]'
-   */
-  fontFamily?: string;
-  /**
-   * 样式类名
-   * @description 用于生成 CSS 中的样式类名
-   */
-  className?: string;
-  /**
-   * 样式回退字体
-   */
-  fallbackFont?: string;
-  /**
-   * 重命名方法
-   */
-  rename?(asset: AssetData): string;
-  /**
-   * 获取字体文件内容
-   */
-  getFontContent?(fontSource: string): Promise<Buffer>;
-}
-
-interface FontBucketPathSourceOptions {
-  /**
-   * 原始文件路径
-   * @description 必须是字体文件的完整路径
-   */
-  fontSource: string;
-  /**
-   * 字体二进制内容
-   * @description 当提供 fontSource 时，不应再直接提供字体内容
-   */
-  fontContent?: undefined;
-}
-
-interface FontBucketBufferSourceOptions {
-  /**
-   * 原始文件路径
-   * @description 当直接提供字体内容时不需要
-   */
-  fontSource?: undefined;
-  /**
-   * 字体二进制内容
-   * @description 与 fontSource 二选一，必须至少提供一个
-   */
-  fontContent: Buffer;
-}
-
-export type FontBucketOptions = FontBucketBaseOptions
-  & (FontBucketPathSourceOptions | FontBucketBufferSourceOptions);
-
-export class FontBucket {
-  private options: FontBucketOptions;
+export class FontBucket implements IFontBucket {
+  private options: IFontBucketOptions;
 
   private chars = new Set<string>();
 
@@ -110,7 +31,7 @@ export class FontBucket {
   /** 解析出的样式地址 */
   private resolvedCssPath: string | null = null;
 
-  constructor(options: FontBucketOptions) {
+  constructor(options: IFontBucketOptions) {
     this.options = { ...options };
     this.resolvedFontPath = normalize(
       this.options.publicPath ?? '/',
@@ -207,7 +128,7 @@ export class FontBucket {
     return `.${className}{font-family:"${fontFamily}",${fallback}}`;
   }
 
-  async build(buildOptions: FontBucketBuildOptions = {}) {
+  async build(buildOptions: IFontBucketBuildOptions = {}) {
     // 已经构建过了，那就直接跳过
     // 目前并没有需要监听 Char 变更重构建的需求
     if (this.isBuilt) {
@@ -232,10 +153,11 @@ export class FontBucket {
       throw new Error('FontBucket: 需要提供 fontSource 或 fontContent 至少一个');
     }
 
+    const family = this.getFontFamily();
     const fileBaseName = minify ? '/fonts/font' : `/fonts/font-${index++}`;
     const inputFontPath = normalize(
       this.options.publicPath ?? '/',
-      options.fontFile ?? `${fileBaseName}.woff2`,
+      options.fontFile?.replace('{family}', family) ?? `${fileBaseName}.woff2`,
     );
     const inputCssPath = normalize(
       this.options.publicPath ?? '/',

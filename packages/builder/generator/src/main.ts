@@ -1,7 +1,7 @@
 import {
   callHook,
   waitReady,
-  RuntimeBuilder as Builder,
+  Builder,
 } from '@blog/context/runtime';
 import posts from '@blog/posts';
 import type { AssetData, RunnerCb } from '@blog/types';

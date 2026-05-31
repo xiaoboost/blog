@@ -1,12 +1,12 @@
+import { useRenderContext } from '@blog/context/runtime';
 import { normalizeUrl } from '@blog/node';
-import type { IBuildRenderProps } from '@blog/types';
 import { stringifyClass } from '@xiao-ai/utils';
 import React from 'react';
 import { SiteTitleFontFamily } from '../../constant/font';
 
 import styles from './index.jss';
 
-export interface HeaderProps extends IBuildRenderProps {
+export interface HeaderProps {
   /** 当前页面网址 */
   pathname: string;
   /** 网页标题 */
@@ -22,6 +22,7 @@ export interface HeaderProps extends IBuildRenderProps {
 }
 
 export function Header(props: HeaderProps) {
+  const { isPreBuild, site } = useRenderContext();
   const publicPath = props.publicPath ?? '/';
   const location = normalizeUrl(publicPath, props.pathname);
   const indexHref = normalizeUrl(publicPath);
@@ -52,8 +53,8 @@ export function Header(props: HeaderProps) {
   ];
 
   /** 预构建阶段收集站点标题字体字符 */
-  if (props.isPreBuild && props.site) {
-    props.site.getFontBucket(SiteTitleFontFamily).addText(props.siteTitle);
+  if (isPreBuild && site) {
+    site.getFontBucket(SiteTitleFontFamily).addText(props.siteTitle);
   }
 
   return (

@@ -1,7 +1,7 @@
 import {
   defineUtils,
   getReference,
-  RuntimeBuilder as Builder,
+  Builder,
   onBuild,
 } from '@blog/context/runtime';
 import {

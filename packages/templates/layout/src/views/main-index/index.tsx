@@ -1,5 +1,6 @@
+import { useRenderContext } from '@blog/context/runtime';
 import { normalizeUrl } from '@blog/node';
-import type { PostExportData, IBuildRenderProps } from '@blog/types';
+import type { PostExportData } from '@blog/types';
 import Moment from 'moment';
 import React from 'react';
 import { Tags } from '../../components/icons';
@@ -42,14 +43,16 @@ function Post({ data: post }: PostExportData) {
   );
 }
 
-export interface MainIndexProps extends LayoutProps, PaginationProps, IBuildRenderProps {
+export interface MainIndexProps extends LayoutProps, PaginationProps {
   posts: PostExportData[];
 }
 
 export function MainIndex(props: MainIndexProps) {
+  const { isPreBuild, page } = useRenderContext();
+
   // 预构建阶段收集列表项标题字体字符
-  if (props.isPreBuild && props.page) {
-    const bkt = props.page.getFontBucket(ListItemTitleFontFamily);
+  if (isPreBuild && page) {
+    const bkt = page.getFontBucket(ListItemTitleFontFamily);
 
     for (const post of props.posts ?? []) {
       bkt.addText(post.data.title);

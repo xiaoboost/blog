@@ -1,5 +1,5 @@
 import { normalize } from '@blog/node';
-import type { IBuildRenderProps, IPage, PageDataMap, PageType } from '@blog/types';
+import type { IRenderContext, IPage, PageDataMap, PageType } from '@blog/types';
 import { ResourceSet } from './resource-set';
 
 export interface PageOptions<T extends PageType = PageType> {
@@ -7,7 +7,7 @@ export interface PageOptions<T extends PageType = PageType> {
   pathname: string;
   title: string;
   data: PageDataMap[T];
-  render: (props: IBuildRenderProps) => string;
+  render: (props: IRenderContext) => string;
 }
 
 export class Page<T extends PageType = PageType> extends ResourceSet implements IPage<T> {
@@ -15,7 +15,7 @@ export class Page<T extends PageType = PageType> extends ResourceSet implements 
   readonly pathname: string;
   readonly title: string;
   readonly data: PageDataMap[T];
-  readonly render: (props: IBuildRenderProps) => string;
+  readonly render: (props: IRenderContext) => string;
 
   #html = '';
 

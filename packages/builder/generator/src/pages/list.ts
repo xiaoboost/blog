@@ -1,6 +1,6 @@
 import { normalize, normalizeUrl } from '@blog/node';
 import { MainIndex, utils, type PaginationProps, type MainIndexProps } from '@blog/template-layout';
-import type { IBuildRenderProps, ISite } from '@blog/types';
+import type { IRenderContext, ISite } from '@blog/types';
 import { createHtml } from '../react';
 
 const createIndex = createHtml(MainIndex);
@@ -16,7 +16,7 @@ export function getIndexAssetPath(site: ISite, index: number) {
 }
 
 export interface IndexPageRenderProps
-  extends IBuildRenderProps, Pick<MainIndexProps, 'posts'>, PaginationProps {
+  extends IRenderContext, Pick<MainIndexProps, 'posts'>, PaginationProps {
   index: number;
   count: number;
 }

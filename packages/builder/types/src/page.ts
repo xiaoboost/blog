@@ -1,4 +1,5 @@
 import type { AssetData, PreloadAssetData } from './asset';
+import type { IFontBucket, IBuildFontsOptions } from './font';
 import type { PostExportData, PostExportDataWithComponent } from './post';
 
 /** 页面类型 */
@@ -53,19 +54,6 @@ export interface PageDataMap {
   };
 }
 
-// ── 字体桶 ──
-
-/** 字体桶最小接口 */
-export interface IFontBucket {
-  readonly isBuilt: boolean;
-  readonly isEmpty: boolean;
-  addText(...texts: string[]): void;
-  getFontFaceCss(): string;
-  getClassName(): string;
-  getFont(): AssetData;
-  build(): Promise<void>;
-}
-
 // ── 资源集 ──
 
 /** 资源集接口 — Page 和 Site 共享的资源管理能力 */
@@ -104,18 +92,6 @@ export interface IResourceSet {
   getAssets(): AssetData[];
 }
 
-export interface IBuildFontsOptions {
-  /** CSS 文件产出路径 */
-  cssPath: string;
-  /** 文件重命名 */
-  rename: (asset: AssetData) => string;
-  /**
-   * 指定构建的字体家族
-   *   - 不传则构建所有已注册的字体桶
-   */
-  families?: string[];
-}
-
 // ── Page ──
 
 /** Page 实例 — 表示一个正在构建的页面 */
@@ -124,7 +100,7 @@ export interface IPage<T extends PageType = PageType> extends IResourceSet {
   readonly pathname: string;
   readonly title: string;
   readonly data: PageDataMap[T];
-  readonly render: (props: IBuildRenderProps) => string;
+  readonly render: (props: IRenderContext) => string;
 
   html: string;
 
@@ -162,10 +138,10 @@ export interface BuildContextWithPage extends BuildContext {
 
 // ── Render ──
 
-/** Render props 基础上下文 */
-export interface IBuildRenderProps {
+/** 渲染上下文 */
+export interface IRenderContext {
   page: IPage;
   site: ISite;
-  dev?: boolean;
+  dev: boolean;
   isPreBuild: boolean;
 }

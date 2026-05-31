@@ -3,7 +3,7 @@ import { getGlobalContext, GlobalKey } from './constant';
 
 const builderOutside = getGlobalContext()[GlobalKey.Builder];
 
-export type RuntimeBuilder = Readonly<
+export type Builder = Readonly<
   Pick<
     BuilderInstance,
     'options' | 'resolve' | 'renameAsset' | 'emitAsset' | 'logger' | 'getCacheAccessor'
@@ -15,9 +15,9 @@ export type RuntimeBuilder = Readonly<
  *
  * @description 运行时可用的构建器实例，此实例并非原始构建实例
  */
-export const RuntimeBuilder: RuntimeBuilder =
+export const Builder: Builder =
   process.env.NODE_ENV === 'test'
-    ? ({} as RuntimeBuilder)
+    ? ({} as Builder)
     : {
       options: {
         ...builderOutside.options,
