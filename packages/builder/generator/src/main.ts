@@ -298,6 +298,8 @@ async function render({ isPreBuild, site, allPages, ctx }: RenderOptions): Promi
     assets.push(...page.getAssets());
   }
 
+  assets.push(...site.getAssets());
+
   return assets;
 }
 
@@ -323,15 +325,17 @@ const main: RunnerCb = async (assets) => {
   // 实例就绪
   await callHook('afterReady', ctx);
 
-  // PreBuild — discover module dependencies
+  // 预构建
   const preAssets = await render({ isPreBuild: true, site, allPages });
 
   // 字体构建等
   await callHook('beforeBuild', ctx);
 
-  // Formal Build — actual page generation
+  // 正式构建
   const htmlAssets = await render({ isPreBuild: false, site, allPages, ctx });
-  const allProcessed = await callHook('processAssets', (assets as AssetData[]).concat(preAssets).concat(htmlAssets));
+  const staticAssets = assets.concat(preAssets).concat(htmlAssets);
+  const allProcessed = await callHook('processAssets', staticAssets);
+
   await callHook('afterBuild', allProcessed.slice());
 
   return allProcessed;

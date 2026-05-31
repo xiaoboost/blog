@@ -39,7 +39,7 @@ onBuild((runtime) => {
           await page.buildFonts({
             families: [FirstTitleFontFamily, SecondTitleFontFamily],
             scope: page.pathname,
-            fileName: 'heading',
+            cssFileName: 'heading',
             format: rename,
           });
         }),
