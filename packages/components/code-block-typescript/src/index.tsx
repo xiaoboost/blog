@@ -2,7 +2,7 @@ import {
   defineUtils,
   getReference,
   RuntimeBuilder as Builder,
-  forEach,
+  onBuild,
 } from '@blog/context/runtime';
 import {
   type WrapperProps,
@@ -126,12 +126,13 @@ export function TsCodeBlock({
   );
 }
 
-forEach((runtime) => {
-  runtime.hooks.beforeEachPost.tapPromise(ComponentName, async (_, index, posts) => {
-    // 只运行一次
-    if (index !== 0) {
-      return;
-    }
+onBuild((runtime) => {
+  runtime.hooks.afterReady.tapPromise(ComponentName, async (ctx) => {
+    const posts = ctx.pages
+      .filter((p) => p.type === 'post')
+      .map((p) => (p.data as { post: any }).post);
+
+    if (posts.length === 0) return;
 
     const installedPkg = getReference<Set<string>>(`${ComponentName}-installed`, new Set());
     const getAllCodeImport = getImportedByPost(posts);

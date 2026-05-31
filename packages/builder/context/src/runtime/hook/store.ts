@@ -1,12 +1,10 @@
 import type {
-  RuntimeHooks,
-  RuntimeData,
   AssetData,
-  PostExportData,
-  PostListData,
-  UrlListData,
+  BuildContext,
+  BuildContextWithPage,
   PostBasicData,
-  PostListDataWithTitle,
+  RuntimeData,
+  RuntimeHooks,
 } from '@blog/types';
 import { AsyncSeriesHook, AsyncSeriesWaterfallHook } from 'tapable';
 import { getAccessor } from '../accessor';
@@ -14,37 +12,19 @@ import { getAccessor } from '../accessor';
 export const hooks: RuntimeHooks = {
   beforeStart: new AsyncSeriesHook<[]>(),
   afterPostDataReady: new AsyncSeriesHook<[PostBasicData[]]>(['PostData']),
-  beforePreBuild: new AsyncSeriesHook<[]>(),
-  afterPreBuild: new AsyncSeriesWaterfallHook<[AssetData[]]>(['Assets']),
-  beforeEachPost: new AsyncSeriesHook<[PostExportData, number, PostExportData[]]>([
-    'PostExportData',
-    'Index',
-    'AllPostExportData',
-  ]),
-  afterEachPost: new AsyncSeriesHook<[AssetData, number, PostExportData[]]>([
-    'Asset',
-    'Index',
-    'AllPostExportData',
-  ]),
-  beforeEachMainIndexList: new AsyncSeriesHook<[PostListData]>(['PostListData']),
-  afterEachMainIndexList: new AsyncSeriesHook<[AssetData]>(['Asset']),
-  beforeEachTagList: new AsyncSeriesHook<[UrlListData]>(['UrlList']),
-  afterEachTagList: new AsyncSeriesHook<[AssetData]>(['Asset']),
-  beforeEachTagPostList: new AsyncSeriesHook<[PostListDataWithTitle]>(['PostListData']),
-  afterEachTagPostList: new AsyncSeriesHook<[AssetData]>(['Asset']),
-  beforeEachYearList: new AsyncSeriesHook<[UrlListData]>(['UrlList']),
-  afterEachYearList: new AsyncSeriesHook<[AssetData]>(['Asset']),
-  beforeEachYearPostList: new AsyncSeriesHook<[PostListDataWithTitle]>(['PostListData']),
-  afterEachYearPostList: new AsyncSeriesHook<[AssetData]>(['Asset']),
+  afterReady: new AsyncSeriesHook<[BuildContext]>(['BuildContext']),
+  beforeBuild: new AsyncSeriesHook<[BuildContext]>(['BuildContext']),
+  beforePageRender: new AsyncSeriesHook<[BuildContextWithPage]>(['BuildContextWithPage']),
+  afterPageRender: new AsyncSeriesHook<[BuildContextWithPage]>(['BuildContextWithPage']),
   processAssets: new AsyncSeriesWaterfallHook<[AssetData[]]>(['Assets']),
   afterBuild: new AsyncSeriesHook<[AssetData[]]>(['Assets']),
 };
 
-export type EachSetupHook = (runtime: RuntimeData) => void;
-export type OnceSetupHook = (runtime: RuntimeData) => void;
+export type BuildHook = (runtime: RuntimeData) => void;
+export type InitHook = (runtime: RuntimeData) => void;
 
-export const forEachStack: EachSetupHook[] = [];
-export const forOnceStack: OnceSetupHook[] = [];
+export const buildStack: BuildHook[] = [];
+export const initStack: InitHook[] = [];
 
 /** 是否是首次运行 */
 export const isFirstRun = getAccessor<boolean>('isFirstRun', true);
@@ -70,10 +50,10 @@ setTimeout(() => {
   };
 
   if (isFirstRun.get()) {
-    forOnceStack.forEach((item) => item(runtimeData));
+    initStack.forEach((item) => item(runtimeData));
   }
 
-  forEachStack.forEach((item) => item(runtimeData));
+  buildStack.forEach((item) => item(runtimeData));
 
   // 初始化完成
   readySwitch();

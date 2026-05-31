@@ -1,18 +1,18 @@
-import { type EachSetupHook, type OnceSetupHook, forEachStack, forOnceStack, isFirstRun } from './store';
+import { type BuildHook, type InitHook, buildStack, initStack, isFirstRun } from './store';
 
-/** 每次运行都会调用 */
-export function forEach(setup: EachSetupHook) {
-  forEachStack.push(setup);
+/** 每次构建都会调用 */
+export function onBuild(setup: BuildHook) {
+  buildStack.push(setup);
 }
 
 /**
- * 只在首次运行调用
- *   - 首次调用时，在`forEach之前的要早
+ * 只在首次构建调用
+ *   - 在 `onBuild` 之前执行
  */
-export function forOnce(setup: OnceSetupHook) {
+export function onInit(setup: InitHook) {
   if (!isFirstRun.get()) {
     return;
   }
 
-  forOnceStack.push(setup);
+  initStack.push(setup);
 }

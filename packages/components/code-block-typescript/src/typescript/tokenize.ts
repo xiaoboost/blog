@@ -1,5 +1,5 @@
 import { readFile } from 'fs/promises';
-import { getAccessor, forEach } from '@blog/context/runtime';
+import { getAccessor, onBuild } from '@blog/context/runtime';
 import * as oniguruma from 'vscode-oniguruma';
 import * as vsctm from 'vscode-textmate';
 
@@ -145,7 +145,7 @@ function getInfo(server: TsServer, token: Token) {
 }
 
 // 全局钩子
-forEach((runtime) => {
+onBuild((runtime) => {
   runtime.hooks.beforeStart.tapPromise(ComponentName, () => getGrammar());
 });
 

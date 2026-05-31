@@ -1,3 +1,5 @@
+/* eslint-disable import-x/no-useless-path-segments */
+
 import { join } from 'path';
 import type { BuilderOptions } from '@blog/types';
 
@@ -89,7 +91,7 @@ export async function applyPlugin(builder: Builder) {
       const { TypeChecker } = await import('../plugins/type-checker/index.js');
       TypeChecker({
         basePath: getCoreRoot(),
-        configFile: './src/bundler/source/tsconfig.json',
+        configFile: require.resolve('@blog/builder-generator/tsconfig'),
         typescriptPath: require.resolve('typescript'),
       }).apply(builder);
     }
@@ -117,7 +119,7 @@ export function normalizeOptions(opt: BuilderOptions): Required<BuilderOptions> 
 
   return {
     root,
-    entry: opt.entry ?? join(getCoreRoot(), 'src/bundler/source/index.ts'),
+    entry: require.resolve('@blog/builder-generator'),
     name: opt.name ?? 'Main',
     outDir: join(root, opt.outDir ?? 'dist'),
     mode: isProduction ? 'production' : 'development',

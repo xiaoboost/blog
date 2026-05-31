@@ -1,9 +1,9 @@
-import { isPreBuild } from '@blog/context/runtime';
 import { normalizeUrl } from '@blog/node';
+import type { IBuildRenderProps } from '@blog/types';
 import React from 'react';
 import { type LayoutProps, Layout } from '../../components/layout';
 import { type PaginationProps, Pagination } from '../../components/pagination';
-import { ListTitleFontBucket, ListItemTitleFontBucket } from '../../constant/title';
+import { ListTitleFontFamily, ListItemTitleFontFamily } from '../../constant/font';
 import styles from './index.jss';
 
 interface ItemData {
@@ -12,15 +12,18 @@ interface ItemData {
   url: string;
 }
 
-export interface ItemListProps extends LayoutProps, PaginationProps {
+export interface ItemListProps extends LayoutProps, PaginationProps, IBuildRenderProps {
   listTitle: string;
   data: ItemData[];
 }
 
 export function ItemList(props: ItemListProps) {
-  if (isPreBuild()) {
-    ListTitleFontBucket.addText(props.listTitle);
-    ListItemTitleFontBucket.addText(props.data.map((data) => data.title).join(''));
+  // 预构建阶段收集标题字体字符
+  if (props.isPreBuild && props.site) {
+    props.site.getFontBucket(ListTitleFontFamily).addText(props.listTitle);
+    props.page.getFontBucket(ListItemTitleFontFamily).addText(
+      props.data.map((d) => d.title).join(''),
+    );
   }
 
   return (

@@ -1,20 +1,15 @@
-import { isPreBuild } from '@blog/context/runtime';
 import { normalizeUrl } from '@blog/node';
-import type { PostExportData } from '@blog/types';
+import type { PostExportData, IBuildRenderProps } from '@blog/types';
 import Moment from 'moment';
 import React from 'react';
 import { Tags } from '../../components/icons';
 import { type LayoutProps, Layout } from '../../components/layout';
 import { type PaginationProps, Pagination } from '../../components/pagination';
-import { ListItemTitleFontBucket } from '../../constant/title';
+import { ListItemTitleFontFamily } from '../../constant/font';
 
 import styles from './index.jss';
 
 function Post({ data: post }: PostExportData) {
-  if (isPreBuild()) {
-    ListItemTitleFontBucket.addText(post.title);
-  }
-
   return (
     <section className={styles.classes.postsListItem}>
       <header className={styles.classes.postsListItemHeader}>
@@ -47,11 +42,20 @@ function Post({ data: post }: PostExportData) {
   );
 }
 
-export interface MainIndexProps extends LayoutProps, PaginationProps {
+export interface MainIndexProps extends LayoutProps, PaginationProps, IBuildRenderProps {
   posts: PostExportData[];
 }
 
 export function MainIndex(props: MainIndexProps) {
+  // 预构建阶段收集列表项标题字体字符
+  if (props.isPreBuild && props.page) {
+    const bkt = props.page.getFontBucket(ListItemTitleFontFamily);
+
+    for (const post of props.posts ?? []) {
+      bkt.addText(post.data.title);
+    }
+  }
+
   return (
     <Layout {...props}>
       <section className={styles.classes.postsList}>

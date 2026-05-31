@@ -1,10 +1,15 @@
-import { forEach, defineUtils, RuntimeBuilder as Builder, isPreBuild } from '@blog/context/runtime';
+import { onBuild, defineUtils } from '@blog/context/runtime';
+import type { PageDataMap } from '@blog/types';
 import { stringifyClass } from '@xiao-ai/utils';
 import React from 'react';
-
 import script from './font-block.script';
 import styles from './index.jss';
-import { getCustomTextByPost, getCustomFontByData, getCustomFontByProps } from './utils';
+import {
+  getCustomTextByPost,
+  getFontContentBySrc,
+  getFontClass,
+  setFontClass,
+} from './utils';
 
 const componentName = 'font-block';
 
@@ -69,17 +74,10 @@ export interface FontBlockProps {
 
 /** 自定义字体块 */
 export function FontBlock(props: FontBlockProps) {
-  if (isPreBuild()) {
-    return;
-  }
-
   const { children } = (props.children as any).props;
-  const font = getCustomFontByProps({
-    ...props,
-    children,
-  });
+  const className = getFontClass(props.src);
 
-  if (!font) {
+  if (!className) {
     throw new Error(`未发现自定义字体实例：${JSON.stringify(props)}`);
   }
 
@@ -98,7 +96,7 @@ export function FontBlock(props: FontBlockProps) {
     <div
       className={stringifyClass(
         styles.classes.fontBlock,
-        font.getClassName(),
+        className,
         direction === 'horizontal'
           ? styles.classes.fontBlockHorizontal
           : direction === 'vertical'
@@ -130,27 +128,35 @@ export function FontBlock(props: FontBlockProps) {
 
 export const utils = defineUtils(script);
 
-forEach((runtime) => {
-  runtime.hooks.beforeEachPost.tapPromise(componentName, async (post) => {
-    for (const data of getCustomTextByPost(post)) {
-      const font = getCustomFontByData(data);
-      const assets = await font.getAssets();
-      const cssFile = assets.find((item) => item.path.endsWith('.css'));
-      const fontFiles = assets.filter((item) => item.path.endsWith('.woff2'));
+onBuild((runtime) => {
+  runtime.hooks.beforeBuild.tapPromise(componentName, async ({ pages, rename }) => {
+    for (const page of pages) {
+      if (page.type !== 'post') continue;
 
-      if (cssFile) {
-        post.utils.addAssetNames(cssFile.path);
+      const d = page.data as PageDataMap['post'];
+      const post = d.post;
+      const fontDataList = getCustomTextByPost(post);
+
+      if (fontDataList.length === 0) continue;
+
+      const families: string[] = [];
+
+      for (const data of fontDataList) {
+        const content = await getFontContentBySrc(data.src);
+        const family = `font-block:${data.src}`;
+        const bucket = page.ensureFontBucket(family, content);
+
+        bucket.addText(...data.text);
+        setFontClass(data.originSrc, bucket.getClassName());
+        setFontClass(data.src, bucket.getClassName());
+        families.push(family);
       }
 
-      post.utils.addPreloadAssets(
-        ...fontFiles.map((item) => ({
-          href: item.path,
-          as: 'font' as const,
-          type: 'font/woff2',
-        })),
-      );
-
-      Builder.emitAsset(...assets);
+      await page.buildFonts({
+        families,
+        cssPath: `${page.pathname}/fonts/font-block.css`,
+        rename,
+      });
     }
   });
 });
