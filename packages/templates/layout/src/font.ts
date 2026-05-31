@@ -25,7 +25,7 @@ onBuild((runtime) => {
     // 全局字体
     await site.buildFonts({
       scope: '/',
-      fileName: 'layout-fonts',
+      cssFileName: 'layout-fonts',
       format: rename,
     });
 
@@ -35,7 +35,7 @@ onBuild((runtime) => {
         .filter((page) => page.type !== 'post')
         .map((page) => page.buildFonts({
           scope: page.pathname,
-          fileName: 'content-fonts',
+          cssFileName: 'content-fonts',
           format: rename,
         })),
     );

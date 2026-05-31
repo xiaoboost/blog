@@ -13,11 +13,13 @@ export interface IFontBucketBuildOptions {
    */
   scope?: string;
   /**
-   * 文件名称
+   * CSS 文件名称
+   *
+   * 字体文件的名称由 fontFamily 自动派生，不提供自定义功能。
    *
    * @default 'font'
    */
-  fileName?: string;
+  cssFileName?: string;
   /**
    * 是否启用子集化最小化
    *

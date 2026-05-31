@@ -83,7 +83,7 @@ export class FontBucket implements IFontBucket {
     const {
       format,
       scope = '/',
-      fileName = 'font',
+      cssFileName = 'font',
       minify = true,
     } = options;
 
@@ -109,15 +109,17 @@ export class FontBucket implements IFontBucket {
       this.minFont = fontBuffer;
     }
 
-    this.fontPath = normalize(scope, format({ path: `${fileName}.woff2`, content: this.minFont }));
+    // 字体文件名从 fontFamily 自动派生，不依赖 cssFileName
     this.fontName = toPinyin(
       options.fontFamily
         ? options.fontFamily.replace(/"/g, '')
-        : parse(this.fontPath).name,
+        : cssFileName,
     );
 
+    this.fontPath = normalize(scope, format({ path: `${this.fontName}.woff2`, content: this.minFont }));
+
     this.cssCode = `${this.getFontFaceCss()}${this.getClassNameCss()}`;
-    this.cssPath = normalize(scope, format({ path: `${fileName}.css`, content: Buffer.from(this.cssCode) }));
+    this.cssPath = normalize(scope, format({ path: `${cssFileName}.css`, content: Buffer.from(this.cssCode) }));
   }
 
   getFont(): AssetData {

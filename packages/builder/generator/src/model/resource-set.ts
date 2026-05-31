@@ -73,7 +73,7 @@ export abstract class ResourceSet implements IResourceSet {
 
   async buildFonts({
     scope = '/',
-    fileName = 'font',
+    cssFileName = 'font',
     format,
     families,
   }: IBuildFontsOptions): Promise<void> {
@@ -95,11 +95,11 @@ export abstract class ResourceSet implements IResourceSet {
     if (entries.length === 0) return;
 
     // 构建字体桶
-    await Promise.all(entries.map(([, b]) => b.build({ format, fileName, scope })));
+    await Promise.all(entries.map(([, b]) => b.build({ format, cssFileName, scope })));
 
     // 合并 CSS
     const css = entries.map(([, b]) => b.getFontFaceCss()).join('');
-    const cssFinal = normalize(scope, format({ path: `${fileName}.css`, content: Buffer.from(css) }));
+    const cssFinal = normalize(scope, format({ path: `${cssFileName}.css`, content: Buffer.from(css) }));
 
     this.addStyle(cssFinal);
     this.addAsset({ path: cssFinal, content: Buffer.from(css) });
