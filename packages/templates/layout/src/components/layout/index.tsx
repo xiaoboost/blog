@@ -9,6 +9,8 @@ import { type ArticleProps, Article } from '../article';
 import { Footer } from '../footer';
 import { GotoTop } from '../goto-top';
 import { type HeaderProps, Header } from '../header';
+import { OgMeta } from './og-meta';
+import { SeoMeta } from './seo-meta';
 
 export interface LayoutProps extends HeaderProps, ArticleProps {
   /** 网站标题 */
@@ -41,13 +43,9 @@ export function Layout(props: PropsWithChildren<LayoutProps>) {
   return (
     <html lang="zh-cmn-Hans-CN">
       <head>
-        <title>{props.pageTitle}</title>
+        <SeoMeta {...props} />
+        <OgMeta {...props} />
         <meta name="charset" content="utf-8" />
-        {props.author && <meta name="author" content={props.author} />}
-        {props.description && <meta name="description" content={props.description} />}
-        {(props.keywords ?? []).length > 0 && (
-          <meta name="keywords" content={props.keywords?.join(',')} />
-        )}
         <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
         <meta name="renderer" content="webkit" />
         <meta name="force-rendering" content="webkit" />
