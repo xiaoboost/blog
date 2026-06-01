@@ -3,7 +3,7 @@ import { utils as layoutUtils } from '@blog/template-layout';
 import { Post as PostRender, type PostProps } from '@blog/template-post';
 import type { IRenderContext, ISite, PostExportDataWithComponent, PostsExportType } from '@blog/types';
 import React from 'react';
-import { createHtml } from '../react';
+import { createHtml } from '../utils/react';
 
 const createPost = createHtml(PostRender);
 

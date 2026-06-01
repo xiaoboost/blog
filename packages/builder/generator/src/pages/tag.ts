@@ -1,7 +1,7 @@
 import { normalize, normalizeUrl, toPinyin } from '@blog/node';
 import { PostList, ItemList, utils, type ItemListProps, type PostListProps, type PaginationProps } from '@blog/template-layout';
 import type { IRenderContext, ISite, PostExportData } from '@blog/types';
-import { createHtml } from '../react';
+import { createHtml } from '../utils/react';
 
 const createTagList = createHtml(ItemList);
 const createPostList = createHtml(PostList);

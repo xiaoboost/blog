@@ -1,7 +1,7 @@
 import { normalize, normalizeUrl } from '@blog/node';
 import { MainIndex, utils, type PaginationProps, type MainIndexProps } from '@blog/template-layout';
 import type { IRenderContext, ISite } from '@blog/types';
-import { createHtml } from '../react';
+import { createHtml } from '../utils/react';
 
 const createIndex = createHtml(MainIndex);
 
