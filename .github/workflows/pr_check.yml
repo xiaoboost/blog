@@ -123,7 +123,7 @@ jobs:
         platform:
           - ubuntu-latest
     env:
-      intercepter_outFile: './.intercepter/ci_debug.md'
+      interceptor_outFile: './.interceptor/ci_debug.md'
 
     name: 构建性能分析 ${{ matrix.platform }}
     runs-on: ${{ matrix.platform }}
@@ -147,7 +147,7 @@ jobs:
 
       - name: Update Env File
         run: |
-          echo 'ENV_OUTPUT=${{ env.intercepter_outFile }}' >> .env
+          echo 'ENV_OUTPUT=${{ env.interceptor_outFile }}' >> .env
 
       - name: Setup Environment
         uses: './.github/actions/setup-env'
@@ -163,4 +163,4 @@ jobs:
         with:
           mode: upsert
           comment-tag: build
-          file-path: ${{ env.intercepter_outFile }}
+          file-path: ${{ env.interceptor_outFile }}

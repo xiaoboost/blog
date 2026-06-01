@@ -3,7 +3,7 @@ node_modules
 .vscode
 .cache
 .DS_Store
-.intercepter
+.interceptor
 .claude
 
 old
