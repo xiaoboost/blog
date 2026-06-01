@@ -3,7 +3,6 @@
 import { join } from 'path';
 import type { BuilderOptions } from '@blog/types';
 
-import { devPort } from '../constant';
 import { AssetExtractor } from '../plugins/asset-extractor';
 import { CacheController } from '../plugins/cache';
 import { Cname } from '../plugins/cname';
@@ -69,7 +68,7 @@ export async function applyPlugin(builder: Builder) {
 
     if (opt.watch) {
       const { Development } = await import('../plugins/development/index.js');
-      Development({ port: devPort, hmr: opt.hmr }).apply(builder);
+      Development({ port: opt.port, hmr: opt.hmr }).apply(builder);
     }
 
     if (opt.debug) {
@@ -122,6 +121,7 @@ export function normalizeOptions(opt: BuilderOptions): Required<BuilderOptions> 
     outDir: join(root, opt.outDir ?? 'dist'),
     mode: isProduction ? 'production' : 'development',
     hmr: opt.hmr ?? false,
+    port: opt.port ?? 7777,
     watch: opt.watch ?? false,
     write: opt.write ?? false,
     publicPath: opt.publicPath ?? '/',

@@ -51,6 +51,12 @@ export interface CommandOptions {
    */
   hmr?: boolean;
   /**
+   * 开发服务器端口
+   *
+   * @default 7777
+   */
+  port?: number;
+  /**
    * 监听模式
    *
    * @default false
