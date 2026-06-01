@@ -14,7 +14,7 @@
     "build:debug": "pnpm run build --debug",
     "serve": "sirv --host -p 9999 -G dist",
     "static:serve": "pnpm run build:prepare && pnpm run build && pnpm run serve",
-    "watch": "blog watch --hmr --mode=development",
+    "watch": "blog watch --hmr --mode=development --port=5678",
     "watch:debug": "pnpm run watch --debug",
     "test": "pnpm run -r --parallel test",
     "lint": "pnpm run -r --parallel lint --no-error-on-unmatched-pattern",

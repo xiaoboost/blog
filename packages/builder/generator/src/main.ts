@@ -5,7 +5,6 @@ import {
 } from '@blog/context/runtime';
 import posts from '@blog/posts';
 import type { AssetData, RunnerCb } from '@blog/types';
-import { cut } from '@xiao-ai/utils';
 import {
   pageConfig,
   site as siteConfig,
@@ -32,6 +31,7 @@ import {
   getYearPostListUrlPath,
   renderYearPostListPage,
 } from './pages/year';
+import { paginate } from './utils/pagination';
 
 // ── 主流程 ──
 
@@ -80,201 +80,136 @@ function createAllPages(): Omit<RenderOptions, 'isPreBuild'> {
   }
 
   const sortedPosts = filterSortPosts(posts);
-  const mainLists = cut(sortedPosts, pageConfig.index);
 
   // 首页列表页面
-  for (let i = 0; i < mainLists.length; i++) {
-    const isStart = i === 0;
-    const isEnd = i === mainLists.length - 1;
-    const older = isEnd ? undefined : getIndexUrlPath(site, i + 1);
-    const newer = isStart ? undefined : getIndexUrlPath(site, i - 1);
-
-    const d = {
-      posts: mainLists[i],
-      index: i,
-      count: mainLists.length,
-      older,
-      newer,
-    };
-
-    const page = new Page({
-      type: 'index',
-      pathname: getIndexUrlPath(site, i),
-      title: i === 0 ? siteConfig.title : `${siteConfig.title} | 第 ${i + 1} 页`,
-      data: d,
-      render: (props) => renderListPage({
-        ...props,
-        posts: d.posts,
-        older: d.older,
-        newer: d.newer,
-        index: d.index,
-        count: d.count,
+  allPages.push(...paginate(
+    sortedPosts,
+    pageConfig.index,
+    (i) => getIndexUrlPath(site, i),
+    (chunk, nav) =>
+      new Page({
+        type: 'index',
+        pathname: getIndexUrlPath(site, nav.index),
+        title: nav.index === 0
+          ? siteConfig.title
+          : `${siteConfig.title} | 第 ${nav.index + 1} 页`,
+        data: { posts: chunk, ...nav },
+        render: (props) => renderListPage({
+          ...props,
+          posts: chunk,
+          ...nav,
+        }),
       }),
-    });
-
-    allPages.push(page);
-  }
+  ));
 
   const tagsData = getTagData(posts);
-  const tagLists = cut(tagsData, pageConfig.archive);
 
   // 标签列表页
-  for (let i = 0; i < tagLists.length; i++) {
-    const isStart = i === 0;
-    const isEnd = i === tagLists.length - 1;
-    const older = isEnd ? undefined : getTagListUrlPath(site, i + 1);
-    const newer = isStart ? undefined : getTagListUrlPath(site, i - 1);
-
-    const d = {
-      listTitle: '标签归档',
-      items: tagLists[i].map((d) => ({
+  allPages.push(...paginate(
+    tagsData,
+    pageConfig.archive,
+    (i) => getTagListUrlPath(site, i),
+    (chunk, nav) => {
+      const items = chunk.map((d) => ({
         title: d.name,
         subTitle: `共 ${d.posts.length} 篇`,
         url: getTagPostListUrlPath(site, d.name, 0),
-      })),
-      index: i,
-      count: tagLists.length,
-      older,
-      newer,
-    };
+      }));
 
-    const page = new Page({
-      type: 'tag-list',
-      pathname: getTagListUrlPath(site, i),
-      title: i === 0 ? '标签聚合页' : `标签聚合 | 第 ${i + 1} 页`,
-      data: d,
-      render: (props) => renderTagListPage({
-        ...props,
-        listTitle: d.listTitle,
-        data: d.items,
-        older: d.older,
-        newer: d.newer,
-        index: d.index,
-        count: d.count,
-      }),
-    });
-
-    allPages.push(page);
-  }
+      return new Page({
+        type: 'tag-list',
+        pathname: getTagListUrlPath(site, nav.index),
+        title: nav.index === 0
+          ? '标签聚合页'
+          : `标签聚合 | 第 ${nav.index + 1} 页`,
+        data: { listTitle: '标签归档', items, ...nav },
+        render: (props) => renderTagListPage({
+          ...props,
+          listTitle: '标签归档',
+          data: items,
+          ...nav,
+        }),
+      });
+    },
+  ));
 
   // 标签文章列表页
   for (const { name, posts: tagPosts } of tagsData) {
-    const postLists = cut(tagPosts, pageConfig.archive);
-
-    for (let i = 0; i < postLists.length; i++) {
-      const isStart = i === 0;
-      const isEnd = i === postLists.length - 1;
-      const older = isEnd ? undefined : getTagPostListUrlPath(site, name, i + 1);
-      const newer = isStart ? undefined : getTagPostListUrlPath(site, name, i - 1);
-
-      const d = {
-        listTitle: name,
-        posts: postLists[i],
-        index: i,
-        count: postLists.length,
-        older,
-        newer,
-      };
-
-      const page = new Page({
-        type: 'tag-post-list',
-        pathname: getTagPostListUrlPath(site, name, i),
-        title: i === 0 ? `标签"${name}"` : `标签"${name}" | 第 ${i + 1} 页`,
-        data: d,
-        render: (props) => renderTagPostListPage({
-          ...props,
-          listTitle: d.listTitle,
-          posts: d.posts,
-          older: d.older,
-          newer: d.newer,
-          index: d.index,
-          count: d.count,
+    allPages.push(...paginate(
+      tagPosts,
+      pageConfig.archive,
+      (i) => getTagPostListUrlPath(site, name, i),
+      (chunk, nav) =>
+        new Page({
+          type: 'tag-post-list',
+          pathname: getTagPostListUrlPath(site, name, nav.index),
+          title: nav.index === 0
+            ? `标签"${name}"`
+            : `标签"${name}" | 第 ${nav.index + 1} 页`,
+          data: { listTitle: name, posts: chunk, ...nav },
+          render: (props) => renderTagPostListPage({
+            ...props,
+            listTitle: name,
+            posts: chunk,
+            ...nav,
+          }),
         }),
-      });
-
-      allPages.push(page);
-    }
+    ));
   }
 
   const yearData = getYearData(posts);
-  const yearLists = cut(yearData, pageConfig.archive);
 
   // 归档列表页
-  for (let i = 0; i < yearLists.length; i++) {
-    const isStart = i === 0;
-    const isEnd = i === yearLists.length - 1;
-    const older = isEnd ? undefined : getYearListUrlPath(site, i + 1);
-    const newer = isStart ? undefined : getYearListUrlPath(site, i - 1);
-
-    const d = {
-      listTitle: '归档汇总',
-      items: yearLists[i].map((d) => ({
+  allPages.push(...paginate(
+    yearData,
+    pageConfig.archive,
+    (i) => getYearListUrlPath(site, i),
+    (chunk, nav) => {
+      const items = chunk.map((d) => ({
         title: `${d.name} 年`,
         subTitle: `共 ${d.posts.length} 篇`,
         url: getYearPostListUrlPath(site, d.name, 0),
-      })),
-      index: i,
-      count: yearLists.length,
-      older,
-      newer,
-    };
+      }));
 
-    const page = new Page({
-      type: 'year-list',
-      pathname: getYearListUrlPath(site, i),
-      title: i === 0 ? '归档聚合页' : `归档聚合 | 第 ${i + 1} 页`,
-      data: d,
-      render: (props) => renderYearListPage({
-        ...props,
-        listTitle: d.listTitle,
-        data: d.items,
-        older: d.older,
-        newer: d.newer,
-        index: d.index,
-        count: d.count,
-      }),
-    });
-
-    allPages.push(page);
-  }
+      return new Page({
+        type: 'year-list',
+        pathname: getYearListUrlPath(site, nav.index),
+        title: nav.index === 0
+          ? '归档聚合页'
+          : `归档聚合 | 第 ${nav.index + 1} 页`,
+        data: { listTitle: '归档汇总', items, ...nav },
+        render: (props) => renderYearListPage({
+          ...props,
+          listTitle: '归档汇总',
+          data: items,
+          ...nav,
+        }),
+      });
+    },
+  ));
 
   // 归档文章列表页
   for (const { name, posts: yearPosts } of yearData) {
-    const postLists = cut(yearPosts, pageConfig.archive);
-
-    for (let i = 0; i < postLists.length; i++) {
-      const isStart = i === 0;
-      const isEnd = i === postLists.length - 1;
-      const older = isEnd ? undefined : getYearPostListUrlPath(site, name, i + 1);
-      const newer = isStart ? undefined : getYearPostListUrlPath(site, name, i - 1);
-
-      const d = {
-        listTitle: `${name} 年`,
-        posts: postLists[i],
-        index: i,
-        count: postLists.length,
-        older,
-        newer,
-      };
-
-      const page = new Page({
-        type: 'year-post-list',
-        pathname: getYearPostListUrlPath(site, name, i),
-        title: i === 0 ? `归档 ${name}` : `归档 ${name} | 第 ${i + 1} 页`,
-        data: d,
-        render: (props) => renderYearPostListPage({
-          ...props,
-          listTitle: d.listTitle,
-          posts: d.posts,
-          older: d.older,
-          newer: d.newer,
-          index: d.index,
-          count: d.count,
+    allPages.push(...paginate(
+      yearPosts,
+      pageConfig.archive,
+      (i) => getYearPostListUrlPath(site, name, i),
+      (chunk, nav) =>
+        new Page({
+          type: 'year-post-list',
+          pathname: getYearPostListUrlPath(site, name, nav.index),
+          title: nav.index === 0
+            ? `归档 ${name}`
+            : `归档 ${name} | 第 ${nav.index + 1} 页`,
+          data: { listTitle: `${name} 年`, posts: chunk, ...nav },
+          render: (props) => renderYearPostListPage({
+            ...props,
+            listTitle: `${name} 年`,
+            posts: chunk,
+            ...nav,
+          }),
         }),
-      });
-
-      allPages.push(page);
-    }
+    ));
   }
 
   return { site, allPages };
