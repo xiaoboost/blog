@@ -43,4 +43,9 @@ export const watchOptions: Record<string, yargs.Options> = {
     describe: '是否启用热更新',
     default: true,
   },
+  port: {
+    type: 'number',
+    describe: '开发服务器端口号',
+    default: 7777,
+  },
 };
