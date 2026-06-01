@@ -4,9 +4,9 @@ import type { BuilderPlugin } from '@blog/types';
 import * as Hook from './hooks';
 import type { DebuggerOptions } from './types';
 
-const pluginName = 'intercepter';
+const pluginName = 'interceptor';
 
-export const Intercepter = (opt?: DebuggerOptions): BuilderPlugin => {
+export const Interceptor = (opt?: DebuggerOptions): BuilderPlugin => {
   return {
     name: pluginName,
     apply(builder) {

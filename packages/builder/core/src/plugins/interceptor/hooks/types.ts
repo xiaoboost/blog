@@ -25,10 +25,15 @@ export interface HookDataWithName {
   /** 调用次数 */
   count: number;
   /**
-   * 总耗时
-   *   - 单位`纳秒`
+   * 平均耗时（单次调用）
+   *   - 单位`微秒`
    */
-  cost: bigint;
+  avgCost: bigint;
+  /**
+   * 总耗时（区间合并后，消除并发重叠）
+   *   - 单位`微秒`
+   */
+  totalCost: bigint;
 }
 
 /**
