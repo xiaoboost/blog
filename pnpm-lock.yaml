@@ -727,7 +727,7 @@ importers:
         specifier: 6.0.3
         version: 6.0.3
 
-  packages/components/text-gloss:
+  packages/components/typo:
     dependencies:
       '@blog/context':
         specifier: workspace:*
@@ -787,9 +787,9 @@ importers:
       '@blog/mdx-font-block':
         specifier: workspace:*
         version: link:../components/font-block
-      '@blog/mdx-text-gloss':
+      '@blog/mdx-typo':
         specifier: workspace:*
-        version: link:../components/text-gloss
+        version: link:../components/typo
       '@blog/styles':
         specifier: workspace:*
         version: link:../utils/styles
@@ -882,9 +882,9 @@ importers:
       '@blog/mdx-font-block':
         specifier: workspace:*
         version: link:../../components/font-block
-      '@blog/mdx-text-gloss':
+      '@blog/mdx-typo':
         specifier: workspace:*
-        version: link:../../components/text-gloss
+        version: link:../../components/typo
       '@blog/node':
         specifier: workspace:*
         version: link:../../utils/node

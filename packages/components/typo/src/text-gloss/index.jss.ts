@@ -1,4 +1,12 @@
-import { createStyles, TextSecondary, TextTertiary, BorderPrimary, RadiusSm, DurationFast, DurationNormal } from '@blog/styles/compile';
+import {
+  createStyles,
+  TextSecondary,
+  TextTertiary,
+  BorderPrimary,
+  RadiusSm,
+  DurationFast,
+  DurationNormal,
+} from '@blog/styles/compile';
 
 export default createStyles({
   glossContent: {},

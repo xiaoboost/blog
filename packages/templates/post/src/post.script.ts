@@ -9,7 +9,7 @@ import './to-content/index.script';
 import '@blog/mdx-blur-reveal/src/index.script';
 import '@blog/mdx-code-block-normal/src/code-block.script';
 import '@blog/mdx-code-block-typescript/src/code-block-ts.script';
-import '@blog/mdx-text-gloss/src/index.script';
+import '@blog/mdx-typo/src/typo.script';
 import '@blog/mdx-font-block/src/font-block.script';
 import '@blog/icons/src/index.jss';
 

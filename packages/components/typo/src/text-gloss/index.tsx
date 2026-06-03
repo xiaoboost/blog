@@ -6,7 +6,9 @@ import styles from './index.jss';
 import assets from './index.script';
 
 export interface TextGlossProps {
+  /** 自定义类名 */
   className?: string;
+  /** 自定义样式 */
   styles?: React.CSSProperties;
   /** 主体文本 */
   children: React.ReactNode;
@@ -16,6 +18,11 @@ export interface TextGlossProps {
   showSeparator?: boolean;
 }
 
+/**
+ * 文字夹注
+ *
+ * @description 行内文本标注，点击主体文本后展开详细说明。
+ */
 export function TextGloss({
   children,
   className: cln,
