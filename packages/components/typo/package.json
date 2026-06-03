@@ -1,6 +1,6 @@
 {
-  "name": "@blog/mdx-text-gloss",
-  "description": "blog's inline text gloss component",
+  "name": "@blog/mdx-typo",
+  "description": "blog's typography components",
   "version": "1.0.0",
   "author": "xiaoboost",
   "license": "MIT",
