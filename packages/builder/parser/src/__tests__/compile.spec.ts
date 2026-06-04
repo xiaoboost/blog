@@ -3,11 +3,12 @@ import { compile } from '../parser';
 
 function getCode(code: string, imports?: string) {
   return `
-/*@jsxRuntime automatic @jsxImportSource react*/${imports ? `\n${imports}` : ''}
+/*@jsxRuntime automatic*/
+/*@jsxImportSource react*/${imports ? `\n${imports}` : ''}
 function _createMdxContent(props) {
   ${code}
 }
-function MDXContent(props = {}) {
+export default function MDXContent(props = {}) {
   const { wrapper: MDXLayout } = props.components || {};
   return MDXLayout ? (
     <MDXLayout {...props}>
@@ -17,7 +18,6 @@ function MDXContent(props = {}) {
     _createMdxContent(props)
   );
 }
-export default MDXContent;
 `.trimStart();
 }
 
@@ -26,12 +26,10 @@ describe('compile', () => {
     expect(await compile('测试内容', true)).eq(
       getCode(
         `
-  const _components = Object.assign(
-    {
-      p: "p",
-    },
-    props.components,
-  );
+  const _components = {
+    p: "p",
+    ...props.components,
+  };
   return <_components.p>{"测试内容"}</_components.p>;
     `.trim(),
       ),
@@ -53,13 +51,11 @@ import img0 from "../images/img.jpg";
     ).eq(
       getCode(
         `
-  const _components = Object.assign(
-    {
-      p: "p",
-      img: "img",
-    },
-    props.components,
-  );
+  const _components = {
+    img: "img",
+    p: "p",
+    ...props.components,
+  };
   return (
     <>
       <_components.p>{"测试内容"}</_components.p>
@@ -97,16 +93,14 @@ import { TestBlock } from "@blog/components/test-block";
     ).eq(
       getCode(
         `
-  const _components = Object.assign(
-    {
-      p: "p",
-      code: "code",
-      strong: "strong",
-      blockquote: "blockquote",
-      a: "a",
-    },
-    props.components,
-  );
+  const _components = {
+    a: "a",
+    blockquote: "blockquote",
+    code: "code",
+    p: "p",
+    strong: "strong",
+    ...props.components,
+  };
   return (
     <>
       <_components.p>{"测试内容"}</_components.p>

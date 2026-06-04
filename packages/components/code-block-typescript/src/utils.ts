@@ -75,14 +75,26 @@ export function removeReference(code: string) {
   return code.replace(new RegExp(referenceRegex.source, 'g'), '').trim();
 }
 
-export function getTsCodeBlockConfig(node: Mdx.Syntax) {
+function isMdxJsxAttribute(
+  attr: Mdx.MdxJsxAttribute | Mdx.MdxJsxExpressionAttribute,
+): attr is Mdx.MdxJsxAttribute {
+  return attr.type === 'mdxJsxAttribute';
+}
+
+/** 从 MdxJsxAttribute 中提取字符串值，兼容字面量和表达式两种形式 */
+function getAttrValue(attr: Mdx.MdxJsxAttribute | undefined, fallback = ''): string {
+  const val = attr?.value;
+  if (typeof val === 'string') return val;
+  if (val && 'value' in val) return val.value;
+  return fallback;
+}
+
+export function getTsCodeBlockConfig(node: Mdx.Nodes) {
   if (node.type === 'mdxJsxFlowElement' && node.name === 'TsCodeBlock') {
-    const langAttr = node.attributes.find((attr) => attr.name === 'lang');
-    const lspAttr = node.attributes.find((attr) => attr.name === 'lsp');
-    const platformAttr = node.attributes.find((attr) => attr.name === 'platform');
-    const langVal = (langAttr?.value?.value as string) ?? langAttr?.value ?? '';
-    const platformVal = (platformAttr?.value?.value as string) ?? platformAttr?.value ?? 'none';
-    const enableLsp = ((lspAttr?.value?.value as string) ?? lspAttr?.value ?? 'true') === 'true';
+    const findAttr = (name: string) =>
+      node.attributes.filter(isMdxJsxAttribute).find((attr) => attr.name === name);
+    const langAttr = findAttr('lang');
+    const langVal = getAttrValue(langAttr);
 
     if (!langAttr || !TsLangMatcher.test(langVal)) {
       return;
@@ -92,8 +104,8 @@ export function getTsCodeBlockConfig(node: Mdx.Syntax) {
       lang: langVal as Kind,
       // FIXME: 暂不处理
       code: (node.children[0] as any).value,
-      platform: platformVal as Platform,
-      enableLsp,
+      platform: getAttrValue(findAttr('platform'), 'none') as Platform,
+      enableLsp: getAttrValue(findAttr('lsp'), 'true') === 'true',
     };
   }
 

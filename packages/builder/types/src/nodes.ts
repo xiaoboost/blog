@@ -3,71 +3,14 @@ import type * as Mdx from 'mdast';
 
 export { Mdx, EsTree };
 
+/* eslint-disable @typescript-eslint/consistent-type-imports */
 declare module 'mdast' {
-  export interface JsxAttribute {
-    type: 'mdxJsxAttribute';
-    name: string;
-    value: mdxJsxAttributeValueExpression;
-  }
-
-  /** 块级自定义组件元素 */
-  export interface JsxFlowElement {
-    type: 'mdxJsxFlowElement';
-    children: Syntax[];
-    attributes: JsxAttribute[];
-    name: string;
-  }
-
-  /** 行内自定义组件元素 */
-  export interface JsxTextElement extends Omit<JsxFlowElement, 'type'> {
-    type: 'mdxJsxTextElement';
-  }
-
-  export interface JsEsm {
-    type: 'mdxjsEsm';
-    value: string;
-    data: {
-      estree: EsTree.Program;
-    };
-  }
-
-  export interface mdxJsxAttributeValueExpression extends Omit<JsEsm, 'type'> {
-    type: 'mdxJsxAttributeValueExpression';
-  }
-
-  interface Root {
-    children: Syntax[];
-  }
-
-  export type Syntax =
-    | JsxAttribute
-    | JsxFlowElement
-    | JsxTextElement
-    | JsEsm
-    | Root
-    | Paragraph
-    | Heading
-    | ThematicBreak
-    | Blockquote
-    | List
-    | ListItem
-    | Table
-    | TableRow
-    | TableCell
-    | Html
-    | Code
-    | Yaml
-    | Definition
-    | FootnoteDefinition
-    | Text
-    | Emphasis
-    | Strong
-    | Delete
-    | InlineCode
-    | Break
-    | Link
-    | Image
-    | LinkReference
-    | ImageReference
-    | FootnoteReference;
+  export type MdxJsxAttributeValueExpression = import('mdast-util-mdx-jsx').MdxJsxAttributeValueExpression;
+  export type MdxJsxExpressionAttribute = import('mdast-util-mdx-jsx').MdxJsxExpressionAttribute;
+  export type MdxJsxAttribute = import('mdast-util-mdx-jsx').MdxJsxAttribute;
+  export type MdxJsxFlowElement = import('mdast-util-mdx-jsx').MdxJsxFlowElement;
+  export type MdxJsxTextElement = import('mdast-util-mdx-jsx').MdxJsxTextElement;
+  export type MdxjsEsm = import('mdast-util-mdxjs-esm').MdxjsEsm;
+  export type MdxFlowExpression = import('mdast-util-mdx-expression').MdxFlowExpression;
+  export type MdxTextExpression = import('mdast-util-mdx-expression').MdxTextExpression;
 }
