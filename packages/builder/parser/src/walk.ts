@@ -1,6 +1,6 @@
 import type { Mdx } from '@blog/types';
 
-export function getChildrenContent(paragraph: Mdx.Syntax) {
+export function getChildrenContent(paragraph: Mdx.Nodes) {
   let content = '';
 
   if (!('children' in paragraph)) {
@@ -20,12 +20,15 @@ export function getChildrenContent(paragraph: Mdx.Syntax) {
   return content;
 }
 
-export function getAttribute(name: string, attributes: Mdx.JsxAttribute[]) {
-  return attributes.find((attr) => attr.type === 'mdxJsxAttribute' && attr.name === name);
+export function getAttribute(
+  name: string,
+  attributes: (Mdx.MdxJsxAttribute | Mdx.MdxJsxExpressionAttribute)[],
+) {
+  return attributes.find((attr) => attr.type === 'mdxJsxAttribute' && attr.name === name) as Mdx.MdxJsxAttribute | undefined;
 }
 
-export function getJsxNodesByTag(node: Mdx.Syntax, tag: string) {
-  const nodes: (Mdx.JsxFlowElement | Mdx.JsxTextElement)[] = [];
+export function getJsxNodesByTag(node: Mdx.Nodes, tag: string) {
+  const nodes: (Mdx.MdxJsxFlowElement | Mdx.MdxJsxTextElement)[] = [];
 
   if (node.type === 'mdxJsxTextElement' || node.type === 'mdxJsxFlowElement') {
     if (node.name === tag) {
@@ -48,7 +51,7 @@ export function getJsxNodesByTag(node: Mdx.Syntax, tag: string) {
   return nodes;
 }
 
-export function visit(node: Mdx.Syntax, visitor: (node: Mdx.Syntax) => void) {
+export function visit(node: Mdx.Nodes, visitor: (node: Mdx.Nodes) => void) {
   visitor(node);
 
   // 迭代子节点

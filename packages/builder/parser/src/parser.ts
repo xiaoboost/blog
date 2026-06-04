@@ -1,4 +1,3 @@
-/* eslint-disable no-eval */
 import type { ErrorData, Parser, Mdx as MdxAst } from '@blog/types';
 import type * as Mdx from '@mdx-js/mdx';
 
@@ -6,14 +5,17 @@ import { format as formatCode } from 'prettier';
 import { decodeTemplate } from './template';
 
 const parserThen: Promise<Parser> = Promise.all([
-  eval("import('unified')"),
-  eval("import('remark-mdx')"),
-  eval("import('remark-parse')"),
-  eval("import('remark-stringify')"),
+  import('unified'),
+  import('remark-mdx'),
+  import('remark-parse'),
+  import('remark-stringify'),
 ]).then(([
-  { unified }, mdx, parse, stringify,
+  { unified },
+  { default: mdx },
+  { default: parse },
+  { default: stringify },
 ]) => {
-  return unified().use(parse.default, { position: false }).use(stringify.default).use(mdx.default);
+  return unified().use(parse).use(stringify).use(mdx);
 });
 
 const pluginThen: Promise<any[]> = Promise.all([eval("import('remark-gfm')")]).then((val) => {
