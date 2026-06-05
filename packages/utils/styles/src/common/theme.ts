@@ -21,7 +21,7 @@ export function colorAlpha(color: string, alpha: number): string {
  * // => 'var(--emphasis-underline)'
  * ```
  */
-export function cssVar(name: string): string {
+export function cssVar<N extends string>(name: N): `var(${N})` {
   return `var(${name})`;
 }
 
@@ -38,9 +38,9 @@ export function cssVar(name: string): string {
  * // Underline       → 'var(--emphasis-underline)'
  * ```
  */
-export function createToken(name: string): readonly [token: string, value: string] {
+export function createToken<N extends string>(name: N): readonly [token: `--${N}`, value: `var(--${N})`] {
   const token = `--${name}`;
-  return [token, cssVar(token)] as const;
+  return [token as `--${N}`, cssVar(token) as `var(--${N})`] as const;
 }
 
 /** 单 Token 主题定义 */
