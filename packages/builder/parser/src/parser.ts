@@ -1,7 +1,6 @@
 import type { ErrorData, Parser, Mdx as MdxAst } from '@blog/types';
-import type * as Mdx from '@mdx-js/mdx';
-
 import { format as formatCode } from 'prettier';
+import type { PluggableList } from 'unified';
 import { decodeTemplate } from './template';
 
 const parserThen: Promise<Parser> = Promise.all([
@@ -18,11 +17,11 @@ const parserThen: Promise<Parser> = Promise.all([
   return unified().use(parse).use(stringify).use(mdx);
 });
 
-const pluginThen: Promise<any[]> = Promise.all([eval("import('remark-gfm')")]).then((val) => {
+const pluginThen: Promise<PluggableList> = Promise.all([import('remark-gfm')]).then((val) => {
   return val.map((i) => i.default);
 });
 
-const compilerThen: Promise<typeof Mdx> = eval("import('@mdx-js/mdx')");
+const compilerThen = import('@mdx-js/mdx');
 
 /** 编译代码到 JS */
 export async function compile(code: string, format = false) {
