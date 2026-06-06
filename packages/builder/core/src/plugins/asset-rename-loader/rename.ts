@@ -4,10 +4,13 @@ import { getPathFormatter } from '@blog/node';
 import type { AssetData, BuilderInstance } from '@blog/types';
 import { isArray } from '@xiao-ai/utils';
 import md5 from 'md5';
-import type { FileLoaderOptionInput, Rename } from './types';
+import type { AssetRenameOption, Rename } from './types';
 
 /** 安装重命名方法 */
-export function getRenameMethod(builder: BuilderInstance, opt: FileLoaderOptionInput): Rename {
+export function getRenameMethod(
+  builder: BuilderInstance,
+  opt: AssetRenameOption,
+): Rename {
   const { publicPath } = builder.options;
   const options = (isArray(opt) ? opt : [opt]).map((item) => {
     const name = item.name ?? '[name].[ext]';
@@ -69,7 +72,7 @@ export function mergeRename(...args: Rename[]): Rename {
   }
 
   function test(file: string) {
-    return args.every(({ test }) => test(file));
+    return args.every(({ test }) => test?.(file));
   }
 
   function rename(asset: AssetData) {

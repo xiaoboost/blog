@@ -1,40 +1,42 @@
 import { readFile } from 'fs/promises';
 import path from 'path';
 import type { BuilderPlugin, ResolveResult } from '@blog/types';
+import { isArray } from '@xiao-ai/utils';
 import { isCssImport } from '../../utils';
-import { getRenameMethod, mergeRename } from './rename';
-import type { FileLoaderOptionInput, Rename } from './types';
+import type { Rename } from '../asset-rename-loader';
+import type { GlobalAssetOption, GlobalAssetRule } from './types';
 
-const pluginName = 'file-loader';
+export type { GlobalAssetRule, GlobalAssetOption } from './types';
 
-export const FileLoader = (opt: FileLoaderOptionInput): BuilderPlugin => ({
+const pluginName = 'global-asset-loader';
+
+/**
+ * 全局资源加载器
+ *
+ * @description 在 Bundler 阶段拦截匹配的文件
+ */
+export const GlobalAssetLoader = (opt: GlobalAssetOption): BuilderPlugin => ({
   name: pluginName,
   apply(builder) {
+    const rules: GlobalAssetRule[] = isArray(opt) ? opt : [opt];
+
+    /** 检测文件是否命中规则 */
+    const matchFile = (file: string) => rules.some(({ test }) => test.test(file));
+
     /** 原始文件缓存 */
     const fileCache = new Map<string, Buffer>();
-    /** 路径映射缓存 */
+    /** 路径映射缓存: renamed path → ResolveResult */
     const filePathMap = new Map<string, ResolveResult>();
-    /** 重命名配置 */
-    const rename = getRenameMethod(builder, opt);
-
-    builder.hooks.start.tap(pluginName, () => {
-      if ('test' in builder.renameAsset) {
-        builder.renameAsset = mergeRename(builder.renameAsset as Rename, rename);
-      }
-      else {
-        builder.renameAsset = rename;
-      }
-    });
 
     builder.hooks.bundler.tap(pluginName, (bundler) => {
       bundler.hooks.resolve.tapPromise(pluginName, async (args) => {
-        if (!rename.test(args.path)) {
+        if (!matchFile(args.path)) {
           return;
         }
 
         const resolved = builder.resolve(args.path, args);
         const fileContent = fileCache.get(resolved.path) ?? (await readFile(resolved.path));
-        const newName = rename({ path: resolved.path, content: fileContent });
+        const newName = builder.renameAsset({ path: resolved.path, content: fileContent });
 
         if (!newName) {
           return;
@@ -73,27 +75,25 @@ export const FileLoader = (opt: FileLoaderOptionInput): BuilderPlugin => ({
 
     builder.hooks.afterBundler.tap(pluginName, ({ bundler }) => {
       // 外部资源上报
-      for (const [path, val] of filePathMap.entries()) {
-        const cache = fileCache.get(val.path);
+      for (const [renamedPath, resolved] of filePathMap.entries()) {
+        const cache = fileCache.get(resolved.path);
         if (cache) {
           builder.emitAsset({
-            path,
+            path: renamedPath,
             content: cache,
           });
         }
       }
 
-      // bundler 资源
+      // bundler 产物重命名 + 上报
       for (const { path: original, content } of bundler.getAssets()) {
-        if (rename.test(original)) {
-          const newName = rename({ path: original, content });
+        const newName = builder.renameAsset({ path: original, content });
 
-          if (newName) {
-            builder.emitAsset({
-              path: newName,
-              content,
-            });
-          }
+        if (newName) {
+          builder.emitAsset({
+            path: newName,
+            content,
+          });
         }
       }
     });
