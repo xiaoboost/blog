@@ -14,6 +14,12 @@ export interface RawLoaderOption {
   test: RegExp;
 }
 
+/**
+ * 原始资源加载器
+ *
+ * @description bundle 后会是 readFile 的形式，而不会形成 asset。
+ * 仅处理带有`?raw`查询参数的引用
+ */
 export const RawLoader = ({ test }: RawLoaderOption): BuilderPlugin => ({
   name: pluginName,
   apply(builder) {

@@ -1,7 +1,5 @@
-import { type Fixer, isUrl } from '@blog/shared';
+import type { Fixer } from '@blog/shared';
 import type { PostData, Mdx, EsTree } from '@blog/types';
-import { encodeImageTemplate } from './template';
-import { visit } from './walk';
 
 function getImportComponentNode(ast: Mdx.Root) {
   const importSet = new Set<string>();
@@ -34,58 +32,6 @@ function getImportComponentNode(ast: Mdx.Root) {
   return Array.from(importSet.values());
 }
 
-function addImageImport(ast: Mdx.Root, fixer: Fixer) {
-  const images: Mdx.Image[] = [];
-
-  // 查询 Image 节点
-  visit(ast, (node) => {
-    if (node.type === 'image') {
-      images.push(node as Mdx.Image);
-    }
-  });
-
-  let importCode = '';
-
-  // 迭代 Image 节点
-  for (let i = 0; i < images.length; i++) {
-    const img = images[i];
-
-    // 跳过链接
-    if (isUrl(img.url)) {
-      continue;
-    }
-
-    if (!img.position) {
-      throw new Error(`图片解析错误，未获得图片节点位置：${img.url}`);
-    }
-
-    importCode += `import img${i} from '${img.url}';\n`;
-
-    // 最后一个图片加一个换行，避免图片和文字连在一起
-    if (i === images.length - 1) {
-      importCode += '\n';
-    }
-
-    // 虚拟模板字符串
-    const imgCode = img.title
-      ? `![${img.alt}](${encodeImageTemplate(`img${i}`)} "${img.title}")`
-      : `![${img.alt}](${encodeImageTemplate(`img${i}`)})`;
-
-    fixer.fix({
-      start: img.position.start.offset!,
-      end: img.position.end.offset!,
-      newText: imgCode,
-    });
-  }
-
-  fixer.insert(importCode);
-}
-
-/** 引用资源添加 import 语句 */
-export function addPostAssetImport(data: PostData, fixer: Fixer) {
-  addImageImport(data.ast, fixer);
-}
-
 /** 导出 templateUtils 方法 */
 export function addTemplateUtilsExport(data: PostData, fixer: Fixer) {
   const components = getImportComponentNode(data.ast);
@@ -100,11 +46,11 @@ export function addTemplateUtilsExport(data: PostData, fixer: Fixer) {
   code += `import { utils as template } from '${templateName}';\n`;
 
   // 添加工具函数
-  code += `import { defineUtils } from '@blog/context/runtime';\n`;
+  code += 'import { defineUtils } from \'@blog/context/runtime\';\n';
 
   // 添加导出语句
   if (components.length === 0) {
-    code += `export const utils = defineUtils(template.getAssetNames());\n\n`;
+    code += 'export const utils = defineUtils(template.getAssetNames());\n\n';
   }
   else {
     code += `export const utils = defineUtils(template.getAssetNames().concat(
