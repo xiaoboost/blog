@@ -6,7 +6,7 @@ import type { PostMeta, PostData } from '@blog/types';
 import { parse as parseYaml } from 'yaml';
 
 import { parse, compile } from './parser';
-import { addTemplateUtilsExport, addPostAssetImport } from './utils';
+import { addTemplateUtilsExport } from './utils';
 
 function getDateByDay(input: string) {
   const date = new Date(input);
@@ -82,7 +82,6 @@ export async function getPostData(content: string, fileName: string) {
   };
   const fixer = new Fixer(data.content);
 
-  addPostAssetImport(data, fixer);
   addTemplateUtilsExport(data, fixer);
 
   data.content = fixer.apply();

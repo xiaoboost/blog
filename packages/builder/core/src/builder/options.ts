@@ -60,7 +60,7 @@ export async function applyPlugin(builder: Builder) {
     },
   ]).apply(builder);
 
-  RawLoader({ test: /\.(woff|woff2|ttf|otf)$/ }).apply(builder);
+  RawLoader({ test: /\.(woff|woff2|ttf|otf|svg|jpg|jpeg|png|webp)$/ }).apply(builder);
 
   if (opt.watch) {
     const { Watcher } = await import('../plugins/watcher.js');
