@@ -4,9 +4,10 @@ import { join } from 'path';
 import type { BuilderOptions } from '@blog/types';
 
 import { AssetExtractor } from '../plugins/asset-extractor';
+import { AssetRenameLoader } from '../plugins/asset-rename-loader';
 import { CacheController } from '../plugins/cache';
 import { Cname } from '../plugins/cname';
-import { FileLoader } from '../plugins/file-loader';
+import { GlobalAssetLoader } from '../plugins/global-asset-loader';
 import { JssLoader } from '../plugins/jss-loader';
 import { LocalPackageRequirer } from '../plugins/local-package-requirer';
 import { PathLoader } from '../plugins/path-loader';
@@ -31,7 +32,7 @@ export async function applyPlugin(builder: Builder) {
 
   Resolver().apply(builder);
   PathLoader({ test: /\.(plist|wasm)$/ }).apply(builder);
-  FileLoader([
+  AssetRenameLoader([
     {
       test: /\.(woff|woff2|ttf|otf)$/,
       name: getAssetNames('fonts', isProduction),
@@ -39,6 +40,23 @@ export async function applyPlugin(builder: Builder) {
     {
       test: /\.(svg|jpg|jpeg|png|ico|webp)$/,
       name: getAssetNames('images', isProduction),
+    },
+    {
+      test: /\.css$/,
+      name: getAssetNames('styles', isProduction),
+    },
+    {
+      test: /\.js$/,
+      name: getAssetNames('scripts', isProduction),
+    },
+    {
+      test: /.*/,
+      name: getAssetNames('assets', isProduction),
+    },
+  ]).apply(builder);
+  GlobalAssetLoader([
+    {
+      test: /\.(woff|woff2|ttf|otf|svg|jpg|jpeg|png|ico|webp)$/,
     },
   ]).apply(builder);
 
@@ -65,6 +83,7 @@ export async function applyPlugin(builder: Builder) {
     ScriptLoader().apply(builder);
     CacheController().apply(builder);
     JssLoader({ extractAsset: false }).apply(builder);
+    GlobalAssetLoader([{ test: /\.(css|js)$/ }]).apply(builder);
 
     if (opt.watch) {
       const { Development } = await import('../plugins/development/index.js');
@@ -92,18 +111,6 @@ export async function applyPlugin(builder: Builder) {
         typescriptPath: require.resolve('typescript'),
       }).apply(builder);
     }
-
-    // 全局样式和脚本资源
-    FileLoader([
-      {
-        test: /\.css$/,
-        name: getAssetNames('styles', isProduction),
-      },
-      {
-        test: /\.js$/,
-        name: getAssetNames('scripts', isProduction),
-      },
-    ]).apply(builder);
   }
 
   // 应用外部插件
