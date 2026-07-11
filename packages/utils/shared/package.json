@@ -1,7 +1,7 @@
 {
   "name": "@blog/shared",
   "version": "1.0.0",
-  "description": "blog shared lib",
+  "description": "blog's shared lib",
   "main": "dist/index.js",
   "module": "src/index.ts",
   "source": "src/index.ts",

@@ -1,7 +1,7 @@
 {
   "name": "@blog/styles",
   "version": "1.0.0",
-  "description": "blog styles lib",
+  "description": "blog's styles lib",
   "exports": {
     ".": {
       "types": "./src/common/index.ts",

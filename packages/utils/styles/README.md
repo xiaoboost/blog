@@ -1,3 +1,3 @@
-# @blog/shared
+# @blog/styles
 
-共享工具库
+样式工具库

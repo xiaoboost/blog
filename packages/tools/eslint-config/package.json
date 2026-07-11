@@ -1,6 +1,7 @@
 {
   "name": "@blog/eslint-config",
   "version": "1.0.0",
+  "description": "blog's ESLint configuration",
   "main": "index.mjs",
   "dependencies": {
     "@stylistic/eslint-plugin": "5.10.0",
