@@ -1,5 +1,4 @@
-import { expect } from 'chai';
-import { describe, it } from 'mocha';
+import { describe, expect, it } from '@blog/test-toolkit';
 
 import { compileStyles, mergeStyles, createFontFaceStyles } from '../compiler';
 
@@ -237,7 +236,7 @@ body::-webkit-scrollbar {
       },
     } as any);
     const c = s.classes;
-    expect(s.toString()).to.equal(`@import 'highlight.js/styles/atom-one-light.css'
+    expect(s.toString()).to.equal(`@import 'highlight.js/styles/atom-one-light.css';
 .${c.codeBlockWrapper} {
   font-size: 0.9em;
 }

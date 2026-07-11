@@ -1,4 +1,4 @@
-import type { Styles } from '../compile/styles/index';
+import type { Styles } from '../compile/styles';
 import { mediaPc, mediaPhone } from './constant';
 
 type MediaParam<T> = {

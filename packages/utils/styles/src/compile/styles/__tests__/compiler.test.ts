@@ -162,6 +162,25 @@ describe('compileStyles — 嵌套选择器编译', () => {
   display: flex;
 }`);
   });
+
+  it('> * 隐式嵌套选择器（不含 &）', () => {
+    const s = compileStyles({
+      box: {
+        position: 'relative',
+        '> *': { marginTop: 0, '&:last-child': { marginBottom: 0 } },
+      },
+    });
+    const c = s.classes.box;
+    expect(s.toString()).to.equal(`.${c} {
+  position: relative;
+}
+.${c} > * {
+  margin-top: 0;
+}
+.${c} > *:last-child {
+  margin-bottom: 0;
+}`);
+  });
 });
 
 // ═══════════════════════════════════════════════════════════════
@@ -264,7 +283,7 @@ a {
       '@import': "'highlight.js/styles/atom-one-light.css'",
     } as any);
     expect(s.toString()).to.equal(
-      "@import 'highlight.js/styles/atom-one-light.css'",
+      "@import 'highlight.js/styles/atom-one-light.css';",
     );
   });
 });

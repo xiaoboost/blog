@@ -24,6 +24,10 @@ function buildClassMap(styles: Styles, salt?: string): Record<string, string> {
 
 // ── 递归编译入口 ───────────────────────────────────────────────
 
+function isStyleObject(v: unknown): v is StyleRule {
+  return typeof v === 'object' && v !== null && !Array.isArray(v);
+}
+
 function compileRule(
   rule: StyleRule,
   selector: string,
@@ -39,6 +43,12 @@ function compileRule(
     }
     else if (key.startsWith('@')) {
       rules.push(...compileAtRule(key, rule[key] as StyleRule, selector, classMap));
+    }
+    else if (isStyleObject(rule[key])) {
+      // 值为对象但 key 不是 & 或 @ 开头 → 隐式嵌套选择器
+      // 例：'> *' → 'parent > *'
+      const sel = resolveSelector(key, selector, classMap);
+      rules.push(...compileRule(rule[key] as StyleRule, sel, classMap));
     }
     else {
       propLines.push(`  ${normalizeKey(key)}: ${normalizeValue(key, rule[key])};`);
@@ -126,7 +136,7 @@ function serializeRules(rules: FlatRule[]): string {
 
   for (const r of normal) {
     if (r.props === '') {
-      blocks.push(r.selector);
+      blocks.push(`${r.selector};`);
     }
     else {
       blocks.push(`${r.selector} {\n${r.props}\n}`);
