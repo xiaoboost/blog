@@ -1,3 +1,3 @@
-# @blog/shared
+# @blog/node
 
-共享工具库
+Node.js 工具库

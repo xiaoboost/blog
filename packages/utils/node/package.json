@@ -1,7 +1,7 @@
 {
   "name": "@blog/node",
   "version": "1.0.0",
-  "description": "blog node lib",
+  "description": "blog's node lib",
   "main": "dist/index.js",
   "module": "src/index.ts",
   "source": "src/index.ts",

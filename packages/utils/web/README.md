@@ -1,3 +1,3 @@
-# @blog/shared
+# @blog/web
 
-共享工具库
+浏览器端工具库
