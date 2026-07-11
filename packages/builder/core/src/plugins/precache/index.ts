@@ -2,7 +2,7 @@ import { readFileSync } from 'fs';
 import type { BuilderPlugin } from '@blog/types';
 import { transform } from 'esbuild';
 
-const PLUGIN_NAME = 'SW:Precache';
+const PLUGIN_NAME = 'precache';
 
 /** 读取代码并转译 */
 async function loadTemplate(name: string, define: Record<string, string>) {
