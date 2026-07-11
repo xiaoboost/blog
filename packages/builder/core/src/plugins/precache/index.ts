@@ -1,18 +1,15 @@
 import { readFileSync } from 'fs';
-import { join, dirname } from 'path';
 import type { BuilderPlugin } from '@blog/types';
 import { transform } from 'esbuild';
 
-const PLUGIN_NAME = 'precache';
-const CORE_ROOT = dirname(require.resolve('@blog/core/package.json'));
-const TEMPLATE_DIR = join(CORE_ROOT, 'src', 'plugins', 'precache');
+const PLUGIN_NAME = 'SW:Precache';
 
 /** 读取代码并转译 */
 async function loadTemplate(name: string, define: Record<string, string>) {
-  const source = readFileSync(join(TEMPLATE_DIR, name), 'utf-8');
+  const source = readFileSync(require.resolve(`@blog/core/src/plugins/precache/${name}`), 'utf-8');
   const result = await transform(source, {
     loader: 'ts',
-    minify: false,
+    minify: true,
     define,
   });
   return result.code;
