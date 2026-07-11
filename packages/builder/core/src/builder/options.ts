@@ -70,8 +70,10 @@ export async function applyPlugin(builder: Builder) {
   if (opt.write) {
     const { AssetWriter } = await import('../plugins/asset-writer.js');
     const { Cleaner } = await import('../plugins/cleaner.js');
+    const { Precache } = await import('../plugins/precache/index.js');
     AssetWriter().apply(builder);
     Cleaner().apply(builder);
+    Precache().apply(builder);
   }
 
   // 主构建器插件

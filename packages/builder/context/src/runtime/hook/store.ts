@@ -2,12 +2,16 @@ import type {
   AssetData,
   BuildContext,
   BuildContextWithPage,
+  BuildHook,
+  InitHook,
   PostBasicData,
   RuntimeData,
   RuntimeHooks,
 } from '@blog/types';
 import { AsyncSeriesHook, AsyncSeriesWaterfallHook } from 'tapable';
+import { GlobalKey } from '../../types';
 import { getAccessor } from '../accessor';
+import { getGlobalContext } from '../constant';
 
 export const hooks: RuntimeHooks = {
   beforeStart: new AsyncSeriesHook<[]>(),
@@ -20,8 +24,7 @@ export const hooks: RuntimeHooks = {
   afterBuild: new AsyncSeriesHook<[AssetData[]]>(['Assets']),
 };
 
-export type BuildHook = (runtime: RuntimeData) => void;
-export type InitHook = (runtime: RuntimeData) => void;
+export { BuildHook, InitHook };
 
 export const buildStack: BuildHook[] = [];
 export const initStack: InitHook[] = [];
@@ -45,6 +48,7 @@ export const waitReady = new Promise<void>((resolve) => {
 
 // 延迟运行钩子
 setTimeout(() => {
+  const builderHooks = getGlobalContext()[GlobalKey.RuntimeCallbacks] ?? [];
   const runtimeData: RuntimeData = {
     hooks,
   };
@@ -54,6 +58,7 @@ setTimeout(() => {
   }
 
   buildStack.forEach((item) => item(runtimeData));
+  builderHooks.forEach((item) => item(runtimeData));
 
   // 初始化完成
   readySwitch();

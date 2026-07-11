@@ -5,6 +5,7 @@ import type { BuilderHooks, BundlerHooks } from './hooks';
 import type { LogLevel, LoggerInstance } from './logger';
 import type { BuilderPlugin } from './plugin';
 import type { Resolver } from './resolve';
+import type { BuildHook } from './template';
 
 /** 构建器选项 */
 export type BuilderOptions = ExtendOptions & CommandOptions;
@@ -181,6 +182,8 @@ export type RunnerCb = (assets: AssetData[]) => Promise<AssetData[]>;
 
 /** 运行器实例 */
 export interface RunnerInstance {
+  /** 注册可在外部运行的运行时钩子回调 */
+  registerHook(callback: BuildHook): void;
   /** 运行代码 */
   run(source: BundlerResult): Promise<void>;
   /** 获取运行结果 */
