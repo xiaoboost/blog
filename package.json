@@ -18,7 +18,8 @@
     "watch:debug": "pnpm run watch --debug",
     "test": "pnpm run -r --parallel test",
     "lint": "pnpm run -r --parallel lint --no-error-on-unmatched-pattern",
-    "lint:fix": "pnpm run -r --parallel lint:fix --no-error-on-unmatched-pattern"
+    "lint:fix": "pnpm run -r --parallel lint:fix --no-error-on-unmatched-pattern",
+    "type-check": "pnpm run -r --parallel type-check"
   },
   "engines": {
     "node": ">=24",

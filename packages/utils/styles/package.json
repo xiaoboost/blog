@@ -14,9 +14,18 @@
       "types": "./src/common/index.ts"
     },
     "./common/*": {
-      "types": ["./src/common/*", "./src/common/*.ts"],
-      "import": ["./src/common/*", "./src/common/*.ts"],
-      "require": ["./dist/common/*", "./dist/common/*.js"]
+      "types": [
+        "./src/common/*",
+        "./src/common/*.ts"
+      ],
+      "import": [
+        "./src/common/*",
+        "./src/common/*.ts"
+      ],
+      "require": [
+        "./dist/common/*",
+        "./dist/common/*.js"
+      ]
     },
     "./compile": {
       "types": "./src/compile/index.ts",
@@ -24,25 +33,38 @@
       "require": "./dist/compile/index.js"
     },
     "./compile/*": {
-      "types": ["./src/compile/*", "./src/compile/*.ts"],
-      "import": ["./src/compile/*", "./src/compile/*.ts"],
-      "require": ["./dist/compile/*", "./dist/compile/*.js"]
+      "types": [
+        "./src/compile/*",
+        "./src/compile/*.ts"
+      ],
+      "import": [
+        "./src/compile/*",
+        "./src/compile/*.ts"
+      ],
+      "require": [
+        "./dist/compile/*",
+        "./dist/compile/*.js"
+      ]
     },
     "./fonts/*": {
-      "import": ["./src/fonts/*"]
+      "import": [
+        "./src/fonts/*"
+      ]
     }
   },
   "scripts": {
     "build": "tsc -p .",
     "watch": "npm run build -- -w",
     "lint": "eslint --quiet src/**/*.{ts,tsx,js,jsx}",
-    "lint:fix": "eslint --quiet --fix src/**/*.{ts,tsx,js,jsx}"
+    "lint:fix": "eslint --quiet --fix src/**/*.{ts,tsx,js,jsx}",
+    "type-check": "tsc --noEmit"
   },
   "devDependencies": {
     "@blog/eslint-config": "workspace:*",
     "@blog/tsconfig": "workspace:*",
     "@types/color": "3.0.6",
     "@types/node": "24.12.2",
+    "csstype": "^3.2.3",
     "eslint": "10.2.1",
     "typescript": "6.0.3"
   },

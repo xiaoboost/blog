@@ -1,5 +1,5 @@
 import { defineVars, type TokenDef } from '../common/theme';
-import { createStyles, type JssStyle } from './styles';
+import { createStyles, type StyleSheet } from './styles';
 
 /**
  * 通过 CSS 变量创建主题样式
@@ -25,7 +25,7 @@ import { createStyles, type JssStyle } from './styles';
  * export default mergeStyles(themeStyles, myStyles);
  * ```
  */
-export function createThemeStylesByVars(def: Record<string, TokenDef>): JssStyle {
+export function createThemeStylesByVars(def: Record<string, TokenDef>): StyleSheet {
   const { light, dark } = defineVars(def);
   return createStyles({
     '@global': {
