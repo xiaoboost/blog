@@ -1,12 +1,4 @@
-import { GlobalKey } from '@blog/context';
-import jss from 'jss';
-import preset from 'jss-preset-default';
 import type { MochaOptions } from 'mocha';
-
-jss.setup(preset());
-
-// 这里不使用 getGlobalContext 主要是要避免将 context/runtime 的其他内容全都引入
-(globalThis as any)[GlobalKey.JSS] = jss;
 
 // 全局注入环境变量
 (process.env as any).NODE_ENV = 'test';

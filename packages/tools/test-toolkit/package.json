@@ -33,8 +33,6 @@
   },
   "dependencies": {
     "@blog/context": "workspace:*",
-    "@xiao-ai/utils": "1.6.7",
-    "jss": "10.10.0",
-    "jss-preset-default": "10.10.0"
+    "@xiao-ai/utils": "1.6.7"
   }
 }
