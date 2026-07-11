@@ -8,7 +8,7 @@ export default createStyles({
     lineHeight: 0,
     textAlign: 'center',
     textTransform: 'none',
-    textRendering: 'optimizelegibility',
+    textRendering: 'optimizeLegibility',
 
     '& svg': {
       display: 'inline-block',

@@ -1,4 +1,4 @@
-import type { Styles } from '@blog/context/runtime';
+import type { Styles } from '../compile/styles';
 import { DarkMode } from './constant';
 
 /**

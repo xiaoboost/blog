@@ -1,4 +1,4 @@
-import type { Styles } from '@blog/context/runtime';
+import type { Styles } from '../compile/styles/index';
 import { mediaPc, mediaPhone } from './constant';
 
 type MediaParam<T> = {
