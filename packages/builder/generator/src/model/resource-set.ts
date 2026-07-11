@@ -115,7 +115,7 @@ export abstract class ResourceSet implements IResourceSet {
     for (const [, b] of entries) {
       const fontAsset = b.getFont();
       this.addAsset(fontAsset);
-      this.addPreload({ href: fontAsset.path, as: 'font', type: 'font/woff2' });
+      this.addPreload({ href: fontAsset.path, as: 'font', type: 'font/woff2', crossOrigin: 'anonymous' });
     }
   }
 }

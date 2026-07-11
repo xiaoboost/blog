@@ -1,10 +1,10 @@
 import { initGlobalContext } from '@blog/context';
-import type {
-  RunnerInstance,
-  BuilderInstance,
-  BundlerResult,
-  ErrorData,
-  RunnerCb,
+import {
+  type RunnerInstance,
+  type BuilderInstance,
+  type BundlerResult,
+  type ErrorData,
+  type RunnerCb, type BuildHook,
 } from '@blog/types';
 import { type RunError, runScript } from '@xiao-ai/utils/node';
 import { Instance } from 'chalk';
@@ -17,7 +17,9 @@ export class Runner implements RunnerInstance {
 
   private sourceMap = '';
 
-  private output: any;
+  private output!: RunnerCb;
+
+  private hookCallbacks: BuildHook[] = [];
 
   constructor(builder: BuilderInstance) {
     this.builder = builder;
@@ -27,7 +29,7 @@ export class Runner implements RunnerInstance {
   private init(code?: string, sourceMap?: string) {
     this.code = code ?? '';
     this.sourceMap = sourceMap ?? '';
-    this.output = undefined;
+    this.output = () => Promise.resolve([]);
   }
 
   private getContext() {
@@ -35,7 +37,7 @@ export class Runner implements RunnerInstance {
     const printer = new Instance({ level: color ? 3 : 0 });
 
     return {
-      ...initGlobalContext(this.builder),
+      ...initGlobalContext(this.builder, this.hookCallbacks),
       process,
       Buffer,
       setTimeout,
@@ -98,5 +100,9 @@ export class Runner implements RunnerInstance {
     if (result.error) {
       throw await this.parseError(result.error);
     }
+  }
+
+  registerHook(callback: BuildHook): void {
+    this.hookCallbacks.push(callback);
   }
 }

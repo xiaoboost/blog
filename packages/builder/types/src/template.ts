@@ -6,6 +6,12 @@ export interface RuntimeData {
   hooks: RuntimeHooks;
 }
 
+/** 构建钩子回调 */
+export type BuildHook = (runtime: RuntimeData) => void;
+
+/** 初始化钩子回调 */
+export type InitHook = BuildHook;
+
 /** 模板辅助函数 */
 export interface TemplateUtils {
   /** 添加预加载资源 */
