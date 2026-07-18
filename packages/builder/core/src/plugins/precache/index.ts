@@ -2,7 +2,10 @@ import { readFileSync } from 'fs';
 import type { BuilderPlugin } from '@blog/types';
 import { transform } from 'esbuild';
 
+/** 插件名称 */
 const PLUGIN_NAME = 'precache';
+/** 页面刷新事件 */
+const CONTENT_UPDATED = 'content-updated';
 
 /** 读取代码并转译 */
 async function loadTemplate(name: string, define: Record<string, string>) {
@@ -52,6 +55,7 @@ export const Precache = (): BuilderPlugin => ({
         hooks.afterReady.tapPromise(`${PLUGIN_NAME}:register`, async ({ site, rename }) => {
           const code = await loadTemplate('register.ts', {
             __SW_PATH__: JSON.stringify(SW_FILE_PATH),
+            __CONTENT_UPDATED__: JSON.stringify(CONTENT_UPDATED),
           });
           const asset = {
             path: 'scripts/register-sw.js',
@@ -78,6 +82,7 @@ export const Precache = (): BuilderPlugin => ({
         __PRECACHE_URLS__: `[${precacheUrls.map((u) => JSON.stringify(u)).join(',')}]`,
         __STATIC_EXT_REGEX__: JSON.stringify(buildExtPattern(PRECACHE_EXTENSIONS)),
         __RUNTIME_EXT_REGEX__: JSON.stringify(buildExtPattern(RUNTIME_EXTENSIONS)),
+        __CONTENT_UPDATED__: JSON.stringify(CONTENT_UPDATED),
       });
 
       return [...assets, { path: SW_FILE_PATH, content: Buffer.from(swCode) }];
