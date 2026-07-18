@@ -4,6 +4,7 @@ declare const __VERSION__: string;
 declare const __PRECACHE_URLS__: string[];
 declare const __STATIC_EXT_REGEX__: string;
 declare const __RUNTIME_EXT_REGEX__: string;
+declare const __CONTENT_UPDATED__: string;
 
 const VERSION = __VERSION__;
 const PRECACHE_URLS: string[] = __PRECACHE_URLS__;
@@ -81,9 +82,26 @@ SW.addEventListener('fetch', (event) => {
     });
 
     event.respondWith(
-      caches
-        .match(event.request)
-        .then((cached) => cached ?? fetched),
+      caches.match(event.request).then(async (cached) => {
+        if (cached) {
+          event.waitUntil(
+            fetched.then(async (fresh) => {
+              const [cachedText, freshText] = await Promise.all([
+                cached.clone().text(),
+                fresh.clone().text(),
+              ]);
+              if (cachedText !== freshText) {
+                const clients = await SW.clients.matchAll({ type: 'window' });
+                clients.forEach((client) =>
+                  client.postMessage(__CONTENT_UPDATED__),
+                );
+              }
+            }),
+          );
+          return cached;
+        }
+        return fetched;
+      }),
     );
     return;
   }
