@@ -1,7 +1,7 @@
 ---
-title: 函数式风格的 DI 系统设计
+title: 函数式的依赖注入系统
 create: 2025/11/22
-description: 尝试为 React 设计一个纯函数式的依赖注入系统，实现零装饰器依赖、作用域隔离、类型安全等特性。这是一个探索性项目，旨在验证函数式插件化在 DI 中的应用可能性，而非生产就绪的框架。
+description: 尝试为 React 设计一个纯函数式的依赖注入系统，实现零装饰器依赖、作用域隔离、类型安全等特性。这是一个探索性项目，旨在验证函数式插件化在 DI 中的应用可能性，而非生产用的框架。
 tags:
   - 前端技术
   - 依赖注入
@@ -12,7 +12,7 @@ tags:
 /**
  * 服务注册键
  *
- * @description 因为要用于推倒类型，所以这里的类型和实际类型并不相符
+ * @description 因为要用于推导类型，所以这里的类型和实际类型并不相符
  * @internal
  */
 export type ServiceTypeWithKey<T> = symbol
@@ -196,91 +196,52 @@ export interface ILifeCycleHook {
 export declare const ILifeCycleHook: ServiceTypeWithKey<ILifeCycleHook>;
 ```
 
-# 引言与背景
+```ts?exportAs=@@local/inject/ILoggerService
+import { createServiceKey } from '@@local/inject';
 
-## 为什么做这个实验
-
-在 React 项目中，*依赖注入 (Dependency Injection / DI)* 常常被忽略。组件通过`props`传递依赖，或通过`Context`共享状态，但缺少统一的依赖管理机制。随着项目复杂度上升，模块间耦合增加，测试变难，可维护性下降。
-主流*DI*库（如`InversifyJS`、`TSyringe`）多采用*Class 模式*和*装饰器*，与 React 的函数式风格不一致。它们功能强大，但在 React 生态中显得“重”，且需要额外配置。
-正是在这样的背景下，我在开发我自己的开源项目[*Circuit Simulator*](https://github.com/xiaoboost/circuit-simulator/tree/feat/update)时遇到了具体的需求。这个项目需要一套插件化的架构，让各个功能模块可以独立开发和注册，同时还要支持多个画布实例的隔离。现有的 DI 方案要么太重，要么功能不足，无法满足需求。具体来说，我需要：
-1. 插件化架构，各模块可独立注册与卸载
-2. 作用域隔离，不同画布实例互不干扰
-3. 类型安全，编译期检查依赖关系
-4. 与 React 深度集成，使用 Hooks 访问服务
-
-因此，我决定尝试一个更贴合 React 的函数式插件化 DI 系统，作为一次技术探索。
-
-## 为什么没有使用现成的方案
-
-在开始设计之前，我调研了现有的 DI 库，发现主流 DI 库都采用 Class 模式和装饰器模式，但这种方式在 React 生态中存在一些问题，比如说装饰器实现复杂且版本差异大，与函数式风格不一致等。因此，我决定尝试设计一个全新的方案，探索函数式风格插件化在 DI 中的应用。这不是为了重复造轮子，而是想验证一种不同的可能性。
-既然要设计新方案，首先要明确设计方向。主流 DI 库普遍采用 Class 模式和装饰器，但这种方式在 React 生态中存在一些问题。接下来，我想详细分析一下 Class 模式与装饰器的“重”，以及为什么选择函数式作为替代方案。
-
-### Class 模式与装饰器的“重”
-
-Class 模式与装饰器在 DI 中常见，但存在一些“重”的问题：
-1. 装饰器实现复杂且版本差异大：装饰器提案历经多个阶段，不同版本实现差异明显。虽然现在已稳定，但若 DI 基座与插件使用不同装饰器版本，可能产生兼容性问题。不同库的装饰器实现也可能不兼容。
-2. 依赖自定义`Transformer`增加调试难度：部分 DI 系统依赖自定义的代码转换器将装饰器转为目标代码。这会让调试变难，源码与运行代码不一致，堆栈信息不直观，错误定位困难。
-3. 元数据与反射的开销：装饰器需要元数据支持，运行时反射机制带来额外开销。编译配置更复杂，需要启用实验性特性。
-4. 与函数式风格不一致：React 以函数式组件为主，Class 模式显得格格不入。需要额外的编译配置和学习成本。
-
-因此，我想设计一套纯函数式的 DI 系统，不依赖 Class 和装饰器，在保持良好开发体验的同时，降低技术实现复杂度。
-
-## 项目定位与设计目标
-
-首先要说明的式，本文介绍的是一个实验性的 DI 系统实现，它是我在自己的开源项目 Circuit Simulator 中的一次技术探索。
-* ✅ 是一个学习与实验项目，用于探索不同的 DI 设计思路
-* ✅ 在 Circuit Simulator 中实际使用，验证了设计可行性
-* ❌ 不是一个生产就绪的成熟框架
-* ❌ 不建议直接用于大型生产环境
-
-本文旨在分享设计思路与实践经验，探讨函数式插件化在 DI 中的应用，提供一种不同的技术视角，而非推广一个成熟框架。
-如果你正在寻找生产级的 DI 解决方案，建议考虑`InversifyJS`、`TSyringe`等成熟库。如果你对不同的设计思路感兴趣，欢迎继续阅读。
-
-### 纯函数式风格实现，零装饰器依赖
-
-采用纯函数式风格插件，不依赖 Class 和装饰器，并且函数式的风格更符合 React 的函数式风格，也更灵活。每个插件是一个函数，接收注册上下文，可以注册服务、钩子，并返回卸载函数。这样避免了装饰器版本差异和`Transformer`带来的调试问题，实现更简单、调试更直观。
-
-```ts
-import { definePlugin, createServiceKey } from '@@local/inject';
-
-/** 服务键 */
-const IService = createServiceKey<{}>('IService');
-
-// 纯函数式插件，无需装饰器
-definePlugin(({ registerService, getService }) => {
-  // 注册服务
-  registerService(IService, {});
-  
-  // 返回卸载函数
-  return () => {
-    // ..
-  };
-});
-```
-
-### 精确且安全的类型推导
-
-插件可以注册任意对象（字面量、实例、函数等），不强制使用 Class。并且使用`Symbol`实现服务键的实现和类型包装，服务键不仅用于运行时查找，还能在编译期推导服务类型，避免类型错误。
-
-`definePlugin`的设计参考了`webpack`、`vite`等构建工具的配置函数模式。这种设计的优势在于，通过函数参数，TypeScript 可以精确推导出上下文类型，无需维护一个包含所有可能方法的巨大接口。同时，这种设计实现了按需暴露 API，只暴露插件实际需要的 API，而不是一个臃肿的上下文对象。更重要的是，类型定义更简洁，不需要定义包含所有可能方法的接口，类型系统自动处理，让代码更加简洁易读。
-
-```ts
-import { definePlugin, createServiceKey } from '@@local/inject';
-
-// 服务类型定义
-interface ILoggerService {
+// 定义服务接口
+export interface ILoggerService {
   info(message: string): void;
   error(message: string): void;
+}
+
+// 创建服务键
+export const ILoggerService = createServiceKey<ILoggerService>('ILoggerService');
+```
+
+
+去年写 [Circuit Simulator](https://github.com/xiaoboost/circuit-simulator) 时，我需要一套插件系统。四个硬需求：
+
+1. 功能模块独立注册、独立卸载。渲染器、事件处理、工具栏各自是一个插件
+2. 多个画布实例之间互不干扰。每个画布有自己的状态，但共享全局服务（日志、存储）
+3. 编译期类型检查。注册一个服务，使用它的时候 IDE 能自动补全，而不是靠记忆或者查文档
+4. 和 React 深度集成。用 hooks 获取服务，不需要额外包装
+
+我试了 InversifyJS 和 TSyringe。都是好库，但在 React 里用有三处不适配：装饰器语法和函数组件格格不入；需要配置 `reflect-metadata` 和实验性编译选项，多一层心智负担；默认设计是全局单例容器，多实例隔离得自己补代码。另外装饰器依赖自定义 Transformer 做编译转换，出了 bug 调试时源码和运行代码对不上，堆栈信息也不直观。
+
+花了一个周末写了这套实现。纯函数，零装饰器，核心大约 500 行。在 Circuit Simulator 里跑了几个月，没出过什么大问题。它不是生产级框架。如果你需要成熟方案，InversifyJS 和 TSyringe 更靠谱。这篇文章只是记录一个不同的做法。
+
+## 插件就是一个函数
+
+整个系统的核心思路很简单。插件是函数，接收一个上下文对象，往里注册东西，可以返回清理函数，也可以不返回。
+
+```ts
+import { definePlugin, createServiceKey } from '@@local/inject';
+
+// 定义服务接口
+interface ILoggerService {
+  info(msg: string): void;
+  error(msg: string): void;
 }
 
 // 创建类型安全的服务键
 const ILoggerService = createServiceKey<ILoggerService>('ILoggerService');
 
 // 插件函数接收上下文，TypeScript 自动推导类型
-definePlugin((context) => {
+definePlugin((ctx) => {
   // 注册服务时可以提供精确的自动补全
   // 这里会报错说少了 error 方法
-  context.registerService(ILoggerService, {
+  ctx.registerService(ILoggerService, {
     // 精确的自动补全和类型检查
     info(msg: string) {
       // ..
@@ -288,115 +249,20 @@ definePlugin((context) => {
   });
 
   // 安全的类型推导
-  const storageService = context.getService(ILoggerService);
-});
-```
-
-### 降低技术复杂度，保持开发体验
-
-这是与 Class 模式相比的主要优势。系统无需配置装饰器或`transformer`，也无需启用实验性特性，开箱即用。调试时源码与运行代码一致，堆栈信息清晰，错误定位更容易。同时，系统保持了类型安全和良好的开发体验，TypeScript 可以提供准确的类型检查和自动补全，让开发更加高效。
-
-### 作用域隔离机制
-
-支持多级作用域，每个作用域有独立的服务容器。子作用域可访问父作用域的服务，但钩子只在当前作用域生效。这样可以在不同画布实例间实现隔离，同时共享全局服务。
-
-```ts
-import {
-  RootScope,
-  createScopeSymbol,
-  createPluginDefinitionWithScope,
-} from '@@local/inject';
-
-// 创建作用域
-const PainterScope = createScopeSymbol('Painter', RootScope);
-
-// 在作用域中注册插件
-const definePainterPlugin = createPluginDefinitionWithScope(PainterScope);
-```
-
-### 防止循环依赖
-
-在插件注册阶段禁止访问服务，强制延迟访问。通过`getServices`的延迟访问机制，可以在生命周期钩子中安全地使用服务，避免循环依赖问题。
-
-### React 深度集成
-
-提供 React Hooks API，让组件可以方便地访问服务。同时支持生命周期钩子，与 React 组件的生命周期对齐。
-
-```ts
-import {
-  createServiceKey,
-  useService,
-  useHook,
-  useLifeCycle,
-} from '@@local/inject';
-
-/** 流服务键 */
-const IStreamService = createServiceKey<{ event: string, data: any }>('IStreamService');
-/** 事件监听钩子键 */
-const IEventListenerHook = createServiceKey<{ event: string, handler: (data: any) => void }>('IEventListenerHook');
-
-function Component() {
-  const streamService = useService(IStreamService);
-  const hooks = useHook(IEventListenerHook, 'asc');
-  const lifeCycle = useLifeCycle();
-}
-```
-
-### 设计的边界
-
-在开始之前，我也明确了一些边界，这些边界帮助我聚焦核心问题，避免过度设计：
-* 不追求功能完整性：专注于核心功能，不实现所有可能的特性
-* 不追求性能极致：优先保证正确性和可维护性
-* 不追求通用性：针对 React 生态优化，不考虑其他框架
-* 不追求完美：允许不完美，重点是探索和学习
-
-接下来，就让我们开始吧——
-
-# 核心概念
-
-## 插件系统
-
-插件是函数，接收注册上下文，可以注册服务、钩子，并返回卸载函数。
-
-```ts
-import { definePlugin, createServiceKey } from '@@local/inject';
-
-interface IService {
-  cleanup(): void;
-}
-
-const IService = createServiceKey<IService>('IService');
-const IHook = createServiceKey<{}>('IHook');
-
-definePlugin((context) => {
-  const service: IService = {} as any;
-
-  // 注册服务
-  context.registerService(IService, service);
-  
-  // 注册钩子
-  context.registerHook(IHook, []);
-  
-  // 返回卸载函数（可选）
+  const storageService = ctx.getService(ILoggerService);
   return () => {
-    // 清理逻辑
-    service.cleanup();
+    // 组件卸载时自动调用，做清理
   };
 });
 ```
 
-这个插件系统的特点是：
-* 函数式风格：插件是纯函数，不依赖 Class 或装饰器
-* 延迟执行：插件在`useInjectInstall`调用时才执行
-* 生命周期：插件可以返回卸载函数，在组件卸载时自动调用
-* 作用域绑定：每个插件绑定到特定作用域
-* 跨作用域访问：通过`parent()`和`root()`方法可以访问父作用域或根作用域
+不用装饰器，不用类，一个函数就完成了注册。`definePlugin` 参考了 webpack、vite 的配置函数模式。通过函数参数解构，TypeScript 精确推导上下文类型，插件只拿到自己需要的 API。
 
-## 服务与钩子
+## 服务 vs 钩子
 
-系统中有两种注册类型：*服务 Service*和*钩子 Hook*。
+系统里两种注册方式。
 
-服务是*单例*，每个服务键对应一个实例。注册时会覆盖之前的实例，确保同一键只有一个服务。适合提供核心功能，如配置服务、存储服务等。
+**服务是单例。** 同一个 key 只能注册一个实例，后注册的覆盖前面的。适合放核心功能。
 
 ```ts
 import { createServiceKey, definePlugin } from '@@local/inject';
@@ -419,10 +285,10 @@ definePlugin(({ registerService }) => {
 });
 ```
 
-钩子是*集合*，每个钩子键可对应多个实例。多个插件可注册到同一个钩子键，系统会收集所有实例。适合扩展点模式，如事件监听钩子、生命周期钩子、渲染器等。
+**钩子是集合。** 同一个 key 可以注册多个，系统收集到一个数组里。适合扩展点，比如事件监听、生命周期回调。你不知道有多少插件会注册鼠标事件，但你知道怎么把它们全拿到。
 
 ```ts
-import { createServiceKey, definePlugin } from '@@local/inject';
+import { definePlugin } from '@@local/inject';
 import { IEventListenerHook } from '@@local/inject/IEventListenerHook';
 
 // 多个插件可以注册到同一个钩子键
@@ -439,38 +305,24 @@ definePlugin(({ registerHook }) => {
 });
 ```
 
-这种设计让服务适合提供核心功能，钩子适合扩展点模式。
-
 ## 作用域
 
-系统支持多级作用域，形成作用域树。每个作用域有独立的服务容器和钩子容器。
-在复杂应用中，不同模块可能需要不同的服务实例。例如，多个画布实例需要独立的状态管理，不同上下文需要不同的服务，测试时需要独立的服务容器。如果没有作用域，所有服务都在全局共享，无法隔离的话很容易出现难以排查的问题。
+Circuit Simulator 支持多画布。打开两个画布，各自有独立的缩放、平移、选中状态。如果所有服务放在全局共享，两个画布的状态会互相污染。
 
-作用域创建子作用域：
+作用域就是干这个的。每个画布是一个作用域，有独立的一套服务和钩子。
 
 ```ts
-import { createScopeSymbol } from '@@local/inject';
+import { RootScope, createScopeSymbol } from '@@local/inject';
 
-// 创建根作用域（系统内置）
-const RootScope = Symbol('RootScope');
-
-// 创建子作用域
 const PainterScope = createScopeSymbol('Painter', RootScope);
 const EditorScope = createScopeSymbol('Editor', PainterScope);
 ```
 
-作用域树结构如下：
+作用域可以嵌套成树。`EditorScope` 是 `PainterScope` 的子作用域。
 
-```bash
-RootScope
-  └─── PainterScope
-        ├── EditorScope
-        └── ViewerScope
-```
+### 服务查找：向上查
 
-### 服务查找策略
-
-服务查找策略采用了*向上查找*的策略。从当前作用域开始，如果找不到，会向上查找父作用域，直到根作用域。这样子作用域可以访问父作用域的服务，实现服务共享。但父作用域无法访问子作用域的服务，这样保证隔离，也符合编程的直觉。
+从 `EditorScope` 获取服务时，先查自己，没有就查 `PainterScope`，再没有查 `RootScope`，到了根还找不到就抛错。
 
 ```ts
 import {
@@ -488,10 +340,10 @@ const IChildService = createServiceKey<{}>('IChildService');
 defineGlobalPlugin(({ registerService, registerHook, getService }) => {
   // 在根作用域注册服务
   registerService(IGlobalService, {});
-  // 在生命周期中访问父级作用于服务
+  // 在生命周期中访问父级作用域服务
   registerHook(ILifeCycleHook, {
     onMounted() {
-      const service = getService(IChildService); // ❌ 找不到  /*** hl ***/
+      const service = getService(IChildService); // 找不到，父看不到子的服务  /*** hl ***/
     },
   });
 });
@@ -500,26 +352,27 @@ defineGlobalPlugin(({ registerService, registerHook, getService }) => {
 defineChildPlugin(({ registerService, registerHook, getService }) => {
   // 在子作用域注册服务
   registerService(IChildService, {});
-  // 在生命周期中访问父级作用于服务
+  // 在生命周期中访问父级作用域服务
   registerHook(ILifeCycleHook, {
     onMounted() {
-      const service = getService(IGlobalService); // ✅ 可以找到  /*** hl ***/
+      const service = getService(IGlobalService); // 能找到，向上到了根  /*** hl ***/
     },
   });
 });
 ```
 
-服务采用向上查找策略，主要有几个原因。首先，这样可以减少重复注册，全局服务只需在根作用域注册一次，所有子作用域都可以访问，避免了在每个子作用域都重复注册相同的服务。其次，这种策略能够节约资源，避免为每个作用域创建重复的服务实例，特别是对于那些无状态或可以共享的服务来说，这种方式更加高效。同时，这种设计还提供了灵活性，可以在不同层级提供不同的服务实现，子作用域优先使用自己的服务，如果找不到再向上查找，这样既支持了服务共享，又允许在特定作用域中覆盖服务实现。最后，这种单向继承的设计保证了隔离性，父作用域无法访问子作用域的服务，确保了作用域之间的隔离，避免了意外的服务访问。额外的是，这种设计比较符合一般意义上的编程直觉。
+日志服务在根作用域注册一次，所有画布都能用，不用每个画布都注册一遍。反过来，父作用域够不到子作用域的服务，隔离是单向的。
 
-### 钩子隔离策略
+还有一个好处：子作用域可以覆盖父作用域的同名服务。比如根作用域有个默认存储，某个画布想用自己的独立存储，在画布作用域注册一个同 key 的服务就行。查找时优先拿自己这层的，找不到再向上，自然实现了覆盖。
 
-只在当前作用域查找。默认只在当前作用域查找。钩子不会向上查找，每个作用域只返回自己注册的钩子。这样不同作用域可以有独立的钩子集合，实现隔离。
+### 钩子查找：只看当前层
+
+钩子不向上查。`EditorScope` 只返回注册在 `EditorScope` 的钩子，`PainterScope` 的不混进来。
 
 ```ts
 import {
   defineGlobalPlugin,
   defineChildPlugin,
-  createServiceKey,
   useHook,
 } from '@@local/inject';
 import { IEventListenerHook } from '@@local/inject/IEventListenerHook';
@@ -542,52 +395,48 @@ function Component() {
 }
 ```
 
-如果需要注册父作用域的钩子，可以通过`parent()`或`root()`方法显式跨作用域注册。在`definePlugin` 的回调上下文中，提供了这两个方法。
+这个设计来自需求本身。不同画布有不同的事件处理。画布 A 需要框选，画布 B 只需要点击。钩子向上查找的话，A 的逻辑会漏到 B。
+
+如果确实需要在父作用域注册钩子，可以显式操作。
 
 ```ts
 import { definePlugin } from '@@local/inject';
 import { IEventListenerHook } from '@@local/inject/IEventListenerHook';
 
 definePlugin(({ parent, root, registerHook }) => {
-  // 可以在父作用域注册钩子
   parent()?.registerHook(IEventListenerHook, {});
-  // 也可以在根作用域注册钩子
   root().registerHook(IEventListenerHook, {});
 });
 ```
 
-要访问父作用域的钩子，就比较麻烦了，需要拿到上级作用域的键本身，然后使用`withScope`系列的方法来实现，但是这种情况应该是极少的，钩子的设计本来就是可以跨作用域的注册，但是尽量不要跨作用域消费的，如果你需要跨作用域的消费钩子，那应该考虑这个钩子的设计是否合理。
+但跨作用域*消费*钩子就麻烦了。需要用 `useHookWithScope` 手动指定作用域。这种情况极少，如果经常需要这么做，说明钩子本身的设计该重新考虑。
 
 ```ts
-import {
-  definePlugin,
-  RootScope,
-  useHookWithScope,
-  createServiceKey,
-} from '@@local/inject';
+import { RootScope, useHookWithScope, createServiceKey } from '@@local/inject';
 
 const IGlobalHook = createServiceKey<{}>('IGlobalHook');
 
-// 在子作用域获取全局的钩子
 function Component() {
   const hooks = useHookWithScope(IGlobalHook, RootScope);
 }
 ```
 
-钩子采用隔离策略，主要是为了精确控制每个作用域的扩展点。每个作用域可以精确控制自己的钩子集合，不会受到其他作用域的影响。这种隔离设计还能避免污染，子作用域的钩子不会影响父作用域，确保了不同作用域之间的独立性。更重要的是，这种设计让不同作用域可以有完全不同的扩展集合，每个作用域都可以根据自己的需求注册不同的钩子，互不干扰。同时，系统也提供了灵活性，当确实需要注册父作用域的钩子时，可以通过`parent()`或`root()`方法显式跨作用域访问，这样既保证了默认的隔离性，又提供了必要的灵活性。
-
 ## 类型安全设计
 
-在传统的 DI 系统中，服务键通常是字符串或`Symbol`，这些标识符在运行时才能知道对应的服务类型。这会导致从容器获取的服务类型变成`any`，失去了类型信息。更严重的是，这种类型丢失会让编译期无法检查类型错误，只能在运行时才能发现问题。同时，IDE 也无法提供准确的自动补全，开发体验大打折扣。
-因此，我们需要一种机制能够在编译期就能推导出服务类型，让 TypeScript 的类型系统能够帮助我们检查错误，提供更好的开发体验。
+大多数 DI 库用字符串做服务键，实现简单，但返回值类型是 `any`，编译器帮不上忙。拼错一个方法名要到运行时才报错。
 
-TypeScript 的*品牌类型 Branded Types*可以在运行时保持简单（使用`Symbol`），同时在编译期提供类型信息。
-品牌类型的核心思想是：给一个基础类型添加一个类型标记，这个标记只在编译期存在，运行时会被擦除。这样既保持了运行时的简单性，又提供了编译期的类型安全。
-通过品牌类型，服务键不仅是一个运行时标识，还能携带类型信息。TypeScript 可以从服务键推导出对应的服务类型，实现类型安全的依赖注入。
-使用品牌类型后，系统可以获得编译期类型检查的能力。当使用服务时，TypeScript 可以检查类型是否正确，如果调用了不存在的方法或属性，会在编译期就报错，而不是等到运行时才发现问题。同时，系统还支持自动类型推导，不需要手动指定类型，TypeScript 会根据服务键自动推导出对应的服务类型。这种自动推导不仅减少了代码量，还让代码更加简洁易读。
-更重要的是，这种类型推导带来了更好的 IDE 支持。IDE 可以提供准确的自动补全和类型提示，让开发者在编写代码时就能知道服务有哪些方法和属性，大大提升了开发效率。最后，这种类型安全还让重构变得更加友好。当修改服务接口时，TypeScript 可以检查所有使用处，确保修改不会破坏现有的代码，让重构变得更加安全和可靠。
+这个系统用品牌类型替代字符串。`createServiceKey<T>` 返回的是 `symbol & { readonly __type: T }`，`__type` 只在编译期存在，运行时就是普通 Symbol。
 
-使用示例：
+```ts
+export type ServiceTypeWithKey<T> = symbol
+  & { readonly __type: T };
+
+export function createServiceKey<T>(name: string): ServiceTypeWithKey<T> {
+  return Symbol(name) as ServiceTypeWithKey<T>;
+}
+```
+
+创建服务键时传入类型参数，TypeScript 会记住这个类型。之后用这个键获取服务，返回值自动带上正确的类型。
 
 ```ts
 import { createServiceKey, definePlugin } from '@@local/inject';
@@ -628,56 +477,9 @@ definePlugin(({ registerService, getService, getServices }) => {
 });
 ```
 
-# 基础使用示例
+# 接入 React
 
-## 服务与钩子
-
-服务和钩子其实注册方式都差不多，这里仅介绍服务，钩子的使用方式类似。
-
-### 创建服务键
-
-首先，需要创建服务键。服务键是类型安全的标识符，用于标识和查找服务：
-
-```ts?exportAs=@@local/inject/ILoggerService
-import { createServiceKey } from '@@local/inject';
-
-// 定义服务接口
-export interface ILoggerService {
-  log(message: string): void;
-  error(message: string): void;
-}
-
-// 创建服务键
-export const ILoggerService = createServiceKey<ILoggerService>('ILoggerService');
-```
-
-### 注册服务
-
-通过`definePlugin`注册服务。插件是一个函数，接收注册上下文：
-
-```ts?platform=browser
-import { definePlugin } from '@@local/inject';
-import { ILoggerService } from '@@local/inject/ILoggerService';
-
-definePlugin(({ registerService }) => {
-  // 创建服务实例
-  const loggerService: ILoggerService = {
-    log(message: string) {
-      console.log(`[LOG] ${message}`);
-    },
-    error(message: string) {
-      console.error(`[ERROR] ${message}`);
-    },
-  };
-  
-  // 注册服务
-  registerService(ILoggerService, loggerService);
-});
-```
-
-## 在组件中使用
-
-在组件树的根部，需要创建`InjectContext.Provider`，并传入一个`Map`作为 DI 容器：
+在组件树根部挂上 `InjectContext.Provider`，传入一个 `Map` 作为 DI 容器。
 
 ```tsx
 import { InjectContext } from '@@local/inject';
@@ -692,57 +494,41 @@ export function App() {
 }
 ```
 
-这个`Map`就是整个应用共享的 DI 容器，所有子组件都可以通过`Context`访问它。
-
-然后在需要使用 DI 的组件中，首先调用`useInjectInstall`初始化 DI 系统，它会执行所有已注册的插件，初始化服务和钩子。返回的`pluginInitialized`表示插件是否已初始化完成。
-
-```tsx
-import React from 'react';
-import { useInjectInstall, useServiceWithGlobal } from '@@local/inject';
-
-function Initialization() {
-  const [pluginInitialized] = useInjectInstall();
-  
-  // 等待初始化完成
-  if (!pluginInitialized) {
-    return null;
-  }
-  
-  // 这里可以放你真正的 App 组件
-  return <div />;
-}
-```
-
-初始化完成后，可以使用全局作用域的快捷方法获取服务：
+然后在子组件中调用 `useInjectInstall` 初始化。它会创建作用域树并执行所有已注册的插件，返回的 `pluginInitialized` 为 `true` 时说明初始化完成。
 
 ```tsx
 import React, { useEffect } from 'react';
-import { useServiceWithGlobal } from '@@local/inject';
+import { useInjectInstall, useServiceWithGlobal } from '@@local/inject';
 import { ILoggerService } from '@@local/inject/ILoggerService';
 
 function Layout() {
   const logger = useServiceWithGlobal(ILoggerService);
-  
+
   useEffect(() => {
-    logger.log('组件已加载');
+    logger.info('组件已加载');
   }, [logger]);
-  
-  return <div>Layout</div>;
+
+return <div>Layout</div>;
+}
+
+function Initialization() {
+  const [pluginInitialized] = useInjectInstall();
+
+  // 等待初始化完成
+  if (!pluginInitialized) {
+    return null;
+  }
+
+  // 这里可以放你真正的 App 组件
+  return <Layout />;
 }
 ```
 
-全局作用域提供了三个快捷方法：
-- `useServiceWithGlobal`：获取服务
-- `useHookWithGlobal`：获取钩子
-- `useLifeCycleWithGlobal`：管理生命周期
+全局作用域有三个快捷方法，`useServiceWithGlobal`、`useHookWithGlobal`、`useLifeCycleWithGlobal`，不需要手动传入作用域。
 
-这些方法会自动获取全局作用域的服务、钩子和生命周期，不需要手动传入作用域。
+## 子作用域
 
-## 作用域的使用
-
-### 定义作用域和快捷方法
-
-在实际项目中，通常会为特定功能模块创建独立的作用域，并导出快捷方法。这样的话，在子作用域相关的代码中，就可以直接使用`useService`、`useHook`和`useLifeCycle`，而不需要每次都传入作用域参数。
+为功能模块创建独立的作用域，同时导出该作用域的快捷 hooks。
 
 ```ts
 // painter/context/index.ts
@@ -768,58 +554,12 @@ export const useHook = reactHook.useHook;
 export const useLifeCycle = reactHook.useLifeCycle;
 ```
 
-### 在作用域中注册插件
+子作用域相关的代码中，直接用导出的 `useService`、`useHook`、`useLifeCycle`，不用每次传作用域参数。
 
-使用导出的`definePlugin`在子作用域中注册插件：
+## 驱动层
 
-```ts
-import { definePlugin, createServiceKey } from '@@local/inject';
-
-const IPainterService = createServiceKey<{
-  getCanvas(): any;
-  render(): void;
-}>('IPainterService');
-
-definePlugin(({ registerService }) => {
-  const painterService = {
-    getCanvas() { /* ... */ },
-    render() { /* ... */ },
-  };
-  registerService(IPainterService, painterService);
-});
-```
-
-## 连接组件与 DI
-
-DI 系统提供了钩子/服务机制，但如何将钩子/服务与 React 组件连接起来呢？这就需要*驱动层 Driver Layer*。
-驱动层的核心思路是：在组件中创建一个驱动函数，从 DI 系统获取所有注册的钩子/服务，然后将这些钩子/服务绑定到实际的 DOM 事件或 React 生命周期上。
-
-### 驱动层工作原理
-
-DI 系统提供了钩子机制，但如何将钩子与 React 组件连接起来呢？这就需要*驱动层 Driver Layer*。驱动层的核心思路是：在组件中创建一个驱动函数，从 DI 系统获取所有注册的钩子，然后将这些钩子绑定到实际的 DOM 事件或 React 生命周期上。
-以事件监听器钩子为例，展示驱动层的工作原理。首先，各个插件通过`registerHook`注册事件监听钩子，这些钩子包含了事件处理函数，比如`onMouseDown`、`onMouseUp`等。然后，在组件中创建一个驱动层函数（如`useEventListenerDriver`），这个函数使用`useHook`从 DI 系统获取所有注册的事件监听钩子。接下来，驱动层将这些钩子中的事件处理函数绑定到实际的 DOM 事件监听器上，比如将`onMouseDown`绑定到`mousedown`事件。当事件发生时，驱动层会按顺序调用所有相关的钩子函数，实现事件分发。最后，当组件卸载时，驱动层会清理所有事件监听器，避免内存泄漏。
-这种设计的好处是插件只需要注册钩子，不需要关心事件如何绑定。驱动层统一管理事件监听，避免重复绑定，同时钩子可以按`order`排序，控制执行顺序。更重要的是，这种设计实现了组件与 DI 系统的*解耦*，组件不需要知道有哪些插件注册了钩子，只需要调用驱动层即可，让代码更加模块化和易于维护。
-
-### 驱动层实现示例
-
-首先，定义事件监听钩子接口：
-
-```ts
-import { createServiceKey } from '@@local/inject';
-
-/** 事件监听 */
-export interface IEventListenerHook {
-  order?: number;
-  onMouseDown?(event: MouseEvent): void;
-  onMouseUp?(event: MouseEvent): void;
-  onClick?(event: MouseEvent): void;
-}
-
-/** 事件监听钩子 */
-export const IEventListenerHook = createServiceKey<IEventListenerHook>('IEventListenerHook');
-```
-
-在组件中创建驱动层，将钩子绑定到 DOM 事件：
+DI 系统管理了服务和钩子，但还需要一层胶水把它们和 React 组件接起来，这就是驱动层。
+以事件监听为例。各个插件通过`registerHook`注册事件处理函数，驱动层负责把这些函数绑定到 DOM 事件上。这样插件只管注册，不用碰 DOM；组件只管渲染，不用知道有哪些插件。
 
 ```tsx?platform=browser&exportAs=@@local/inject/useEventListenerDriver
 import { useHook } from '@@local/inject';
@@ -829,43 +569,43 @@ import { useRef, useEffect } from 'react';
 export function useEventListenerDriver(ref: React.RefObject<HTMLDivElement>) {
   // 从 DI 系统获取所有注册的事件监听钩子
   const hooks = useHook(IEventListenerHook);
-  
+
   useEffect(() => {
     if (!ref.current) {
       return;
     }
-    
+
     const element = ref.current;
-    
+
     // 按 order 排序钩子
     const sortedHooks = hooks.slice().sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
-    
+
     // 绑定鼠标按下事件
     const handleMouseDown = (event: MouseEvent) => {
       for (const hook of sortedHooks) {
         hook.onMouseDown?.(event);
       }
     };
-    
+
     // 绑定鼠标释放事件
     const handleMouseUp = (event: MouseEvent) => {
       for (const hook of sortedHooks) {
         hook.onMouseUp?.(event);
       }
     };
-    
+
     // 绑定点击事件
     const handleClick = (event: MouseEvent) => {
       for (const hook of sortedHooks) {
         hook.onClick?.(event);
       }
     };
-    
+
     // 注册事件监听器
     element.addEventListener('mousedown', handleMouseDown);
     element.addEventListener('mouseup', handleMouseUp);
     element.addEventListener('click', handleClick);
-    
+
     // 清理函数
     return () => {
       element.removeEventListener('mousedown', handleMouseDown);
@@ -876,7 +616,7 @@ export function useEventListenerDriver(ref: React.RefObject<HTMLDivElement>) {
 }
 ```
 
-最后，将 DI 系统中的钩子与 DOM 事件连接：
+组件里用起来很简单。
 
 ```tsx
 import React, { useRef } from 'react';
@@ -884,17 +624,17 @@ import { useEventListenerDriver } from '@@local/inject/useEventListenerDriver';
 
 function Component() {
   const ref = useRef<HTMLDivElement>(null);
-  
+
   // 使用驱动层，将钩子绑定到 DOM 事件
   useEventListenerDriver(ref);
-  
+
   return <div ref={ref}>组件内容</div>;
 }
 ```
 
-## 实际应用场景
+## 文件组织
 
-在实际项目中，通常会这样组织代码：
+项目里我通常这样分文件。
 
 ```tsx?lsp=false
 // services/logger.ts
@@ -932,21 +672,21 @@ import { ILoggerService } from '../services/logger';
 
 function Layout() {
   const logger = useService(ILoggerService);
-  
+
   useEffect(() => {
     logger.log('应用已加载');
   }, [logger]);
-  
+
   return <div>应用内容</div>;
 }
 
 function Initialization() {
   const [pluginInitialized] = useInjectInstall();
-  
+
   if (!pluginInitialized) {
     return null;
   }
-  
+
   return <Layout />;
 }
 
@@ -959,13 +699,11 @@ export function App() {
 }
 ```
 
-这种组织方式让代码结构清晰，易于维护。每个功能模块都有自己的作用域和快捷方法，使用起来非常方便。
+# 核心实现
 
-# 核心实现解析
+## 服务键
 
-## 服务键的类型与实现
-
-在第三部分中，我们看到了如何使用 `createServiceKey` 创建服务键。现在让我们深入看看它的实现：
+`createServiceKey` 的实现就是创建一个带类型断言的 Symbol。
 
 ```ts
 import { ServiceTypeWithKey } from '@@local/inject';
@@ -975,46 +713,32 @@ export function createServiceKey<T>(name: string): ServiceTypeWithKey<T> {
 }
 ```
 
-实现很简单——创建一个 `Symbol`，然后通过类型断言转换为品牌类型。关键在于类型定义：
+类型定义如下。
 
 ```ts
 export type ServiceTypeWithKey<T> = symbol
   & { readonly __type: T };
 ```
 
-这个类型定义表示`ServiceTypeWithKey<T>`是`symbol`类型与一个只读属性的交集类型。`__type`属性只在编译期存在，用于类型推导，运行时会被 TypeScript 擦除。
-当我们使用`createServiceKey<ILoggerService>('ILoggerService')`时，返回的`Symbol`在运行时只是一个普通的标识符，但在编译期，TypeScript 会将其视为带有`ILoggerService`类型标记的品牌类型。这样，当我们使用这个服务键时，TypeScript 可以从类型参数`T`推导出对应的服务类型，实现类型安全的依赖注入。
+`__type` 只在编译期存在，运行时被擦除。`createServiceKey<ILoggerService>('ILoggerService')` 返回的 Symbol 在运行时只是普通标识符，在编译期 TypeScript 把它当作携带了 `ILoggerService` 类型标记的品牌类型。
 
-## 插件注册与安装机制
+## 插件注册与安装
 
-在第三部分中，我们看到了如何使用`definePlugin`注册插件。现在让我们看看插件是如何被管理和安装的。
-
-### 插件元信息管理
-
-系统使用全局 Map 来管理插件信息：
+系统用一个全局 Map 管理插件元信息，键是安装器函数本身。
 
 ```ts?lsp=false
 export const PluginMetaInfos = new Map<PluginInstaller, IPluginMeta>();
-```
 
-这个*Map*的键是插件安装器函数本身，值包含作用域和安装器。注册插件时，系统会检查插件是否已经注册过：
-
-```ts?lsp=false
 function definePlugin(scope: symbol, installer: PluginInstaller) {
   if (!PluginMetaInfos.has(installer)) {
-    PluginMetaInfos.set(installer, {
-      scope,
-      installer,
-    });
+    PluginMetaInfos.set(installer, { scope, installer });
   }
 }
 ```
 
-这种设计允许同一个插件函数只注册一次，即使多次调用`definePlugin`也不会重复注册。同时，使用函数本身作为键，可以确保函数引用相同的插件不会重复注册。
+`useInjectInstall` 被调用时，先创建作用域树，再安装插件。
 
-### 作用域树的创建
-
-在`useInjectInstall`被调用时，系统首先创建作用域树：
+作用域树的创建是一个递归过程，从根作用域开始，读取 `ScopeMetaInfos` 中的父子关系，建立完整的树形结构。
 
 ```ts
 import { ScopeMetaInfos, IScopeManager, RootScope, IScopeContainer } from '@@local/inject';
@@ -1028,7 +752,7 @@ function createScope(scopeMeta: typeof ScopeMetaInfos, manager: IScopeManager) {
   function createScopeRecursive(scope: symbol, parentScope: symbol | null = null) {
     const parentContainer = parentScope ? manager.get(parentScope) : null;
     const scopeContainer = createScopeData(scope, parentContainer);
-    
+
     if (parentContainer) {
       manager.set(scope, scopeContainer);
       scopeContainer.parent = parentContainer;
@@ -1037,7 +761,7 @@ function createScope(scopeMeta: typeof ScopeMetaInfos, manager: IScopeManager) {
     else {
       manager.set(scope, createScopeData(scope));
     }
-    
+
     const children = scopeMeta.get(scope);
     if (children) {
       for (const child of children) {
@@ -1045,16 +769,12 @@ function createScope(scopeMeta: typeof ScopeMetaInfos, manager: IScopeManager) {
       }
     }
   }
-  
+
   createScopeRecursive(RootScope);
 }
 ```
 
-这个递归函数从根作用域开始，递归创建所有子作用域，并建立父子关系。每个作用域容器都包含指向父作用域的引用和子作用域数组，形成完整的树形结构。
-
-### 插件安装过程
-
-作用域树创建完成后，系统开始安装插件：
+安装阶段的核心是一个 `isInstalling` 标志位。安装器执行期间标志为 `true`，此时调用 `getService` 或 `getHook` 会直接抛错，强制插件在注册阶段只注册不访问。
 
 ```ts?lsp=false
 let isInstalling = true;
@@ -1074,11 +794,11 @@ const uninstaller = installer({
 isInstalling = false;
 ```
 
-安装过程的关键是`isInstalling`标志位。在插件安装器执行期间，这个标志为`true`，此时如果调用`getService`或`getHook`，会抛出错误。安装完成后，标志被设置为`false`，此时可以正常访问服务。这种设计强制插件在注册阶段只能注册服务，不能访问服务，从而避免了循环依赖问题。另外，如果插件返回了卸载函数，系统会将其注册为生命周期钩子，在组件卸载时自动调用。
+插件返回的卸载函数会注册为生命周期钩子，在组件卸载时自动调用。
 
-## 作用域管理与服务查找
+## 服务查找
 
-在第三部分中，我们看到了服务如何在不同作用域间共享。现在让我们看看服务查找的实现：
+`getServiceWithScope` 从当前作用域开始查，找不到就逐级向上。
 
 ```ts
 import { ServiceTypeWithKey, IScopeManager } from '@@local/inject';
@@ -1089,30 +809,30 @@ export function getServiceWithScope<T>(
   ScopeManager: IScopeManager,
 ): T {
   let scopeContainer = ScopeManager.get(scope);
-  
+
   if (!scopeContainer) {
     throw new Error(`未找到 ${String(scope)} 作用域`);
   }
-  
+
   let service = scopeContainer.context.ServiceMap.get(key);
-  
+
   // 逐级向上查找
   while (!service && scopeContainer.parent) {
     scopeContainer = scopeContainer.parent;
     service = scopeContainer.context.ServiceMap.get(key);
   }
-  
+
   if (!service) {
     throw new Error(`未找到 ${String(key)} 服务`);
   }
-  
+
   return service as T;
 }
 ```
 
-这个算法从当前作用域开始查找，如果找不到，就向上查找父作用域，直到找到服务或到达根作用域。算法的时间复杂度是`O(h)`，其中`h`是作用域树的深度。在实际应用中，作用域树的深度通常不会很深，所以性能影响可以忽略。
+时间复杂度 `O(h)`，`h` 是作用域树深度，实际应用中深度通常很小。
 
-钩子的查找更简单，只在当前作用域查找：
+钩子查找只在当前作用域。
 
 ```typescript
 import { ServiceTypeWithKey, IScopeManager } from '@@local/inject';
@@ -1124,24 +844,18 @@ export function getHookWithScope<T>(
   sort: 'asc' | 'desc' = 'asc',
 ): T[] {
   const scopeContainer = ScopeManager.get(scope);
-  
+
   if (!scopeContainer) {
     throw new Error(`未找到 ${String(scope)} 作用域`);
   }
-  
+
   return scopeContainer.context.HookMap.get(key) ?? [];
 }
 ```
 
-钩子不会向上查找，每个作用域只返回自己注册的钩子，实现了作用域隔离。
+## React Hooks
 
-## React 集成与 Hooks 实现
-
-在第三部分中，我们看到了如何在组件中使用`useServiceWithGlobal`等方法。现在让我们看看这些 Hooks 的实现。
-
-### Context 管理
-
-系统使用*React Context*来管理作用域管理器：
+系统用 React Context 存储 `IScopeManager`。
 
 ```ts
 import { createContext } from 'react';
@@ -1150,31 +864,7 @@ import { IScopeManager } from '@@local/inject';
 export const InjectContext = createContext<IScopeManager>(new Map());
 ```
 
-这个 Context 存储了整个作用域管理器，所有组件都可以通过`useContext`访问。在组件树的根部，我们创建`InjectContext.Provider`并传入一个`Map`：
-
-```tsx?lsp=false
-<InjectContext.Provider value={new Map()}>
-  <Initialization />
-</InjectContext.Provider>
-```
-
-这个`Map`就是整个应用共享的 DI 容器，所有子组件都可以通过`Context`访问它。
-
-### Hooks API 实现
-
-全局作用域的快捷方法实现如下：
-
-```ts
-import { RootScope, createReactHookWithScope } from '@@local/inject';
-
-const GlobalUse = createReactHookWithScope(RootScope);
-
-export const useServiceWithGlobal = GlobalUse.useService;
-export const useHookWithGlobal = GlobalUse.useHook;
-export const useLifeCycleWithGlobal = GlobalUse.useLifeCycle;
-```
-
-这些方法内部使用`createReactHookWithScope`创建：
+`createReactHookWithScope` 为指定作用域创建一套 hooks。
 
 ```ts
 import {
@@ -1200,22 +890,20 @@ export function createReactHookWithScope(scope: symbol) {
       // 生命周期管理逻辑
     },
   };
-  
+
   return hook;
 }
 ```
 
-`useService`直接调用查找函数，而`useHook`使用`useMemo`缓存结果，避免不必要的重新计算。这样，开发者可以为特定作用域创建一套*Hooks*，使用时就不需要每次都传入作用域参数，简化了 API。
+`useService` 直接调用查找函数，`useHook` 用 `useMemo` 缓存。
 
-### 初始化 Hook
-
-`useInjectInstall`的实现如下：
+`useInjectInstall` 在组件挂载时执行一次，创建作用域树并安装所有插件。
 
 ```ts?lsp=false
 export function useInjectInstall() {
   const manager = useContext(InjectContext);
   const [isInitialized, setIsInitialized] = useState(false);
-  
+
   useEffect(() => {
     // 创建作用域
     createScope(ScopeMetaInfos, manager);
@@ -1223,37 +911,29 @@ export function useInjectInstall() {
     installPlugin(PluginMetaInfos, manager);
     // 标记初始化完成
     setIsInitialized(true);
-    
+
     return () => {
       setIsInitialized(false);
     };
   }, []);
-  
+
   return [isInitialized] as const;
 }
 ```
 
-这个*Hook*在组件挂载时执行一次，创建作用域树并安装所有插件。返回的`isInitialized`表示插件是否已初始化完成，组件可以根据这个状态决定是否渲染内容。
+## 防止循环依赖
 
-## 防止循环依赖的机制
+`isInstalling` 标志位来自一个实际问题：如果注册阶段允许访问服务，A 插件注册时去拿 B 的服务，B 又在注册时拿 A 的，直接死锁。所以注册阶段一刀切禁止访问，把依赖解析推迟到所有插件安装完成后。
 
-在第三部分中，我们看到了如何使用`getServices`实现延迟访问。现在让我们深入看看这个机制是如何工作的。
+注册阶段发生错误时，系统会解析调用栈，提取用户代码的文件路径和行号，方便定位。
 
-### 注册阶段限制
-
-系统通过`isInstalling`标志位，在插件注册阶段禁止访问服务。这不仅防止了循环依赖，还让插件的职责更加清晰：注册阶段只负责注册，不负责使用。
-
-如果注册阶段发生错误，还会解析错误信息，以及提供简单的快捷建议。系统还会从调用栈中提取用户代码的位置信息，包括文件路径、行号和列号，让开发者可以直接看到错误发生的位置。
-
-### getServices 延迟访问实现
-
-`getServices`使用 JavaScript 的`Object.defineProperty`实现延迟访问：
+`getServices` 用 `Object.defineProperty` 实现延迟访问。返回对象的每个属性是 getter，实际访问时才触发查找。
 
 ```ts?lsp=false
 getServices: (services) => {
   const result: Record<string, any> = {};
   const cache: Record<string, any> = {};
-  
+
   for (const [key, serviceKey] of Object.entries(services)) {
     Object.defineProperty(result, key, {
       get() {
@@ -1261,11 +941,11 @@ getServices: (services) => {
         if (isInstalling) {
           throw createInstallPhaseError('服务', serviceKey, installer, true);
         }
-        
+
         if (cache.hasOwnProperty(key)) {
           return cache[key];
         }
-        
+
         const service = getServiceWithScope(serviceKey, scope, manager);
         cache[key] = service;
         return service;
@@ -1274,109 +954,53 @@ getServices: (services) => {
       configurable: false,
     });
   }
-  
+
   return result as any;
 }
 ```
 
-这个实现的关键在于使用`get`访问器属性。当调用`getServices`时，返回的对象中的每个属性都是一个访问器属性，只有在实际访问时才会执行查找逻辑。这样，插件可以在注册阶段调用`getServices`获取对象引用，然后在生命周期钩子中再访问属性，实现延迟访问。
+这样插件可以在注册阶段调用 `getServices` 拿到对象引用，在生命周期钩子中再访问属性，绕开了注册阶段的访问限制。
 
 ## 生命周期管理
 
-在第三部分中，我们看到了如何使用生命周期钩子。现在让我们看看生命周期管理的实现。
-生命周期管理的核心思路是收集所有生命周期钩子，按`order`排序并分组，然后按顺序执行。钩子按照`order`值排序，`order`越小优先级越高。相同`order`的钩子分为一组，组内并发执行，组间顺序执行。系统支持异步钩子，使用`Promise.all`等待所有异步钩子完成。卸载时，会按顺序*逆序*执行卸载钩子，确保清理顺序正确。这种设计让生命周期钩子的执行顺序可控。
-
-### 通用生命周期管理
-
-根据钩子的特性，每个作用域获取生命周期钩子时，只能拿到当前作用域注册的钩子。这意味着每个作用域需要自己管理自己的生命周期。但系统已经封装了通用的生命周期管理方法，通过`createReactHookWithScope`创建的快捷 Hooks 中包含了`useLifeCycle`方法。
+生命周期钩子按 `order` 排序分组，组内并发执行，组间顺序执行。卸载时逆序执行卸载钩子。
 
 ```ts?lsp=false
 useLifeCycle() {
   const hooks = hook.useHook(ILifeCycleHook);
   const [isInitialized, setIsInitialized] = useState(false);
-  
+
   useEffect(() => {
     // 按 order 排序并分组
     const sortedHooks = hooks.slice().sort((a, b) => {
       return getOrder(a.order) - getOrder(b.order);
     });
-    
+
     const groups = new Map<number, ILifeCycleHook[]>();
     for (const hook of sortedHooks) {
       const order = getOrder(hook.order);
       groups.set(order, [...(groups.get(order) ?? []), hook]);
     }
-    
+
     // 按 order 顺序执行挂载钩子，组内并发
     executeHooks(groups, true, true)
       .then(() => setIsInitialized(true));
-    
+
     // 卸载时按 order 逆序执行卸载钩子
     return () => {
       executeHooks(groups, false, false);
     };
   }, [hooks]);
-  
+
   return [isInitialized] as const;
 }
 ```
 
-这样，如果当前作用域内的生命周期是通用的形式，那么每个作用域只需要调用对应的`useLifeCycle`方法即可，不需要重复编写生命周期管理代码。而假如当前作用域的生命周期需要特殊的执行方式，那么也可以自己去写自定义的处理过程，保留了自由度。
+`createReactHookWithScope` 封装了通用逻辑，每个作用域直接调用各自的 `useLifeCycle` 即可。需要自定义执行方式的作用域可以自己实现，不强制使用封装。
 
-```ts?lsp=false
-// 全局作用域
-function GlobalComponent() {
-  const [isInitialized] = useLifeCycleWithGlobal();
-  // ...
-}
+# 回顾与局限
 
-// 画布作用域
-const painterHooks = createReactHookWithScope(PainterScope);
-function PainterComponent() {
-  const [isInitialized] = painterHooks.useLifeCycle();
-  // ...
-}
-```
-
-# 设计权衡与总结
-
-在实现过程中，我们做了几个关键决策，每个决策都有其权衡。
-
-## 设计决策回顾
-
-### 函数式插件模式 vs Class 模式
-
-选择函数式插件模式而非 Class 模式，主要考虑与 React 生态的契合度。函数式插件更符合 React 的函数式风格，避免了装饰器的复杂性和版本差异问题。但这也意味着失去了自动依赖注入的能力，需要手动管理依赖关系。在实际使用中，虽然需要手动调用`getService`，但通过`getServices`的延迟访问机制，可以在生命周期钩子中安全地使用服务，避免了循环依赖问题。
-
-### 服务共享 vs 钩子隔离
-
-服务采用向上查找策略，子作用域可以访问父作用域的服务，实现了服务共享。这种设计减少了重复注册，节约了资源，但也意味着父作用域无法访问子作用域的服务，保证了隔离性。钩子采用隔离策略，每个作用域只返回自己注册的钩子，实现了精确控制，但也意味着如果需要访问父作用域的钩子，需要通过`parent()`或`root()`显式跨作用域访问。这种设计在我个人的项目实践中很实用，多个画布实例可以共享全局服务，同时每个画布实例有独立的事件处理钩子。
-
-### 注册阶段限制
-
-为了防止循环依赖，系统在插件注册阶段禁止访问服务。这种设计强制插件在注册阶段只能注册服务，不能访问服务，从而避免了循环依赖问题。但这也意味着插件需要将服务访问延迟到生命周期钩子中，增加了代码的复杂度。通过`getServices`的延迟访问机制，可以在一定程度上缓解这个问题，但仍然是需要开发者注意的设计约束。
-
-## 实验收获
-
-通过这次实验，我们验证了几个设计思路的可行性。函数式插件模式在 React 生态中确实有其优势，类型安全通过品牌类型得到了很好的保障，作用域隔离机制能够很好地支持插件化架构。同时，我们也发现了一些问题。手动依赖管理确实不如自动注入方便，性能优化还有很大空间，测试支持需要进一步完善。
-更重要的是，这次实验让我们对 DI 系统有了更深入的理解。不同的设计选择都有其适用场景，没有完美的方案，只有适合的方案。函数式插件模式虽然在某些方面不如 Class 模式方便，但在 React 生态中，它提供了更好的开发体验和更低的复杂度。
-
-### 当前限制与不足
-
-这个系统目前还存在一些限制和不足。首先，它只支持 React 环境，无法用于其他框架或纯 JavaScript 环境。其次，服务查找需要遍历作用域链，可能影响性能，特别是在作用域树很深的情况下。第三，不支持服务工厂模式，每次返回的都是同一个实例，无法实现每次获取都创建新实例的需求。第四，不支持懒加载，服务在注册时即创建，无法实现按需创建。第五，不支持依赖自动注入，需要手动获取依赖，不如 Class 模式的构造函数注入方便。
-在调试方面，虽然系统提供了详细的错误信息，但使用`Symbol`作为键，调试时不够直观。作用域关系不够可视化，在复杂的作用域树中，很难快速理解服务的位置和查找路径。
-
-### 改进方向
-
-如果继续完善这个系统，可以考虑以下几个方向。首先是支持服务工厂，允许插件注册工厂函数，每次获取时创建新实例。第三是支持懒加载，允许服务在首次访问时才创建。第四是改进调试体验，提供可视化工具，帮助开发者理解作用域关系和服务位置。第五是增强测试支持，提供更好的 mock 机制和测试工具。
-但这些改进都需要权衡。性能优化可能会增加代码复杂度，服务工厂和懒加载可能会让系统变得更加复杂，可视化工具需要额外的开发成本。在实际项目中，需要根据具体需求来决定是否实现这些功能。
-
-## 与主流 DI 库的对比
-
-与主流的 DI 库相比，这个系统有其独特的优势，也有明显的不足。优势在于函数式风格更符合 React 生态，无需装饰器配置，调试更直观，作用域隔离机制更适合插件化架构。不足在于功能不如主流库完善，缺少依赖自动注入，性能可能不如主流库优化得好，生态工具不如主流库丰富。
-主流 DI 库选择 Class 模式有其合理性。Class 模式提供了更强大的功能，更好的类型推导，更丰富的生态工具。但在 React 生态中，函数式插件模式提供了更好的开发体验和更低的复杂度。这两种方案各有适用场景，没有孰优孰劣，只有适合与否。
-
-## 对读者的建议
-
-如果你在学习 DI 系统设计，可以参考这个实现，了解函数式插件模式的设计思路。如果你需要生产级解决方案，建议使用成熟的 DI 库。如果你也想探索不同的可能性，欢迎一起讨论。
-技术探索的价值不在于完美，而在于思考与实践。这个实验性项目虽然不完美，但它提供了一个不同的视角，也许能启发新的思路。在技术选型时，没有银弹，只有适合的方案。重要的是理解不同方案的优劣，根据实际需求做出选择。
+函数式插件模式在 React 里有几个实际好处。零配置、调试直观、作用域隔离天然适合多实例场景。代价是手动管理依赖，没有自动注入方便。
+当前系统还有不少缺口。只支持 React，不能在纯 JS 环境用；服务查找走作用域链，深层嵌套时性能会受影响；不支持服务工厂和懒加载，每次都是同一个实例；用 Symbol 做键，调试时不太直观。
+如果继续完善，优先级大概是服务工厂和懒加载、调试可视化、测试 mock 支持这几个方向。但每个改进都会增加复杂度，需要按实际需求取舍。
+和 InversifyJS、TSyringe 比，这个方案没有孰优孰劣。它们选 Class 模式有充分理由，功能更全，生态更好。我选函数式，是因为在 React 里零配置、少心智负担比功能完备更重要。如果你的场景不同，结论可能完全相反。
