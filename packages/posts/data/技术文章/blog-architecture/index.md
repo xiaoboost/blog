@@ -202,7 +202,7 @@ export default jss.createStyleSheet({
 
 上述代码最后会被转化为：
 
-```ts
+```ts?lsp=false
 import './[name].css';
 
 export default {
