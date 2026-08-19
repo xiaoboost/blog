@@ -37,6 +37,9 @@ export function renderPost({ page, site, post, dev, isPreBuild }: PostPageRender
     pathname: post.data.pathname,
     author: site.author,
     description: post.data.description,
+    keywords: post.data.tags.map(({ name }) => name),
+    publishedTime: post.data.create,
+    modifiedTime: post.data.update,
     publicPath: site.publicPath,
     hmr: dev,
     styles: [

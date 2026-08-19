@@ -28,6 +28,16 @@ function extractTitle(html: string): string {
   return match ? match[1].trim() : '';
 }
 
+/** 提取指定 property/name 的 meta content */
+function extractMetaContent(html: string, key: string): string {
+  const escapedKey = key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const match = new RegExp(
+    `<meta[^>]+(?:property|name)="${escapedKey}"[^>]+content="([^"]+)"`,
+    'i',
+  ).exec(html);
+  return match ? match[1] : '';
+}
+
 /**
  * 将 HTML 中的链接地址转换为可能的 asset path
  * 链接格式：/posts/slug/ 或 /styles/file.css
@@ -247,6 +257,73 @@ describe('博客构建 e2e', () => {
     }
 
     expect(missingTitle).to.be.empty;
+  });
+
+  it('所有 HTML 文件包含完整的分享元数据', () => {
+    const invalidMeta: string[] = [];
+
+    for (const { path, content } of htmlAssets) {
+      const html = content.toString('utf-8');
+      const canonical = /<link[^>]+rel="canonical"[^>]+href="([^"]+)"/i.exec(html)?.[1] ?? '';
+      const ogUrl = extractMetaContent(html, 'og:url');
+      const ogImage = extractMetaContent(html, 'og:image');
+      const requiredMeta = [
+        'og:title',
+        'og:description',
+        'og:type',
+        'og:url',
+        'og:site_name',
+        'og:image',
+        'og:image:type',
+        'og:image:width',
+        'og:image:height',
+        'og:image:alt',
+      ];
+      const imageAssetPath = ogImage ? new URL(ogImage).pathname : '';
+
+      if (
+        !requiredMeta.every((key) => extractMetaContent(html, key))
+        || !canonical.startsWith('https://')
+        || canonical !== ogUrl
+        || !ogImage.startsWith('https://')
+        || !assetMap.has(imageAssetPath)
+      ) {
+        invalidMeta.push(path);
+      }
+    }
+
+    expect(invalidMeta).to.be.empty;
+  });
+
+  it('首页和文章页使用正确的 Open Graph 类型', () => {
+    const indexHtml = assetMap.get('/index.html')!.toString('utf-8');
+    const postPage = htmlAssets.find((a) => /^\/posts\/.+\/.+\/index\.html$/.test(a.path));
+
+    expect(extractMetaContent(indexHtml, 'og:type')).eq('website');
+    expect(postPage, '没有找到文章页').not.undefined;
+    expect(extractMetaContent(postPage!.content.toString('utf-8'), 'og:type')).eq('article');
+  });
+
+  it('页面允许用户缩放', () => {
+    const invalidViewport = htmlAssets
+      .filter(({ content }) => {
+        const html = content.toString('utf-8');
+        const viewport = extractMetaContent(html, 'viewport');
+        return !viewport || /(?:maximum-scale|user-scalable\s*=\s*no)/i.test(viewport);
+      })
+      .map(({ path }) => path);
+
+    expect(invalidViewport).to.be.empty;
+  });
+
+  it('交互式正文组件使用原生按钮和可访问状态', () => {
+    const html = htmlAssets.map(({ content }) => content.toString('utf-8')).join('\n');
+    const disclosureButtons = html.match(
+      /<button[^>]+type="button"[^>]+aria-controls="[^"]+"[^>]+aria-expanded="false"/gi,
+    ) ?? [];
+
+    expect(disclosureButtons.length).to.be.greaterThan(0);
+    expect(html).to.include('aria-hidden="true"');
   });
 
   it('产物中没有 esbuild 虚拟路径', () => {

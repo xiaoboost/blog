@@ -5,15 +5,30 @@ import styles from './index.jss';
 const { classes } = styles;
 
 function active() {
-  const list = document.querySelectorAll<HTMLElement>(`.${classes.glossWrapper}`);
-  const handlerMap = new Map<HTMLElement, () => void>();
+  const list = document.querySelectorAll<HTMLButtonElement>(
+    `.${classes.glossWrapper} .${classes.glossContent}`,
+  );
+  const handlerMap = new Map<HTMLButtonElement, () => void>();
 
-  function toggleGloss(wrapper: HTMLElement) {
-    wrapper.classList.toggle(classes.glossActive);
+  function toggleGloss(button: HTMLButtonElement) {
+    const wrapper = button.closest<HTMLElement>(`.${classes.glossWrapper}`);
+    const description = wrapper?.querySelector<HTMLElement>(`.${classes.glossDescription}`);
+
+    if (!wrapper || !description) {
+      throw new Error('[TextGloss Error]: 未能发现正确的文字夹注组件结构');
+    }
+
+    const expanded = wrapper.classList.toggle(classes.glossActive);
+    button.setAttribute('aria-expanded', String(expanded));
+    description.setAttribute('aria-hidden', String(!expanded));
+    description.toggleAttribute('inert', !expanded);
   }
 
   list.forEach((el) => {
+    const description = el.parentElement?.querySelector<HTMLElement>(`.${classes.glossDescription}`);
     const handler = () => toggleGloss(el);
+
+    description?.setAttribute('inert', '');
     handlerMap.set(el, handler);
     el.addEventListener('click', handler);
   });

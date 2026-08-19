@@ -50,7 +50,9 @@ interface RenderOptions {
 function createAllPages(): Omit<RenderOptions, 'isPreBuild'> {
   const site = new Site({
     title: siteConfig.title,
+    origin: siteConfig.origin,
     author: siteConfig.author,
+    authorUrl: siteConfig.github,
     description: siteConfig.description,
     publicPath,
     aboutPath,

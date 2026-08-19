@@ -833,6 +833,9 @@ importers:
       '@xiao-ai/utils':
         specifier: 1.6.7
         version: 1.6.7
+      image-meta:
+        specifier: 0.2.2
+        version: 0.2.2
       moment:
         specifier: 2.30.1
         version: 2.30.1
@@ -2408,6 +2411,9 @@ packages:
   ignore@7.0.5:
     resolution: {integrity: sha512-Hs59xBNfUIunMFgWAbGX5cq6893IbWg4KnrjbYwX3tx0ztorVgTDA6B2sxf8ejHJ4wz8BqGUMYlnzNBer5NvGg==}
     engines: {node: '>= 4'}
+
+  image-meta@0.2.2:
+    resolution: {integrity: sha512-3MOLanc3sb3LNGWQl1RlQlNWURE5g32aUphrDyFeCsxBTk08iE3VNe4CwsUZ0Qs1X+EfX0+r29Sxdpza4B+yRA==}
 
   imurmurhash@0.1.4:
     resolution: {integrity: sha512-JmXMZ6wuvDmLiHEml9ykzqO6lwFbof0GG4IkcGaENdCRDDmMVnny7s5HsIgHCbaq0w2MyPhDqkhTUgS2LU2PHA==}
@@ -4575,6 +4581,8 @@ snapshots:
   ignore@5.3.1: {}
 
   ignore@7.0.5: {}
+
+  image-meta@0.2.2: {}
 
   imurmurhash@0.1.4: {}
 

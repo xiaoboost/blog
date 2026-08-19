@@ -25,6 +25,10 @@ export interface LayoutProps extends HeaderProps, ArticleProps {
   description?: string;
   /** 网页内容关键字 */
   keywords?: string[];
+  /** 文章发布时间 */
+  publishedTime?: number;
+  /** 文章最后修改时间 */
+  modifiedTime?: number;
   /** 当前页面网址 */
   pathname: string;
   /** 网站根路径 */
@@ -43,10 +47,10 @@ export function Layout(props: PropsWithChildren<LayoutProps>) {
   return (
     <html lang="zh-cmn-Hans-CN">
       <head>
+        <meta charSet="utf-8" />
         <SeoMeta {...props} />
         <OgMeta {...props} />
-        <meta name="charset" content="utf-8" />
-        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
         <meta name="renderer" content="webkit" />
         <meta name="force-rendering" content="webkit" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge,chrome=1" />

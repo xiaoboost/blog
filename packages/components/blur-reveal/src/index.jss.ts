@@ -88,10 +88,16 @@ export default createStyles({
     padding: [10, 24],
     borderRadius: RadiusLg,
     fontSize: FontSizeMd,
+    fontFamily: 'inherit',
     fontWeight: 600,
     color: TextPrimary,
     boxShadow: BlurBtnShadow,
     transition: `all ${DurationFast} ease`,
     cursor: 'pointer',
+
+    '&:focus-visible': {
+      outline: `2px solid ${TextPrimary}`,
+      outlineOffset: 3,
+    },
   },
 });

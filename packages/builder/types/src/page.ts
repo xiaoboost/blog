@@ -113,8 +113,10 @@ export interface IPage<T extends PageType = PageType> extends IResourceSet {
 /** Site 实例 — 表示全站共享的构建上下文 */
 export interface ISite extends IResourceSet {
   readonly title: string;
+  readonly origin: string;
   readonly publicPath: string;
   readonly author?: string;
+  readonly authorUrl?: string;
   readonly description?: string;
   readonly aboutPath: string;
   readonly tagPath: string;
