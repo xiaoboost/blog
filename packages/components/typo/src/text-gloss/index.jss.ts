@@ -19,9 +19,17 @@ export default createStyles({
 
     '& $glossContent': {
       display: 'inline',
+      appearance: 'none',
+      border: 0,
+      margin: 0,
       cursor: 'pointer',
       position: 'relative',
       padding: [2, 0],
+      color: 'inherit',
+      font: 'inherit',
+      lineHeight: 'inherit',
+      textAlign: 'inherit',
+      backgroundColor: 'transparent',
       transition: `padding ${DurationFast} ease-in-out, background-color ${DurationFast} ease-in-out`,
       backgroundImage: `repeating-linear-gradient(
         to right,
@@ -49,6 +57,11 @@ export default createStyles({
           /* 实线部分到 4px 结束 */
           ${TextTertiary} 4px
         )`,
+      },
+      '&:focus-visible': {
+        outline: `2px solid ${TextTertiary}`,
+        outlineOffset: 2,
+        borderRadius: RadiusSm,
       },
     },
     '& $glossDescription': {

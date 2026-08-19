@@ -7,13 +7,12 @@ import styles from './index.jss';
 const { classes } = styles;
 
 function active() {
-  const list = document.querySelectorAll<HTMLElement>(
+  const list = document.querySelectorAll<HTMLButtonElement>(
     `.${classes.blurReveal} .${classes.blurRevealOverlayBtn}`,
   );
-  const handlerMap = new Map<HTMLElement, () => void>();
+  const handlerMap = new Map<HTMLButtonElement, () => void>();
 
-  function toggleBlurReveal(el: HTMLElement) {
-    const btn = el as HTMLElement;
+  function toggleBlurReveal(btn: HTMLButtonElement) {
     const revealEl = btn.parentElement?.parentElement;
 
     if (!revealEl) {
@@ -27,6 +26,9 @@ function active() {
     }
 
     revealEl.classList.add(classes.blurRevealExpanded);
+    btn.setAttribute('aria-expanded', 'true');
+    content.setAttribute('aria-hidden', 'false');
+    content.removeAttribute('inert');
     content.style.maxHeight = `${content.scrollHeight}px`;
 
     setTimeout(() => {
@@ -45,7 +47,12 @@ function active() {
   }
 
   list.forEach((el) => {
+    const content = el.parentElement?.parentElement?.querySelector<HTMLElement>(
+      `.${classes.blurRevealContent}`,
+    );
     const handler = () => toggleBlurReveal(el);
+
+    content?.setAttribute('inert', '');
     handlerMap.set(el, handler);
     el.addEventListener('click', handler);
   });

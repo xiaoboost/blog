@@ -1,6 +1,6 @@
 import { defineUtils } from '@blog/context/runtime';
 import { stringifyClass } from '@xiao-ai/utils';
-import React from 'react';
+import React, { useId } from 'react';
 
 import styles from './index.jss';
 import assets from './index.script';
@@ -31,6 +31,8 @@ export function TextGloss({
   showSeparator = true,
 }: TextGlossProps) {
   const { classes } = styles;
+  const descriptionId = useId();
+
   return (
     <span
       className={stringifyClass(classes.glossWrapper, cln, {
@@ -38,8 +40,21 @@ export function TextGloss({
       })}
       style={customStyles}
     >
-      <span className={stringifyClass(classes.glossContent, cln)}>{children}</span>
-      <span className={stringifyClass(classes.glossDescription, cln)}>{description}</span>
+      <button
+        type="button"
+        className={stringifyClass(classes.glossContent, cln)}
+        aria-controls={descriptionId}
+        aria-expanded="false"
+      >
+        {children}
+      </button>
+      <span
+        id={descriptionId}
+        className={stringifyClass(classes.glossDescription, cln)}
+        aria-hidden="true"
+      >
+        {description}
+      </span>
     </span>
   );
 }

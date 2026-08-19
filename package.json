@@ -1,6 +1,7 @@
 {
   "name": "blog",
   "version": "5.5.3",
+  "packageManager": "pnpm@10.32.1",
   "description": "个人博客",
   "author": "xiaoboost",
   "license": "MIT",

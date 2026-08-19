@@ -1,6 +1,7 @@
 /** 网站简介 */
 export const site = {
   title: "Dreaming Cat's",
+  origin: 'https://www.dreamingcat.me',
   author: 'xiao',
   description: 'xiao 的个人博客',
   github: 'https://github.com/xiaoboost',

@@ -23,6 +23,16 @@ declare module '*.ico' {
   export default path;
 }
 
+declare module '*.png' {
+  const path: string;
+  export default path;
+}
+
+declare module '*.jpg' {
+  const path: string;
+  export default path;
+}
+
 declare module '*.plist' {
   const path: string;
   export default path;
