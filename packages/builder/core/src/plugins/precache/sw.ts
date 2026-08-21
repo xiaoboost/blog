@@ -39,13 +39,14 @@ SW.addEventListener('install', (event) => {
 
 SW.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(
+    caches.keys().then(async (keys) => {
+      await Promise.all(
         keys
           .filter((key) => key !== VERSION)
           .map((key) => caches.delete(key)),
-      ),
-    ),
+      );
+      await SW.clients.claim();
+    }),
   );
 });
 
@@ -75,9 +76,10 @@ SW.addEventListener('fetch', (event) => {
   }
 
   if (event.request.mode === 'navigate') {
-    const fetched = fetch(event.request).then((response) => {
-      const clone = response.clone();
-      caches.open(VERSION).then((cache) => cache.put(event.request, clone));
+    const resultingClientId = event.resultingClientId;
+    const fetched = fetch(event.request.url, { cache: 'no-store' }).then(async (response) => {
+      const cache = await caches.open(VERSION);
+      await cache.put(event.request, response.clone());
       return response;
     });
 
@@ -91,10 +93,21 @@ SW.addEventListener('fetch', (event) => {
                 fresh.clone().text(),
               ]);
               if (cachedText !== freshText) {
-                const clients = await SW.clients.matchAll({ type: 'window' });
+                const clients = await SW.clients.matchAll({
+                  type: 'window',
+                  includeUncontrolled: true,
+                });
                 clients.forEach((client) =>
                   client.postMessage(__CONTENT_UPDATED__),
                 );
+
+                if (
+                  resultingClientId
+                  && !clients.some((client) => client.id === resultingClientId)
+                ) {
+                  const resultingClient = await SW.clients.get(resultingClientId);
+                  resultingClient?.postMessage(__CONTENT_UPDATED__);
+                }
               }
             }),
           );
