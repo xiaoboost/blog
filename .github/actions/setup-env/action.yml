@@ -17,7 +17,6 @@ runs:
     - name: Install Pnpm
       uses: pnpm/action-setup@v5
       with:
-        version: '10.32.1'
         run_install: false
 
     - name: Get Pnpm Store Directory
@@ -25,14 +24,15 @@ runs:
       shell: bash
       run: |
         echo "store_path=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
+        echo "pnpm_version=$(pnpm --version)" >> $GITHUB_OUTPUT
 
     - name: Setup Pnpm Cache
       uses: actions/cache@v5
       with:
         path: ${{ steps.cache-dir.outputs.store_path }}
-        key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+        key: ${{ runner.os }}-pnpm-${{ steps.cache-dir.outputs.pnpm_version }}-store-${{ hashFiles('**/pnpm-lock.yaml') }}
         restore-keys: |
-          ${{ runner.os }}-pnpm-store-
+          ${{ runner.os }}-pnpm-${{ steps.cache-dir.outputs.pnpm_version }}-store-
 
     - name: Install Dependencies
       shell: bash
