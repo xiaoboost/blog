@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="618" viewBox="0 0 640 618" role="img" aria-labelledby="title desc">
+<title id="title">插件实例的四个主要生命周期状态</title>
+<desc id="desc">未激活在依赖就绪后进入加载中，加载完成后进入已激活。依赖变化或请求卸载使已激活进入卸载中。加载过程中需要退出时也直接进入卸载中。清理完成后回到未激活。退役与移除并不等同于这四个生命周期状态。</desc>
+<style>
+:root{--paper:#ffffff;--ink:#243244;--muted:#566578;--line:#8291a3;--faint:#d8e0e9;--surface:#f1f4f8;--blue:#27689e;--blue-soft:#eaf3fb;--orange:#a45825;--orange-soft:#fff1e6;--green:#2c7560;--green-soft:#eaf5ef}
+@media(prefers-color-scheme:dark){:root{--paper:#18212d;--ink:#edf2f7;--muted:#bac6d4;--line:#9cadc1;--faint:#425268;--surface:#253244;--blue:#8bc7f4;--blue-soft:#243d53;--orange:#efb583;--orange-soft:#4a3426;--green:#8fd3bb;--green-soft:#244339}}
+text{font-family:"Microsoft YaHei","PingFang SC","Noto Sans CJK SC",sans-serif;fill:var(--ink);font-size:24px;font-weight:400;dominant-baseline:middle}
+.title{font-size:28px;font-weight:500}.label{font-size:24px}.small{font-size:22px}.muted{fill:var(--muted)}.blue-text{fill:var(--blue)}.orange-text{fill:var(--orange)}.green-text{fill:var(--green)}
+.node{fill:var(--surface);stroke:var(--faint);stroke-width:1.6}.old{fill:var(--orange-soft);stroke:var(--orange)}.new{fill:var(--blue-soft);stroke:var(--blue)}.good{fill:var(--green-soft);stroke:var(--green)}
+.line{fill:none;stroke:var(--line);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.faint{stroke:var(--faint)}.blue-line{stroke:var(--blue)}.orange-line{stroke:var(--orange)}.dashed{stroke-dasharray:6 7}.paper{fill:var(--paper)}
+</style>
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="8.4" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 1 1 L 9 5 L 1 9 Z" fill="var(--line)"/></marker>
+<marker id="blue-arrow" viewBox="0 0 10 10" refX="8.4" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 1 1 L 9 5 L 1 9 Z" fill="var(--blue)"/></marker>
+<marker id="orange-arrow" viewBox="0 0 10 10" refX="8.4" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 1 1 L 9 5 L 1 9 Z" fill="var(--orange)"/></marker>
+</defs>
+<rect width="640" height="618" class="paper"/>
+<text x="320" y="34" class="title" text-anchor="middle" data-max-width="600">插件实例的生命周期</text>
+<path data-edge="inactive-reloading" d="M 252 156 H 388" class="line" marker-end="url(#arrow)"/>
+<path data-edge="reloading-active" d="M 490 200 V 416" class="line" marker-end="url(#arrow)"/>
+<path data-edge="active-unloading" d="M 490 504 V 566 H 148 V 504" class="line" marker-end="url(#arrow)"/>
+<path data-edge="unloading-inactive" d="M 148 416 V 200" class="line" marker-end="url(#arrow)"/>
+<path data-edge="reloading-unloading" d="M 406 200 L 234 416" class="line orange-line" marker-end="url(#orange-arrow)"/>
+<g data-node="inactive"><rect x="44" y="112" width="208" height="88" rx="10" class="node"/><text x="148" y="140" class="label" text-anchor="middle" data-max-width="184">未激活</text><text x="148" y="172" class="label" text-anchor="middle" data-max-width="184">Inactive</text></g>
+<g data-node="reloading"><rect x="388" y="112" width="208" height="88" rx="10" class="node new"/><text x="492" y="140" class="label" text-anchor="middle" data-max-width="184">加载中</text><text x="492" y="172" class="label" text-anchor="middle" data-max-width="184">Reloading</text></g>
+<g data-node="active"><rect x="388" y="416" width="208" height="88" rx="10" class="node good"/><text x="492" y="444" class="label" text-anchor="middle" data-max-width="184">已激活</text><text x="492" y="476" class="label" text-anchor="middle" data-max-width="184">Active</text></g>
+<g data-node="unloading"><rect x="44" y="416" width="208" height="88" rx="10" class="node old"/><text x="148" y="444" class="label" text-anchor="middle" data-max-width="184">卸载中</text><text x="148" y="476" class="label" text-anchor="middle" data-max-width="184">Unloading</text></g>
+<text x="320" y="129" class="small" text-anchor="middle" data-max-width="132">依赖就绪</text>
+<text x="556" y="306" class="small" text-anchor="middle" data-max-width="132">加载完成</text>
+<text x="76" y="306" class="small" text-anchor="middle" data-max-width="132">清理完成</text>
+<rect x="246" y="268" width="148" height="78" class="paper"/>
+<text x="320" y="289" class="small orange-text" text-anchor="middle" data-max-width="144">加载中途</text>
+<text x="320" y="323" class="small orange-text" text-anchor="middle" data-max-width="144">需要退出</text>
+<text x="320" y="542" class="small" text-anchor="middle" data-max-width="380">依赖变化 / 请求卸载</text>
+<text x="320" y="597" class="small muted" text-anchor="middle" data-max-width="600">清理结束后，才可能开始下一轮加载</text>
+</svg>

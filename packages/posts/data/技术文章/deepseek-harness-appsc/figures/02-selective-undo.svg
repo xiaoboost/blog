@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="574" viewBox="0 0 640 574" role="img" aria-labelledby="title desc">
+<title id="title">只撤销 A，保留 B</title>
+<desc id="desc">假设 A、B 的操作相互独立。共同时间轴上依次执行 A1、B1、A2、B2，然后卸载 A，先撤销 A2 再撤销 A1。A 的贡献撤回，B1 与 B2 的贡献保留。单个插件内部反序撤销，不需要把整个系统回滚。</desc>
+<style>
+:root{--paper:#ffffff;--ink:#243244;--muted:#566578;--line:#8291a3;--faint:#d8e0e9;--surface:#f1f4f8;--blue:#27689e;--blue-soft:#eaf3fb;--orange:#a45825;--orange-soft:#fff1e6;--green:#2c7560;--green-soft:#eaf5ef}
+@media(prefers-color-scheme:dark){:root{--paper:#18212d;--ink:#edf2f7;--muted:#bac6d4;--line:#9cadc1;--faint:#425268;--surface:#253244;--blue:#8bc7f4;--blue-soft:#243d53;--orange:#efb583;--orange-soft:#4a3426;--green:#8fd3bb;--green-soft:#244339}}
+text{font-family:"Microsoft YaHei","PingFang SC","Noto Sans CJK SC",sans-serif;fill:var(--ink);font-size:24px;font-weight:400;dominant-baseline:middle}
+.title{font-size:28px;font-weight:500}.label{font-size:24px}.small{font-size:22px}.muted{fill:var(--muted)}.blue-text{fill:var(--blue)}.orange-text{fill:var(--orange)}.green-text{fill:var(--green)}
+.node{fill:var(--surface);stroke:var(--faint);stroke-width:1.6}.old{fill:var(--orange-soft);stroke:var(--orange)}.new{fill:var(--blue-soft);stroke:var(--blue)}.good{fill:var(--green-soft);stroke:var(--green)}
+.line{fill:none;stroke:var(--line);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.faint{stroke:var(--faint)}.blue-line{stroke:var(--blue)}.orange-line{stroke:var(--orange)}.dashed{stroke-dasharray:6 7}.paper{fill:var(--paper)}
+</style>
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="8.4" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 1 1 L 9 5 L 1 9 Z" fill="var(--line)"/></marker>
+<marker id="blue-arrow" viewBox="0 0 10 10" refX="8.4" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 1 1 L 9 5 L 1 9 Z" fill="var(--blue)"/></marker>
+<marker id="orange-arrow" viewBox="0 0 10 10" refX="8.4" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 1 1 L 9 5 L 1 9 Z" fill="var(--orange)"/></marker>
+</defs>
+<rect width="640" height="574" class="paper"/>
+<text x="320" y="34" class="title" text-anchor="middle" data-max-width="600">只撤销 A，保留 B</text>
+<text x="250" y="87" class="label" text-anchor="middle" data-max-width="600">交错执行</text>
+<text x="494" y="87" class="label orange-text" text-anchor="middle" data-max-width="600">卸载 A</text>
+<path data-edge="time" d="M 94 120 H 608" class="line" marker-end="url(#arrow)"/>
+<text x="598" y="150" class="small muted" text-anchor="end" data-max-width="80">时间</text>
+<path data-edge="guide-132" d="M 132 124 V 333" class="line faint dashed"/>
+<path data-edge="guide-212" d="M 212 124 V 333" class="line faint dashed"/>
+<path data-edge="guide-292" d="M 292 124 V 333" class="line faint dashed"/>
+<path data-edge="guide-372" d="M 372 124 V 333" class="line faint dashed"/>
+<path data-edge="guide-452" d="M 452 124 V 333" class="line faint dashed"/>
+<path data-edge="guide-532" d="M 532 124 V 333" class="line faint dashed"/>
+<path data-edge="unload-start" d="M 411 75 V 345" class="line faint dashed"/>
+<text x="48" y="219" class="small" text-anchor="middle" data-max-width="92">插件 A</text>
+<text x="48" y="313" class="small" text-anchor="middle" data-max-width="92">插件 B</text>
+<path data-edge="a-lane" d="M 100 215 H 592" class="line orange-line"/>
+<path data-edge="b-lane" d="M 100 309 H 598" class="line" marker-end="url(#arrow)"/>
+<g data-node="a1"><rect x="100" y="184" width="64" height="62" rx="10" class="node old"/><text x="132" y="215" class="label" text-anchor="middle" data-max-width="40">A₁</text></g>
+<g data-node="b1"><rect x="180" y="278" width="64" height="62" rx="10" class="node"/><text x="212" y="309" class="label" text-anchor="middle" data-max-width="40">B₁</text></g>
+<g data-node="a2"><rect x="260" y="184" width="64" height="62" rx="10" class="node old"/><text x="292" y="215" class="label" text-anchor="middle" data-max-width="40">A₂</text></g>
+<g data-node="b2"><rect x="340" y="278" width="64" height="62" rx="10" class="node"/><text x="372" y="309" class="label" text-anchor="middle" data-max-width="40">B₂</text></g>
+<g data-node="undo-a2"><rect x="416" y="175" width="72" height="80" rx="10" class="node old"/><text x="452" y="199" class="small" text-anchor="middle" data-max-width="48">撤销</text><text x="452" y="231" class="small" text-anchor="middle" data-max-width="48">A₂</text></g>
+<g data-node="undo-a1"><rect x="496" y="175" width="72" height="80" rx="10" class="node old"/><text x="532" y="199" class="small" text-anchor="middle" data-max-width="48">撤销</text><text x="532" y="231" class="small" text-anchor="middle" data-max-width="48">A₁</text></g>
+<text x="496" y="279" class="small muted" text-anchor="middle" data-max-width="160">继续运行</text>
+<g data-node="a-result"><rect x="80" y="383" width="480" height="64" rx="10" class="node old"/><text x="320" y="415" class="label" text-anchor="middle" data-max-width="456">A 的贡献：已撤回</text></g>
+<g data-node="b-result"><rect x="80" y="463" width="480" height="64" rx="10" class="node"/><text x="320" y="495" class="label" text-anchor="middle" data-max-width="456">B₁、B₂ 的贡献：仍然保留</text></g>
+<text x="320" y="551" class="small muted" text-anchor="middle" data-max-width="600">前提：A 与 B 的操作满足独立性</text>
+</svg>

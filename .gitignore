@@ -13,5 +13,6 @@ old
 dist
 draft
 temp
+tmp
 
 *.log

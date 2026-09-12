@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="578" viewBox="0 0 640 578" role="img" aria-labelledby="title desc">
+<title id="title">文件服务替换前后的依赖关系</title>
+<desc id="desc">本文示例，不是 DSH 官方架构。箭头从使用方指向供给方。编辑、搜索、索引从依赖本地文件服务变为依赖远端文件服务；远端实现依赖网络传输和鉴权。模型服务与会话存储继续运行。这里只对比前后状态，不表示直接替换引用。</desc>
+<style>
+:root{--paper:#ffffff;--ink:#243244;--muted:#566578;--line:#8291a3;--faint:#d8e0e9;--surface:#f1f4f8;--blue:#27689e;--blue-soft:#eaf3fb;--orange:#a45825;--orange-soft:#fff1e6;--green:#2c7560;--green-soft:#eaf5ef}
+@media(prefers-color-scheme:dark){:root{--paper:#18212d;--ink:#edf2f7;--muted:#bac6d4;--line:#9cadc1;--faint:#425268;--surface:#253244;--blue:#8bc7f4;--blue-soft:#243d53;--orange:#efb583;--orange-soft:#4a3426;--green:#8fd3bb;--green-soft:#244339}}
+text{font-family:"Microsoft YaHei","PingFang SC","Noto Sans CJK SC",sans-serif;fill:var(--ink);font-size:24px;font-weight:400;dominant-baseline:middle}
+.title{font-size:28px;font-weight:500}.label{font-size:24px}.small{font-size:22px}.muted{fill:var(--muted)}.blue-text{fill:var(--blue)}.orange-text{fill:var(--orange)}.green-text{fill:var(--green)}
+.node{fill:var(--surface);stroke:var(--faint);stroke-width:1.6}.old{fill:var(--orange-soft);stroke:var(--orange)}.new{fill:var(--blue-soft);stroke:var(--blue)}.good{fill:var(--green-soft);stroke:var(--green)}
+.line{fill:none;stroke:var(--line);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.faint{stroke:var(--faint)}.blue-line{stroke:var(--blue)}.orange-line{stroke:var(--orange)}.dashed{stroke-dasharray:6 7}.paper{fill:var(--paper)}
+</style>
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="8.4" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 1 1 L 9 5 L 1 9 Z" fill="var(--line)"/></marker>
+<marker id="blue-arrow" viewBox="0 0 10 10" refX="8.4" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 1 1 L 9 5 L 1 9 Z" fill="var(--blue)"/></marker>
+<marker id="orange-arrow" viewBox="0 0 10 10" refX="8.4" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 1 1 L 9 5 L 1 9 Z" fill="var(--orange)"/></marker>
+</defs>
+<rect width="640" height="578" class="paper"/>
+<text x="320" y="34" class="title" text-anchor="middle" data-max-width="600">同一组需求，新的服务绑定</text>
+<text x="164" y="89" class="label" text-anchor="middle" data-max-width="600">替换前</text>
+<text x="476" y="89" class="label" text-anchor="middle" data-max-width="600">替换后</text>
+<g data-node="consumers-before"><rect x="32" y="124" width="264" height="64" rx="10" class="node"/><text x="164" y="156" class="small" text-anchor="middle" data-max-width="240">编辑 · 搜索 · 索引</text></g>
+<g data-node="consumers-after"><rect x="344" y="124" width="264" height="64" rx="10" class="node"/><text x="476" y="156" class="small" text-anchor="middle" data-max-width="240">编辑 · 搜索 · 索引</text></g>
+<path data-edge="consumers-local" d="M 164 188 V 270" class="line" marker-end="url(#arrow)"/>
+<path data-edge="consumers-remote" d="M 476 188 V 270" class="line" marker-end="url(#arrow)"/>
+<text x="197" y="228" class="small" text-anchor="start" data-max-width="90">依赖</text>
+<text x="509" y="228" class="small" text-anchor="start" data-max-width="90">依赖</text>
+<g data-node="local-fs"><rect x="32" y="272" width="264" height="68" rx="10" class="node old"/><text x="164" y="306" class="label" text-anchor="middle" data-max-width="240">本地文件服务</text></g>
+<g data-node="remote-fs"><rect x="344" y="272" width="264" height="68" rx="10" class="node new"/><text x="476" y="306" class="label" text-anchor="middle" data-max-width="240">远端文件服务</text></g>
+<path data-edge="remote-network" d="M 430 340 V 364 H 405 V 394" class="line" marker-end="url(#arrow)"/>
+<path data-edge="remote-auth" d="M 522 340 V 364 H 547 V 394" class="line" marker-end="url(#arrow)"/>
+<g data-node="network"><rect x="344" y="396" width="122" height="62" rx="10" class="node new"/><text x="405" y="427" class="small" text-anchor="middle" data-max-width="98">网络传输</text></g>
+<g data-node="auth"><rect x="486" y="396" width="122" height="62" rx="10" class="node new"/><text x="547" y="427" class="label" text-anchor="middle" data-max-width="98">鉴权</text></g>
+<path data-edge="divider" d="M 32 484 H 608" class="line faint"/>
+<text x="320" y="514" class="small muted" text-anchor="middle" data-max-width="600">此次替换无关的能力继续运行</text>
+<text x="170" y="550" class="label" text-anchor="middle" data-max-width="600">模型服务</text>
+<text x="470" y="550" class="label" text-anchor="middle" data-max-width="600">会话存储</text>
+</svg>
