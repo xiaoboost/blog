@@ -12,14 +12,14 @@ import styles from './index.jss';
 
 function Post({ data: post }: PostExportData) {
   return (
-    <section className={styles.classes.postsListItem}>
+    <article className={styles.classes.postsListItem}>
       <header className={styles.classes.postsListItemHeader}>
         <span>
           <a href={normalizeUrl(post.pathname)}>{post.title}</a>
         </span>
-        <time>{Moment(post.create).format('yyyy-MM-DD')}</time>
+        <time dateTime={new Date(post.create).toISOString()}>{Moment(post.create).format('yyyy-MM-DD')}</time>
       </header>
-      <article className={styles.classes.postsListItemDescription}>{post.description}</article>
+      <div className={styles.classes.postsListItemDescription}>{post.description}</div>
       {post.tags.length !== 0 && (
         <footer className={styles.classes.postsListItemFooter}>
           <Tags className={styles.classes.postsListItemFooterIcon} />
@@ -39,7 +39,7 @@ function Post({ data: post }: PostExportData) {
           ))}
         </footer>
       )}
-    </section>
+    </article>
   );
 }
 
@@ -61,11 +61,11 @@ export function MainIndex(props: MainIndexProps) {
 
   return (
     <Layout {...props}>
-      <section className={styles.classes.postsList}>
+      <div className={styles.classes.postsList}>
         {(props.posts ?? []).map((post) => (
           <Post key={post.data.create} {...post} />
         ))}
-      </section>
+      </div>
       <Pagination {...props} />
     </Layout>
   );

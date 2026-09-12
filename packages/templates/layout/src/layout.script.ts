@@ -1,6 +1,6 @@
 import './styles';
 
-import './components/article/index.jss';
+import './components/main-content/index.jss';
 import './components/footer/index.jss';
 import './components/header/index.jss';
 import './components/pagination/index.jss';

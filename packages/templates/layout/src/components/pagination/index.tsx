@@ -18,7 +18,7 @@ export function Pagination({ newer, older }: PaginationProps) {
   }
 
   return (
-    <section className={classes.pagination}>
+    <nav className={classes.pagination} aria-label="文章分页">
       {older
         ? (
           <a className={classes.paginationAction} href={normalizeUrl(older)}>
@@ -41,6 +41,6 @@ export function Pagination({ newer, older }: PaginationProps) {
         : (
           <div></div>
         )}
-    </section>
+    </nav>
   );
 }

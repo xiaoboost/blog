@@ -59,11 +59,11 @@ export function Header(props: HeaderProps) {
 
   return (
     <header className={styles.classes.mainHeaderWrapper}>
-      <span className={styles.classes.mainHeader}>
+      <div className={styles.classes.mainHeader}>
         <a className={styles.classes.mainTitle} href={indexHref}>
           {props.siteTitle}
         </a>
-        <nav className={styles.classes.mainNav}>
+        <nav className={styles.classes.mainNav} aria-label="主导航">
           {navLists.map((nav, i) => (
             <a
               key={i}
@@ -77,7 +77,7 @@ export function Header(props: HeaderProps) {
             </a>
           ))}
         </nav>
-      </span>
+      </div>
     </header>
   );
 }

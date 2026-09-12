@@ -31,7 +31,7 @@ export function Post(props: PostProps) {
 
   return (
     <Layout {...props}>
-      <section
+      <article
         className={stringifyClass(styles.classes.postDefault, {
           [styles.classes.postNoToc]: !post.data.toc,
         })}
@@ -39,11 +39,14 @@ export function Post(props: PostProps) {
       >
         <header className={styles.classes.postHeader}>
           <h1 className={styles.classes.postHeaderTitle}>{post.data.title}</h1>
-          <time className={styles.classes.postHeaderCreate}>
+          <time
+            className={styles.classes.postHeaderCreate}
+            dateTime={new Date(post.data.create).toISOString()}
+          >
             {Moment(post.data.create).format('yyyy-MM-DD')}
           </time>
         </header>
-        <article className={styles.classes.postArticle}>
+        <div className={styles.classes.postArticle}>
           <post.Component
             components={{
               a,
@@ -55,8 +58,8 @@ export function Post(props: PostProps) {
               ...blockquote,
             }}
           />
-        </article>
-      </section>
+        </div>
+      </article>
       {post.data.toc && <ToContent data={post.data.ast} />}
     </Layout>
   );

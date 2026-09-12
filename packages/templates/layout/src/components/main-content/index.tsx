@@ -3,14 +3,14 @@ import { default as React, type PropsWithChildren } from 'react';
 
 import styles from './index.jss';
 
-export interface ArticleProps {
+export interface MainContentProps {
   bodyClassName?: string;
 }
 
-export function Article({ children, bodyClassName }: PropsWithChildren<ArticleProps>) {
+export function MainContent({ children, bodyClassName }: PropsWithChildren<MainContentProps>) {
   return (
-    <article className={styles.classes.mainArticleWrapper}>
+    <main className={styles.classes.mainArticleWrapper}>
       <div className={stringifyClass(styles.classes.mainArticle, bodyClassName)}>{children}</div>
-    </article>
+    </main>
   );
 }

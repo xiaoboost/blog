@@ -5,14 +5,14 @@ import type { PreloadAssetData } from '@blog/types';
 import { default as React, type PropsWithChildren } from 'react';
 
 import favicon from '../../assets/images/favicon.ico';
-import { type ArticleProps, Article } from '../article';
 import { Footer } from '../footer';
 import { GotoTop } from '../goto-top';
 import { type HeaderProps, Header } from '../header';
+import { type MainContentProps, MainContent } from '../main-content';
 import { OgMeta } from './og-meta';
 import { SeoMeta } from './seo-meta';
 
-export interface LayoutProps extends HeaderProps, ArticleProps {
+export interface LayoutProps extends HeaderProps, MainContentProps {
   /** 网站标题 */
   siteTitle: string;
   /** 网页标题 */
@@ -45,16 +45,13 @@ export function Layout(props: PropsWithChildren<LayoutProps>) {
   const publicPath = props.publicPath ?? '/';
 
   return (
-    <html lang="zh-cmn-Hans-CN">
+    <html lang="zh-CN">
       <head>
         <meta charSet="utf-8" />
         <SeoMeta {...props} />
         <OgMeta {...props} />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
-        <meta name="renderer" content="webkit" />
-        <meta name="force-rendering" content="webkit" />
-        <meta httpEquiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-        <link rel="short icon" href={favicon} />
+        <link rel="icon" href={favicon} />
         {(props.preloadAssets ?? []).map((asset, i) => (
           <link
             key={`preload-${i}`}
@@ -78,7 +75,7 @@ export function Layout(props: PropsWithChildren<LayoutProps>) {
       </head>
       <body>
         <Header {...props} />
-        <Article bodyClassName={props.bodyClassName}>{props.children}</Article>
+        <MainContent bodyClassName={props.bodyClassName}>{props.children}</MainContent>
         <Footer />
         <GotoTop />
         <ScrollBar width={8} mode="y" />

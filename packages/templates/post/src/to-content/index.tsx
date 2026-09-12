@@ -148,11 +148,11 @@ export function ToContent({ data }: Props) {
   const titles = createNavFromAst(data, levelLimit);
 
   return (
-    <aside className={styles.classes.toContent}>
-      <header className={styles.classes.menuListHeader}>目录</header>
-      <article className={styles.classes.menuListArticle}>
+    <nav className={styles.classes.toContent} aria-label="文章目录">
+      <div className={styles.classes.menuListHeader}>目录</div>
+      <div className={styles.classes.menuListArticle}>
         <NavTitle titles={titles} />
-      </article>
-    </aside>
+      </div>
+    </nav>
   );
 }
