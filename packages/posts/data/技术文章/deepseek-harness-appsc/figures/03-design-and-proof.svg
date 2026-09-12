@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="700" viewBox="0 0 640 700" role="img" aria-labelledby="title desc">
+<title id="title">工程推导与论文论证的两个方向</title>
+<desc id="desc">四个层级由上至下为系统动态替换、多插件组合与生命周期、单个插件、单次副作用与依赖操作。工程设计从系统需求向下拆解机制，论文论证从局部约定向上组合保证。此图是本文的概念路线，不表示每一步都由单一定理直接推出。</desc>
+<style>
+:root{--paper:#ffffff;--ink:#243244;--muted:#566578;--line:#8291a3;--faint:#d8e0e9;--surface:#f1f4f8;--blue:#27689e;--blue-soft:#eaf3fb;--orange:#a45825;--orange-soft:#fff1e6;--green:#2c7560;--green-soft:#eaf5ef}
+@media(prefers-color-scheme:dark){:root{--paper:#18212d;--ink:#edf2f7;--muted:#bac6d4;--line:#9cadc1;--faint:#425268;--surface:#253244;--blue:#8bc7f4;--blue-soft:#243d53;--orange:#efb583;--orange-soft:#4a3426;--green:#8fd3bb;--green-soft:#244339}}
+text{font-family:"Microsoft YaHei","PingFang SC","Noto Sans CJK SC",sans-serif;fill:var(--ink);font-size:24px;font-weight:400;dominant-baseline:middle}
+.title{font-size:28px;font-weight:500}.label{font-size:24px}.small{font-size:22px}.muted{fill:var(--muted)}.blue-text{fill:var(--blue)}.orange-text{fill:var(--orange)}.green-text{fill:var(--green)}
+.node{fill:var(--surface);stroke:var(--faint);stroke-width:1.6}.old{fill:var(--orange-soft);stroke:var(--orange)}.new{fill:var(--blue-soft);stroke:var(--blue)}.good{fill:var(--green-soft);stroke:var(--green)}
+.line{fill:none;stroke:var(--line);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.faint{stroke:var(--faint)}.blue-line{stroke:var(--blue)}.orange-line{stroke:var(--orange)}.dashed{stroke-dasharray:6 7}.paper{fill:var(--paper)}
+</style>
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="8.4" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 1 1 L 9 5 L 1 9 Z" fill="var(--line)"/></marker>
+<marker id="blue-arrow" viewBox="0 0 10 10" refX="8.4" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 1 1 L 9 5 L 1 9 Z" fill="var(--blue)"/></marker>
+<marker id="orange-arrow" viewBox="0 0 10 10" refX="8.4" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 1 1 L 9 5 L 1 9 Z" fill="var(--orange)"/></marker>
+</defs>
+<rect width="640" height="700" class="paper"/>
+<text x="320" y="34" class="title" text-anchor="middle" data-max-width="600">同一组问题，两个方向</text>
+<text x="80" y="90" class="label orange-text" text-anchor="middle" data-max-width="144">工程推导</text>
+<text x="560" y="90" class="label blue-text" text-anchor="middle" data-max-width="144">论文论证</text>
+<path data-edge="engineering-down" d="M 80 139 V 601" class="line orange-line" marker-end="url(#orange-arrow)"/>
+<path data-edge="proof-up" d="M 560 601 V 139" class="line blue-line" marker-end="url(#blue-arrow)"/>
+<path data-edge="levels-212" d="M 320 212 V 256" class="line faint"/>
+<path data-edge="levels-362" d="M 320 362 V 406" class="line faint"/>
+<path data-edge="levels-512" d="M 320 512 V 556" class="line faint"/>
+<g data-node="system"><rect x="158" y="128" width="324" height="84" rx="10" class="node"/><text x="320" y="154" class="label" text-anchor="middle" data-max-width="300">系统的动态替换</text><text x="320" y="186" class="label" text-anchor="middle" data-max-width="300">可撤回 · 可协调</text></g>
+<g data-node="lifecycle"><rect x="158" y="278" width="324" height="84" rx="10" class="node"/><text x="320" y="304" class="label" text-anchor="middle" data-max-width="300">多插件组合</text><text x="320" y="336" class="label" text-anchor="middle" data-max-width="300">生命周期与依赖顺序</text></g>
+<g data-node="plugin"><rect x="158" y="428" width="324" height="84" rx="10" class="node"/><text x="320" y="454" class="label" text-anchor="middle" data-max-width="300">单个插件</text><text x="320" y="486" class="label" text-anchor="middle" data-max-width="300">一组副作用与依赖</text></g>
+<g data-node="atomic"><rect x="158" y="578" width="324" height="84" rx="10" class="node"/><text x="320" y="604" class="label" text-anchor="middle" data-max-width="300">单次副作用</text><text x="320" y="636" class="label" text-anchor="middle" data-max-width="300">依赖操作</text></g>
+<rect x="22" y="289" width="116" height="92" class="paper"/>
+<text x="80" y="317" class="small" text-anchor="middle" data-max-width="116">需要什么</text>
+<text x="80" y="350" class="small" text-anchor="middle" data-max-width="116">机制</text>
+<rect x="502" y="289" width="116" height="92" class="paper"/>
+<text x="560" y="317" class="small" text-anchor="middle" data-max-width="116">能保证</text>
+<text x="560" y="350" class="small" text-anchor="middle" data-max-width="116">什么</text>
+</svg>

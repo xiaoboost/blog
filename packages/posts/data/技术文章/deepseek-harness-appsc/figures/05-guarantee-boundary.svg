@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="556" viewBox="0 0 640 556" role="img" aria-labelledby="title desc">
+<title id="title">状态恢复不等于外部世界倒带</title>
+<desc id="desc">在正确实现撤销的前提下，目录监听可以注销、服务绑定可以撤回，受管状态恢复到观察等价。已经送达的请求和已被接收的消息，其历史不会因插件卸载而消失。Context 是编程约定，不是阻止一切外部访问的安全沙箱。</desc>
+<style>
+:root{--paper:#ffffff;--ink:#243244;--muted:#566578;--line:#8291a3;--faint:#d8e0e9;--surface:#f1f4f8;--blue:#27689e;--blue-soft:#eaf3fb;--orange:#a45825;--orange-soft:#fff1e6;--green:#2c7560;--green-soft:#eaf5ef}
+@media(prefers-color-scheme:dark){:root{--paper:#18212d;--ink:#edf2f7;--muted:#bac6d4;--line:#9cadc1;--faint:#425268;--surface:#253244;--blue:#8bc7f4;--blue-soft:#243d53;--orange:#efb583;--orange-soft:#4a3426;--green:#8fd3bb;--green-soft:#244339}}
+text{font-family:"Microsoft YaHei","PingFang SC","Noto Sans CJK SC",sans-serif;fill:var(--ink);font-size:24px;font-weight:400;dominant-baseline:middle}
+.title{font-size:28px;font-weight:500}.label{font-size:24px}.small{font-size:22px}.muted{fill:var(--muted)}.blue-text{fill:var(--blue)}.orange-text{fill:var(--orange)}.green-text{fill:var(--green)}
+.node{fill:var(--surface);stroke:var(--faint);stroke-width:1.6}.old{fill:var(--orange-soft);stroke:var(--orange)}.new{fill:var(--blue-soft);stroke:var(--blue)}.good{fill:var(--green-soft);stroke:var(--green)}
+.line{fill:none;stroke:var(--line);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.faint{stroke:var(--faint)}.blue-line{stroke:var(--blue)}.orange-line{stroke:var(--orange)}.dashed{stroke-dasharray:6 7}.paper{fill:var(--paper)}
+</style>
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="8.4" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 1 1 L 9 5 L 1 9 Z" fill="var(--line)"/></marker>
+<marker id="blue-arrow" viewBox="0 0 10 10" refX="8.4" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 1 1 L 9 5 L 1 9 Z" fill="var(--blue)"/></marker>
+<marker id="orange-arrow" viewBox="0 0 10 10" refX="8.4" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 1 1 L 9 5 L 1 9 Z" fill="var(--orange)"/></marker>
+</defs>
+<rect width="640" height="556" class="paper"/>
+<text x="320" y="34" class="title" text-anchor="middle" data-max-width="600">撤回状态，不会倒带历史</text>
+<text x="166" y="101" class="label blue-text" text-anchor="middle" data-max-width="600">受管贡献</text>
+<text x="476" y="101" class="label" text-anchor="middle" data-max-width="286">已发生的外部发送</text>
+<path data-edge="divider" d="M 320 84 V 446" class="line faint dashed"/>
+<g data-node="tracked"><rect x="32" y="149" width="268" height="124" rx="10" class="node new"/><text x="166" y="195" class="label" text-anchor="middle" data-max-width="244">目录监听的注册</text><text x="166" y="227" class="label" text-anchor="middle" data-max-width="244">服务绑定的建立</text></g>
+<g data-node="emissions"><rect x="340" y="149" width="268" height="124" rx="10" class="node"/><text x="474" y="195" class="label" text-anchor="middle" data-max-width="244">请求已经送达</text><text x="474" y="227" class="label" text-anchor="middle" data-max-width="244">消息已被接收</text></g>
+<path data-edge="undo" d="M 166 273 V 359" class="line blue-line" marker-end="url(#blue-arrow)"/>
+<text x="207" y="316" class="small blue-text" text-anchor="start" data-max-width="104">执行撤销</text>
+<path data-edge="history" d="M 474 273 V 359" class="line" marker-end="url(#arrow)"/>
+<text x="516" y="316" class="small muted" text-anchor="start" data-max-width="104">事实保留</text>
+<g data-node="restored"><rect x="32" y="361" width="268" height="84" rx="10" class="node new"/><text x="166" y="387" class="label" text-anchor="middle" data-max-width="244">受管状态恢复</text><text x="166" y="419" class="label" text-anchor="middle" data-max-width="244">到观察等价</text></g>
+<g data-node="retained"><rect x="340" y="361" width="268" height="84" rx="10" class="node"/><text x="474" y="387" class="label" text-anchor="middle" data-max-width="244">卸载不会抹去</text><text x="474" y="419" class="label" text-anchor="middle" data-max-width="244">这些外部历史</text></g>
+<text x="320" y="491" class="small muted" text-anchor="middle" data-max-width="600">前提：撤销函数正确实现</text>
+<text x="320" y="529" class="small muted" text-anchor="middle" data-max-width="600">Context 是编程约定，不是安全沙箱</text>
+</svg>
