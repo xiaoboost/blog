@@ -1,5 +1,5 @@
 import { expect, describe, it } from '@blog/test-toolkit';
-import { getPostMetaData } from '../transformer';
+import { getPostMetaData } from '../post/transformer';
 
 describe('getPostMetaData', () => {
   it('basic', () => {

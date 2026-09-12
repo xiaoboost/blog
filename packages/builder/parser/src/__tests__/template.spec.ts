@@ -1,5 +1,5 @@
 import { expect, describe, it } from '@blog/test-toolkit';
-import { encodeImageTemplate, decodeTemplate } from '../template';
+import { encodeImageTemplate, decodeTemplate } from '../core/image-template';
 
 describe('encodeTemplate', () => {
   it('encodeImageTemplate', async () => {

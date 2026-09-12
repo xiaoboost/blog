@@ -1,6 +1,6 @@
 import { expect, describe, it } from '@blog/test-toolkit';
-import { parse } from '../parser';
-import { getChildrenContent } from '../walk';
+import { getChildrenContent } from '../ast/walk';
+import { parse } from '../core/parser';
 
 describe('getChildrenContent', () => {
   it('纯文本', async () => {

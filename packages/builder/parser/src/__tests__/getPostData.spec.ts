@@ -1,5 +1,5 @@
 import { expect, describe, it } from '@blog/test-toolkit';
-import { getPostData as origin } from '../transformer';
+import { getPostData as origin } from '../post/transformer';
 
 const fileName = '/test/test.md';
 const commonData = {

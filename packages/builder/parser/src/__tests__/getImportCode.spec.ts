@@ -1,5 +1,5 @@
 import { expect, describe, it } from '@blog/test-toolkit';
-import { getImportCode } from '../transformer';
+import { getImportCode } from '../post/transformer';
 
 describe('getImportCode', () => {
   it('one post', () => {
