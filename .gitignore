@@ -8,6 +8,7 @@ node_modules
 .codegraph
 .opencode
 .omo
+.pnpm-store
 
 old
 dist

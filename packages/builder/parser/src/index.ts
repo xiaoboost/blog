@@ -1,4 +1,4 @@
-export { parse, compile } from './parser';
-export { getImportCode, transform } from './transformer';
+export { parse, compile } from './core/parser';
+export { getImportCode, transform } from './post/transformer';
 
-export * from './walk';
+export * from './ast/walk';

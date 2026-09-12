@@ -5,8 +5,8 @@ import { Fixer } from '@blog/shared';
 import type { PostMeta, PostData } from '@blog/types';
 import { parse as parseYaml } from 'yaml';
 
-import { parse, compile } from './parser';
-import { addTemplateUtilsExport } from './utils';
+import { parse, compile, transformMath } from '../core/parser';
+import { addTemplateUtilsExport } from './assets';
 
 function getDateByDay(input: string) {
   const date = new Date(input);
@@ -52,7 +52,7 @@ export function getPostMetaData(content: string, fileName: string) {
 /** 获取文章数据 */
 export async function getPostData(content: string, fileName: string) {
   const meta = getPostMetaData(content, fileName);
-  const postContent = (meta.content ?? '').trim();
+  const postContent = await transformMath((meta.content ?? '').trim(), fileName);
   const createAt = new Date(meta.create).getFullYear().toString();
   const decodeTitle = toPinyin(meta.title).toLowerCase();
   const data: PostData = {

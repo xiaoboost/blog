@@ -15,6 +15,7 @@
     "@blog/mdx-blur-reveal": "workspace:*",
     "@blog/mdx-code-block-typescript": "workspace:*",
     "@blog/mdx-font-block": "workspace:*",
+    "@blog/mdx-katex": "workspace:*",
     "@blog/mdx-typo": "workspace:*",
     "@blog/template-post": "workspace:*",
     "@blog/styles": "workspace:*",

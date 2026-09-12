@@ -1,5 +1,5 @@
 import { expect, describe, it } from '@blog/test-toolkit';
-import { compile } from '../parser';
+import { compile } from '../core/parser';
 
 function getCode(code: string, imports?: string) {
   return `
