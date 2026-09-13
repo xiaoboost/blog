@@ -10,17 +10,23 @@ const parserThen: Promise<Parser> = Promise.all([
   import('remark-parse'),
   import('remark-stringify'),
   import('remark-math'),
+  import('remark-cjk-friendly/bidi'),
 ]).then(([
   { unified },
   { default: mdx },
   { default: parse },
   { default: stringify },
   { default: math },
+  { default: cjkFriendly },
 ]) => {
-  return unified().use(parse).use(stringify).use(mdx).use(math);
+  return unified().use(parse).use(stringify).use(mdx).use(math).use(cjkFriendly);
 });
 
-const pluginThen: Promise<PluggableList> = Promise.all([import('remark-gfm')]).then((val) => {
+// AST 解析与 MDX 编译采用相同的中文强调边界规则。
+const pluginThen: Promise<PluggableList> = Promise.all([
+  import('remark-gfm'),
+  import('remark-cjk-friendly/parseOnly'),
+]).then((val) => {
   return val.map((i) => i.default);
 });
 
