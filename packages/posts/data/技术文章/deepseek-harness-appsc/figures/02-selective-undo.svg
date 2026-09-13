@@ -38,7 +38,7 @@ text{font-family:"Microsoft YaHei","PingFang SC","Noto Sans CJK SC",sans-serif;f
 <g data-node="undo-a2"><rect x="416" y="175" width="72" height="80" rx="10" class="node old"/><text x="452" y="199" class="small" text-anchor="middle" data-max-width="48">撤销</text><text x="452" y="231" class="small" text-anchor="middle" data-max-width="48">A₂</text></g>
 <g data-node="undo-a1"><rect x="496" y="175" width="72" height="80" rx="10" class="node old"/><text x="532" y="199" class="small" text-anchor="middle" data-max-width="48">撤销</text><text x="532" y="231" class="small" text-anchor="middle" data-max-width="48">A₁</text></g>
 <text x="496" y="279" class="small muted" text-anchor="middle" data-max-width="160">继续运行</text>
-<g data-node="a-result"><rect x="80" y="383" width="480" height="64" rx="10" class="node old"/><text x="320" y="415" class="label" text-anchor="middle" data-max-width="456">A 的贡献：已撤回</text></g>
-<g data-node="b-result"><rect x="80" y="463" width="480" height="64" rx="10" class="node"/><text x="320" y="495" class="label" text-anchor="middle" data-max-width="456">B₁、B₂ 的贡献：仍然保留</text></g>
+<g data-node="a-result"><rect x="80" y="383" width="480" height="64" rx="10" class="node old"/><text x="320" y="415" class="label" text-anchor="middle" data-max-width="456">A 的副作用：已撤回</text></g>
+<g data-node="b-result"><rect x="80" y="463" width="480" height="64" rx="10" class="node"/><text x="320" y="495" class="label" text-anchor="middle" data-max-width="456">B₁、B₂ 的副作用：仍然保留</text></g>
 <text x="320" y="551" class="small muted" text-anchor="middle" data-max-width="600">前提：A 与 B 的操作满足独立性</text>
 </svg>
