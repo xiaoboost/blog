@@ -7,6 +7,8 @@ declare const __RUNTIME_EXT_REGEX__: string;
 declare const __CONTENT_UPDATED__: string;
 
 const VERSION = __VERSION__;
+// HTML 在发布新构建后仍用于缓存优先展示，不随静态资源版本清理。
+const HTML_CACHE = 'blog-html-v1';
 const PRECACHE_URLS: string[] = __PRECACHE_URLS__;
 const STATIC_EXT_REGEX = new RegExp(__STATIC_EXT_REGEX__);
 const RUNTIME_EXT_REGEX = new RegExp(__RUNTIME_EXT_REGEX__);
@@ -17,7 +19,7 @@ const SW = self as unknown as ServiceWorkerGlobalScope;
 SW.addEventListener('install', (event) => {
   event.waitUntil(
     caches.keys().then(async (keys) => {
-      const oldKey = keys.find((key) => key !== VERSION);
+      const oldKey = keys.find((key) => key !== VERSION && key !== HTML_CACHE);
       const oldCache = oldKey ? await caches.open(oldKey) : null;
       const newCache = await caches.open(VERSION);
 
@@ -42,7 +44,7 @@ SW.addEventListener('activate', (event) => {
     caches.keys().then(async (keys) => {
       await Promise.all(
         keys
-          .filter((key) => key !== VERSION)
+          .filter((key) => key !== VERSION && key !== HTML_CACHE)
           .map((key) => caches.delete(key)),
       );
       await SW.clients.claim();
@@ -77,43 +79,51 @@ SW.addEventListener('fetch', (event) => {
 
   if (event.request.mode === 'navigate') {
     const resultingClientId = event.resultingClientId;
-    const fetched = fetch(event.request.url, { cache: 'no-store' }).then(async (response) => {
-      const cache = await caches.open(VERSION);
-      await cache.put(event.request, response.clone());
+    const cached = caches.open(HTML_CACHE).then(async (cache) => {
+      const response = await cache.match(event.request);
+      // respondWith 会消费响应体，必须在交给页面之前保留比较副本。
+      return { cache, response, comparison: response?.clone() };
+    });
+    const fetched = cached.then(async ({ cache }) => {
+      // 先取得旧缓存快照，再发起可能覆盖缓存的后台请求。
+      const response = await fetch(event.request.url, { cache: 'no-store' });
+      if (response.ok) {
+        await cache.put(event.request, response.clone());
+      }
       return response;
     });
 
     event.respondWith(
-      caches.match(event.request).then(async (cached) => {
-        if (cached) {
-          event.waitUntil(
-            fetched.then(async (fresh) => {
-              const [cachedText, freshText] = await Promise.all([
-                cached.clone().text(),
-                fresh.clone().text(),
-              ]);
-              if (cachedText !== freshText) {
-                const clients = await SW.clients.matchAll({
-                  type: 'window',
-                  includeUncontrolled: true,
-                });
-                clients.forEach((client) =>
-                  client.postMessage(__CONTENT_UPDATED__),
-                );
-
-                if (
-                  resultingClientId
-                  && !clients.some((client) => client.id === resultingClientId)
-                ) {
-                  const resultingClient = await SW.clients.get(resultingClientId);
-                  resultingClient?.postMessage(__CONTENT_UPDATED__);
-                }
-              }
-            }),
-          );
-          return cached;
+      cached.then(({ response }) => response ?? fetched),
+    );
+    event.waitUntil(
+      Promise.all([cached, fetched]).then(async ([{ comparison }, fresh]) => {
+        if (!comparison || !fresh.ok) {
+          return;
         }
-        return fetched;
+        const [cachedText, freshText] = await Promise.all([
+          comparison.text(),
+          fresh.text(),
+        ]);
+        if (cachedText !== freshText) {
+          const clients = await SW.clients.matchAll({
+            type: 'window',
+            includeUncontrolled: true,
+          });
+          clients.forEach((client) =>
+            client.postMessage(__CONTENT_UPDATED__),
+          );
+
+          if (
+            resultingClientId
+            && !clients.some((client) => client.id === resultingClientId)
+          ) {
+            const resultingClient = await SW.clients.get(resultingClientId);
+            resultingClient?.postMessage(__CONTENT_UPDATED__);
+          }
+        }
+      }).catch((error) => {
+        console.warn('[precache] HTML update failed', error);
       }),
     );
     return;
