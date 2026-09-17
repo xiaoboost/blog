@@ -16,8 +16,8 @@ text{font-family:"Microsoft YaHei","PingFang SC","Noto Sans CJK SC",sans-serif;f
 </defs>
 <rect width="640" height="556" class="paper"/>
 <text x="320" y="34" class="title" text-anchor="middle" data-max-width="600">撤回状态，不会倒带历史</text>
-<text x="166" y="101" class="label blue-text" text-anchor="middle" data-max-width="600">受管贡献</text>
-<text x="476" y="101" class="label" text-anchor="middle" data-max-width="286">已发生的外部发送</text>
+<text x="166" y="101" class="label blue-text" text-anchor="middle" data-max-width="600">受管副作用</text>
+<text x="476" y="101" class="label" text-anchor="middle" data-max-width="286">已发送的请求和消息</text>
 <path data-edge="divider" d="M 320 84 V 446" class="line faint dashed"/>
 <g data-node="tracked"><rect x="32" y="149" width="268" height="124" rx="10" class="node new"/><text x="166" y="195" class="label" text-anchor="middle" data-max-width="244">目录监听的注册</text><text x="166" y="227" class="label" text-anchor="middle" data-max-width="244">服务绑定的建立</text></g>
 <g data-node="emissions"><rect x="340" y="149" width="268" height="124" rx="10" class="node"/><text x="474" y="195" class="label" text-anchor="middle" data-max-width="244">请求已经送达</text><text x="474" y="227" class="label" text-anchor="middle" data-max-width="244">消息已被接收</text></g>
