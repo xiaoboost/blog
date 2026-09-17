@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="574" viewBox="0 0 640 574" role="img" aria-labelledby="title desc">
 <title id="title">只撤销 A，保留 B</title>
-<desc id="desc">假设 A、B 的操作相互独立。共同时间轴上依次执行 A1、B1、A2、B2，然后卸载 A，先撤销 A2 再撤销 A1。A 的贡献撤回，B1 与 B2 的贡献保留。单个插件内部反序撤销，不需要把整个系统回滚。</desc>
+<desc id="desc">假设 A、B 的操作相互独立。共同时间轴上依次执行 A1、B1、A2、B2，然后卸载 A，先撤销 A2 再撤销 A1。A 的副作用撤回，B1 与 B2 产生的修改保留。单个插件内部反序撤销，不需要把整个系统回滚。</desc>
 <style>
 :root{--paper:#ffffff;--ink:#243244;--muted:#566578;--line:#8291a3;--faint:#d8e0e9;--surface:#f1f4f8;--blue:#27689e;--blue-soft:#eaf3fb;--orange:#a45825;--orange-soft:#fff1e6;--green:#2c7560;--green-soft:#eaf5ef}
 @media(prefers-color-scheme:dark){:root{--paper:#18212d;--ink:#edf2f7;--muted:#bac6d4;--line:#9cadc1;--faint:#425268;--surface:#253244;--blue:#8bc7f4;--blue-soft:#243d53;--orange:#efb583;--orange-soft:#4a3426;--green:#8fd3bb;--green-soft:#244339}}
