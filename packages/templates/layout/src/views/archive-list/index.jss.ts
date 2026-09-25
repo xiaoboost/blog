@@ -30,8 +30,7 @@ export default createStyles({
     '@media (max-width: 640px)': { gridTemplateColumns: '1fr', gap: 2, marginBottom: 25 },
   },
   yearLabel: {
-    // 补偿 Lora 数字与思源宋体标题的字面位置差，让首行视觉中线对齐。
-    paddingTop: 12,
+    paddingTop: 9,
     '& h2': {
       display: 'flex', alignItems: 'baseline', gap: 8, margin: 0, color: TextPrimary,
       fontFamily: `${ArchiveYearFontFamily}, ${FontHeading}`, fontWeight: ArchiveYearFontWeight,
@@ -46,6 +45,8 @@ export default createStyles({
   row: {
     display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 22, margin: 0,
     padding: [13, 0], borderBottom: `1px solid ${BorderPrimary}`,
+    // 首行上方收紧 3px，使列表与年份的视觉中线对齐；移动端恢复常规行距。
+    '&:first-child': { paddingTop: 10, '@media (max-width: 640px)': { paddingTop: 12 } },
     '& a': {
       minWidth: 0, color: TextPrimary, fontFamily: `${ListItemTitleFontFamily}, ${FontHeading}`,
       fontWeight: ListItemTitleFontWeight, fontSize: 17, lineHeight: 1.65, textDecoration: 'none', overflowWrap: 'anywhere',
