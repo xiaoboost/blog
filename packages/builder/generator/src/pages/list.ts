@@ -28,6 +28,7 @@ export function renderListPage({
   older,
   newer,
   index,
+  count,
   dev,
   isPreBuild,
 }: IndexPageRenderProps) {
@@ -42,6 +43,7 @@ export function renderListPage({
     hmr: dev,
     older,
     newer,
+    numbered: { index, count, urlForIndex: (i) => getIndexUrlPath(site, i) },
     styles: [
       ...site.getStyles(),
       ...page.getStyles(),

@@ -145,6 +145,7 @@ export function renderYearPostListPage({
   older,
   newer,
   index,
+  count,
   dev,
   isPreBuild,
 }: YearPostListPageRenderProps) {
@@ -160,6 +161,7 @@ export function renderYearPostListPage({
     hmr: dev,
     older,
     newer,
+    numbered: { index, count, urlForIndex: (i) => getYearPostListUrlPath(site, listTitle, i) },
     styles: [
       ...site.getStyles(),
       ...page.getStyles(),

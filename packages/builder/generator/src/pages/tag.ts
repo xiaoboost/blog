@@ -80,6 +80,7 @@ export function renderTagListPage({
   older,
   newer,
   index,
+  count,
   dev,
   isPreBuild,
 }: TagListPageRenderProps) {
@@ -95,6 +96,7 @@ export function renderTagListPage({
     hmr: dev,
     older,
     newer,
+    numbered: { index, count, urlForIndex: (i) => getTagListUrlPath(site, i) },
     styles: [
       ...site.getStyles(),
       ...page.getStyles(),
@@ -130,6 +132,7 @@ export function renderTagPostListPage({
   older,
   newer,
   index,
+  count,
   dev,
   isPreBuild,
 }: TagPostListPageRenderProps) {
@@ -145,6 +148,7 @@ export function renderTagPostListPage({
     hmr: dev,
     older,
     newer,
+    numbered: { index, count, urlForIndex: (i) => getTagPostListUrlPath(site, listTitle, i) },
     styles: [
       ...site.getStyles(),
       ...page.getStyles(),
