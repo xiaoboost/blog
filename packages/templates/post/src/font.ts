@@ -2,7 +2,7 @@ import { onBuild } from '@blog/context/runtime';
 import FirstTitleFontFile from '@blog/styles/fonts/SourceHanSerif/SourceHanSerifSC-Bold.otf?raw';
 import SecondTitleFontFile from '@blog/styles/fonts/SourceHanSerif/SourceHanSerifSC-SemiBold.otf?raw';
 import type { BuildContext, PageDataMap } from '@blog/types';
-import { PostTemplate, FirstTitleFontFamily, SecondTitleFontFamily } from './constant';
+import { PostTemplate, FirstTitleFontFamily, FirstTitleFontWeight, SecondTitleFontFamily, SecondTitleFontWeight } from './constant';
 import { getNavList } from './to-content';
 
 onBuild((runtime) => {
@@ -10,8 +10,16 @@ onBuild((runtime) => {
   runtime.hooks.afterReady.tap(PostTemplate, (ctx: BuildContext) => {
     for (const page of ctx.pages) {
       if (page.type !== 'post') continue;
-      page.ensureFontBucket(FirstTitleFontFamily, FirstTitleFontFile);
-      page.ensureFontBucket(SecondTitleFontFamily, SecondTitleFontFile);
+      page.ensureFontBucket(
+        FirstTitleFontFamily,
+        FirstTitleFontFile,
+        { fontWeight: FirstTitleFontWeight },
+      );
+      page.ensureFontBucket(
+        SecondTitleFontFamily,
+        SecondTitleFontFile,
+        { fontWeight: SecondTitleFontWeight },
+      );
     }
   });
 

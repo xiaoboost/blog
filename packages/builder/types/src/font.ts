@@ -44,14 +44,20 @@ export interface IFontBucketBufferSource {
   fontContent: Buffer;
 }
 
-/** 字体桶构造函数参数 */
-export type IFontBucketOptions = {
-  /** 字体家族名（CSS font-family） */
-  fontFamily?: string;
+/** 字体桶通用配置，不包含字体名称和来源 */
+export interface IFontBucketConfig {
+  /** 字体文件对应的 CSS 字重 @default 400 */
+  fontWeight?: number;
   /** CSS 类名（不传则由 fontFamily 推导） */
   className?: string;
   /** 回退字体 @default 'sans-serif' */
   fallbackFont?: string;
+}
+
+/** 字体桶构造函数参数 */
+export type IFontBucketOptions = IFontBucketConfig & {
+  /** 字体家族名（CSS font-family） */
+  fontFamily?: string;
   /** 自定义字体文件加载器（仅 fontSource 模式生效） */
   getFontContent?(fontSource: string): Promise<Buffer>;
 } & (IFontBucketPathSource | IFontBucketBufferSource);

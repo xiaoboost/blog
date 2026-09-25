@@ -1,5 +1,5 @@
 import type { AssetData, PreloadAssetData } from './asset';
-import type { IFontBucket, IBuildFontsOptions } from './font';
+import type { IFontBucket, IFontBucketConfig, IBuildFontsOptions } from './font';
 import type { PostExportData, PostExportDataWithComponent } from './post';
 
 /** 页面类型 */
@@ -74,7 +74,7 @@ export interface IResourceSet {
   getPreloads(): PreloadAssetData[];
 
   /** 获取或创建字体桶 */
-  ensureFontBucket(family: string, source: Buffer): IFontBucket;
+  ensureFontBucket(family: string, source: Buffer, options?: IFontBucketConfig): IFontBucket;
   /** 获取已有的字体桶 */
   getFontBucket(family: string): IFontBucket;
   /** 获取所有字体桶 */

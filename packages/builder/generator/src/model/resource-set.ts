@@ -2,6 +2,7 @@ import { FontBucket, normalize } from '@blog/node';
 import type {
   AssetData,
   IFontBucket,
+  IFontBucketConfig,
   IResourceSet,
   PreloadAssetData,
   IBuildFontsOptions,
@@ -42,10 +43,10 @@ export abstract class ResourceSet implements IResourceSet {
     return this.#preloads.slice();
   }
 
-  ensureFontBucket(family: string, source: Buffer): IFontBucket {
+  ensureFontBucket(family: string, source: Buffer, options?: IFontBucketConfig): IFontBucket {
     let bucket = this.#fontBuckets.get(family);
     if (!bucket) {
-      bucket = new FontBucket({ fontContent: source, fontFamily: family });
+      bucket = new FontBucket({ ...options, fontContent: source, fontFamily: family });
       this.#fontBuckets.set(family, bucket);
     }
     return bucket as IFontBucket;

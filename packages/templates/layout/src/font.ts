@@ -3,20 +3,28 @@ import ListTitleFontFile from '@blog/styles/fonts/SourceHanSerif/SourceHanSerifS
 import ListItemTitleFontFile from '@blog/styles/fonts/SourceHanSerif/SourceHanSerifSC-SemiBold.otf?raw';
 import type { BuildContext } from '@blog/types';
 import SiteTitleFontFile from './assets/fonts/dancing/dancing.ttf?raw';
-import { SiteTitleFontFamily, ListTitleFontFamily, ListItemTitleFontFamily } from './constant/font';
+import { SiteTitleFontFamily, ListTitleFontFamily, ListTitleFontWeight, ListItemTitleFontFamily, ListItemTitleFontWeight } from './constant/font';
 
 onBuild((runtime) => {
   // 注册共享字体
   runtime.hooks.afterReady.tap('layout:shared-fonts', ({ site }: BuildContext) => {
     site.ensureFontBucket(SiteTitleFontFamily, SiteTitleFontFile);
-    site.ensureFontBucket(ListTitleFontFamily, ListTitleFontFile);
+    site.ensureFontBucket(
+      ListTitleFontFamily,
+      ListTitleFontFile,
+      { fontWeight: ListTitleFontWeight },
+    );
   });
 
   // 注册列表项标题字体
   runtime.hooks.afterReady.tap('layout:list-item-font', ({ pages }: BuildContext) => {
     for (const page of pages) {
       if (page.type === 'post') continue;
-      page.ensureFontBucket(ListItemTitleFontFamily, ListItemTitleFontFile);
+      page.ensureFontBucket(
+        ListItemTitleFontFamily,
+        ListItemTitleFontFile,
+        { fontWeight: ListItemTitleFontWeight },
+      );
     }
   });
 
