@@ -271,6 +271,44 @@ describe('博客构建 e2e', () => {
     expect(pageTwo).include('aria-current="page" aria-label="第 2 页"');
   });
 
+  it('所有列表共用页码规则：至少三页显示，中间链接指向同一列表', () => {
+    const pages = new Map<string, { nav: string; newer?: string; older?: string }>();
+    for (const { path, content } of htmlAssets) {
+      const nav = /<nav[^>]+aria-label="文章分页"[^>]*>([\s\S]*?)<\/nav>/.exec(content.toString())?.[1];
+      if (!nav) continue;
+      pages.set(path.replace(/index\.html$/, ''), {
+        nav,
+        newer: /href="([^"]+)" rel="prev"/.exec(nav)?.[1],
+        older: /href="([^"]+)" rel="next"/.exec(nav)?.[1],
+      });
+    }
+    const counts = new Set<number>();
+    for (const [root, first] of pages) {
+      if (first.newer) continue;
+      const urls: string[] = [];
+      let url: string | undefined = root;
+      while (url) {
+        expect(urls, '分页形成循环').not.include(url);
+        urls.push(url);
+        expect(pages.has(url), `缺少分页 ${url}`).true;
+        url = pages.get(url)!.older;
+      }
+      counts.add(urls.length);
+      urls.forEach((pageUrl, index) => {
+        const { nav } = pages.get(pageUrl)!;
+        expect(nav.includes('aria-current="page"'), pageUrl).eq(urls.length >= 3);
+        expect(/aria-label="第 \d+ 页，共 \d+ 页"/.test(nav), pageUrl).eq(urls.length >= 3);
+        if (urls.length < 3) return;
+        expect(nav).include(`aria-current="page" aria-label="第 ${index + 1} 页"`);
+        for (const link of nav.matchAll(/href="([^"]+)" aria-label="第 (\d+) 页"/g)) {
+          expect(link[1], pageUrl).eq(urls[Number(link[2]) - 1]);
+        }
+      });
+    }
+    expect(counts.has(2), '需要覆盖两页的列表').true;
+    expect([...counts].some((count) => count >= 3), '需要覆盖至少三页的列表').true;
+  });
+
   it('CNAME 文件存在', () => {
     const found = assetMap.has('/CNAME');
     expect(found, 'CNAME 文件不存在').true;

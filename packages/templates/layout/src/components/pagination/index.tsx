@@ -36,7 +36,7 @@ export function Pagination({ newer, older, numbered }: PaginationProps) {
           </a>
         )}
       </div>
-      {numbered && numbered.count > 1 && (
+      {numbered && numbered.count >= 3 && (
         <div className={classes.pageNumbers}>
           {getPageIndexes(numbered.index, numbered.count).map((index, position) => {
             if (index === 'gap') {
