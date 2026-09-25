@@ -215,6 +215,62 @@ describe('博客构建 e2e', () => {
     expect(found, '归档聚合页 /archive/index.html 不存在').true;
   });
 
+  function archivePages() {
+    return htmlAssets
+      .filter(({ path, content }) => path.startsWith('/archive/') && content.toString().includes('aria-labelledby="archive-year-'))
+      .sort((a, b) => (Number(a.path.split('/')[2]) || 0) - (Number(b.path.split('/')[2]) || 0));
+  }
+
+  it('归档按 12 篇分页，文章完整且没有重复', () => {
+    const pages = archivePages();
+    const postLinks = (html: string) => extractLinks(html).filter((href) => /^\/posts\/\d{4}\//.test(href));
+    const actual: string[] = [];
+    pages.forEach(({ content }, index) => {
+      const links = postLinks(content.toString());
+      expect(links.length).to.be.within(1, 12);
+      if (index < pages.length - 1) expect(links.length).eq(12);
+      actual.push(...links);
+    });
+    const expected = htmlAssets
+      .filter(({ path }) => /^\/(?:index\/\d+\/)?index\.html$/.test(path))
+      .sort((a, b) => (Number(a.path.split('/')[2]) || 0) - (Number(b.path.split('/')[2]) || 0))
+      .flatMap(({ content }) => postLinks(content.toString()));
+    expect(actual).deep.eq(expected);
+    expect(new Set(actual).size).eq(actual.length);
+  });
+
+  it('同一年跨页时标记接续，归档页各自产出 600 与 400 字重子集', () => {
+    const pages = archivePages();
+    let previousYear: string | undefined;
+    pages.forEach(({ path, content }) => {
+      const html = content.toString();
+      const years = [...html.matchAll(/aria-labelledby="archive-year-(\d+)"/g)].map((match) => match[1]);
+      expect(html.includes('接续上一页的')).eq(years[0] === previousYear);
+      previousYear = years.at(-1);
+      const fontCssPath = extractLinks(html).find((href) => href.startsWith(path.replace('index.html', '')) && /\/styles\/content-fonts[^/]+\.css$/.test(href));
+      expect(fontCssPath, `缺少页面字体：${path}`).not.undefined;
+      const css = assetMap.get(fontCssPath!)!.toString();
+      expect(css).match(/font-family:["']?list-item["']?;font-weight:600/);
+      expect(css).match(/font-family:["']?archive-year["']?;font-weight:400/);
+    });
+  });
+
+  it('全站分页保持左新篇、右旧闻；归档页码指向真实分页', () => {
+    for (const { content } of htmlAssets) {
+      const html = content.toString();
+      const nav = /<nav[^>]+aria-label="文章分页"[^>]*>([\s\S]*?)<\/nav>/.exec(html)?.[1];
+      if (!nav) continue;
+      const newer = /<a[^>]+rel="prev"[^>]*>[\s\S]*?新篇<\/a>/.exec(nav);
+      const older = /<a[^>]+rel="next"[^>]*>旧闻[\s\S]*?<\/a>/.exec(nav);
+      expect(Boolean(newer || older), '缺少有方向语义的翻页链接').true;
+      if (newer && older) expect(newer.index).lessThan(older.index);
+    }
+    const pageTwo = assetMap.get('/archive/1/index.html')!.toString();
+    expect(pageTwo).match(/href="\/archive\/" rel="prev"/);
+    expect(pageTwo).match(/href="\/archive\/2\/" rel="next"/);
+    expect(pageTwo).include('aria-current="page" aria-label="第 2 页"');
+  });
+
   it('CNAME 文件存在', () => {
     const found = assetMap.has('/CNAME');
     expect(found, 'CNAME 文件不存在').true;

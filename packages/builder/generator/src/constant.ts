@@ -16,6 +16,7 @@ export const links = {
 export const pageConfig = {
   index: 10,
   archive: 20,
+  yearArchive: 12,
 };
 
 /** 公共资源公共路径 */

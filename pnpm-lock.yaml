@@ -995,6 +995,9 @@ importers:
       '@blog/eslint-config':
         specifier: workspace:*
         version: link:../eslint-config
+      '@blog/shared':
+        specifier: workspace:*
+        version: link:../../utils/shared
       '@blog/test-toolkit':
         specifier: workspace:*
         version: link:../test-toolkit

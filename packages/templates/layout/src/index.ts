@@ -8,5 +8,6 @@ export * from './components/pagination';
 export * from './views/main-index';
 export * from './views/item-list';
 export * from './views/post-list';
+export * from './views/archive-list';
 
 export const utils = defineUtils(assets);
