@@ -30,7 +30,8 @@ export default createStyles({
     '@media (max-width: 640px)': { gridTemplateColumns: '1fr', gap: 2, marginBottom: 25 },
   },
   yearLabel: {
-    paddingTop: 9,
+    // 补偿 Lora 数字与思源宋体标题的字面位置差，让首行视觉中线对齐。
+    paddingTop: 12,
     '& h2': {
       display: 'flex', alignItems: 'baseline', gap: 8, margin: 0, color: TextPrimary,
       fontFamily: `${ArchiveYearFontFamily}, ${FontHeading}`, fontWeight: ArchiveYearFontWeight,
