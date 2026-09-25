@@ -8,6 +8,9 @@ export const ListTitleFontWeight = 700;
 export const ListItemTitleFontFamily = 'list-item';
 /** 对应 SourceHanSerifSC-SemiBold.otf */
 export const ListItemTitleFontWeight = 600;
+/** 归档年份数字，对应 Lora-Regular.ttf */
+export const ArchiveYearFontFamily = 'archive-year';
+export const ArchiveYearFontWeight = 400;
 /** 获取字体路径 */
 export const getFontPath = (name: string, subName?: string) => {
   return subName ? `../assets/fonts/${name}/${name}-${subName}` : `../assets/fonts/${name}/${name}`;

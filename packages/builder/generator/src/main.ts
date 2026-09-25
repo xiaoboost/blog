@@ -26,6 +26,7 @@ import {
 } from './pages/tag';
 import {
   getYearData,
+  getArchiveGroups,
   renderYearListPage,
   getYearListUrlPath,
   getYearPostListUrlPath,
@@ -161,17 +162,14 @@ function createAllPages(): Omit<RenderOptions, 'isPreBuild'> {
 
   const yearData = getYearData(posts);
 
-  // 归档列表页
+  // 先按文章数量分页，再在各页内分年份。
+  const yearRange = yearData.length ? `${yearData.at(-1)!.name} — ${yearData[0].name}` : '';
   allPages.push(...paginate(
-    yearData,
-    pageConfig.archive,
+    sortedPosts,
+    pageConfig.yearArchive,
     (i) => getYearListUrlPath(site, i),
     (chunk, nav) => {
-      const items = chunk.map((d) => ({
-        title: `${d.name} 年`,
-        subTitle: `共 ${d.posts.length} 篇`,
-        url: getYearPostListUrlPath(site, d.name, 0),
-      }));
+      const groups = getArchiveGroups(chunk, yearData, sortedPosts[nav.index * pageConfig.yearArchive - 1]);
 
       return new Page({
         type: 'year-list',
@@ -179,11 +177,12 @@ function createAllPages(): Omit<RenderOptions, 'isPreBuild'> {
         title: nav.index === 0
           ? '归档聚合页'
           : `归档聚合 | 第 ${nav.index + 1} 页`,
-        data: { listTitle: '归档汇总', items, ...nav },
+        data: { listTitle: '旧闻与来处', groups, yearRange, ...nav },
         render: (props) => renderYearListPage({
           ...props,
-          listTitle: '归档汇总',
-          data: items,
+          listTitle: '旧闻与来处',
+          groups,
+          yearRange,
           ...nav,
         }),
       });

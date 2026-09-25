@@ -1,9 +1,9 @@
 import { normalize, normalizeUrl } from '@blog/node';
-import { PostList, ItemList, utils, type ItemListProps, type PostListProps, type PaginationProps } from '@blog/template-layout';
-import type { IRenderContext, ISite, PostExportData } from '@blog/types';
+import { PostList, ArchiveList, utils, type ArchiveListProps, type PostListProps, type PaginationProps } from '@blog/template-layout';
+import type { ArchiveYearGroup, IRenderContext, ISite, PostExportData } from '@blog/types';
 import { createHtml } from '../utils/react';
 
-const createYearList = createHtml(ItemList);
+const createYearList = createHtml(ArchiveList);
 const createYearPostList = createHtml(PostList);
 
 export interface YearData {
@@ -49,6 +49,20 @@ export function getYearListUrlPath(site: ISite, index: number) {
     : normalizeUrl(site.publicPath, site.archivePath, String(index));
 }
 
+export function getArchiveGroups(
+  posts: PostExportData[],
+  years: YearData[],
+  previousPost?: PostExportData,
+): ArchiveYearGroup[] {
+  const previousYear = previousPost ? String(new Date(previousPost.data.create).getFullYear()) : undefined;
+  return getYearData(posts).map(({ name, posts: yearPosts }, index) => ({
+    year: name,
+    posts: yearPosts,
+    total: years.find((year) => year.name === name)!.posts.length,
+    continued: index === 0 && previousYear === name,
+  }));
+}
+
 export function getYearPostListUrlPath(site: ISite, year: string, index: number) {
   return index === 0
     ? normalizeUrl(site.publicPath, site.archivePath, year)
@@ -64,7 +78,7 @@ export function getYearPostListAssetPath(site: ISite, year: string, index: numbe
 }
 
 export interface YearListPageRenderProps
-  extends IRenderContext, Pick<ItemListProps, 'listTitle' | 'data'>, PaginationProps {
+  extends IRenderContext, Pick<ArchiveListProps, 'listTitle' | 'groups' | 'yearRange'>, PaginationProps {
   index: number;
   count: number;
 }
@@ -73,17 +87,20 @@ export function renderYearListPage({
   page,
   site,
   listTitle,
-  data,
+  groups,
+  yearRange,
   older,
   newer,
   index,
+  count,
   dev,
   isPreBuild,
 }: YearListPageRenderProps) {
   const pageTitle = index === 0 ? '归档聚合页' : `归档聚合 | 第 ${index + 1} 页`;
 
   return createYearList({
-    data,
+    groups,
+    yearRange,
     listTitle,
     siteTitle: site.title,
     pageTitle,
@@ -92,6 +109,7 @@ export function renderYearListPage({
     hmr: dev,
     older,
     newer,
+    numbered: { index, count, urlForIndex: (i) => getYearListUrlPath(site, i) },
     styles: [
       ...site.getStyles(),
       ...page.getStyles(),

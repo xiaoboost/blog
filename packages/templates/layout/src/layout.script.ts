@@ -12,6 +12,7 @@ import '@blog/component-scrollbar/src/index.script';
 
 import './views/main-index/index.jss';
 import './views/item-list/index.jss';
+import './views/archive-list/index.jss';
 
 import { assets } from '@blog/context/web';
 

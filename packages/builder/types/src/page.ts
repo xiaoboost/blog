@@ -28,6 +28,14 @@ export interface PageListBase {
   newer?: string;
 }
 
+/** 一页归档中某一年的文章；同一年可以跨页。 */
+export interface ArchiveYearGroup {
+  year: string;
+  posts: PostExportData[];
+  total: number;
+  continued: boolean;
+}
+
 /** 各页面类型对应的 data 类型 */
 export interface PageDataMap {
   'post': {
@@ -46,7 +54,8 @@ export interface PageDataMap {
   };
   'year-list': PageListBase & {
     listTitle: string;
-    items: PageItemData[];
+    groups: ArchiveYearGroup[];
+    yearRange: string;
   };
   'year-post-list': PageListBase & {
     listTitle: string;

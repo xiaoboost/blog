@@ -3,7 +3,8 @@ import ListTitleFontFile from '@blog/styles/fonts/SourceHanSerif/SourceHanSerifS
 import ListItemTitleFontFile from '@blog/styles/fonts/SourceHanSerif/SourceHanSerifSC-SemiBold.otf?raw';
 import type { BuildContext } from '@blog/types';
 import SiteTitleFontFile from './assets/fonts/dancing/dancing.ttf?raw';
-import { SiteTitleFontFamily, ListTitleFontFamily, ListTitleFontWeight, ListItemTitleFontFamily, ListItemTitleFontWeight } from './constant/font';
+import ArchiveYearFontFile from './assets/fonts/Lora/Lora-Regular.ttf?raw';
+import { SiteTitleFontFamily, ListTitleFontFamily, ListTitleFontWeight, ListItemTitleFontFamily, ListItemTitleFontWeight, ArchiveYearFontFamily, ArchiveYearFontWeight } from './constant/font';
 
 onBuild((runtime) => {
   // 注册共享字体
@@ -25,6 +26,9 @@ onBuild((runtime) => {
         ListItemTitleFontFile,
         { fontWeight: ListItemTitleFontWeight },
       );
+      if (page.type === 'year-list') {
+        page.ensureFontBucket(ArchiveYearFontFamily, ArchiveYearFontFile, { fontWeight: ArchiveYearFontWeight });
+      }
     }
   });
 
