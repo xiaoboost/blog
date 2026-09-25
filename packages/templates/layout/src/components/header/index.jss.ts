@@ -8,6 +8,7 @@ import {
   WidthMain,
   DurationFast,
   FontSizeXl,
+  FontSizeLg,
 } from '@blog/styles/compile';
 import { SiteTitleFontFamily } from '../../constant/font';
 import { ShadowHeader } from '../../styles/theme/token';
@@ -37,6 +38,11 @@ export default createStyles({
       color: TextPrimary,
       alignItems: 'center',
       fontFamily: `${SiteTitleFontFamily}, ${FontHeading}`,
+      whiteSpace: 'nowrap',
+
+      '@media (max-width: 480px)': {
+        fontSize: FontSizeLg,
+      },
     },
   },
   mainNav: {
@@ -59,6 +65,10 @@ export default createStyles({
 
     '&:hover': {
       color: TextSecondary,
+    },
+
+    '@media (max-width: 480px)': {
+      marginLeft: 10,
     },
   },
   mainNavItemBar: {

@@ -36,6 +36,15 @@ const bodyBg = createThemeStyles({
 
 const global = createStyles({
   '@global': {
+    ':root': {
+      colorScheme: 'light dark',
+      '&[data-theme="light"]': {
+        colorScheme: 'light',
+      },
+      '&[data-theme="dark"]': {
+        colorScheme: 'dark',
+      },
+    },
     '*': {
       userSelect: 'inherit',
       boxSizing: 'border-box',
