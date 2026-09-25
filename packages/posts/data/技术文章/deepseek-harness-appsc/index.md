@@ -9,6 +9,8 @@ tags:
   - AI 编程
 ---
 
+import { DefinitionList, Definition } from '@blog/mdx-typo';
+
 # 它到底讲了什么
 
 ## 我是不是看错论文了
@@ -45,11 +47,25 @@ Cordis 关心的是插件组合在运行中变化时的正确性。插件可以�
 
 # 术语约定
 
-*插件（Component）*是本文对论文中 Component 的称呼，用来定义依赖、供给和加载过程。
-*插件实例（Fiber）*指插件进入运行时后产生的具体实例。
-*副作用（effect）*指对共享环境的修改，本文沿用前端的译法，不译作“效应”。
-*撤销函数（inverse）*比通常的清理函数（cleanup / disposer）多一层约定，执行后必须撤销对应操作对受管状态的修改。这里的“受管状态”，指纳入 Context 管理的那部分共享状态。
-*上下文需求（coeffect）*描述插件要求环境提供什么，例如文件系统或日志服务。
+<DefinitionList>
+  <Definition term="插件" alias="Component">
+    本文对论文中 Component 的称呼，用来定义依赖、供给和加载过程。
+  </Definition>
+  <Definition term="插件实例" alias="Fiber">
+    插件进入运行时后产生的具体实例。
+  </Definition>
+  <Definition term="副作用" alias="effect">
+    对共享环境的修改，本文沿用前端的译法，不译作“效应”。
+  </Definition>
+  <Definition term="撤销函数" alias="inverse">
+    比通常的清理函数（cleanup / disposer）多一层约定，执行后必须撤销对应操作对受管状态的修改。
+
+    这里的“受管状态”，指纳入 Context 管理的那部分共享状态。
+  </Definition>
+  <Definition term="上下文需求" alias="coeffect">
+    描述插件要求环境提供什么，例如文件系统或日志服务。
+  </Definition>
+</DefinitionList>
 
 # 从动态替换反推 Cordis
 

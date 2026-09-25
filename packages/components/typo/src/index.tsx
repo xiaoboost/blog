@@ -3,5 +3,11 @@ import assets from './typo.script';
 
 export { TextGloss, type TextGlossProps } from './text-gloss';
 export { Subtitle, type SubtitleProps } from './subtitle';
+export {
+  DefinitionList,
+  Definition,
+  type DefinitionListProps,
+  type DefinitionProps,
+} from './definition-list';
 
 export const utils = defineUtils(assets);
