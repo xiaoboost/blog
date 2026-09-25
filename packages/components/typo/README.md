@@ -4,6 +4,50 @@
 
 ## 组件
 
+### DefinitionList / Definition（名称与说明列表）
+
+适用于术语约定、概念解释和人物介绍。默认采用紧凑排版：名称在左、解释在右，以细横线分隔。空间不足时解释自动换行到名称下方；手机上始终上下排列。颜色沿用主题 token，自动适配深浅色。
+
+在 MDX 中直接写解释文本，用空行分隔段落；正文可以随 JSX 层级正常缩进，无需顶格书写。强调、链接、行内代码等由 MDX 编译，无需手写 `<p>`，组件也不需要对文本逐行 `trim()`。
+
+```mdx
+import { DefinitionList, Definition } from '@blog/mdx-typo';
+
+## 术语约定
+
+<DefinitionList>
+  <Definition term="插件">
+    声明自己需要什么、提供什么，以及怎样加载。
+  </Definition>
+  <Definition term="副作用" alias="Side effect">
+    对共享环境的修改，例如注册监听、提供服务。
+  </Definition>
+  <Definition term="撤销函数" alias="Disposer">
+    由执行操作的代码交出，用于撤回对应的修改。
+
+    例如：调用 `unsubscribe()` 移除监听，释放**不再需要的资源**。
+  </Definition>
+</DefinitionList>
+```
+
+章节标题写在组件外，由文章原有的标题与目录系统处理。
+
+**DefinitionList Props**
+
+| 参数 | 类型 | 说明 |
+|---|---|---|
+| `children` | `React.ReactNode` | 必填，使用 `Definition` 组成的条目 |
+
+**Definition Props**
+
+| 参数 | 类型 | 说明 |
+|---|---|---|
+| `term` | `React.ReactNode` | 必填，名称；支持文本或行内元素 |
+| `alias` | `string` | 可选，英文名或别名 |
+| `children` | `React.ReactNode` | 必填，解释内容；支持 MDX 段落、链接、行内代码等 |
+
+组件只负责布局和样式，不重新解析字符串。解释段落不使用正文的首行缩进，多段解释之间保留小段距。
+
 ### Subtitle（副标题）
 
 独立成行的块级元素，用于标题下方的出处、说明等辅助信息。前置一条 CSS 绘制的细线作为视觉引导。默认使用正文字体、辅助色、14px 字号，视觉层级介于标题与正文之间。
