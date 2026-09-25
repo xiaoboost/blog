@@ -1,4 +1,3 @@
-import { toRound } from '@blog/shared';
 import {
   createStyles,
   TextPrimary,
@@ -15,7 +14,6 @@ import {
   RadiusSm,
   RadiusMd,
   DurationFast,
-  FontSizeXxl,
   FontSizeRegular,
   FontSizeMd,
   FontSizeLg,
@@ -89,9 +87,10 @@ export default createStyles({
     '& $postHeaderTitle': {
       fontFamily: `${FirstTitleFontFamily},${FontHeading}`,
       color: TextPrimary,
-      fontSize: FontSizeXxl,
+      fontSize: 'clamp(28px, 4vw, 32px)',
+      lineHeight: 1.4,
       margin: 0,
-      padding: 0,
+      padding: '12px 0',
       whiteSpace: 'wrap',
       width: 'calc(100% - 100px)',
     },
@@ -108,13 +107,24 @@ export default createStyles({
         { pc: indent, phone: smallIndent },
       ),
       ...createHeadStyles('& ', (level) => ({
-        fontFamily: `${level === 1 ? FirstTitleFontFamily : SecondTitleFontFamily},${FontHeading}`,
-        textShadow: level === 1 ? 'none' : '0.05px 0 0 currentColor',
-        fontSize: `${toRound(1.5 - 0.15 * (level - 1))}em`,
-        marginTop: `${toRound(1.2 - 0.1 * (level - 1))}em`,
-        marginBottom: `${toRound(0.9 - 0.05 * (level - 1))}em`,
-        lineHeight: '1.3',
+        fontFamily: level <= 2
+          ? `${level === 1 ? FirstTitleFontFamily : SecondTitleFontFamily},${FontHeading}`
+          : FontBody,
+        fontWeight: 'bold',
+        fontSize: [
+          '1.75em', '1.375em', '1.125em', '1em', '1em',
+        ][level - 1],
+        marginTop: [
+          '48px', '32px', '24px', '20px', '20px',
+        ][level - 1],
+        marginBottom: [
+          '20px', '14px', '10px', '8px', '8px',
+        ][level - 1],
+        lineHeight: '1.5',
       })),
+      '& h1 + h2, & h2 + h3, & h3 + h4, & h4 + h5': {
+        marginTop: 16,
+      },
       [getHeadSelector('& ')]: {
         position: 'relative',
         display: 'flex',

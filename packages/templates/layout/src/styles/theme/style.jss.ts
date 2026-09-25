@@ -72,8 +72,8 @@ export default createThemeStylesByVars({
     dark: Gray[300].toString(),
   },
   [TextTertiaryToken]: {
-    light: Gray[400].toString(),
-    dark: Gray[500].toString(),
+    light: Gray[400].mix(Gray[500], 0.6).toString(),
+    dark: Gray[400].toString(),
   },
 
   // ═══════════════════════════════════════════════════════
