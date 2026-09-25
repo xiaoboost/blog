@@ -132,7 +132,7 @@ function NavTitle({ titles }: NavTitleProps) {
         >
           <a href={`#${title.hash}`}>
             {title.level === 1 ? <Circle className={cla.menuIcon} /> : ''}
-            {title.content}
+            <span className={cla.menuTitle}>{title.content}</span>
           </a>
           {title.children && <NavTitle titles={title.children} />}
         </li>
