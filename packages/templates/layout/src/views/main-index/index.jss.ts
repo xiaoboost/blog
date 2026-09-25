@@ -12,12 +12,13 @@ import {
   FontSizeRegular,
   FontSizeLg,
 } from '@blog/styles/compile';
-import { ListItemTitleFontFamily } from '../../constant/font';
+import { ListItemTitleFontFamily, ListItemTitleFontWeight } from '../../constant/font';
 
 export const PostTitleStyle = {
   color: TextPrimary,
   textShadow: '0.05px 0 0 currentColor',
   fontFamily: `${ListItemTitleFontFamily}, ${FontHeading}`,
+  fontWeight: ListItemTitleFontWeight,
 };
 
 export const PostSubTitleStyle = {

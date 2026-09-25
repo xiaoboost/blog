@@ -1,5 +1,5 @@
 import { createStyles, BgSecondary, BorderPrimary, RadiusMd, ShadowCard, FontHeading, FontSizeMd } from '@blog/styles/compile';
-import { ListTitleFontFamily } from '../../constant/font';
+import { ListTitleFontFamily, ListTitleFontWeight } from '../../constant/font';
 import { PostTitleStyle, PostSubTitleStyle } from '../main-index/index.jss';
 
 export default createStyles({
@@ -15,6 +15,7 @@ export default createStyles({
         0, 10, 20, 10,
       ],
       fontFamily: `${ListTitleFontFamily}, ${FontHeading}`,
+      fontWeight: ListTitleFontWeight,
     },
     '& $itemList': {
       width: '100%',

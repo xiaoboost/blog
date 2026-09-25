@@ -60,7 +60,8 @@ export class FontBucket implements IFontBucket {
       throw new Error('字体文件未生成，请先运行 build 方法');
     }
 
-    return `@font-face{font-family:"${this.getFontFamily()}";src:url("${this.fontPath}")format('woff2')}`;
+    const weight = this.options.fontWeight ?? 400;
+    return `@font-face{font-family:"${this.getFontFamily()}";font-weight:${weight};src:url("${this.fontPath}")format('woff2')}`;
   }
 
   getClassNameCss(): string {
@@ -71,7 +72,9 @@ export class FontBucket implements IFontBucket {
     const className = this.getClassName();
     const fontFamily = this.getFontFamily();
     const fallback = this.options.fallbackFont ?? 'sans-serif';
-    return `.${className}{font-family:"${fontFamily}",${fallback}}`;
+    const weight = this.options.fontWeight;
+    const weightCss = weight === undefined ? '' : `;font-weight:${weight}`;
+    return `.${className}{font-family:"${fontFamily}",${fallback}${weightCss}}`;
   }
 
   async build(buildOptions: IFontBucketBuildOptions) {
