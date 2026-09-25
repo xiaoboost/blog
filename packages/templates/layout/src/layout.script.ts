@@ -7,6 +7,7 @@ import './components/pagination/index.jss';
 import './components/icons/index.jss';
 
 import './components/goto-top/index.script';
+import './components/theme-toggle/index.script';
 import '@blog/component-scrollbar/src/index.script';
 
 import './views/main-index/index.jss';

@@ -19,6 +19,7 @@
   "dependencies": {
     "@blog/component-scrollbar": "workspace:*",
     "@blog/context": "workspace:*",
+    "@blog/icons": "workspace:*",
     "@blog/node": "workspace:*",
     "@blog/shared": "workspace:*",
     "@blog/styles": "workspace:*",

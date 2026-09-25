@@ -3,6 +3,7 @@ import { normalizeUrl } from '@blog/node';
 import { stringifyClass } from '@xiao-ai/utils';
 import React from 'react';
 import { SiteTitleFontFamily } from '../../constant/font';
+import { ThemeToggle } from '../theme-toggle';
 
 import styles from './index.jss';
 
@@ -76,6 +77,7 @@ export function Header(props: HeaderProps) {
               {nav.highlight ? <span className={styles.classes.mainNavItemBar} /> : ''}
             </a>
           ))}
+          <ThemeToggle />
         </nav>
       </div>
     </header>

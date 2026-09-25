@@ -87,5 +87,7 @@ export function createThemeStyles(def: {
     [DarkMode]: {
       ...def.dark,
     },
+    '&:root[data-theme="light"], :root[data-theme="light"] &': def.light,
+    '&:root[data-theme="dark"], :root[data-theme="dark"] &': def.dark,
   };
 }

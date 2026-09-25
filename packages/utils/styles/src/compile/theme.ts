@@ -31,8 +31,9 @@ export function createThemeStylesByVars(def: Record<string, TokenDef>): StyleShe
     '@global': {
       ':root': light,
       '@media (prefers-color-scheme: dark)': {
-        ':root': dark,
+        ':root:not([data-theme="light"])': dark,
       },
+      ':root[data-theme="dark"]': dark,
     },
   });
 }

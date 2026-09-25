@@ -9,6 +9,7 @@ import { Footer } from '../footer';
 import { GotoTop } from '../goto-top';
 import { type HeaderProps, Header } from '../header';
 import { type MainContentProps, MainContent } from '../main-content';
+import { themeInitScript } from '../theme-toggle/theme';
 import { OgMeta } from './og-meta';
 import { SeoMeta } from './seo-meta';
 
@@ -48,6 +49,7 @@ export function Layout(props: PropsWithChildren<LayoutProps>) {
     <html lang="zh-CN">
       <head>
         <meta charSet="utf-8" />
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <SeoMeta {...props} />
         <OgMeta {...props} />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
