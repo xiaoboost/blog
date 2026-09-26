@@ -4,6 +4,7 @@ import {
   getHeadSelector,
   mergeStyles,
   createThemeStyles,
+  Gray,
   TextPrimary,
   TextSecondary,
   BgPrimary,
@@ -22,11 +23,18 @@ import {
   SelectionBg,
 } from './theme/token';
 
+// 保留原纹理的 1px 斜线和 10px 横向间距；渐变周期沿垂直于斜线的方向计算。
+const bodyPattern = `repeating-linear-gradient(
+  135deg,
+  ${Gray[100].alpha(0.5)} 0 1px,
+  transparent 1px ${10 / Math.SQRT2}px
+)`;
+
 /** body 背景图在暗色模式下关闭 */
 const bodyBg = createThemeStyles({
   light: {
     backgroundColor: 'transparent',
-    backgroundImage: "url('../assets/images/bg.svg')",
+    backgroundImage: bodyPattern,
   },
   dark: {
     backgroundColor: BgPrimary,

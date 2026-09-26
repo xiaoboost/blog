@@ -13,10 +13,21 @@ export function staticServe(vfs: Map<string, Buffer>, builder: BuilderInstance) 
       return;
     }
 
+    // 浏览器会编码中文、空格等字符；虚拟文件系统保存的是原始资源路径。
+    let requestPath: string;
+    try {
+      requestPath = decodeURIComponent(ctx.path);
+    }
+    catch {
+      ctx.status = 400;
+      ctx.length = 0;
+      return;
+    }
+
     const filePath = normalize(
-      ctx.path[ctx.path.length - 1] === '/'
-        ? join('/', ctx.path, 'index.html')
-        : join('/', ctx.path),
+      requestPath.endsWith('/')
+        ? join('/', requestPath, 'index.html')
+        : join('/', requestPath),
     );
 
     builder.logger.info(`请求文件 ${filePath}`);
