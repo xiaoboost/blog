@@ -160,7 +160,7 @@ export async function npmInstall(libs: string[], cwd: string, log?: (msg: string
   try {
     await stat(cachePackageJsonPath);
   }
-  catch (_) {
+  catch {
     await writeFile(
       cachePackageJsonPath,
       JSON.stringify(

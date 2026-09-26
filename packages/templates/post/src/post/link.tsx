@@ -3,10 +3,7 @@ import { normalize } from '@blog/node';
 import type { PostBasicData } from '@blog/types';
 import React from 'react';
 
-export interface Props {
-  href: string;
-  children?: string;
-}
+export type Props = React.AnchorHTMLAttributes<HTMLAnchorElement>;
 
 const postPathMap = new Map<string, PostBasicData>();
 
@@ -18,14 +15,24 @@ onBuild((runtime) => {
 });
 
 export function Link(post: PostBasicData) {
-  return function a({ href, children }: Props) {
+  return function a({ href = '', children, ...props }: Props) {
+    // 保留脚注的 id、ARIA 与 data 属性，让编号和返回链接在当前页跳转。
+    if (href.startsWith('#')) {
+      return <a {...props} href={href}>{children}</a>;
+    }
     if (href.startsWith('.')) {
       const fullPath = normalize(post.filePath, '..', decodeURIComponent(href));
       const linkPost = postPathMap.get(fullPath);
 
       if (linkPost) {
         return (
-          <a target="_blank" rel="noreferrer" title={children} href={linkPost.pathname}>
+          <a
+            {...props}
+            target="_blank"
+            rel="noreferrer"
+            title={typeof children === 'string' ? children : undefined}
+            href={linkPost.pathname}
+          >
             {`《${linkPost.title}》`}
           </a>
         );
@@ -33,7 +40,7 @@ export function Link(post: PostBasicData) {
     }
 
     return (
-      <a target="_blank" rel="noreferrer" href={href}>
+      <a {...props} target="_blank" rel="noreferrer" href={href}>
         {children}
       </a>
     );

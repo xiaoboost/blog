@@ -1,21 +1,21 @@
 import styles from './index.jss';
 
 const langLabel: Record<string, string> = {
-  "html": 'HTML',
-  "js": 'JavaScript',
-  "jsx": 'JavaScript React',
-  "javascript": 'JavaScript',
-  "ts": 'TypeScript',
-  "tsx": 'TypeScript React',
-  "typescript": 'TypeScript',
-  "c": 'C',
+  'html': 'HTML',
+  'js': 'JavaScript',
+  'jsx': 'JavaScript React',
+  'javascript': 'JavaScript',
+  'ts': 'TypeScript',
+  'tsx': 'TypeScript React',
+  'typescript': 'TypeScript',
+  'c': 'C',
   'c++': 'C++',
   'c#': 'C#',
-  "c艹": 'C++',
-  "python": 'Python',
-  "bash": 'Bash',
-  "haskell": 'Haskell',
-  "json": 'JSON',
+  'c艹': 'C++',
+  'python': 'Python',
+  'bash': 'Bash',
+  'haskell': 'Haskell',
+  'json': 'JSON',
 };
 
 /**

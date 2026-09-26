@@ -19,7 +19,7 @@ import { FontBlock } from '@blog/mdx-font-block';
 <nav aria-label="样张索引" style={{ fontSize: 14, lineHeight: 2, marginBottom: 24 }}>
   {[
     '正文与强调', '标题层级', '引用与旁注', '术语与夹注',
-    '列表与表格', '代码与公式', '图片与字体', '组合边界',
+    '列表与表格', '代码与公式', '图片与字体', '组合边界', '出处注的写法',
   ].map((title, index) => (
     <span key={title}>
       {index > 0 && ' · '}
@@ -106,6 +106,10 @@ import { FontBlock } from '@blog/mdx-font-block';
 <Subtitle>解释放在需要它的地方</Subtitle>
 
 读到<TextGloss description="版心指页面里主要内容所占的区域。这里的夹注用来观察展开后，长句的换行和行距怎样变化。">版心</TextGloss>时，可以点开看看。后面紧接一句正文，用来判断补充说明是否打断了阅读。另一个<TextGloss description="一条简短的解释。" showSeparator={false}>短夹注</TextGloss>关闭了分隔短线。
+
+下面复用真实文章中的长句，检查夹注前后的引号能否接在同一段里；也可以用 Tab 聚焦，再按 Enter 或空格展开。
+
+> 古克薛道：“<TextGloss showSeparator={false} description="理由很充分，全是“意外”。">古大他们这几日松懈了，兄弟四个晚上吃酒，多吃了几杯，醒来时就发现梅玉庵跑了。他们赶去梅玉庵的住处搜寻，结果发现了留在桌上的信，是写给余总编的，请卫使过目。</TextGloss>”
 
 <DefinitionList>
   <Definition term="版心" alias="Text area">
@@ -278,3 +282,23 @@ $$
 ---
 
 读到这里，常用的文字与组件已经走过一遍。这一页的最后一个段落，也用来观察正文收尾与文章卡片底部之间的距离。
+
+# 出处注的写法
+
+<Subtitle>在句子旁写一次资料，文末自动汇总</Subtitle>
+
+例如，引用这部作品。<Ref id="debt" title="《无尽债务》" note="Andlao，第 4 章" /> 点句末编号，会跳到下面的资料列表；点列表里的返回箭头，又能回到这里。
+
+也可以引用在线资料，例如你那篇技术文章中提到的 Cordis 实现。<Ref title="Cordis 服务登记实现" href="https://github.com/deepseek-ai/deepseek-harness/blob/master/vendor/cordis/src/reflect.ts" note="deepseek-harness，vendor/cordis/src/reflect.ts" />
+
+后面再次提到同一本书，只复用它的标记即可。<Ref id="debt" /> 列表中仍是一条资料，但可以分别返回两个引用位置。
+
+写文章时，只需这样写：
+
+```text
+这段动作描写有很强的连续性。<Ref id="debt" title="《无尽债务》" note="Andlao，第 4 章" />
+
+后文再谈这本书时。<Ref id="debt" />
+```
+
+下面的列表自动生成，无需再手写一份资料。

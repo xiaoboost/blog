@@ -1,6 +1,5 @@
 import { Buffer } from 'buffer';
 import fs from 'fs/promises';
-import { parse } from 'path';
 import type {
   AssetData,
   IFontBucket,

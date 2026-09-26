@@ -27,7 +27,11 @@ onBuild((runtime) => {
         { fontWeight: ListItemTitleFontWeight },
       );
       if (page.type === 'year-list') {
-        page.ensureFontBucket(ArchiveYearFontFamily, ArchiveYearFontFile, { fontWeight: ArchiveYearFontWeight });
+        page.ensureFontBucket(
+          ArchiveYearFontFamily,
+          ArchiveYearFontFile,
+          { fontWeight: ArchiveYearFontWeight },
+        );
       }
     }
   });

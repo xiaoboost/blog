@@ -169,7 +169,11 @@ function createAllPages(): Omit<RenderOptions, 'isPreBuild'> {
     pageConfig.yearArchive,
     (i) => getYearListUrlPath(site, i),
     (chunk, nav) => {
-      const groups = getArchiveGroups(chunk, yearData, sortedPosts[nav.index * pageConfig.yearArchive - 1]);
+      const groups = getArchiveGroups(
+        chunk,
+        yearData,
+        sortedPosts[nav.index * pageConfig.yearArchive - 1],
+      );
 
       return new Page({
         type: 'year-list',

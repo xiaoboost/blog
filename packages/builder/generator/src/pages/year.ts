@@ -54,7 +54,9 @@ export function getArchiveGroups(
   years: YearData[],
   previousPost?: PostExportData,
 ): ArchiveYearGroup[] {
-  const previousYear = previousPost ? String(new Date(previousPost.data.create).getFullYear()) : undefined;
+  const previousYear = previousPost
+    ? String(new Date(previousPost.data.create).getFullYear())
+    : undefined;
   return getYearData(posts).map(({ name, posts: yearPosts }, index) => ({
     year: name,
     posts: yearPosts,

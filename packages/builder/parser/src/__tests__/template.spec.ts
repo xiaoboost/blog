@@ -8,15 +8,15 @@ describe('encodeTemplate', () => {
   });
 
   it('decodeTemplate', async () => {
-    expect(decodeTemplate(`<Img src='%60$%7Bimg0%7D%60' />`)).eq('<Img src={`${img0}`} />');
-    expect(decodeTemplate(`<Img src='%60$%7Bimg%7D%60' />`)).eq('<Img src={`${img}`} />');
+    expect(decodeTemplate('<Img src=\'%60$%7Bimg0%7D%60\' />')).eq('<Img src={`${img0}`} />');
+    expect(decodeTemplate('<Img src=\'%60$%7Bimg%7D%60\' />')).eq('<Img src={`${img}`} />');
   });
 
   it('解码带着 alt 属性的图片', async () => {
-    expect(decodeTemplate(`<Img src='%60$%7Bimg0%7D%60' alt='test' />`)).eq(
+    expect(decodeTemplate('<Img src=\'%60$%7Bimg0%7D%60\' alt=\'test\' />')).eq(
       "<Img src={`${img0}`} alt='test' />",
     );
-    expect(decodeTemplate(`<Img src='%60$%7Bimg%7D%60' alt='test' />`)).eq(
+    expect(decodeTemplate('<Img src=\'%60$%7Bimg%7D%60\' alt=\'test\' />')).eq(
       "<Img src={`${img}`} alt='test' />",
     );
   });

@@ -33,7 +33,7 @@ public: false
 
   it('post config missing prop', () => {
     const file = '/test/test.md';
-    expect(() => getPostMetaData(`---\npublic: false\n---\n\n测试内容`, file)).throw(
+    expect(() => getPostMetaData('---\npublic: false\n---\n\n测试内容', file)).throw(
       `文章必须要有 title, create 字段：${file}`,
     );
   });
