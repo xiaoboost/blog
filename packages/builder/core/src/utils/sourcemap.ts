@@ -12,7 +12,7 @@ function getSource(sourceMap: SourceMapConsumer, raw: string, fullPath: string) 
       return result;
     }
   }
-  catch (_) {
+  catch {
     // ..
   }
 

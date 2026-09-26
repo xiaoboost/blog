@@ -7,7 +7,7 @@ export function showError(errors: string[]) {
     return;
   }
 
-  hmrLog(`Show error`);
+  hmrLog('Show error');
 
   let div = document.getElementById(errorElementId);
 

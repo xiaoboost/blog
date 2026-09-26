@@ -1,6 +1,6 @@
 import type { FullTap } from 'tapable';
 import type { DebuggerOptions } from '../types';
-import type { AllPluginData, AnyHookMap, HookData, HookDataWithName } from './types';
+import type { AllPluginData, AnyHookMap, HookDataWithName } from './types';
 
 /** 数据储存 */
 export const hookData: AllPluginData = new Map();

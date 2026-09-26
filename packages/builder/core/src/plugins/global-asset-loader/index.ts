@@ -3,7 +3,6 @@ import path from 'path';
 import type { BuilderPlugin, ResolveResult } from '@blog/types';
 import { isArray } from '@xiao-ai/utils';
 import { isCssImport } from '../../utils';
-import type { Rename } from '../asset-rename-loader';
 import type { GlobalAssetOption, GlobalAssetRule } from './types';
 
 export type { GlobalAssetRule, GlobalAssetOption } from './types';
