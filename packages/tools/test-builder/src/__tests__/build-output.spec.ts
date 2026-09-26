@@ -223,7 +223,9 @@ describe('博客构建 e2e', () => {
 
   it('归档按 12 篇分页，文章完整且没有重复', () => {
     const pages = archivePages();
-    const postLinks = (html: string) => extractLinks(html).filter((href) => /^\/posts\/\d{4}\//.test(href));
+    const postLinks = (html: string) => (
+      extractLinks(html).filter((href) => /^\/posts\/\d{4}\//.test(href))
+    );
     const actual: string[] = [];
     pages.forEach(({ content }, index) => {
       const links = postLinks(content.toString());
@@ -244,7 +246,8 @@ describe('博客构建 e2e', () => {
     let previousYear: string | undefined;
     pages.forEach(({ path, content }) => {
       const html = content.toString();
-      const years = [...html.matchAll(/aria-labelledby="archive-year-(\d+)"/g)].map((match) => match[1]);
+      const years = [...html.matchAll(/aria-labelledby="archive-year-(\d+)"/g)]
+        .map((match) => match[1]);
       expect(html.includes('接续上一页的')).eq(years[0] === previousYear);
       previousYear = years.at(-1);
       const fontCssPath = extractLinks(html).find((href) => href.startsWith(path.replace('index.html', '')) && /\/styles\/content-fonts[^/]+\.css$/.test(href));

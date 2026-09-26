@@ -104,7 +104,9 @@ class InfoElement {
 function active() {
   const infoEle = new InfoElement();
   const elHasInfo = document.querySelectorAll<HTMLElement>(`pre span[${lsInfoAttrName}]`);
-  // const errorTokenEl = document.querySelectorAll<HTMLElement>(`pre span[${lsErrorTokenAttrName}]`);
+  // const errorTokenEl = document.querySelectorAll<HTMLElement>(
+  //   `pre span[${lsErrorTokenAttrName}]`,
+  // );
   const hiddenEvent = () => infoEle.hidden();
 
   for (const el of Array.from(elHasInfo)) {
@@ -153,7 +155,7 @@ function active() {
 
     /**
      * 为什么不移除元素列表的事件，详细见
-     * https://stackoverflow.com/questions/6033821/do-i-need-to-remove-event-listeners-before-removing-elements
+     * https://stackoverflow.com/q/6033821
      */
   };
 }

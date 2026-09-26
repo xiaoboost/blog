@@ -4,10 +4,7 @@ import { getHeadAnchor } from '../to-content/utils';
 
 import styles from './index.jss';
 
-interface HeadProps {
-  props?: HeadProps;
-  children?: React.ReactNode;
-}
+type HeadProps = React.HTMLAttributes<HTMLHeadingElement>;
 
 function getHeadContent(props: React.ReactNode): string {
   try {
@@ -32,11 +29,12 @@ function getHeadContent(props: React.ReactNode): string {
 function createHead(level: number) {
   return function Head(props: HeadProps) {
     const Tag = `h${level}` as 'h1';
-    const id = getHeadAnchor(getHeadContent(props.children));
+    const { id: explicitId, children, ...attributes } = props;
+    const id = explicitId ?? getHeadAnchor(getHeadContent(children));
     return (
-      <Tag id={id}>
+      <Tag {...attributes} id={id}>
         <a className={styles.classes.postAnchor} href={`#${id}`}>§</a>
-        {props.children}
+        {children}
       </Tag>
     );
   };

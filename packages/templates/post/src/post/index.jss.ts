@@ -226,11 +226,51 @@ export default createStyles({
       '& sub': {
         bottom: '-0.15em',
       },
+      '& a[data-footnote-ref]': {
+        textIndent: 0,
+        margin: '0 0.15em',
+        textDecoration: 'none',
+        '&::before': { content: '"["' },
+        '&::after': { content: '"]"' },
+      },
+      '& [data-footnotes]': {
+        marginTop: 40,
+        paddingTop: 20,
+        borderTop: `1px solid ${BorderPrimary}`,
+        color: TextSecondary,
+        fontSize: FontSizeRegular,
+        overflowWrap: 'anywhere',
+        '& h2': {
+          display: 'block',
+          margin: '0 0 16px',
+          fontFamily: FontBody,
+          fontSize: FontSizeMd,
+          fontWeight: 600,
+          '& $postAnchor': { display: 'none' },
+        },
+        '& ol': {
+          margin: 0,
+          paddingLeft: '1.8em',
+        },
+        '& li': {
+          paddingLeft: '0.25em',
+          marginBottom: '0.6em',
+          scrollMarginTop: 24,
+        },
+        '& p': { textIndent: 0, margin: 0, lineHeight: 1.8 },
+        '& a[data-footnote-backref]': {
+          marginLeft: '0.4em',
+          textDecoration: 'none',
+        },
+      },
       '& ul, & ol': {
         lineHeight: 1.5,
         paddingLeft: '1.8em',
         marginLeft: '0.5em',
 
+        '& > li > p': {
+          textIndent: 0,
+        },
         '& li': {
           marginBottom: '0.2em',
           '&:last-child': {
@@ -286,7 +326,7 @@ export default createStyles({
           borderTop: `1px solid ${BorderPrimary}`,
         },
         '& tbody tr:nth-child(2n+1)': {
-          backgroundColor: BgTertiary,
+          backgroundColor: `color-mix(in srgb, ${BgTertiary} 50%, ${BgPrimary})`,
         },
         '& th, & td': {
           padding: [6, 13],

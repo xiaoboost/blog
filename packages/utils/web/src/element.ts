@@ -21,7 +21,7 @@ export function getStyle(el: HTMLElement, name: string): string {
     const computed = document.defaultView?.getComputedStyle(el);
     return computed ? getStyleDeclarationValue(computed, name) : '';
   }
-  catch (_) {
+  catch {
     return getStyleDeclarationValue(el.style, name);
   }
 }

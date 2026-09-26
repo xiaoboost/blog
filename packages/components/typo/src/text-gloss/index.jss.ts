@@ -5,23 +5,24 @@ import {
   BorderPrimary,
   RadiusSm,
   DurationFast,
-  DurationNormal,
 } from '@blog/styles/compile';
 
 export default createStyles({
   glossContent: {},
   glossDescription: {},
+  glossDescriptionText: {},
+  glossReveal: {},
+  glossClip: {},
+  glossMeasure: {},
+  glossAnimating: {},
   glossActive: {},
+  glossClosing: {},
   glossSeparator: {},
   glossWrapper: {
     position: 'relative',
-    margin: [0, 2],
 
     '& $glossContent': {
       display: 'inline',
-      appearance: 'none',
-      border: 0,
-      margin: 0,
       cursor: 'pointer',
       position: 'relative',
       padding: [2, 0],
@@ -30,33 +31,16 @@ export default createStyles({
       lineHeight: 'inherit',
       textAlign: 'inherit',
       backgroundColor: 'transparent',
-      transition: `padding ${DurationFast} ease-in-out, background-color ${DurationFast} ease-in-out`,
-      backgroundImage: `repeating-linear-gradient(
-        to right,
-        /* 实线部分从 0px 开始 */
-        ${TextTertiary} 0,
-        /* 实线部分到 4px 结束 */
-        ${TextTertiary} 4px,
-        /* 透明部分从 4px 开始 */
-        transparent 4px,
-        /* 透明部分到 7px 结束 */
-        transparent 7px
-      )`,
-      backgroundSize: [7, 1],
+      backgroundImage: `linear-gradient(to right, ${TextTertiary} 4px, transparent 4px)`,
+      backgroundSize: '7px 1px',
+      backgroundPosition: 'left bottom',
       backgroundRepeat: 'repeat-x',
-      backgroundPosition: [0, 19],
+      transition: `background-size ${DurationFast} ease-in-out, background-color ${DurationFast} ease-in-out, padding ${DurationFast} ease-in-out`,
+      boxDecorationBreak: 'clone',
+      webkitBoxDecorationBreak: 'clone',
 
-      '&:hover': {
-        backgroundSize: [4, 1],
-        backgroundRepeat: 'repeat-x',
-        backgroundPosition: [0, 19],
-        backgroundImage: `repeating-linear-gradient(
-          to right,
-          /* 实线部分从 0px 开始 */
-          ${TextTertiary} 0,
-          /* 实线部分到 4px 结束 */
-          ${TextTertiary} 4px
-        )`,
+      '&:hover, &:focus-visible': {
+        backgroundSize: '4px 1px',
       },
       '&:focus-visible': {
         outline: `2px solid ${TextTertiary}`,
@@ -65,35 +49,66 @@ export default createStyles({
       },
     },
     '& $glossDescription': {
-      display: 'inline-block',
-      whiteSpace: 'nowrap',
-      maxWidth: 0,
-      opacity: 0,
+      // 收起时连边距和分隔线一起退出排版。
+      display: 'none',
       textIndent: 0,
-      overflow: 'hidden',
-      verticalAlign: 'bottom',
-      transition: `all ${DurationNormal} ease`,
+      whiteSpace: 'normal',
+      overflowWrap: 'anywhere',
       fontSize: '90%',
       color: TextSecondary,
     },
+    '& $glossMeasure': {
+      position: 'fixed',
+      visibility: 'hidden',
+      pointerEvents: 'none',
+      whiteSpace: 'nowrap',
+      textIndent: 0,
+      width: 'max-content',
+    },
     '&$glossActive': {
       '& $glossContent': {
-        backgroundColor: `${BorderPrimary} !important`,
-        backgroundImage: 'none !important',
+        backgroundColor: BorderPrimary,
+        backgroundSize: '4px 0px',
         borderRadius: RadiusSm,
         padding: [2, 4],
       },
+    },
+    '&$glossActive, &$glossClosing': {
       '& $glossDescription': {
-        maxWidth: 500,
-        opacity: 0.9,
-        marginLeft: 8,
+        display: 'inline',
+        marginLeft: '0.5em',
       },
     },
-    '&$glossSeparator': {
+    '&$glossAnimating': {
+      '& $glossDescriptionText': {
+        // 原文仍供辅助技术读取，动画副本只负责可见部分的排版。
+        position: 'absolute',
+        width: 1,
+        height: 1,
+        overflow: 'hidden',
+        clipPath: 'inset(50%)',
+        whiteSpace: 'nowrap',
+      },
+    },
+    '& $glossReveal': {
+      pointerEvents: 'none',
+    },
+    '& $glossClip': {
+      display: 'inline-block',
+      whiteSpace: 'nowrap',
+      // overflow:hidden 会改变行内块的基线，改为只裁掉字形右侧。
+      clipPath: 'inset(-0.3em 0 -0.3em 0)',
+    },
+    '&$glossActive$glossSeparator, &$glossClosing$glossSeparator': {
       '& $glossDescription': {
         paddingRight: 10,
         marginRight: 8,
         borderRight: `1px solid ${TextTertiary}`,
+      },
+    },
+    '@media (prefers-reduced-motion: reduce)': {
+      '& $glossContent': {
+        transition: 'none',
       },
     },
   },

@@ -49,7 +49,7 @@ function renderTsError(diagnostic: DiagnosticData): RenderedTsCodeLine[] {
     if (index === 0) {
       code
         += `<a class="${styles.classes.lspErrorGoto}" `
-          + `target="_blank" rel="noreferrer" `
+          + 'target="_blank" rel="noreferrer" '
           + `href="https://typescript.tv/errors/#ts${errCode}" `
           + `title="点击查看错误详细信息">[TS${errCode}]</a> `;
     }

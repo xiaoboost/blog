@@ -3,8 +3,8 @@ import { addSplitLabel } from '../utils';
 
 describe('addSplitLabel', () => {
   it('one line have label by space', () => {
-    const code = `    console.log('hello');`;
-    expect(addSplitLabel(code, 2, '|').join('\n')).to.eq(`|  |  console.log('hello');`);
+    const code = '    console.log(\'hello\');';
+    expect(addSplitLabel(code, 2, '|').join('\n')).to.eq('|  |  console.log(\'hello\');');
   });
   it('code block', () => {
     const code = `

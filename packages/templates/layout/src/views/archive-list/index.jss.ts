@@ -39,7 +39,13 @@ export default createStyles({
     },
     '@media (max-width: 640px)': { display: 'flex', alignItems: 'baseline', gap: 14, paddingTop: 0, marginBottom: 1 },
   },
-  continued: { color: TextTertiary, fontFamily: FontBody, fontWeight: 400, fontSize: 11, lineHeight: 1.5 },
+  continued: {
+    color: TextTertiary,
+    fontFamily: FontBody,
+    fontWeight: 400,
+    fontSize: 11,
+    lineHeight: 1.5,
+  },
   yearCount: { display: 'block', marginTop: 5, color: TextTertiary, fontSize: 11, lineHeight: 1.6, whiteSpace: 'nowrap', '@media (max-width: 640px)': { marginTop: 0 } },
   entries: { listStyle: 'none', margin: 0, padding: 0 },
   row: {

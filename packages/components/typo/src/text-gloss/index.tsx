@@ -40,20 +40,21 @@ export function TextGloss({
       })}
       style={customStyles}
     >
-      <button
-        type="button"
+      <span
+        role="button"
+        tabIndex={0}
         className={stringifyClass(classes.glossContent, cln)}
         aria-controls={descriptionId}
         aria-expanded="false"
       >
         {children}
-      </button>
+      </span>
       <span
         id={descriptionId}
         className={stringifyClass(classes.glossDescription, cln)}
         aria-hidden="true"
       >
-        {description}
+        <span className={classes.glossDescriptionText}>{description}</span>
       </span>
     </span>
   );
