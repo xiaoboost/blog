@@ -79,7 +79,7 @@ describe('CacheController', () => {
       try {
         rmSync(tmpDir, { recursive: true, force: true });
       }
-      catch (_) {
+      catch {
         //
       }
     }
