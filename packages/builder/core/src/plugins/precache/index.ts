@@ -1,47 +1,30 @@
-import { readFileSync } from 'fs';
 import type { BuilderPlugin } from '@blog/types';
-import { transform } from 'esbuild';
+import { build } from 'esbuild';
 
 /** 插件名称 */
 const PLUGIN_NAME = 'precache';
-/** 页面刷新事件 */
-const CONTENT_UPDATED = 'content-updated';
 
 /** 读取代码并转译 */
-async function loadTemplate(name: string, define: Record<string, string>) {
-  const source = readFileSync(require.resolve(`@blog/core/src/plugins/precache/${name}`), 'utf-8');
-  const result = await transform(source, {
-    loader: 'ts',
+async function loadTemplate(name: string, define: Record<string, string> = {}) {
+  const result = await build({
+    entryPoints: [require.resolve(`@blog/core/src/plugins/precache/${name}`)],
+    // 注册脚本与 SW 共用策略和资源识别模块，构建时各自打成独立的浏览器脚本。
+    bundle: true,
+    write: false,
+    platform: 'browser',
+    format: 'iife',
+    target: 'es2022',
     minify: true,
     define,
   });
-  return result.code;
-}
-
-/** 需要预缓存的静态资源扩展名 */
-const PRECACHE_EXTENSIONS = [
-  '.js', '.css', '.woff2', '.ico', '.svg',
-];
-
-/**
- * 运行时缓存
- *
- * @description 首次访问后才缓存
- */
-const RUNTIME_EXTENSIONS = [
-  '.jpg', '.jpeg', '.png', '.webp', '.gif',
-];
-
-/** 生成 SW 模板用的正则模式字符串 */
-function buildExtPattern(extensions: string[]): string {
-  const names = extensions.map((ext) => ext.slice(1));
-  return `\\.(?:${names.join('|')})$`;
+  return result.outputFiles[0].text;
 }
 
 /** 预缓存插件 */
 export const Precache = (): BuilderPlugin => ({
   name: PLUGIN_NAME,
   apply(builder) {
+    // 开发环境由现有热更新流程管理资源，只有生产构建启用页面缓存。
     if (builder.options.mode !== 'production') {
       return;
     }
@@ -55,7 +38,6 @@ export const Precache = (): BuilderPlugin => ({
         hooks.afterReady.tapPromise(`${PLUGIN_NAME}:register`, async ({ site, rename }) => {
           const code = await loadTemplate('register.ts', {
             __SW_PATH__: JSON.stringify(SW_FILE_PATH),
-            __CONTENT_UPDATED__: JSON.stringify(CONTENT_UPDATED),
           });
           const asset = {
             path: 'scripts/register-sw.js',
@@ -71,21 +53,17 @@ export const Precache = (): BuilderPlugin => ({
 
     // 生成 sw 脚本
     builder.hooks.processAssets.tapPromise(PLUGIN_NAME, async (assets) => {
-      const precacheUrls = assets
-        .filter(({ path }) =>
-          PRECACHE_EXTENSIONS.some((ext) => path.endsWith(ext)),
-        )
-        .map(({ path }) => path);
+      // 内容更新由访问页面触发，不把构建时间或全站资源清单写入 SW。
+      // 仅发布文章或样式时不必改变 SW 程序，页面仍会在访问时检查最新内容。
+      const swCode = await loadTemplate('sw.ts');
 
-      const swCode = await loadTemplate('sw.ts', {
-        __VERSION__: JSON.stringify(String(Date.now())),
-        __PRECACHE_URLS__: `[${precacheUrls.map((u) => JSON.stringify(u)).join(',')}]`,
-        __STATIC_EXT_REGEX__: JSON.stringify(buildExtPattern(PRECACHE_EXTENSIONS)),
-        __RUNTIME_EXT_REGEX__: JSON.stringify(buildExtPattern(RUNTIME_EXTENSIONS)),
-        __CONTENT_UPDATED__: JSON.stringify(CONTENT_UPDATED),
-      });
-
-      return [...assets, { path: SW_FILE_PATH, content: Buffer.from(swCode) }];
+      return [
+        ...assets,
+        {
+          path: SW_FILE_PATH,
+          content: Buffer.from(swCode),
+        },
+      ];
     });
   },
 });

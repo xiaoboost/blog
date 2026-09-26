@@ -52,7 +52,7 @@ describe('WorkerController', () => {
     try {
       await worker.send('throw');
     }
-    catch (_) {
+    catch {
       caught = true;
     }
 
