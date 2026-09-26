@@ -1,0 +1,280 @@
+---
+title: 字里行间 · 排版样张
+create: '2026-09-27'
+update: '2026-09-27'
+description: 正文、引用、注释、代码与图片的内部排版样张。
+pathname: /__dev/typography/
+public: false
+toc: true
+---
+
+import { AuthorNote, DefinitionList, Definition, Subtitle, TextGloss } from '@blog/mdx-typo';
+import { BlurReveal } from '@blog/mdx-blur-reveal';
+import { FontBlock } from '@blog/mdx-font-block';
+
+<Subtitle>内部样张 · 在同一页里看看文字的各种样子</Subtitle>
+
+长段落和短句，小说里的对话与代码里的括号，都放到这里。它们使用博客现有的排版。可以点右上角切换深浅主题，也可以缩窄窗口，看看一句话怎样换行、一张图怎样落在文字之间。
+
+<nav aria-label="样张索引" style={{ fontSize: 14, lineHeight: 2, marginBottom: 24 }}>
+  {[
+    '正文与强调', '标题层级', '引用与旁注', '术语与夹注',
+    '列表与表格', '代码与公式', '图片与字体', '组合边界',
+  ].map((title, index) => (
+    <span key={title}>
+      {index > 0 && ' · '}
+      <a href={`#${encodeURIComponent(title).toLowerCase()}`}>{title}</a>
+    </span>
+  ))}
+</nav>
+
+# 正文与强调
+
+<Subtitle>段落、软换行、中英混排，以及几种强调</Subtitle>
+
+雨停的时候，书店门口的灯刚刚亮起来。有人把湿伞收好，靠在门边，翻开一本还没读完的书。街上的车声隔着玻璃变得很轻，纸页却很清楚：上一页留下的折角，一行读到一半的话，还有那些当时觉得平常、后来才慢慢想明白的句子。长段落适合看行长，也适合看视线从行末回到下一行时，是否还找得到自己的位置。
+
+短句也要站得住。
+
+这一行与下一行在源码里只隔一个换行。
+它们仍属于同一段，第二行沿用正文的软换行与缩进。
+
+写到“边界”时，可以用*普通强调*；真正需要留意的是**加粗文字**；需要更明确的标记时，则是***三重强调***。删去的想法也能留下痕迹：~~当时以为这就是全部~~。强调接着中文标点，像*这样*，以及（**括号里的补充**），都应该自然地融在句子里。
+
+中英混排会遇到 TypeScript、React 和 MDX，也会遇到 `font-size: 16px` 这样的行内代码。_中文不倾斜，English in italics_。数字也有自己的节奏：2026 年 9 月 27 日，08:30，1,024 次，99.9%。标点则包括「引号」、『书名中的引文』、《作品名称》、省略号……以及一句话里的——停顿。
+
+行内代码连续出现时，可以比较 `pathname`、`description` 和 `create` 的间距；链接可以接在[博客首页](/)之后。<small>这一句是小字号补充。</small>下标如 H<sub>2</sub>O，上标如 x<sup>2</sup>，也放在同一行观察。
+
+---
+
+# 标题层级
+
+<Subtitle>连续标题、标题里的强调，以及长标题换行</Subtitle>
+
+## 二级标题：一段文字从这里开始
+
+正文跟在标题之后。这里留一小段文字，观察标题下沿到第一行文字的距离。
+
+### 三级标题：更近一些的讨论
+
+这一层用于文章内部更细的分节，字重和段前间距共同提示结构。
+
+#### 四级标题：补充一个细节
+
+##### 五级标题：紧接上一层
+
+上面两个标题直接相邻，可以观察连续标题之间的间隔。
+
+## 一个足够长的标题：当中文、English 和 `inline code` 一起换到下一行时
+
+标题变长之后，装饰锚点、文字基线和下一段正文的关系也放在这里检查。
+
+# 引用与旁注
+
+<Subtitle>短引文、多段长引文、嵌套引用，以及作者的插话</Subtitle>
+
+> 窗外的雨小了，屋里的人却还没有把书合上。
+
+短引用之后接回正文。下一段长引用使用为样张写的文字，看看连续阅读时，字号、底色和缩进是否协调。
+
+> 旧书店每天六点关门。到了五点五十分，店主就把门口的木牌翻过来，却从不催坐在窗边的人。
+>
+> “这本可以带回去。”他指了指桌上的书。
+> “我还没决定要不要买。”
+> “那就等读完再决定。”
+>
+> 年轻人抬头看了一眼。玻璃上映着一排刚亮起来的路灯，水沿着窗框慢慢往下走。他忽然觉得，今天没有赶上那班车，也不是什么坏事。
+>
+> 书里夹着一张旧车票。他把它挪到下一页，像替很久以前的某个人，把这本书又读下去了一点。
+
+<AuthorNote>
+  这里是作者暂时离开正文的一小段补充。文字变轻，边界稍稍收拢，让读者知道这是另一条思路。
+
+  旁注也可以有第二段，包含*强调*、**重点**和 `inline code`。观察多段之间的距离，以及最后一段和角线之间的留白。
+</AuthorNote>
+
+> 外层引用先交代语境。
+>
+> > 内层再引用另一句话：“不要急，慢慢读。”
+>
+> 回到外层后，左侧边界与段落缩进应当仍然清楚。
+
+正文在这里继续，确认引用和旁注结束之后，后面的段落恢复到通常的节奏。
+
+# 术语与夹注
+
+<Subtitle>解释放在需要它的地方</Subtitle>
+
+读到<TextGloss description="版心指页面里主要内容所占的区域。这里的夹注用来观察展开后，长句的换行和行距怎样变化。">版心</TextGloss>时，可以点开看看。后面紧接一句正文，用来判断补充说明是否打断了阅读。另一个<TextGloss description="一条简短的解释。" showSeparator={false}>短夹注</TextGloss>关闭了分隔短线。
+
+<DefinitionList>
+  <Definition term="版心" alias="Text area">
+    页面中承载正文、图片和注释的主要区域。
+  </Definition>
+  <Definition term="行长" alias="Measure">
+    每一行文字的长度。这里故意放一条较长的说明，观察名称与解释如何分配空间，以及手机上上下排列时的距离。
+
+    第二段补充说明，可以带**强调**，也可以放 `max-width` 这样的行内代码。
+  </Definition>
+  <Definition term="一个需要换行的较长术语名称" alias="A deliberately long alternative name">
+    名称很长时，解释仍应当完整可读。
+  </Definition>
+</DefinitionList>
+
+<BlurReveal buttonText="展开这段样张文字">
+  这是一段默认遮盖的内容，适合用来检查展开按钮、模糊边缘以及深浅主题中的文字对比。
+
+  展开后还可以读第二段。这一段里有**重点**，也有<TextGloss description="遮盖区域中的夹注，展开外层后仍然可以独立操作。">一条夹注</TextGloss>。
+</BlurReveal>
+
+# 列表与表格
+
+<Subtitle>短条目、多段条目、嵌套列表，以及宽表格</Subtitle>
+
+- 一个很短的条目。
+- 一个包含**强调**、`inline code` 和中文标点的条目。
+- 这一条故意写得长一点，让文字自然折行，看看第二行是否和第一行的文字对齐，而不是跑到项目符号下面。
+  - 内层的第一项。
+  - 内层的第二项，接着回到外层。
+
+1. 第一步，打开一本书。
+
+   同一个条目里的第二段，观察首行缩进、项目编号和段落间距怎样组合。
+
+2. 第二步，记下一句话。
+
+   > 列表里的引用也保留自己的边界。
+
+3. 第三步，继续往下读。
+
+| 元素 | 内容示例 | 观察位置 |
+| :--- | :--- | :--- |
+| 正文 | 一段普通文字 | 字号与行距 |
+| 强调 | *轻一些*、**重一些** | 字重与底纹 |
+| 行内代码 | `const title = '样张'` | 基线与留白 |
+| 数字 | 1,024 / 99.9% | 中英混排 |
+
+下面这张表故意放得宽一些，在窄屏上观察表格自身的横向滚动。
+
+| 场景 | 屏幕宽度 | 正文字号 | 标题情况 | 内容组合 | 需要留意的边界 |
+| :--- | ---: | ---: | :--- | :--- | :--- |
+| 手机阅读 | 390px | 16px | 较长标题会换行 | 引用、旁注、术语说明 | 表格与代码的横向滚动 |
+| 桌面阅读 | 1440px | 16px | 多层标题连续出现 | 图片、图注、数学公式 | 正文与目录之间的留白 |
+| 深色阅读 | 390px / 1440px | 16px | 标题带行内代码 | 强调、遮盖、展开说明 | 底色、边界与文字对比 |
+
+# 代码与公式
+
+<Subtitle>语法高亮、重点行、类型提示，以及公式的基线</Subtitle>
+
+## 代码块
+
+普通代码块包含缩进、空行和一行重点标记。
+
+```js?lsp=false
+function openBook(title) {
+  const bookmark = { page: 24, title };
+
+  /*** hl ***/return bookmark;
+}
+
+openBook('字里行间');
+```
+
+下面使用 TypeScript 类型提示。可以把鼠标移到 `bookmark` 或 `page` 上，查看推断结果。
+
+```ts
+interface Bookmark {
+  title: string;
+  page: number;
+}
+
+const bookmark: Bookmark = {
+  title: '字里行间',
+  page: 24,
+};
+
+function nextPage(current: Bookmark): Bookmark {
+  return { ...current, page: current.page + 1 };
+}
+
+const next = nextPage(bookmark);
+```
+
+这一行配置故意不换行，用来观察代码块的横向滚动。
+
+```json
+{ "title": "一条较长的配置记录", "description": "在窄屏里，代码可以横向滚动，旁边的正文依然应该留在页面之内。", "pathname": "/__dev/typography/", "theme": "follow-system" }
+```
+
+## 数学公式
+
+行内公式 $a^2 + b^2 = c^2$ 夹在文字中间，后面再接一个分式 $\frac{1}{2}$，观察公式与汉字的基线，以及这一行的高度。
+
+$$
+\sum_{k=1}^{n} k = \frac{n(n+1)}{2}
+$$
+
+稍复杂一些的块级公式：
+
+$$
+\begin{aligned}
+f(x) &= \int_0^x t^2\,\mathrm{d}t \\
+     &= \left.\frac{t^3}{3}\right|_0^x \\
+     &= \frac{x^3}{3}
+\end{aligned}
+$$
+
+# 图片与字体
+
+<Subtitle>真实配图、长图注、自定义字体与竖排文字</Subtitle>
+
+图片放在两个自然段之间，点击可以放大。这里复用博客已有的配图。
+
+![《山河旅探》配图样张：观察图片与上下文的距离，也观察这条较长的图注在手机上换行时，是否还有足够舒展的行距。](../../data/游戏体验/山河旅探/images/2024-02-12-02.webp)
+
+图注结束后，正文回到这里。下一张是技术文章里已有的 SVG，用来检查示意图中的细线和文字。
+
+![示意图样张：技术文章中的依赖关系。](../../data/技术文章/deepseek-harness-appsc/figures/01-fs-replacement.svg)
+
+## 自定义字体
+
+<FontBlock src="@blog/styles/fonts/SourceHanSerif/SourceHanSerifSC-SemiBold.otf" fontSize={22} paragraphGutter={8} lineHeight={1.8} align="center" indent={false}>
+灯下翻书，窗前听雨。
+读到会心处，把这一页折起来。
+</FontBlock>
+
+<FontBlock src="@blog/styles/fonts/SourceHanSerif/SourceHanSerifSC-SemiBold.otf" direction="verticalRight" fontSize={22} paragraphGutter={12} lineHeight={1.8} align="center" indent={false}>
+书页慢慢翻过
+夜色静静停留
+</FontBlock>
+
+# 组合边界
+
+<Subtitle>单独成立的样式，放在一起再看看</Subtitle>
+
+## 引用中的夹注
+
+> 他把那句话称作<TextGloss description="这里的补充说明处于引用块里，字号、底色和边界会受到外层样式的影响。">一个小小的约定</TextGloss>。这段引用中还有**加粗文字**和 `inline code`，用来观察几种行内样式叠在一起的效果。
+
+## 旁注中的列表
+
+<AuthorNote>
+  补充说明有时也需要分成几项：
+
+  - 第一项很短。
+  - 第二项稍长，带上*强调*，并观察条目换行之后与第一行的对齐。
+
+  列表之后还有一段文字，检查间距是否恢复正常。
+</AuthorNote>
+
+## 两个块连续出现
+
+<AuthorNote>
+  第一段旁注到这里结束。
+</AuthorNote>
+
+> 紧接着是一段引用，看看两个不同块之间的留白。
+
+---
+
+读到这里，常用的文字与组件已经走过一遍。这一页的最后一个段落，也用来观察正文收尾与文章卡片底部之间的距离。

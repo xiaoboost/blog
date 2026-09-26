@@ -5,6 +5,7 @@
   "author": "xiaoboost",
   "license": "MIT",
   "main": "data/**/*.{md,mdx}",
+  "devMain": "dev/**/*.{md,mdx}",
   "types": "types/index.d.ts",
   "repository": {
     "type": "git",

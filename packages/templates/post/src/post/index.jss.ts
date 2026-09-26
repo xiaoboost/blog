@@ -214,18 +214,17 @@ export default createStyles({
       '& small': {
         fontSize: '0.8em',
       },
-      '& sub,sup': {
-        fontSize: '0.8em',
-        marginRight: '.2em',
+      '& sub, & sup': {
+        fontSize: '0.625em',
         lineHeight: 0,
         position: 'relative',
         verticalAlign: 'baseline',
       },
       '& sup': {
-        top: '-0.5em',
+        top: '-0.7em',
       },
       '& sub': {
-        bottom: '-0.3em',
+        bottom: '-0.15em',
       },
       '& ul, & ol': {
         lineHeight: 1.5,
