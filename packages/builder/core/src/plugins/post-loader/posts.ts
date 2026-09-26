@@ -73,8 +73,16 @@ export const PostsLoader = (): BuilderPlugin => ({
           };
         }
 
-        const postSearcher = join(realPostDir, packageJson.main);
-        const postFiles = await Glob(normalize(postSearcher));
+        const postSearchers = [packageJson.main];
+
+        // 内部样张只进入开发构建，避免随正式文章一起发布。
+        if (builder.options.mode === 'development' && packageJson.devMain) {
+          postSearchers.push(packageJson.devMain);
+        }
+
+        const postFiles = await Glob(
+          postSearchers.map((pattern) => normalize(join(realPostDir, pattern))),
+        );
 
         return {
           contents: getPostsInputCode(postFiles),
