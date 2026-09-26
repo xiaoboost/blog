@@ -58,8 +58,14 @@ export default createThemeStylesByVars({
 
   // TOC 阴影
   [TocShadowToken]: {
-    light: `0 1px 3px ${Gray[300]}`,
-    dark: `0 1px 3px ${Gray[950].alpha(0.3)}`,
+    light: [
+      `0 2px 6px ${Gray[950].alpha(0.045)}`,
+      `0 1px 2px ${Gray[950].alpha(0.06)}`,
+    ].join(', '),
+    dark: [
+      `0 2px 6px ${Gray[950].alpha(0.225)}`,
+      `0 1px 2px ${Gray[950].alpha(0.2625)}`,
+    ].join(', '),
   },
 
   // 排版
