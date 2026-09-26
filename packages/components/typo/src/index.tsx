@@ -3,6 +3,7 @@ import assets from './typo.script';
 
 export { TextGloss, type TextGlossProps } from './text-gloss';
 export { Subtitle, type SubtitleProps } from './subtitle';
+export { AuthorNote, type AuthorNoteProps } from './author-note';
 export {
   DefinitionList,
   Definition,
