@@ -1,5 +1,5 @@
 import { isMainThread, parentPort } from 'worker_threads';
-import type { PostData, ReturnData } from '../../../utils/index';
+import type { PostData, ReturnData } from '../../../utils';
 import { type EventData, EventName } from '../types';
 import { LanguageService } from './server';
 
