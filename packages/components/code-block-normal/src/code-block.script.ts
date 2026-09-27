@@ -1,5 +1,4 @@
 import './theme/style.jss';
-import '@blog/icons/src/index.jss';
 import { ModuleLoader, assets } from '@blog/context/web';
 import { copyCode } from './copy';
 import styles from './index.jss';
