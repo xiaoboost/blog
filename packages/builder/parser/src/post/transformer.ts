@@ -46,6 +46,10 @@ export function getPostMetaData(content: string, fileName: string) {
     };
   }
 
+  if (meta.lsp !== undefined && typeof meta.lsp !== 'boolean') {
+    throw new Error(`文章 lsp 配置必须是布尔值：${fileName}`);
+  }
+
   return meta;
 }
 
@@ -70,6 +74,7 @@ export async function getPostData(content: string, fileName: string) {
       ? normalize(meta.pathname)
       : normalize(join('posts', createAt, decodeTitle)),
     toc: meta.toc ?? true,
+    lsp: meta.lsp ?? false,
     ast: await parse(fileName, postContent),
     template: meta.template ?? 'post',
     draft: meta.draft ?? false,

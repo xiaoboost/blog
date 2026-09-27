@@ -4,9 +4,8 @@ import { builtinModules } from 'module';
 import { join } from 'path';
 import type { PostExportData as PostData, Mdx } from '@blog/types';
 import { devDependencies as devPkg } from '../package.json';
-import type { ScriptKind as Kind, Platform } from './typescript';
+import { parseCodeBlockInfo, resolveCodeBlockOptions } from './config';
 
-const TsLangMatcher = /^(t|j)sx?($|\?)/;
 const DefaultLibs = ['@types/react', `@types/node@${devPkg['@types/node']}`];
 const importRegex = /^import([\s\S]*?from)? ?['"]([^'"]+)['"]/;
 const referenceRegex = /\/\/\/ <reference([\s\S]*?)import-type=['"]([^'"]+?)['"][^/]*?\/>/;
@@ -89,60 +88,51 @@ function getAttrValue(attr: Mdx.MdxJsxAttribute | undefined, fallback = ''): str
   return fallback;
 }
 
-export function getTsCodeBlockConfig(node: Mdx.Nodes) {
+export function getTsCodeBlockConfig(node: Mdx.Nodes, articleLsp = false) {
   if (node.type === 'mdxJsxFlowElement' && node.name === 'TsCodeBlock') {
     const findAttr = (name: string) =>
       node.attributes.filter(isMdxJsxAttribute).find((attr) => attr.name === name);
-    const langAttr = findAttr('lang');
-    const langVal = getAttrValue(langAttr);
-
-    if (!langAttr || !TsLangMatcher.test(langVal)) {
-      return;
-    }
+    // 直接使用 TsCodeBlock 就是显式启用 LSP，与组件本身的默认值一致。
+    const config = resolveCodeBlockOptions(getAttrValue(findAttr('lang'), 'ts'), {
+      platform: getAttrValue(findAttr('platform'), 'none'),
+    }, true);
+    if (!config.scriptKind) return;
 
     return {
-      lang: langVal as Kind,
+      ...config,
       // FIXME: 暂不处理
       code: (node.children[0] as any).value,
-      platform: getAttrValue(findAttr('platform'), 'none') as Platform,
-      enableLsp: getAttrValue(findAttr('lsp'), 'true') === 'true',
     };
   }
 
-  if (node.type === 'code' && /^(t|j)sx?($|\?)/.test(node.lang ?? '')) {
-    const [lang, meta] = node.lang!.split('?') as [Kind, Platform];
-    const platformMeta = (meta ?? '')
-      .split('&')
-      .map((item) => item.split('='))
-      .find((item) => item[0] === 'platform');
-    const lspMeta = (meta ?? '')
-      .split('&')
-      .map((item) => item.split('='))
-      .find((item) => item[0] === 'lsp');
+  if (node.type === 'code') {
+    const config = parseCodeBlockInfo(node.lang ?? '', articleLsp);
+    if (!config.scriptKind) return;
 
     return {
-      lang,
+      ...config,
       code: node.value.trim(),
-      platform: (platformMeta?.[1] ?? 'none') as Platform,
-      enableLsp: (lspMeta?.[1] ?? 'true') === 'true',
     };
   }
 }
 
 /** 获取 TS 代码中的所有引用 */
 export function getImportedByPost(posts: PostData[]) {
-  const result = new Set(DefaultLibs);
+  const result = new Set<string>();
 
   for (const { data: post } of posts) {
-    for (const node of post.ast.children) {
-      const blockConfig = getTsCodeBlockConfig(node);
+    const visit = (node: Mdx.Nodes) => {
+      const blockConfig = getTsCodeBlockConfig(node, post.lsp);
 
-      if (blockConfig && blockConfig?.enableLsp) {
+      if (blockConfig?.enableLsp) {
+        DefaultLibs.forEach((pkg) => result.add(pkg));
         for (const pkg of getImportModuleTypes(blockConfig.code)) {
           result.add(pkg);
         }
       }
-    }
+      if ('children' in node) node.children.forEach(visit);
+    };
+    visit(post.ast);
   }
 
   return result;

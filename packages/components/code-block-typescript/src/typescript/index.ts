@@ -4,7 +4,6 @@ import { escape } from 'html-escaper';
 import { lsInfoAttrName } from '../constant';
 import styles from '../index.jss';
 import {
-  TsServer,
   type ScriptKind,
   type Platform,
   type DisplaySymbol,
@@ -100,14 +99,8 @@ export function renderTsCode(
   lang: ScriptKind,
   platform: Platform,
   showError: boolean,
-  exportAs?: string,
   visible?: boolean,
 ) {
-  // 记录导出代码
-  if (exportAs) {
-    TsServer.ExportCode.set(exportAs, code);
-  }
-
   // 不显示，那当然就不渲染
   if (!visible) {
     return [];

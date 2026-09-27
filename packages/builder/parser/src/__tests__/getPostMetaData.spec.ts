@@ -2,6 +2,12 @@ import { expect, describe, it } from '@blog/test-toolkit';
 import { getPostMetaData } from '../post/transformer';
 
 describe('getPostMetaData', () => {
+  it('rejects a non-boolean LSP setting', () => {
+    const file = '/test/test.md';
+    expect(() => getPostMetaData('---\ntitle: 标题\ncreate: 2045/01/01\nlsp: "false"\n---\n正文', file))
+      .throw(`文章 lsp 配置必须是布尔值：${file}`);
+  });
+
   it('basic', () => {
     expect(
       getPostMetaData(

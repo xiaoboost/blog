@@ -19,6 +19,7 @@ import { ComponentName } from './constant';
 
 import styles from './index.jss';
 import { type RenderedTsCodeLine, renderTsCode, type ScriptKind, type Platform } from './typescript';
+import { TsServer } from './typescript/host';
 import { getImportedByPost, npmInstall, removeReference } from './utils';
 
 export { ScriptKind, Platform } from './typescript';
@@ -54,6 +55,8 @@ export function TsCodeBlock({
 
   const { classes } = styles;
   const { code, highlightLines } = getHighlightCode(removeReference(children));
+  // 缓存命中时也要注册模块，热更新后新的 TS 服务仍需读取隐藏定义。
+  if (exportAs) TsServer.ExportCode.set(exportAs, code);
   const cache = getReference<Map<string, CodeBlockData>>(`${ComponentName}-ts-code`, new Map());
   const { lines, highlight, customLines } = (() => {
     // HTML、错误行和行号都含生成的类名，需要随普通代码块及 TS 样式一起失效。
@@ -72,7 +75,6 @@ export function TsCodeBlock({
           lang,
           platform,
           showError,
-          exportAs,
           visible,
         ),
         highlight: highlightLines,
