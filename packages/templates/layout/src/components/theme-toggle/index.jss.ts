@@ -29,10 +29,6 @@ export default createStyles({
     cursor: 'pointer',
     transition: `color ${DurationFast}`,
 
-    '& > i': {
-      transform: 'translateY(2px)',
-    },
-
     '& $lightIcon, & $darkIcon': {
       display: 'none',
     },
