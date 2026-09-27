@@ -17,6 +17,8 @@ export interface PostMeta {
   pathname?: string;
   /** 是否启用目录 */
   toc?: boolean;
+  /** 文章代码块是否默认启用类型提示与诊断 */
+  lsp?: boolean;
   /** 是否可以被列表检索 */
   public?: boolean;
   /** 文章标签 */
@@ -57,6 +59,8 @@ export interface PostBasicData {
   ast: Root;
   /** 是否启用目录 */
   toc: boolean;
+  /** 文章代码块是否默认启用类型提示与诊断 */
+  lsp: boolean;
   /** 文章模板 */
   template: string;
   /** 是否是草稿 */

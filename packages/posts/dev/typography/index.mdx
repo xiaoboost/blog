@@ -181,7 +181,7 @@ import { CodeBlockWrapper } from '../../../components/code-block-normal/src/inde
 
 普通代码块包含缩进、空行和一行重点标记。
 
-```js?lsp=false
+```js
 function openBook(title) {
   const bookmark = { page: 24, title };
 
@@ -195,7 +195,7 @@ openBook('字里行间');
 
 比较普通注释与文档标记、类名与函数名、字符串与插值，以及布尔值、空值和不同形式的数字。第一行和连续两行的重点标记也放在这里。
 
-```js?lsp=false
+```js
 /*** hl ***/// TODO: 读完这一章后保存书签。
 /**
  * 创建阅读记录。
@@ -321,7 +321,7 @@ diff --git a/bookmark.json b/bookmark.json
 
 下面使用 TypeScript 类型提示。可以把鼠标移到 `bookmark` 或 `page` 上，查看推断结果。
 
-```ts
+```ts?lsp=true
 interface Bookmark {
   title: string;
   page: number;
@@ -343,7 +343,7 @@ const next = nextPage(bookmark);
 
 这个独立示例使用 Node 内置模块，覆盖导入别名、命名空间、接口方法、类、枚举、泛型、数组、模板插值、正则、大整数和内置对象。可以悬停在类型、变量、属性和函数上查看提示。
 
-```ts?platform=node
+```ts?lsp=true&platform=node
 import * as path from 'path';
 import { join as joinPath } from 'path';
 
@@ -404,7 +404,7 @@ console.log(path.basename(joinPath('books', notebook.title)));
 
 组件名、原生标签、属性名、字符串属性、花括号表达式、DOM 属性与嵌套缩进。
 
-```tsx
+```tsx?lsp=true
 import * as React from 'react';
 
 interface BookCardProps {
@@ -432,7 +432,7 @@ document.title = '字里行间';
 
 下面故意写了三处错误：把字符串赋给数字、传入错误类型的参数，以及调用不存在的方法。红色波浪线和错误说明由 TypeScript 实际生成；第一处还叠加了重点行。错误说明不占行号。
 
-```ts
+```ts?lsp=true
 interface ReadingPosition {
   title: string;
   page: number;

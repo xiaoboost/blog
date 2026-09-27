@@ -8,7 +8,7 @@ import { ToContent } from '../to-content';
 import { resetAnchorPointer } from '../to-content/utils';
 
 import * as blockquote from './blockquote';
-import * as code from './code';
+import { Pre } from './code';
 import * as hr from './hr';
 import * as image from './image';
 import styles from './index.jss';
@@ -23,7 +23,6 @@ export interface PostProps extends LayoutProps {
 
 export function Post(props: PostProps) {
   const { post } = props;
-  const a = Link(post.data);
 
   if (post.data.toc) {
     resetAnchorPointer();
@@ -49,9 +48,9 @@ export function Post(props: PostProps) {
         <div className={styles.classes.postArticle}>
           <post.Component
             components={{
-              a,
+              a: Link,
+              pre: Pre,
               ...title,
-              ...code,
               ...image,
               ...paragraph,
               ...hr,

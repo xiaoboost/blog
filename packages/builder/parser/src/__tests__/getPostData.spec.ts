@@ -7,6 +7,7 @@ const commonData = {
   pathname: 'posts/test',
   public: false,
   toc: true,
+  lsp: false,
   draft: false,
   tags: [],
   filePath: fileName,
@@ -33,6 +34,13 @@ function getPostData(content: string) {
 }
 
 describe('getPostData', () => {
+  for (const lsp of [true, false]) {
+    it(`preserves the article LSP default: ${lsp}`, async () => {
+      const content = getPostContent('测试内容').replace('public: false', `public: false\nlsp: ${lsp}`);
+      expect((await origin(content, fileName)).lsp).eq(lsp);
+    });
+  }
+
   it('only template', async () => {
     expect(await getPostData('测试内容')).deep.eq({
       ...commonData,

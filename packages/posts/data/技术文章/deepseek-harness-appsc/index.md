@@ -93,7 +93,7 @@ Cordis 关心的是插件组合在运行中变化时的正确性。插件可以�
 
 把这个要求写成 API，就是执行操作的代码返回清理方法，把何时清理的控制权交给框架。前端开发者很容易想到熟悉的`useEffect`范式。
 
-```ts?lsp=false
+```ts
 useEffect(() => {
   const watcher = fileService.watch(workspace, onChange)
   return () => watcher.close()
@@ -102,7 +102,7 @@ useEffect(() => {
 
 Cordis 的`ctx.effect`也采用类似的形式。
 
-```ts?lsp=false
+```ts
 ctx.effect(() => {
   const watcher = localFs.watch(workspace, onChange)
   return () => watcher.close()
@@ -123,7 +123,7 @@ ctx.effect(() => {
 索引插件需要文件系统能力。如果它在声明里写死某个本地实现，替换服务时就得连使用方代码一起修改。因此，需要为这项稳定的需求取一个名称，也就是*依赖键（dependency key）*。使用方声明需要`fs`，供给方登记符合接口约定的实现，运行时决定这次绑定到谁。
 DSH 使用的 Cordis 通过`inject`表达这类声明。下面沿用假设的`fs`服务，省略类型扩充和索引实现，API 形式见[官方服务与依赖文档](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/develop/framework/service.md)：
 
-```ts?lsp=false
+```ts
 import type { Context } from '@deepseek-ai/cordis'
 
 export const inject = ['fs']
@@ -136,7 +136,7 @@ export function apply(ctx: Context) {
 
 供给方则通过 [`ctx.provide`](https://github.com/deepseek-ai/deepseek-harness/blob/master/vendor/cordis/src/reflect.ts) 登记已经创建好的服务：
 
-```ts?lsp=false
+```ts
 ctx.provide('fs', remoteFs)
 ```
 
