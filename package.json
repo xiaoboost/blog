@@ -1,7 +1,7 @@
 {
   "name": "blog",
   "version": "5.5.3",
-  "packageManager": "pnpm@11.19.0",
+  "packageManager": "pnpm@12.6.0",
   "description": "个人博客",
   "author": "xiaoboost",
   "license": "MIT",
@@ -24,7 +24,7 @@
   },
   "engines": {
     "node": ">=24",
-    "pnpm": ">=11.19.0 <12"
+    "pnpm": ">=12.6.0 <13"
   },
   "devDependencies": {
     "@blog/cli": "workspace:*",
