@@ -5,3 +5,6 @@ export { Quote } from './quote';
 export { AutoMode } from './auto-mode';
 export { LightMode } from './light-mode';
 export { DarkMode } from './dark-mode';
+export { Copy } from './copy';
+export { Check } from './check';
+export { Close } from './close';

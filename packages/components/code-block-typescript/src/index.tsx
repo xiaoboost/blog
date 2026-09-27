@@ -53,13 +53,16 @@ export function TsCodeBlock({
   }
 
   const { classes } = styles;
+  const { code, highlightLines } = getHighlightCode(removeReference(children));
   const cache = getReference<Map<string, CodeBlockData>>(`${ComponentName}-ts-code`, new Map());
   const { lines, highlight, customLines } = (() => {
-    const key = `typescript:${children}`;
+    // HTML、错误行和行号都含生成的类名，需要随普通代码块及 TS 样式一起失效。
+    const key = JSON.stringify([
+      children, lang, platform, showError, exportAs, visible,
+      normalStyles.classes.codeBlockSplit, classes,
+    ]);
 
     if (!cache.has(key)) {
-      const removedExtractCode = removeReference(children);
-      const { code, highlightLines } = getHighlightCode(removedExtractCode);
       const tabWidth = getMinSpaceWidth(code);
       const result = {
         lines: renderTsCode(
@@ -105,6 +108,7 @@ export function TsCodeBlock({
   return (
     <CodeBlockWrapper
       lang={lang}
+      copyText={code}
       wrapperClassName={classes.codeBlockLs}
       lineCount={lines.length}
       highlightLines={highlight}
