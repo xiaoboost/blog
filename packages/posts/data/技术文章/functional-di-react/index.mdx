@@ -222,6 +222,8 @@ export const ILoggerService = createServiceKey<ILoggerService>('ILoggerService')
 
 花了一个周末写了这套实现。纯函数，零装饰器，核心大约 500 行。在 Circuit Simulator 里跑了几个月，没出过什么大问题。它不是生产级框架。如果你需要成熟方案，InversifyJS 和 TSyringe 更靠谱。这篇文章只是记录一个不同的做法。
 
+# 基本设计
+
 ## 插件就是一个函数
 
 整个系统的核心思路很简单。插件是函数，接收一个上下文对象，往里注册东西，可以返回清理函数，也可以不返回。
