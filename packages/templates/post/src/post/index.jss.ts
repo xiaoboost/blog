@@ -325,7 +325,7 @@ export default createStyles({
           backgroundColor: BgPrimary,
           borderTop: `1px solid ${BorderPrimary}`,
         },
-        '& tbody tr:nth-child(2n+1)': {
+        '& thead tr, & tbody tr:nth-child(even)': {
           backgroundColor: `color-mix(in srgb, ${BgTertiary} 50%, ${BgPrimary})`,
         },
         '& th, & td': {
