@@ -1,4 +1,15 @@
-import { createStyles, Color, FontCode, DurationNormal, DurationFast, FontSizeSm } from '@blog/styles/compile';
+import {
+  CodeText,
+  CodeSyntaxComment,
+  CodeSyntaxKeyword,
+  CodeSyntaxFunction,
+  CodeSyntaxString,
+  CodeSyntaxNumber,
+  CodeSyntaxType,
+  CodeSyntaxProperty,
+  CodeSyntaxOperator,
+} from '@blog/mdx-code-block-normal/theme';
+import { createStyles, FontCode, DurationNormal, DurationFast, FontSizeSm } from '@blog/styles/compile';
 import { lsInfoAttrName } from './constant';
 import {
   LspInfoBg,
@@ -10,16 +21,6 @@ import {
   LspErrorBorder,
   LspErrorBgHover,
 } from './theme/token';
-
-const Black = Color(0x383a42);
-const Blue = Color(0x4078f2);
-const LighterBlue = Color(0x87cefa);
-const Green = Color(0x50a155);
-const Red = Color(0xe4564f);
-const LightBrown = Color(0xc18401);
-const Brown = Color(0x986801);
-const Violet = Color(0xa626a4);
-const LightViolet = Color(0xda70d6);
 
 function addTsxSelector(selector: string) {
   const selectorList = selector
@@ -82,26 +83,26 @@ export default createStyles({
     },
 
     '& [class*="lsp-keyword"], & [class*="lsp-storage-type"], & [class*="lsp-storage-modifier"]': {
-      color: Violet.toString(),
+      color: CodeSyntaxKeyword,
     },
     '& [class*="lsp-keyword-operator"]': {
-      color: '#0184BC',
+      color: CodeSyntaxOperator,
     },
     '& [class*="lsp-string-quoted"]': {
-      color: Green.toString(),
+      color: CodeSyntaxString,
     },
     '& [class*="lsp-comment"]': {
-      color: '#A0A1A7',
+      color: CodeSyntaxComment,
       fontStyle: 'italic',
     },
     '& [class*="lsp-support-type"]': {
-      color: '#0184BC',
+      color: CodeSyntaxOperator,
     },
     [addTsxSelector('& .lsp-constant-numeric-decimal')]: {
-      color: Brown.toString(),
+      color: CodeSyntaxNumber,
     },
     [addTsxSelector('& .lsp-storage-type-numeric-bigint')]: {
-      color: LightViolet.toString(),
+      color: CodeSyntaxKeyword,
     },
 
     // import 语句
@@ -109,49 +110,49 @@ export default createStyles({
       & .lsp-meta-import.lsp-constant-language-import-export-all,
       & .lsp-meta-import.lsp-variable-other-readwrite-alias,
     `)]: {
-      color: Red.toString(),
+      color: CodeSyntaxProperty,
     },
 
     // interface 语句
     [addTsxSelector('& .lsp-meta-interface')]: {
       [addTsxSelector('&.lsp-storage-modifier')]: {
-        color: Violet.toString(),
+        color: CodeSyntaxKeyword,
       },
       [addTsxSelector(`
         &.lsp-entity-name-type-interface,
         &.lsp-entity-other-inherited-class,
         &.lsp-entity-name-type
       `)]: {
-        color: LightBrown.toString(),
+        color: CodeSyntaxType,
         fontWeight: 'bold',
       },
       [addTsxSelector('&.lsp-entity-name-type-module')]: {
-        color: Red.toString(),
+        color: CodeSyntaxProperty,
       },
       [addTsxSelector('&.lsp-meta-definition-method.lsp-entity-name-function')]: {
-        color: Blue.toString(),
+        color: CodeSyntaxFunction,
       },
       [`
         &.lsp-punctuation-definition-parameters-begin,
         &.lsp-punctuation-definition-parameters-end
       `.trim()]: {
-        color: LightViolet.toString(),
+        color: CodeSyntaxKeyword,
       },
     },
 
     // function 语句
     [addTsxSelector('& .lsp-meta-function, & .lsp-meta-function-expression')]: {
       [addTsxSelector('&.lsp-meta-definition-function.lsp-entity-name-function')]: {
-        color: Blue.toString(),
+        color: CodeSyntaxFunction,
       },
       [addTsxSelector('&.lsp-entity-name-type-module')]: {
-        color: Red.toString(),
+        color: CodeSyntaxProperty,
       },
       [addTsxSelector('&.lsp-entity-name-type')]: {
-        color: LightBrown.toString(),
+        color: CodeSyntaxType,
       },
       [addTsxSelector('&.lsp-meta-type-function-return')]: {
-        color: Violet.toString(),
+        color: CodeSyntaxKeyword,
       },
     },
 
@@ -161,14 +162,14 @@ export default createStyles({
         &.lsp-meta-object-literal-key,
         &.lsp-variable-other-property,
         &.lsp-variable-other-object-property`.trim()]: {
-        color: Red.toString(),
+        color: CodeSyntaxProperty,
       },
     },
 
     // 数组字面量
     [addTsxSelector('& .lsp-meta-array-literal')]: {
       [addTsxSelector('&.lsp-meta-brace-square')]: {
-        color: LighterBlue.toString(),
+        color: CodeSyntaxOperator,
       },
     },
 
@@ -176,51 +177,51 @@ export default createStyles({
     [addTsxSelector('& .lsp-meta-var-expr')]: {
       [addTsxSelector('&.lsp-meta-type-annotation')]: {
         [addTsxSelector('&.lsp-entity-name-type')]: {
-          color: Brown.toString(),
+          color: CodeSyntaxNumber,
           fontWeight: 'bold',
         },
       },
       [addTsxSelector('&.lsp-variable-other-constant')]: {
-        color: LightBrown.toString(),
+        color: CodeSyntaxType,
       },
     },
 
     // 模板字符串
     [addTsxSelector('& .lsp-string-template')]: {
-      color: Green.toString(),
+      color: CodeSyntaxString,
 
       [`
         &.lsp-punctuation-definition-template-expression-begin,
         &.lsp-punctuation-definition-template-expression-end`.trim()]: {
-        color: '#CA1243',
+        color: CodeSyntaxProperty,
       },
     },
 
     // 正则表达式
     [addTsxSelector('& .lsp-string-regexp')]: {
-      color: '#0184C4',
+      color: CodeSyntaxOperator,
     },
 
     // tsx 标签
     [addTsxSelector('& .lsp-entity-name-tag')]: {
-      color: Blue.toString(),
+      color: CodeSyntaxFunction,
     },
     // tsx 标签属性
     [addTsxSelector('& .lsp-entity-other-attribute-name')]: {
-      color: Brown.toString(),
+      color: CodeSyntaxNumber,
     },
 
     [`
       & .lsp-constant-language-boolean-false,
       & .lsp-constant-language-boolean-true`.trim()]: {
-      color: Brown.toString(),
+      color: CodeSyntaxNumber,
     },
 
     [addTsxSelector('& .lsp-meta-function-call')]: {
-      color: Blue.toString(),
+      color: CodeSyntaxFunction,
 
       [addTsxSelector('&.lsp-variable-other-object')]: {
-        color: Black.toString(),
+        color: CodeText,
       },
     },
 
@@ -228,13 +229,13 @@ export default createStyles({
       & .lsp-support-variable-property-dom,
       & .lsp-support-variable-property,
       & .lsp-variable-other-property`.trim()]: {
-      color: Red.toString(),
+      color: CodeSyntaxProperty,
     },
 
     [`
       & .lsp-support-class-console,
       & .lsp-support-constant-math`.trim()]: {
-      color: `${Brown.toString()} !important`,
+      color: `${CodeSyntaxNumber} !important`,
     },
   },
   lsInfoBox: {
@@ -251,31 +252,32 @@ export default createStyles({
 
     '& pre': {
       margin: 0,
+      fontFamily: 'inherit',
       whiteSpace: 'pre-wrap',
     },
     '& .keyword': {
-      color: '#A626A4',
+      color: CodeSyntaxKeyword,
     },
     '& .operator': {
-      color: '#0184BC',
+      color: CodeSyntaxOperator,
     },
     '& .numericLiteral, & .localName': {
-      color: Brown.toString(),
+      color: CodeSyntaxNumber,
     },
     '& .stringLiteral, & .aliasName': {
-      color: '#50A14F',
+      color: CodeSyntaxString,
     },
     '& .className, & .interfaceName': {
-      color: '#C98401',
+      color: CodeSyntaxType,
     },
     '& .functionName': {
-      color: '#4078F2',
+      color: CodeSyntaxFunction,
     },
     '& .methodName': {
-      color: '#4078F2',
+      color: CodeSyntaxFunction,
     },
     '& .propertyName, & .enumName, & .enumMemberName': {
-      color: '#E45649',
+      color: CodeSyntaxProperty,
     },
   },
 });

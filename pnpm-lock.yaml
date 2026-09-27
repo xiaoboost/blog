@@ -453,6 +453,9 @@ importers:
       '@blog/context':
         specifier: workspace:*
         version: link:../../builder/context
+      '@blog/icons':
+        specifier: workspace:*
+        version: link:../icons
       '@blog/styles':
         specifier: workspace:*
         version: link:../../utils/styles

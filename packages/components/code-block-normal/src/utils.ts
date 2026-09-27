@@ -1,3 +1,4 @@
+import highlight from 'highlight.js';
 import styles from './index.jss';
 
 const langLabel: Record<string, string> = {
@@ -80,7 +81,8 @@ export function getHighlightCode(code: string) {
 }
 
 export function getLangLabel(lang: string) {
-  return langLabel[lang.toLowerCase()] ?? '';
+  const name = lang.trim();
+  return langLabel[name.toLowerCase()] ?? highlight.getLanguage(name)?.name ?? name;
 }
 
 /** 代码有多少前置空格 */

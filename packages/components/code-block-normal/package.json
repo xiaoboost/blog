@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@blog/context": "workspace:*",
+    "@blog/icons": "workspace:*",
     "@blog/styles": "workspace:*",
     "@xiao-ai/utils": "1.6.7",
     "highlight.js": "11.11.1",

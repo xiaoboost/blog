@@ -11,6 +11,7 @@ toc: true
 import { AuthorNote, DefinitionList, Definition, Subtitle, TextGloss } from '@blog/mdx-typo';
 import { BlurReveal } from '@blog/mdx-blur-reveal';
 import { FontBlock } from '@blog/mdx-font-block';
+import { CodeBlockWrapper } from '../../../components/code-block-normal/src/index';
 
 <Subtitle>内部样张 · 在同一页里看看文字的各种样子</Subtitle>
 
@@ -172,6 +173,12 @@ import { FontBlock } from '@blog/mdx-font-block';
 
 ## 代码块
 
+下面按语法类别放置样例，方便比较关键字、函数名、字符串、数字、注释和特殊标记。后面的 TypeScript 示例还包含类型提示与真实错误信息。
+
+代码块右上角可以复制完整代码，行号、重点行标记和类型诊断不会一并复制。
+
+### JavaScript：基本配色与重点行
+
 普通代码块包含缩进、空行和一行重点标记。
 
 ```js?lsp=false
@@ -183,6 +190,134 @@ function openBook(title) {
 
 openBook('字里行间');
 ```
+
+### JavaScript：类、模板字符串与正则
+
+比较普通注释与文档标记、类名与函数名、字符串与插值，以及布尔值、空值和不同形式的数字。第一行和连续两行的重点标记也放在这里。
+
+```js?lsp=false
+/*** hl ***/// TODO: 读完这一章后保存书签。
+/**
+ * 创建阅读记录。
+ * @param {string} title 书名
+ * @returns {object} 当前书签
+ */
+class ReadingLog extends Map {
+  constructor(title = '字里行间') {
+    super();
+    this.book = { title, page: 24, finished: false, note: null };
+  }
+
+  describe() {
+    const pattern = /第\s*(\d+)\s*页/giu;
+    const limits = [0, 3.14, 0xff, 1_000, 24n];
+    /*** hl ***/const label = `${this.book.title} · 第 ${this.book.page + 1} 页`;
+    /*** hl ***/return { label, pattern, limits, enabled: true };
+  }
+}
+
+const record = new ReadingLog("雨夜\n书店");
+/*** hl ***/console.log(record.describe(), Math.max(1, 24));
+```
+
+### HTML 与 CSS：标签、属性和选择器
+
+HTML 的标签名、属性名、属性值与注释；CSS 的元素、类、ID、属性选择器、伪类、属性名与单位。
+
+```html
+<!doctype html>
+<!-- 一张阅读卡片 -->
+<article id="reading-card" class="card" data-state="reading">
+  <h2>字里行间 &amp; 雨夜书店</h2>
+  <a href="/posts/about/" title="继续阅读">第 24 页</a>
+  <input type="checkbox" checked aria-label="已收藏" />
+</article>
+```
+
+```css
+/* 同一条规则内比较不同的选择器。 */
+article#reading-card.card[data-state="reading"]:hover::before {
+  content: "继续阅读";
+  color: #28649f;
+  padding: 0.5rem 12px;
+  border-radius: 4px;
+  opacity: 0.85;
+}
+
+@media (max-width: 640px) {
+  .card > a:focus-visible { text-decoration: underline; }
+}
+```
+
+### Bash 与 C：变量、类型和预处理指令
+
+Shell 变量、内置命令、C 类型和结构体名称，以及预处理指令里面的字符串。
+
+```bash
+#!/usr/bin/env bash
+# 给书签文件准备一个位置；这里只展示命令，不执行。
+BOOK_TITLE="字里行间"
+printf '%s\n' "$BOOK_TITLE" "${HOME}/reading/bookmarks.json"
+```
+
+```c
+#include "reading.h"
+#define DEFAULT_PAGE 24
+
+struct Bookmark {
+  const char *title;
+  int page;
+};
+
+struct Bookmark current = { "字里行间", DEFAULT_PAGE };
+```
+
+### 模板：控制语句与占位变量
+
+模板变量和普通字符串放在一起，检查它们能否清楚区分。
+
+```django
+{% if book %}
+<p>{{ book.title|default:"未命名" }} · 第 {{ book.page }} 页</p>
+{% endif %}
+```
+
+### Diff 与 Markdown：增删、标题和文字修饰
+
+Diff 的新增与删除行使用语法高亮；它们和前面的“重点行底色”是两种不同的标记。
+
+```diff
+diff --git a/bookmark.json b/bookmark.json
+--- a/bookmark.json
++++ b/bookmark.json
+@@ -1,4 +1,4 @@
+ {
+   "title": "字里行间",
+-  "page": 24
++  "page": 25
+ }
+```
+
+```markdown
+# 雨夜书店
+
+> 不要急，慢慢读。
+
+- *轻一些的强调*、**重一些的强调**与 `inline code`
+- [继续阅读](/posts/about/)
+
+[book]: https://example.com/book "书目链接"
+```
+
+### 兼容样式：公式标记
+
+这一项直接展示主题保留的 `formula` 样式，不经过语言识别，方便检查不常见的兼容规则。
+
+<CodeBlockWrapper lineCount={1} copyText="E = m * c ** 2">
+  <li><span className="hljs-formula">E = m * c ** 2</span></li>
+</CodeBlockWrapper>
+
+### TypeScript：接口与类型提示
 
 下面使用 TypeScript 类型提示。可以把鼠标移到 `bookmark` 或 `page` 上，查看推断结果。
 
@@ -203,6 +338,120 @@ function nextPage(current: Bookmark): Bookmark {
 
 const next = nextPage(bookmark);
 ```
+
+### TypeScript：导入、泛型与表达式
+
+这个独立示例使用 Node 内置模块，覆盖导入别名、命名空间、接口方法、类、枚举、泛型、数组、模板插值、正则、大整数和内置对象。可以悬停在类型、变量、属性和函数上查看提示。
+
+```ts?platform=node
+import * as path from 'path';
+import { join as joinPath } from 'path';
+
+namespace reading {
+  export interface Bookmark {
+    title: string;
+    page: number;
+  }
+}
+
+interface Shelf extends reading.Bookmark {
+  readonly tags: string[];
+  read(step: number): reading.Bookmark;
+}
+
+// 普通数字、大整数、布尔值和数组。
+const LIMIT = 3;
+const recordId = 24n;
+const pages: number[] = [1, 24, 108];
+const active = true;
+const finished = false;
+const pattern = /第\s*(\d+)\s*页/gu;
+const bookmark: reading.Bookmark = { title: '字里行间', page: 24 };
+
+function label<T extends reading.Bookmark>(item: T): string {
+  return `${item.title} / 第 ${Math.max(item.page, 1)} 页`;
+}
+
+const move = function (item: reading.Bookmark): reading.Bookmark {
+  return { ...item, page: item.page + 1 };
+};
+
+function createFormatter(): (item: reading.Bookmark) => string {
+  return item => label(item);
+}
+
+enum ReadingState { Ready, Reading }
+
+class Notebook implements reading.Bookmark {
+  constructor(public title: string, public page = 1) {}
+
+  next(): this {
+    this.page += 1;
+    return this;
+  }
+}
+
+const notebook = new Notebook('雨夜书店', 24);
+const state: ReadingState = ReadingState.Reading;
+const format = createFormatter();
+/*** hl ***/const nextLabel = format(move(bookmark));
+console.log(pattern.test('第 24 页'), pages[0], recordId, LIMIT);
+console.log({ active, finished, state }, notebook.next(), nextLabel);
+console.log(path.basename(joinPath('books', notebook.title)));
+```
+
+### TSX：组件、标签与属性
+
+组件名、原生标签、属性名、字符串属性、花括号表达式、DOM 属性与嵌套缩进。
+
+```tsx
+import * as React from 'react';
+
+interface BookCardProps {
+  title: string;
+  page: number;
+  selected?: boolean;
+}
+
+function BookCard({ title, page, selected = false }: BookCardProps) {
+  return (
+    <article className="book-card" data-selected={selected}>
+      <h3>{title}</h3>
+      <button type="button" disabled={page < 1}>
+        继续阅读 · 第 {page} 页
+      </button>
+    </article>
+  );
+}
+
+const card = <BookCard title="字里行间" page={24} selected />;
+document.title = '字里行间';
+```
+
+### TypeScript：错误波浪线与诊断
+
+下面故意写了三处错误：把字符串赋给数字、传入错误类型的参数，以及调用不存在的方法。红色波浪线和错误说明由 TypeScript 实际生成；第一处还叠加了重点行。错误说明不占行号。
+
+```ts
+interface ReadingPosition {
+  title: string;
+  page: number;
+}
+
+const position: ReadingPosition = {
+  title: '字里行间',
+  /*** hl ***/page: '二十四',
+};
+
+function openPage(page: number) {
+  return page + 1;
+}
+
+openPage('24');
+position.title.toFixed(2);
+```
+
+### JSON：长行与横向滚动
 
 这一行配置故意不换行，用来观察代码块的横向滚动。
 

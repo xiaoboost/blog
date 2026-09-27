@@ -1,4 +1,5 @@
 import { defineUtils, getReference } from '@blog/context/runtime';
+import { Copy, Check, Close } from '@blog/icons';
 import { stringifyClass } from '@xiao-ai/utils';
 import highlight from 'highlight.js';
 import React from 'react';
@@ -24,6 +25,8 @@ interface CustomLine {
 export interface WrapperProps {
   /** 代码语言 */
   lang?: string;
+  /** 已移除展示辅助标记的完整代码 */
+  copyText?: string;
   /** 代码共几行 */
   lineCount: number;
   /**
@@ -48,7 +51,7 @@ export interface WrapperProps {
 
 export function CodeBlockWrapper(props: React.PropsWithChildren<WrapperProps>) {
   const { classes } = styles;
-  const { lang, lineCount, highlightLines = {}, customLines = {}, children } = props;
+  const { lang, copyText, lineCount, highlightLines = {}, customLines = {}, children } = props;
   const lines: React.JSX.Element[] = [];
 
   for (let i = 1, lineIndex = 1; i <= lineCount; i++, lineIndex++) {
@@ -73,7 +76,26 @@ export function CodeBlockWrapper(props: React.PropsWithChildren<WrapperProps>) {
 
   return (
     <pre className={stringifyClass(classes.codeBlockWrapper, props.wrapperClassName)}>
-      {lang ? <label className={classes.codeBlockLabel}>{getLangLabel(lang)}</label> : ''}
+      <span className={classes.codeBlockActions}>
+        {lang ? <span className={classes.codeBlockLabel}>{getLangLabel(lang)}</span> : null}
+        {copyText !== undefined
+          ? (
+            <button
+              type="button"
+              className={classes.codeBlockCopy}
+              data-copy-code={copyText}
+              data-copy-state="idle"
+              aria-label="复制代码"
+              title="复制代码"
+            >
+              <Copy className={classes.codeBlockCopyIcon} />
+              <Check className={classes.codeBlockCopySuccess} />
+              <Close className={classes.codeBlockCopyError} />
+              <span className={classes.codeBlockCopyStatus} aria-live="polite" aria-atomic="true" />
+            </button>
+          )
+          : null}
+      </span>
       <code className={classes.codeBlockList}>
         <ul className={stringifyClass(classes.codeBlockGutter, props.indexListClassName)}>
           {lines}
@@ -109,16 +131,19 @@ export function CodeBlock({ lang, children }: React.PropsWithChildren<CodeBlockP
 
   const { classes } = styles;
   const lan = lang ? lang.toLowerCase() : '';
+  const { code, highlightLines } = getHighlightCode(children);
   const cache = getReference<Map<string, CodeBlockData>>('code-block-normal', new Map());
   const { lines, highlight } = (() => {
-    const key = `${lan}:${children}`;
+    // 缓存的 HTML 含缩进线类名，样式热更新后不能复用旧类名。
+    const key = JSON.stringify([
+      lan, children, classes.codeBlockSplit,
+    ]);
 
     if (cache.has(key)) {
       return cache.get(key)!;
     }
 
     const tabWidth = getMinSpaceWidth(children);
-    const { code, highlightLines } = getHighlightCode(children);
     const result = {
       lines: renderCode(code, lan, tabWidth),
       highlight: highlightLines,
@@ -130,7 +155,12 @@ export function CodeBlock({ lang, children }: React.PropsWithChildren<CodeBlockP
   })();
 
   return (
-    <CodeBlockWrapper lang={lang} lineCount={lines.length} highlightLines={highlight}>
+    <CodeBlockWrapper
+      lang={lang}
+      copyText={code}
+      lineCount={lines.length}
+      highlightLines={highlight}
+    >
       {lines.map((line, i) => (
         <li
           key={i}

@@ -240,10 +240,12 @@ const ILoggerService = createServiceKey<ILoggerService>('ILoggerService');
 // 插件函数接收上下文，TypeScript 自动推导类型
 definePlugin((ctx) => {
   // 注册服务时可以提供精确的自动补全
-  // 这里会报错说少了 error 方法
   ctx.registerService(ILoggerService, {
     // 精确的自动补全和类型检查
     info(msg: string) {
+      // ..
+    },
+    error(msg: string) {
       // ..
     },
   });

@@ -12,7 +12,9 @@ export function getSocketUrl() {
 
 export function reloadCSS(src: string) {
   debounce(() => {
-    const link = document.querySelector(`link[href|="${src}"]`);
+    // 已热更新的链接带有时间戳，后续更新仍按原始资源路径匹配。
+    const link = Array.from(document.querySelectorAll<HTMLLinkElement>('link[rel="stylesheet"]'))
+      .find((item) => item.getAttribute('href')?.split('?')[0] === src.split('?')[0]);
 
     if (!link) {
       return;

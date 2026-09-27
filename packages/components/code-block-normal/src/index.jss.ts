@@ -2,16 +2,25 @@ import {
   createStyles,
   createScrollbarWidth,
   createMediaStyles,
-  RadiusSm,
+  RadiusMd,
+  DurationFast,
 } from '@blog/styles/compile';
 import {
   CodeText,
   CodeBg,
-  CodeGutterBg,
   CodeGutterColor,
   CodeSplit,
   CodeHighlightBg,
   CodeHighlightGutter,
+  CodeHighlightMarker,
+  CodeSyntaxComment,
+  CodeSyntaxKeyword,
+  CodeSyntaxFunction,
+  CodeSyntaxString,
+  CodeSyntaxNumber,
+  CodeSyntaxType,
+  CodeSyntaxProperty,
+  CodeSyntaxOperator,
 } from './theme/token';
 
 // 小屏幕时的两边宽度，此值和 layout 中相等
@@ -20,8 +29,13 @@ const SmallIndent = 14;
 const lineHeight = 1.3;
 
 export default createStyles({
-  '@import': "'highlight.js/styles/atom-one-light.css'",
+  codeBlockActions: {},
   codeBlockLabel: {},
+  codeBlockCopy: {},
+  codeBlockCopyIcon: {},
+  codeBlockCopySuccess: {},
+  codeBlockCopyError: {},
+  codeBlockCopyStatus: {},
   codeBlockList: {},
   codeBlockBox: {},
   codeBlockGutter: {},
@@ -42,18 +56,99 @@ export default createStyles({
       },
     }),
 
-    '& $codeBlockLabel': {
+    '& $codeBlockActions': {
       position: 'absolute',
+      zIndex: 1,
+      top: 2,
+      right: 6,
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: 2,
+      minHeight: 28,
       color: CodeGutterColor,
-      backgroundColor: 'transparent',
       fontSize: '0.8em',
-      right: 4,
-      top: 4,
+      lineHeight: 1,
+      whiteSpace: 'nowrap',
+      userSelect: 'none',
+    },
+    '& $codeBlockLabel': {
+      pointerEvents: 'none',
+    },
+
+    '& $codeBlockCopy': {
+      appearance: 'none',
+      display: 'inline-grid',
+      placeItems: 'center',
+      width: 20,
+      height: 28,
+      margin: 0,
+      padding: 0,
+      border: 0,
+      outline: 'none',
+      borderRadius: RadiusMd,
+      backgroundColor: 'transparent',
+      color: CodeGutterColor,
+      fontSize: 'inherit',
+      lineHeight: 1,
+      cursor: 'pointer',
+      transition: `color ${DurationFast}`,
+
+      '&:hover, &:focus-visible': {
+        color: CodeText,
+      },
+      '& $codeBlockCopyIcon, & $codeBlockCopySuccess, & $codeBlockCopyError': {
+        gridArea: '1 / 1',
+        display: 'block',
+        width: '1em',
+        height: '1em',
+        opacity: 0,
+        pointerEvents: 'none',
+        transition: `opacity ${DurationFast} ease`,
+      },
+      '& $codeBlockCopyIcon': {
+        opacity: 1,
+      },
+      '&[data-copy-state="success"]': {
+        color: CodeSyntaxString,
+        '& $codeBlockCopySuccess': {
+          opacity: 1,
+        },
+      },
+      '&[data-copy-state="error"]': {
+        color: CodeSyntaxProperty,
+        '& $codeBlockCopyError': {
+          opacity: 1,
+        },
+      },
+      '&:not([data-copy-state="idle"]) $codeBlockCopyIcon': {
+        opacity: 0,
+      },
+    },
+
+    '@media (prefers-reduced-motion: reduce)': {
+      '& $codeBlockCopy, & $codeBlockCopyIcon, & $codeBlockCopySuccess, & $codeBlockCopyError': {
+        transition: 'none',
+      },
+    },
+
+    '& $codeBlockCopyStatus': {
+      position: 'absolute',
+      width: 1,
+      height: 1,
+      padding: 0,
+      margin: -1,
+      border: 0,
+      overflow: 'hidden',
+      clipPath: 'inset(50%)',
+      whiteSpace: 'nowrap',
     },
 
     '& code$codeBlockList': {
       margin: 0,
       border: 0,
+      borderRadius: RadiusMd,
+      minHeight: 32,
+      overflow: 'hidden',
       padding: 0,
       display: 'flex',
       flexWrap: 'nowrap',
@@ -71,19 +166,11 @@ export default createStyles({
         flexGrow: 0,
         listStyleType: 'none',
         color: CodeGutterColor,
-        backgroundColor: CodeGutterBg,
-        borderTopLeftRadius: RadiusSm,
-        borderBottomLeftRadius: RadiusSm,
-
-        ...createMediaStyles({
-          phone: {
-            borderTopLeftRadius: '0px',
-            borderBottomLeftRadius: '0px',
-          },
-        }),
+        backgroundColor: CodeBg,
 
         '& $codeBlockHighlightLine': {
           color: CodeHighlightGutter,
+          boxShadow: `inset 2px 0 ${CodeHighlightMarker}`,
         },
 
         '& > li': {
@@ -113,19 +200,10 @@ export default createStyles({
         listStyleType: 'none',
         color: CodeText,
         backgroundColor: CodeBg,
-        borderTopRightRadius: RadiusSm,
-        borderBottomRightRadius: RadiusSm,
-
-        ...createMediaStyles({
-          phone: {
-            borderTopLeftRadius: '0px',
-            borderBottomLeftRadius: '0px',
-          },
-        }),
 
         '& > li': {
           position: 'relative',
-          padding: '0 .4em',
+          padding: '0 34px 0 .4em',
           margin: 0,
           lineHeight,
         },
@@ -145,6 +223,43 @@ export default createStyles({
 
     '& $codeBlockHighlightLine': {
       backgroundColor: CodeHighlightBg,
+    },
+    '& .hljs-comment, & .hljs-quote': {
+      color: CodeSyntaxComment,
+      fontStyle: 'italic',
+    },
+    '& .hljs-doctag, & .hljs-keyword, & .hljs-formula': {
+      color: CodeSyntaxKeyword,
+    },
+    '& .hljs-section, & .hljs-name, & .hljs-selector-tag, & .hljs-deletion, & .hljs-subst': {
+      color: CodeSyntaxProperty,
+    },
+    '& .hljs-literal': {
+      color: CodeSyntaxOperator,
+    },
+    '& .hljs-string, & .hljs-regexp, & .hljs-addition, & .hljs-attribute, & .hljs-meta .hljs-string': {
+      color: CodeSyntaxString,
+    },
+    '& .hljs-attr, & .hljs-variable, & .hljs-template-variable, & .hljs-type, & .hljs-number': {
+      color: CodeSyntaxNumber,
+    },
+    '& .hljs-selector-class, & .hljs-selector-attr, & .hljs-selector-pseudo': {
+      color: CodeSyntaxNumber,
+    },
+    '& .hljs-symbol, & .hljs-bullet, & .hljs-link, & .hljs-meta, & .hljs-selector-id, & .hljs-title': {
+      color: CodeSyntaxFunction,
+    },
+    '& .hljs-built_in, & .hljs-title.class_, & .hljs-class .hljs-title': {
+      color: CodeSyntaxType,
+    },
+    '& .hljs-emphasis': {
+      fontStyle: 'italic',
+    },
+    '& .hljs-strong': {
+      fontWeight: 'bold',
+    },
+    '& .hljs-link': {
+      textDecoration: 'underline',
     },
   },
 });
