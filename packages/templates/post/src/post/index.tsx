@@ -47,6 +47,7 @@ export function Post(props: PostProps) {
         </header>
         <div className={styles.classes.postArticle}>
           <post.Component
+            post={post.data}
             components={{
               a: Link,
               pre: Pre,

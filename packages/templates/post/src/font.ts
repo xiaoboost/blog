@@ -1,8 +1,8 @@
 import { onBuild } from '@blog/context/runtime';
-import FirstTitleFontFile from '@blog/styles/fonts/SourceHanSerif/SourceHanSerifSC-Bold.otf?raw';
-import SecondTitleFontFile from '@blog/styles/fonts/SourceHanSerif/SourceHanSerifSC-SemiBold.otf?raw';
+import PrimaryTitleFontFile from '@blog/styles/fonts/SourceHanSerif/SourceHanSerifSC-Bold.otf?raw';
+import SecondaryTitleFontFile from '@blog/styles/fonts/SourceHanSerif/SourceHanSerifSC-SemiBold.otf?raw';
 import type { BuildContext, PageDataMap } from '@blog/types';
-import { PostTemplate, FirstTitleFontFamily, FirstTitleFontWeight, SecondTitleFontFamily, SecondTitleFontWeight } from './constant';
+import { PostTemplate, PrimaryTitleFont, SecondaryTitleFont } from './constant';
 import { getNavList } from './to-content';
 
 onBuild((runtime) => {
@@ -11,14 +11,14 @@ onBuild((runtime) => {
     for (const page of ctx.pages) {
       if (page.type !== 'post') continue;
       page.ensureFontBucket(
-        FirstTitleFontFamily,
-        FirstTitleFontFile,
-        { fontWeight: FirstTitleFontWeight },
+        PrimaryTitleFont.fontFamily,
+        PrimaryTitleFontFile,
+        { fontWeight: PrimaryTitleFont.fontWeight },
       );
       page.ensureFontBucket(
-        SecondTitleFontFamily,
-        SecondTitleFontFile,
-        { fontWeight: SecondTitleFontWeight },
+        SecondaryTitleFont.fontFamily,
+        SecondaryTitleFontFile,
+        { fontWeight: SecondaryTitleFont.fontWeight },
       );
     }
   });
@@ -33,19 +33,19 @@ onBuild((runtime) => {
           const post = d.post;
           const titles = getNavList(post.data.ast);
 
-          page.getFontBucket(FirstTitleFontFamily).addText(post.data.title);
+          page.getFontBucket(PrimaryTitleFont.fontFamily).addText(post.data.title);
 
           for (const title of titles) {
             if (title.level === 1) {
-              page.getFontBucket(FirstTitleFontFamily).addText(title.content);
+              page.getFontBucket(PrimaryTitleFont.fontFamily).addText(title.content);
             }
             else {
-              page.getFontBucket(SecondTitleFontFamily).addText(title.content);
+              page.getFontBucket(SecondaryTitleFont.fontFamily).addText(title.content);
             }
           }
 
           await page.buildFonts({
-            families: [FirstTitleFontFamily, SecondTitleFontFamily],
+            families: [PrimaryTitleFont.fontFamily, SecondaryTitleFont.fontFamily],
             scope: page.pathname,
             cssFileName: 'heading',
             cssMode: 'font-face',

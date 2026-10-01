@@ -4,6 +4,91 @@
 
 ## 组件
 
+### ArticleIntro / BookInfo（文章导读与作品介绍）
+
+`ArticleIntro` 放在正文开始之前。默认显示“开始之前”和一段导读；传入 `aside` 后采用左右分栏，手机上改为上下排列。沿用正文卡片的留白、文字色和细分隔线，不增加外框。
+
+技术文章直接书写 Markdown：
+
+```mdx
+import { ArticleIntro } from '@blog/mdx-typo';
+
+<ArticleIntro>
+  插件可以动态装卸之后，系统怎样在变化中保持正确？
+  关键在于**依赖与生命周期**怎样配合，以及这些约定成立的条件。
+</ArticleIntro>
+```
+
+也可以复用文章顶部 frontmatter 中的 `description`，只维护一份文本。MDX 正文通过 `props.post` 读取当前文章数据，不需要导入或定义 `props`：
+
+```mdx
+---
+title: 万物皆插件，然后呢？
+create: 2026/09/14
+description: 插件可以动态装卸之后，系统怎样在变化中保持正确？关键在于依赖与生命周期怎样配合，以及这些约定成立的条件。
+---
+
+import { ArticleIntro } from '@blog/mdx-typo';
+
+<ArticleIntro>
+  {props.post.description}
+</ArticleIntro>
+```
+
+`props.post` 是当前文章的数据，也包含 `title`、`tags` 等字段。复用时请显式填写 frontmatter 的 `description`；它会同时用于导读、文章列表和页面元信息。插入的 description 按纯文本显示，字符串中的 Markdown 不会再次解析；需要段落、强调或链接时，可以继续在 `ArticleIntro` 内独立书写 MDX。两种写法由文章自行选择，组件不自动绑定 description。
+
+读后感可搭配 `BookInfo`，同样可以引用 description。其他内容也可以通过 `aside` 传入自己的 React 组件：
+
+```mdx
+import { ArticleIntro, BookInfo } from '@blog/mdx-typo';
+
+<ArticleIntro
+  label="总体评价"
+  aside={
+    <BookInfo
+      title="道祖是克苏鲁"
+      meta={['已完结']}
+      author={{
+        name: '板斧战士',
+        href: 'https://my.qidian.com/author/429979121/',
+      }}
+      link={{
+        context: '阅读原文',
+        href: 'https://www.qidian.com/book/1028489518/',
+      }}
+    />
+  }
+>
+  {props.post.description}
+</ArticleIntro>
+```
+
+**ArticleIntro Props**
+
+| 参数 | 类型 | 默认值 | 说明 |
+|---|---|---|---|
+| `label` | `string` | `开始之前` | 导读小标题，空字符串隐藏 |
+| `aside` | `React.ReactNode` | — | 可选左栏；省略时导读通栏 |
+| `children` | `React.ReactNode` | — | 必填，导读正文，支持 MDX 段落、强调和链接 |
+
+**BookInfo Props**
+
+| 参数 | 类型 | 默认值 | 说明 |
+|---|---|---|---|
+| `label` | `string` | `这次读的是` | 介绍小标题，空字符串隐藏 |
+| `title` | `string` | — | 必填，静态作品名，不自动添加书名号 |
+| `subtitle` | `string` | — | 可选的正式副标题，紧随作品名；空白字符串不显示，长文本自然换行 |
+| `meta` | `string[]` | — | 紧随作品名的简短资料，多项用中点分隔；空项忽略 |
+| `author` | `{ name: string; href?: string; role?: string }` | — | 作者对象；仅名称可链接，`role` 默认“著”，空字符串省略中点与后缀 |
+| `details` | `React.ReactNode` | — | 可选的补充说明，通常省略 |
+| `link` | `{ context: string; href: string }` | — | 底部作品入口；`context` 是显示文案，统一附右上箭头 |
+
+展示顺序为小标题、作品名与副标题、资料、作者、补充说明、作品入口，相邻组间距统一为 8px。作品名与副标题组成一组，内部间距为 4px。资料建议保持一行，例如 `meta={['已完结']}`；游戏可使用 `label="这次玩的是"`、`author={{ name: '制作方', role: '开发' }}` 和 `meta={['PC']}`。组件不默认生成状态、评分或阅读进度。
+
+作品名使用 24px 衬线字体并保持静态。副标题使用 16px 正文字体和主文字色，与 13px 的作者及其他资料区分，例如 `title="春秋大义" subtitle="中国传统语境下的皇权与学术"`，长副标题完整显示，不截断。作者链接和底部入口沿用站内普通链接的颜色及悬停变色，不添加下划线；保留键盘聚焦轮廓，减少动态效果模式下直接切换。右上箭头复用 `@blog/icons` 的 `ArrowUpRight`。`subtitle`、`meta`、作者名称、角色词和入口文案是纯文本；`details` 可以传 JSX，但字符串中的 Markdown 不会再次解析。
+
+标题字体通过 `@blog/styles` 的只读对象 `PrimaryTitleFont`、`SecondaryTitleFont` 共享，每个对象包含 `fontFamily` 与 `fontWeight`，具体字体资源由模板注册。书名使用 `SecondaryTitleFont`，通过 `@blog/context/runtime` 的通用 `useFontText(SecondaryTitleFont.fontFamily, title)` 在预渲染阶段收集文字，复用文章的字体子集；组件无需解析 MDX 源码或单独生成字体文件。其他组件可用同一接口收集已由模板注册的页面字体文字。
+
 ### AuthorNote（旁注）
 
 用于作者暂时离开正文话题时的简短补充、联想或设想。采用 14px 淡色文字，左右收窄，左上和右下各有一条开放角线；不显示标题或背景色，自动适配深浅色主题。
