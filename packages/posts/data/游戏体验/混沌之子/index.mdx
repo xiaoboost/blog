@@ -1,12 +1,29 @@
 ---
 title: 我以为我是情报强者
 create: 2026/04/27
-description: 在这里，我们旁观了一个平庸之人，以及旁观这件事本身。
+description: 在这里，我们旁观了一个平庸之人，以及旁观这件事本身。我很欣赏它的人物设计和叙事构思，但是游玩的过程实在是有点煎熬。
 tags: 第九类书
 toc: true
 ---
 
-import { AuthorNote } from '@blog/mdx-typo';
+import { ArticleIntro, AuthorNote, BookInfo } from '@blog/mdx-typo';
+
+<ArticleIntro
+  label="总体评价"
+  aside={
+    <BookInfo
+      label="这次玩的是"
+      title="CHAOS;CHILD"
+      author={{ name: 'MAGES', role: '开发' }}
+      link={{
+        context: 'Steam 页面',
+        href: 'https://store.steampowered.com/app/970570/',
+      }}
+    />
+  }
+>
+  {props.post.description}
+</ArticleIntro>
 
 《Chaos:Child》的故事开始于2015年10月的涩谷，这个月里接连发生了几起猎奇杀人案。一个自称有未来视的主播，在直播中把自己的右手切下来，在镜头前吃掉，死了。一个女歌手在街边做路演，但是她的声音越来越小，观众以为她状态不好，等表演结束才发现她早就被刺穿了腹部，腹腔里嵌着一台扩音器。现场留下了一行字：「那双眼睛，是谁的眼睛？」涩谷的街道上开始出现奇怪的力士贴纸，每一个案发现场都有它的踪迹。
 

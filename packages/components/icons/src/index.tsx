@@ -8,3 +8,4 @@ export { DarkMode } from './dark-mode';
 export { Copy } from './copy';
 export { Check } from './check';
 export { Close } from './close';
+export { ArrowUpRight } from './arrow-up-right';

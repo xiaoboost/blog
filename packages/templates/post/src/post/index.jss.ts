@@ -21,7 +21,7 @@ import {
   getHeadSelector,
   createMediaStylesByTemplate,
 } from '@blog/styles/compile';
-import { FirstTitleFontFamily, FirstTitleFontWeight, SecondTitleFontFamily, SecondTitleFontWeight } from '../constant';
+import { PrimaryTitleFont, SecondaryTitleFont } from '../constant';
 import {
   BlockquoteBg,
   TextQuaternary,
@@ -85,8 +85,8 @@ export default createStyles({
       ),
     },
     '& $postHeaderTitle': {
-      fontFamily: `${FirstTitleFontFamily},${FontHeading}`,
-      fontWeight: FirstTitleFontWeight,
+      fontFamily: `${PrimaryTitleFont.fontFamily},${FontHeading}`,
+      fontWeight: PrimaryTitleFont.fontWeight,
       color: TextPrimary,
       fontSize: 'clamp(28px, 4vw, 32px)',
       lineHeight: 1.4,
@@ -109,9 +109,9 @@ export default createStyles({
       ),
       ...createHeadStyles('& ', (level) => ({
         fontFamily: level <= 2
-          ? `${level === 1 ? FirstTitleFontFamily : SecondTitleFontFamily},${FontHeading}`
+          ? `${(level === 1 ? PrimaryTitleFont : SecondaryTitleFont).fontFamily},${FontHeading}`
           : FontBody,
-        fontWeight: String(level === 2 ? SecondTitleFontWeight : FirstTitleFontWeight),
+        fontWeight: String((level === 2 ? SecondaryTitleFont : PrimaryTitleFont).fontWeight),
         fontSize: [
           '1.75em', '1.375em', '1.125em', '1em', '1em',
         ][level - 1],
