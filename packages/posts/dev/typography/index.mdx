@@ -1,14 +1,14 @@
 ---
 title: 字里行间 · 排版样张
 create: '2026-09-27'
-update: '2026-09-27'
-description: 正文、引用、注释、代码与图片的内部排版样张。
+update: '2026-10-01'
+description: 文章导读、正文、引用、注释、代码与图片的内部排版样张。
 pathname: /__dev/typography/
 public: false
 toc: true
 ---
 
-import { Comment, DefinitionList, Definition, Subtitle, TextGloss } from '@blog/mdx-typo';
+import { ArticleIntro, BookInfo, Comment, DefinitionList, Definition, Subtitle, TextGloss } from '@blog/mdx-typo';
 import { BlurReveal } from '@blog/mdx-blur-reveal';
 import { FontBlock } from '@blog/mdx-font-block';
 import { CodeBlockWrapper } from '../../../components/code-block-normal/src/index';
@@ -19,7 +19,7 @@ import { CodeBlockWrapper } from '../../../components/code-block-normal/src/inde
 
 <nav aria-label="样张索引" style={{ fontSize: 14, lineHeight: 2, marginBottom: 24 }}>
   {[
-    '正文与强调', '标题层级', '引用与旁注', '术语与夹注',
+    '文章导读', '正文与强调', '标题层级', '引用与旁注', '术语与夹注',
     '列表与表格', '代码与公式', '图片与字体', '组合边界', '出处注的写法',
   ].map((title, index) => (
     <span key={title}>
@@ -28,6 +28,111 @@ import { CodeBlockWrapper } from '../../../components/code-block-normal/src/inde
     </span>
   ))}
 </nav>
+
+# 文章导读
+
+<Subtitle>纯导读、书籍与游戏介绍，以及资料缺省时的布局</Subtitle>
+
+以下示例使用正式文章中的 `ArticleIntro` 和 `BookInfo`。观察标题组与资料的距离、资料各行的紧凑程度，以及左右内容长度不同时的布局；缩窄到手机宽度后，作品信息与导读改为上下排列。
+
+## 技术文章：纯导读
+
+省略左栏，使用默认的“开始之前”。两段文字里包含强调、链接和行内代码，用来检查导读自己的段距与行距。
+
+<ArticleIntro>
+  插件可以动态装卸之后，系统怎样在变化中保持正确？关键在于**依赖与生命周期**怎样配合，以及这些约定成立的条件。
+
+  从一次 `FileService` 替换出发，看看服务的注册、失效和恢复如何影响它的使用者。更完整的讨论见[《万物皆插件，然后呢？》](/posts/2026/wan4-wu4-jie1-cha1-jian4-ran2-hou4-ne0/)。
+</ArticleIntro>
+
+导读结束后，正文从这里接上，观察底部分隔线与下一段文字之间的距离。
+
+## 读后感：副标题与补充资料
+
+书名和副标题组成一组。作者为普通文字，补充资料使用 JSX 段落，底部保留作品入口；较长的副标题和资料可以自然换行。
+
+<ArticleIntro
+  label="总体评价"
+  aside={
+    <BookInfo
+      title="春秋大义"
+      subtitle="中国传统语境下的皇权与学术"
+      author={{ name: '熊逸' }}
+      details={
+        <>
+          <p>补充资料样张：较长的版本说明会自然换行。</p>
+          <p>第二段用于观察补充资料的段间距。</p>
+        </>
+      }
+      link={{
+        context: '查看本书',
+        href: 'https://read.douban.com/ebook/118092629/',
+      }}
+    />
+  }
+>
+  我感觉最有收获的是，如何重新看待那些习以为常的“大义”，理解它们怎样参与了权力运作。这是一本很好的祛魅之书，但有些解释也把复杂的历史讲得过于简单。
+</ArticleIntro>
+
+## 网文：状态与作者链接
+
+多项资料之间使用中点分隔。作者链接和“阅读原文”可以悬停或用 Tab 聚焦，观察它们与普通资料文字的区别。
+
+<ArticleIntro
+  label="总体评价"
+  aside={
+    <BookInfo
+      title="道祖是克苏鲁"
+      meta={['已完结', '网络小说']}
+      author={{
+        name: '板斧战士',
+        href: 'https://my.qidian.com/author/429979121/',
+      }}
+      link={{
+        context: '阅读原文',
+        href: 'https://www.qidian.com/book/1028489518/',
+      }}
+    />
+  }
+>
+  一部瑕不掩瑜的杰作。世界结构、势力博弈与配角塑造都很出色，冷峻的笔力写出了乱世如何把人变成鬼。信息密度高，终卷收束仓促，留下不少遗憾，但仍值得推荐给愿意慢读的读者。
+</ArticleIntro>
+
+## 游戏：篇章名称与开发者署名
+
+这里省略状态和补充资料，更换介绍标签与署名角色。标题包含篇章名，观察它在窄屏下的换行。
+
+<ArticleIntro
+  label="篇章感受"
+  aside={
+    <BookInfo
+      label="这次玩的是"
+      title="鸣潮·拉海洛篇"
+      author={{
+        name: '库洛游戏',
+        href: 'https://www.kurogames.com/',
+        role: '开发',
+      }}
+      link={{
+        context: '游戏官网',
+        href: 'https://mc.kurogames.com/',
+      }}
+    />
+  }
+>
+  《鸣潮》拉海洛篇的剧情、演出，以及那些散落在主线之外的日常，都让我深受触动。虽然章节衔接和详略处理还有遗憾，但走完这段旅程，我还是很舍不得这里。
+</ArticleIntro>
+
+## 最少资料：长标题与 description 复用
+
+左栏只填写作品名，隐藏小标签，检查缺省资料是否留下多余空白。右栏直接读取这张样张的 `props.post.description`，用于验证文章简介的复用。
+
+<ArticleIntro
+  label="关于这页"
+  aside={<BookInfo label="" title="一部书名很长、需要换行才能完整展示的作品" />}
+>
+  {props.post.description}
+</ArticleIntro>
 
 # 正文与强调
 

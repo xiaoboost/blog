@@ -8,9 +8,8 @@ export const CustomFont = {
   EMLora: '"EM-Lora"',
 };
 
-/** 默认字体 */
-export const FontDefault = /* @__PURE__ */[
-  CustomFont.Lato,
+/** 默认黑体字 */
+const SansFonts = [
   /** 思源黑体 */
   '"Source Han Sans SC"',
   '思源黑体',
@@ -27,10 +26,16 @@ export const FontDefault = /* @__PURE__ */[
   /** Windows 微软雅黑 */
   '"Microsoft YaHei"',
   'sans-serif',
+];
+
+/** 默认字体 */
+export const FontDefault = [
+  CustomFont.Lato,
+  ...SansFonts,
 ].join(',');
 
 /** 衬线字体 */
-export const FontSerif = /* @__PURE__ */[
+export const FontSerif = [
   /** 思源宋体 */
   '"Source Han Serif"',
   '"思源宋体"',
@@ -51,12 +56,14 @@ export const FontSerif = /* @__PURE__ */[
 ].join(',');
 
 /** 等宽字体 */
-export const FontMono = /* @__PURE__ */[
+export const FontMono = [
   'Menlo',
   'Monaco',
   'Consolas',
   '"Courier New"',
-  'monospace',
+  '"Sarasa Mono SC"',
+  '"等距更纱黑体 SC"',
+  ...SansFonts,
 ].join(',');
 
 /** 网站宽度 */
