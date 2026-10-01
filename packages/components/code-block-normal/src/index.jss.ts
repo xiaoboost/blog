@@ -2,6 +2,7 @@ import {
   createStyles,
   createScrollbarWidth,
   createMediaStyles,
+  FontSizeRegular,
   RadiusMd,
   DurationFast,
 } from '@blog/styles/compile';
@@ -26,7 +27,7 @@ import {
 // 小屏幕时的两边宽度，此值和 layout 中相等
 const SmallIndent = 14;
 /** 行高 */
-const lineHeight = 1.3;
+const lineHeight = 1.5;
 
 export default createStyles({
   codeBlockActions: {},
@@ -45,7 +46,7 @@ export default createStyles({
   codeBlockWrapper: {
     textShadow: 'none',
     position: 'relative',
-    fontSize: '0.9em',
+    fontSize: FontSizeRegular,
     margin: '.8em 0',
     backgroundColor: 'transparent',
 
@@ -143,7 +144,9 @@ export default createStyles({
       whiteSpace: 'nowrap',
     },
 
-    '& code$codeBlockList': {
+    // 代码块继承容器字号，覆盖文章中行内 code 的缩小样式。
+    '&& code$codeBlockList': {
+      fontSize: 'inherit',
       margin: 0,
       border: 0,
       borderRadius: RadiusMd,
