@@ -7,7 +7,7 @@ export const WidthMainToken = '--width-main';
  *
  * @description 主内容宽度，也用来作为响应式变化的宽度界限。
  */
-export const WidthMain = cssVar(WidthMainToken);
+export const WidthMain = /* @__PURE__ */ cssVar(WidthMainToken);
 
 // ═══════════════════════════════════════════════════════════
 // 字号
@@ -20,7 +20,7 @@ export const FontSizeSmToken = '--font-size-sm';
  *
  * @description 用于辅助文字、标签等。
  */
-export const FontSizeSm = cssVar(FontSizeSmToken);
+export const FontSizeSm = /* @__PURE__ */ cssVar(FontSizeSmToken);
 
 /** @see {@link FontSizeRegular} */
 export const FontSizeRegularToken = '--font-size-regular';
@@ -29,7 +29,7 @@ export const FontSizeRegularToken = '--font-size-regular';
  *
  * @description 全局基准字号。
  */
-export const FontSizeRegular = cssVar(FontSizeRegularToken);
+export const FontSizeRegular = /* @__PURE__ */ cssVar(FontSizeRegularToken);
 
 /** @see {@link FontSizeMd} */
 export const FontSizeMdToken = '--font-size-md';
@@ -38,25 +38,25 @@ export const FontSizeMdToken = '--font-size-md';
  *
  * @description 全局正文字号。
  */
-export const FontSizeMd = cssVar(FontSizeMdToken);
+export const FontSizeMd = /* @__PURE__ */ cssVar(FontSizeMdToken);
 
 /** @see {@link FontSizeLg} */
 export const FontSizeLgToken = '--font-size-lg';
 /**
  * 大号字号 — 20px
  */
-export const FontSizeLg = cssVar(FontSizeLgToken);
+export const FontSizeLg = /* @__PURE__ */ cssVar(FontSizeLgToken);
 
 /** @see {@link FontSizeXl} */
 export const FontSizeXlToken = '--font-size-xl';
 /**
  * 特大号字号 — 24px
  */
-export const FontSizeXl = cssVar(FontSizeXlToken);
+export const FontSizeXl = /* @__PURE__ */ cssVar(FontSizeXlToken);
 
 /** @see {@link FontSizeXxl} */
 export const FontSizeXxlToken = '--font-size-xxl';
 /**
  * 超大号字号 — 28px
  */
-export const FontSizeXxl = cssVar(FontSizeXxlToken);
+export const FontSizeXxl = /* @__PURE__ */ cssVar(FontSizeXxlToken);

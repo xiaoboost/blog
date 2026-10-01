@@ -7,7 +7,7 @@ export const FontBodyToken = '--font-body';
  *
  * @description 黑体字。
  */
-export const FontBody = cssVar(FontBodyToken);
+export const FontBody = /* @__PURE__ */ cssVar(FontBodyToken);
 
 /** @see {@link FontHeading} */
 export const FontHeadingToken = '--font-heading';
@@ -16,7 +16,7 @@ export const FontHeadingToken = '--font-heading';
  *
  * @description 衬线字体。
  */
-export const FontHeading = cssVar(FontHeadingToken);
+export const FontHeading = /* @__PURE__ */ cssVar(FontHeadingToken);
 
 /** @see {@link FontCode} */
 export const FontCodeToken = '--font-code';
@@ -25,4 +25,4 @@ export const FontCodeToken = '--font-code';
  *
  * @description 行内代码、代码块时用的字体
  */
-export const FontCode = cssVar(FontCodeToken);
+export const FontCode = /* @__PURE__ */ cssVar(FontCodeToken);

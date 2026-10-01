@@ -1,4 +1,4 @@
-import { getScrollContainer, getDataFromEl, device } from '@blog/web';
+import { getScrollContainer, getDataFromEl, isDesktop } from '@blog/web';
 import { supportsPassive, addClassName, removeClassName, MouseButtons } from '@xiao-ai/utils/web';
 import type { ScrollMode } from './constant';
 
@@ -91,7 +91,7 @@ export class ScrollBar {
     } = this;
 
     // 非桌面端禁用此滚动条
-    if (!device.desktop()) {
+    if (!isDesktop()) {
       addClassName(scrollbar, cla.disable);
       return;
     }

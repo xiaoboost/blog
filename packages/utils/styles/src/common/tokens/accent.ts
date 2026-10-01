@@ -7,4 +7,4 @@ export const AccentPrimaryToken = '--color-accent-primary';
  *
  * @description 链接色等跨包场景。
  */
-export const AccentPrimary = cssVar(AccentPrimaryToken);
+export const AccentPrimary = /* @__PURE__ */ cssVar(AccentPrimaryToken);

@@ -29,13 +29,13 @@ const SansFonts = [
 ];
 
 /** 默认字体 */
-export const FontDefault = [
+export const FontDefault = /* @__PURE__ */ [
   CustomFont.Lato,
   ...SansFonts,
 ].join(',');
 
 /** 衬线字体 */
-export const FontSerif = [
+export const FontSerif = /* @__PURE__ */ [
   /** 思源宋体 */
   '"Source Han Serif"',
   '"思源宋体"',
@@ -56,7 +56,7 @@ export const FontSerif = [
 ].join(',');
 
 /** 等宽字体 */
-export const FontMono = [
+export const FontMono = /* @__PURE__ */ [
   'Menlo',
   'Monaco',
   'Consolas',
@@ -71,9 +71,9 @@ export const mainWidth = 900;
 /** 文章主体和顶栏的空隙高度 */
 export const headerBodyMargin = 20;
 /** 移动端判断 */
-export const mediaPhone: string = `@media only screen and (max-width: ${mainWidth}px)`;
+export const mediaPhone: string = /* @__PURE__ */ (() => `@media only screen and (max-width: ${mainWidth}px)`)();
 /** PC 端判断 */
-export const mediaPc: string = `@media only screen and (min-width: ${mainWidth}px)`;
+export const mediaPc: string = /* @__PURE__ */ (() => `@media only screen and (min-width: ${mainWidth}px)`)();
 /** 暗色模式 */
 export const DarkMode = '@media (prefers-color-scheme: dark)';
 /** 标题元素选择器 */

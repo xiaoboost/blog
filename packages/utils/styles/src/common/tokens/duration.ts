@@ -13,7 +13,7 @@ export const DurationInstantToken = '--duration-instant';
  *
  * @description 用于即时反馈的微交互。
  */
-export const DurationInstant = cssVar(DurationInstantToken);
+export const DurationInstant = /* @__PURE__ */ cssVar(DurationInstantToken);
 
 /** @see {@link DurationFast} */
 export const DurationFastToken = '--duration-fast';
@@ -22,7 +22,7 @@ export const DurationFastToken = '--duration-fast';
  *
  * @description 用于 hover 状态切换、颜色渐变等常规交互。
  */
-export const DurationFast = cssVar(DurationFastToken);
+export const DurationFast = /* @__PURE__ */ cssVar(DurationFastToken);
 
 /** @see {@link DurationNormal} */
 export const DurationNormalToken = '--duration-normal';
@@ -31,7 +31,7 @@ export const DurationNormalToken = '--duration-normal';
  *
  * @description 用于展开/收起、淡入/淡出等中等时长动画。
  */
-export const DurationNormal = cssVar(DurationNormalToken);
+export const DurationNormal = /* @__PURE__ */ cssVar(DurationNormalToken);
 
 /** @see {@link DurationSlow} */
 export const DurationSlowToken = '--duration-slow';
@@ -40,4 +40,4 @@ export const DurationSlowToken = '--duration-slow';
  *
  * @description 用于大范围动画（如模糊揭示）。
  */
-export const DurationSlow = cssVar(DurationSlowToken);
+export const DurationSlow = /* @__PURE__ */ cssVar(DurationSlowToken);

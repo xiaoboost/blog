@@ -1394,9 +1394,6 @@ importers:
       '@xiao-ai/utils':
         specifier: 1.6.7
         version: 1.6.7
-      current-device:
-        specifier: 0.10.2
-        version: 0.10.2
       tslib:
         specifier: 2.8.1
         version: 2.8.1
@@ -2244,9 +2241,6 @@ packages:
 
   csstype@3.2.3:
     resolution: {integrity: sha512-z1HGKcYy2xA8AGQfwrn0PAy+PB7X/GSj3UVJW9qKyn43xWa+gl5nXmU4qqLMRzWVLFC8KusUX8T/0kCiOYpAIQ==}
-
-  current-device@0.10.2:
-    resolution: {integrity: sha512-FN223n2Cp1fRI/gyjJEAdagHhJ/2Z2STz3tUg1t4F259BhmVRCChkmxcgFtjYJsWuIacQEs7bqJpnAczIXIkWw==}
 
   debug@4.3.4:
     resolution: {integrity: sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ==}
@@ -4381,8 +4375,6 @@ snapshots:
   crypt@0.0.2: {}
 
   csstype@3.2.3: {}
-
-  current-device@0.10.2: {}
 
   debug@4.3.4(supports-color@8.1.1):
     dependencies:

@@ -7,4 +7,4 @@ export const BorderPrimaryToken = '--color-border-primary';
  *
  * @description 列表分割线、hr、表格单元格边框。
  */
-export const BorderPrimary = cssVar(BorderPrimaryToken);
+export const BorderPrimary = /* @__PURE__ */ cssVar(BorderPrimaryToken);

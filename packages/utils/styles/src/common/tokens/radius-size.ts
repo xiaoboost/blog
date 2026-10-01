@@ -7,7 +7,7 @@ export const RadiusSmToken = '--radius-small';
  *
  * @description 用于行内代码、标签等小型元素。
  */
-export const RadiusSm = cssVar(RadiusSmToken);
+export const RadiusSm = /* @__PURE__ */ cssVar(RadiusSmToken);
 
 /** @see {@link RadiusMd} */
 export const RadiusMdToken = '--radius-middle';
@@ -16,7 +16,7 @@ export const RadiusMdToken = '--radius-middle';
  *
  * @description 用于卡片、按钮等中型容器。
  */
-export const RadiusMd = cssVar(RadiusMdToken);
+export const RadiusMd = /* @__PURE__ */ cssVar(RadiusMdToken);
 
 /** @see {@link RadiusLg} */
 export const RadiusLgToken = '--radius-large';
@@ -25,4 +25,4 @@ export const RadiusLgToken = '--radius-large';
  *
  * @description 用于弹窗、大面板等大型容器。
  */
-export const RadiusLg = cssVar(RadiusLgToken);
+export const RadiusLg = /* @__PURE__ */ cssVar(RadiusLgToken);

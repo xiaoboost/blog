@@ -1,3 +1,3 @@
 import { GlobalKey, getGlobalContext } from './constant';
 
-export const ModuleLoader = getGlobalContext()[GlobalKey.ModuleLoader];
+export const ModuleLoader = /* @__PURE__ */ (() => getGlobalContext()[GlobalKey.ModuleLoader])();

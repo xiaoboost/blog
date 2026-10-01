@@ -7,7 +7,7 @@ export const BgPrimaryToken = '--color-bg-primary';
  *
  * @description 页面主体
  */
-export const BgPrimary = cssVar(BgPrimaryToken);
+export const BgPrimary = /* @__PURE__ */ cssVar(BgPrimaryToken);
 
 /** @see {@link BgSecondary} */
 export const BgSecondaryToken = '--color-bg-secondary';
@@ -16,4 +16,4 @@ export const BgSecondaryToken = '--color-bg-secondary';
  *
  * @description 次级背景色，主要用于卡片等视图。
  */
-export const BgSecondary = cssVar(BgSecondaryToken);
+export const BgSecondary = /* @__PURE__ */ cssVar(BgSecondaryToken);

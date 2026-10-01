@@ -8,7 +8,7 @@ export const TextPrimaryToken = '--color-text-primary';
  * @description
  * 正文、标题、导航高亮。
  */
-export const TextPrimary = cssVar(TextPrimaryToken);
+export const TextPrimary = /* @__PURE__ */ cssVar(TextPrimaryToken);
 
 /** @see {@link TextSecondary} */
 export const TextSecondaryToken = '--color-text-secondary';
@@ -18,7 +18,7 @@ export const TextSecondaryToken = '--color-text-secondary';
  * @description
  * 图片 alt、滚动条滑块、锚点链接。
  */
-export const TextSecondary = cssVar(TextSecondaryToken);
+export const TextSecondary = /* @__PURE__ */ cssVar(TextSecondaryToken);
 
 /** @see {@link TextTertiary} */
 export const TextTertiaryToken = '--color-text-tertiary';
@@ -28,4 +28,4 @@ export const TextTertiaryToken = '--color-text-tertiary';
  * @description
  * 标签、页脚、辅助说明、装饰线。
  */
-export const TextTertiary = cssVar(TextTertiaryToken);
+export const TextTertiary = /* @__PURE__ */ cssVar(TextTertiaryToken);
