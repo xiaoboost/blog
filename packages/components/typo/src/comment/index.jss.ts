@@ -1,17 +1,17 @@
 import { createStyles, createThemeStyles, createToken, FontSizeRegular, Gray } from '@blog/styles/compile';
 
-const [AuthorNoteCornerColorToken, AuthorNoteCornerColor] = createToken('author-note-corner-color');
+const [CommentCornerColorToken, CommentCornerColor] = createToken('comment-corner-color');
 
 export default createStyles({
-  authorNote: {
+  comment: {
     ...createThemeStyles({
       light: {
         color: Gray[500].toString(),
-        [AuthorNoteCornerColorToken]: Gray[300].toString(),
+        [CommentCornerColorToken]: Gray[300].toString(),
       },
       dark: {
         color: Gray[400].toString(),
-        [AuthorNoteCornerColorToken]: Gray[500].toString(),
+        [CommentCornerColorToken]: Gray[500].toString(),
       },
     }),
     position: 'relative',
@@ -38,7 +38,7 @@ export default createStyles({
       boxSizing: 'border-box',
       width: 12,
       height: 12,
-      borderColor: AuthorNoteCornerColor,
+      borderColor: CommentCornerColor,
       borderStyle: 'solid',
       pointerEvents: 'none',
     },

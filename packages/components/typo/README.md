@@ -89,16 +89,16 @@ import { ArticleIntro, BookInfo } from '@blog/mdx-typo';
 
 标题字体通过 `@blog/styles` 的只读对象 `PrimaryTitleFont`、`SecondaryTitleFont` 共享，每个对象包含 `fontFamily` 与 `fontWeight`，具体字体资源由模板注册。书名使用 `SecondaryTitleFont`，通过 `@blog/context/runtime` 的通用 `useFontText(SecondaryTitleFont.fontFamily, title)` 在预渲染阶段收集文字，复用文章的字体子集；组件无需解析 MDX 源码或单独生成字体文件。其他组件可用同一接口收集已由模板注册的页面字体文字。
 
-### AuthorNote（旁注）
+### Comment（旁注）
 
 用于作者暂时离开正文话题时的简短补充、联想或设想。采用 14px 淡色文字，左右收窄，左上和右下各有一条开放角线；不显示标题或背景色，自动适配深浅色主题。
 
 ```mdx
-import { AuthorNote } from '@blog/mdx-typo';
+import { Comment } from '@blog/mdx-typo';
 
-<AuthorNote>
+<Comment>
   说到这里，我倒有个演出上的设想……
-</AuthorNote>
+</Comment>
 ```
 
 `children` 接收 MDX 段落、强调和链接等内容。段落不使用首行缩进，多段之间保留小段距。作品原文引用继续使用引用块，正文的主要论述也无需放进旁注。
