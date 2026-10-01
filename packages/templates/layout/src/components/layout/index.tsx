@@ -9,7 +9,7 @@ import { Footer } from '../footer';
 import { GotoTop } from '../goto-top';
 import { type HeaderProps, Header } from '../header';
 import { type MainContentProps, MainContent } from '../main-content';
-import { themeInitScript } from '../theme-toggle/theme';
+import { themeInitScript } from '../theme-toggle/theme-init';
 import { OgMeta } from './og-meta';
 import { SeoMeta } from './seo-meta';
 

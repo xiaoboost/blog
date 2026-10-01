@@ -423,6 +423,34 @@ describe('博客构建 e2e', () => {
     expect(html).to.include('aria-hidden="true"');
   });
 
+  it('布局脚本不包含未使用的样式常量和开发环境初始化', () => {
+    const layoutScript = assets.find(({ path }) => /\/layout\.[^/]+\.js$/.test(path));
+    expect(layoutScript, '没有找到布局脚本').not.undefined;
+
+    const code = layoutScript!.content.toString('utf-8');
+    expect(code).not.include('--color-text-primary');
+    expect(code).not.include('--duration-normal');
+    expect(code).not.include('@media only screen');
+    expect(code).not.include('__ModuleLoader');
+    expect(code).not.include('try{const theme=localStorage.getItem(');
+    // 只用桌面判断，不应带入全局 device、方向监听或电视识别。
+    expect(code).not.include('window.device');
+    expect(code).not.include('onorientationchange');
+    expect(code).not.include('googletv');
+    // 主题切换仍保留在客户端。
+    expect(code).include('blog-theme');
+  });
+
+  it('主题偏好初始化仍在 HTML 样式之前执行', () => {
+    for (const { path, content } of htmlAssets) {
+      const html = content.toString('utf-8');
+      const script = html.indexOf('try{const theme=localStorage.getItem(');
+      const stylesheet = html.indexOf('rel="stylesheet"');
+      expect(script, path).greaterThan(-1);
+      expect(stylesheet, path).greaterThan(script);
+    }
+  });
+
   it('产物中没有 esbuild 虚拟路径', () => {
     const virtualPaths = assets.filter((a) => a.path.includes('virtual'));
     expect(virtualPaths).to.be.empty;

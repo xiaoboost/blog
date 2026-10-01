@@ -7,4 +7,4 @@ export const ShadowCardToken = '--shadow-card';
  *
  * @description 用于文章卡片、文章列表等大容器
  */
-export const ShadowCard = cssVar(ShadowCardToken);
+export const ShadowCard = /* @__PURE__ */ cssVar(ShadowCardToken);

@@ -25,6 +25,3 @@ export function getNextThemeMode(mode: ThemeMode): ThemeMode {
 export function getThemeTitle(mode: ThemeMode): string {
   return `当前：${modeLabel[mode]}；点击切换${modeLabel[nextMode[mode]]}`;
 }
-
-/** 在样式加载前恢复手动偏好；无偏好时由 CSS 跟随系统。 */
-export const themeInitScript = `try{const theme=localStorage.getItem(${JSON.stringify(ThemeStorageKey)});if(theme==="light"||theme==="dark")document.documentElement.dataset.theme=theme;}catch{}`;
