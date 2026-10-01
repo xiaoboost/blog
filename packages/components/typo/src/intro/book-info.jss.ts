@@ -15,6 +15,7 @@ export default createStyles({
   bookHeading: {},
   bookTitle: {},
   bookSubtitle: {},
+  bookRow: {},
   bookMeta: {},
   separatorDot: {},
   bookAuthor: {},
@@ -27,7 +28,7 @@ export default createStyles({
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'flex-start',
-      gap: 8,
+      gap: 4,
       minWidth: 0,
       fontFamily: FontBody,
       fontSize: `calc(${FontSizeRegular} - 1px)`,
@@ -37,7 +38,7 @@ export default createStyles({
       overflowWrap: 'anywhere',
 
       '& $bookLabel': {
-        margin: 0,
+        margin: '0 0 4px',
         fontWeight: 600,
         lineHeight: 1.6,
         letterSpacing: '.055em',
@@ -48,6 +49,11 @@ export default createStyles({
         gap: 4,
         minWidth: 0,
         maxWidth: '100%',
+
+        // 标题组与资料留出距离，资料各行沿用较紧凑的间距。
+        '&:not(:last-child)': {
+          marginBottom: 8,
+        },
       },
       '& $bookTitle': {
         margin: 0,
@@ -67,14 +73,16 @@ export default createStyles({
         fontWeight: 400,
         lineHeight: 1.6,
       },
+      '& $bookRow': {
+        margin: 0,
+        lineHeight: '18px',
+      },
       '& $bookMeta': {
         display: 'flex',
         flexWrap: 'wrap',
         gap: '0 7px',
-        margin: 0,
         padding: 0,
         listStyle: 'none',
-        lineHeight: 'inherit',
 
         '& li': {
           display: 'inline-flex',
@@ -98,7 +106,6 @@ export default createStyles({
         flexWrap: 'wrap',
         alignItems: 'center',
         gap: '0 4px',
-        margin: 0,
       },
       '& $authorRole': {
         display: 'inline-flex',
@@ -107,8 +114,6 @@ export default createStyles({
         whiteSpace: 'nowrap',
       },
       '& $bookDetails': {
-        margin: 0,
-
         '& p': {
           margin: 0,
           textIndent: 0,
@@ -127,7 +132,6 @@ export default createStyles({
         display: 'inline-flex',
         alignItems: 'center',
         gap: 4,
-        margin: 0,
       },
       '& $sourceIcon': {
         flexShrink: 0,

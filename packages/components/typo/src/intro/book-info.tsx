@@ -1,6 +1,7 @@
 import { useFontText } from '@blog/context/runtime';
 import { ArrowUpRight } from '@blog/icons';
 import { SecondaryTitleFont } from '@blog/styles';
+import { stringifyClass } from '@xiao-ai/utils';
 import React from 'react';
 import styles from './book-info.jss';
 
@@ -54,7 +55,7 @@ export function BookInfo({
         {subtitleText && <div className={classes.bookSubtitle}>{subtitleText}</div>}
       </div>
       {items.length > 0 && (
-        <ul className={classes.bookMeta} aria-label="作品资料">
+        <ul className={stringifyClass(classes.bookRow, classes.bookMeta)} aria-label="作品资料">
           {items.map((item, index) => (
             <li key={`${index}-${item}`}>
               {index > 0 && <span className={classes.separatorDot} aria-hidden="true" />}
@@ -64,7 +65,7 @@ export function BookInfo({
         </ul>
       )}
       {author && (
-        <div className={classes.bookAuthor}>
+        <div className={stringifyClass(classes.bookRow, classes.bookAuthor)}>
           {author.href
             ? <a href={author.href} target="_blank" rel="noreferrer">{author.name}</a>
             : <span>{author.name}</span>}
@@ -76,9 +77,11 @@ export function BookInfo({
           )}
         </div>
       )}
-      {hasDetails && <div className={classes.bookDetails}>{details}</div>}
+      {hasDetails && (
+        <div className={stringifyClass(classes.bookRow, classes.bookDetails)}>{details}</div>
+      )}
       {link && (
-        <a className={classes.bookLink} href={link.href} target="_blank" rel="noreferrer">
+        <a className={stringifyClass(classes.bookRow, classes.bookLink)} href={link.href} target="_blank" rel="noreferrer">
           <span>{link.context}</span>
           <ArrowUpRight className={classes.sourceIcon} aria-hidden="true" />
         </a>
