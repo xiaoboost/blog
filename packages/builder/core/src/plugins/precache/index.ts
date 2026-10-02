@@ -46,7 +46,7 @@ export const Precache = (): BuilderPlugin => ({
 
           const hashedPath = rename(asset);
           site.addAsset({ path: hashedPath, content: Buffer.from(code) });
-          site.addScript(hashedPath);
+          site.addScript({ src: hashedPath });
         });
       });
     });

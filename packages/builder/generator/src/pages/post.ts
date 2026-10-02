@@ -45,14 +45,18 @@ export function renderPost({ page, site, post, dev, isPreBuild }: PostPageRender
     styles: [
       ...site.getStyles(),
       ...page.getStyles(),
-      ...layoutUtils.getStyleNames(),
-      ...post.utils.getStyleNames(),
+      ...layoutUtils.getStyleNames().map((href) => ({ href })),
+      ...post.utils.getStyleNames().map((href) => ({ href })),
     ],
     scripts: [
       ...site.getScripts(),
       ...page.getScripts(),
-      ...layoutUtils.getScriptNames(),
-      ...post.utils.getScriptNames(),
+      ...layoutUtils.getScriptNames().map((src) => ({ src })),
+      ...post.utils.getScriptNames().map((src) => ({ src })),
+    ],
+    preScripts: [
+      ...site.getPreScripts(),
+      ...page.getPreScripts(),
     ],
     preloadAssets: [
       ...site.getPreloads(),

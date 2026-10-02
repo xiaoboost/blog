@@ -1,4 +1,4 @@
-import type { AssetData, PreloadAssetData } from './asset';
+import type { AssetData, PreloadAssetData, ScriptAssetData, StyleAssetData } from './asset';
 import type { IFontBucket, IFontBucketConfig, IBuildFontsOptions } from './font';
 import type { PostExportData, PostExportDataWithComponent } from './post';
 
@@ -67,15 +67,20 @@ export interface PageDataMap {
 
 /** 资源集接口 — Page 和 Site 共享的资源管理能力 */
 export interface IResourceSet {
-  /** 添加样式资源引用 */
-  addStyle(path: string): void;
+  /** 添加样式资源引用及标签配置，按 href 去重 */
+  addStyle(style: StyleAssetData): void;
   /** 获取所有样式资源引用 */
-  getStyles(): string[];
+  getStyles(): StyleAssetData[];
 
-  /** 添加脚本资源引用 */
-  addScript(path: string): void;
+  /** 添加 body 末尾的脚本资源引用及标签配置，按 src 去重 */
+  addScript(script: ScriptAssetData): void;
   /** 获取所有脚本资源引用 */
-  getScripts(): string[];
+  getScripts(): ScriptAssetData[];
+
+  /** 添加 head 脚本资源引用，按 src 去重 */
+  addPreScript(script: ScriptAssetData): void;
+  /** 获取所有 head 脚本资源引用 */
+  getPreScripts(): ScriptAssetData[];
 
   /** 添加预加载声明 */
   addPreload(preload: PreloadAssetData): void;

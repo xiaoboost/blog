@@ -115,12 +115,16 @@ export function renderYearListPage({
     styles: [
       ...site.getStyles(),
       ...page.getStyles(),
-      ...utils.getStyleNames(),
+      ...utils.getStyleNames().map((href) => ({ href })),
     ],
     scripts: [
       ...site.getScripts(),
       ...page.getScripts(),
-      ...utils.getScriptNames(),
+      ...utils.getScriptNames().map((src) => ({ src })),
+    ],
+    preScripts: [
+      ...site.getPreScripts(),
+      ...page.getPreScripts(),
     ],
     preloadAssets: [
       ...site.getPreloads(),
@@ -167,12 +171,16 @@ export function renderYearPostListPage({
     styles: [
       ...site.getStyles(),
       ...page.getStyles(),
-      ...utils.getStyleNames(),
+      ...utils.getStyleNames().map((href) => ({ href })),
     ],
     scripts: [
       ...site.getScripts(),
       ...page.getScripts(),
-      ...utils.getScriptNames(),
+      ...utils.getScriptNames().map((src) => ({ src })),
+    ],
+    preScripts: [
+      ...site.getPreScripts(),
+      ...page.getPreScripts(),
     ],
     preloadAssets: [
       ...site.getPreloads(),

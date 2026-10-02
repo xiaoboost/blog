@@ -32,6 +32,58 @@ describe('按需资源热更新', () => {
     expect(getHtmlDiff(html('<title>原题</title>'), html('<title>新题</title>'), path)).deep.eq([]);
   });
 
+  it('脚本引用、配置、位置或顺序变化时整页刷新', () => {
+    const first = '<script src="/scripts/theme.js"></script>';
+    const second = '<script src="/scripts/ready.js" defer=""></script>';
+    const reload = [{ kind: HMRUpdateKind.Reload, path }];
+    expect(getHtmlDiff(html(), html(first), path)).deep.eq(reload);
+    expect(getHtmlDiff(html(first), html(), path)).deep.eq(reload);
+    expect(getHtmlDiff(html(first), html(first.replace('theme.js', 'theme.v2.js')), path)).deep.eq(reload);
+    for (const attr of [
+      'defer=""', 'async=""', 'type="module"', 'crossorigin="anonymous"',
+    ]) {
+      expect(getHtmlDiff(html(first), html(first.replace('<script ', `<script ${attr} `)), path))
+        .deep.eq(reload);
+      expect(getHtmlDiff(html('', first), html('', first.replace('<script ', `<script ${attr} `)), path))
+        .deep.eq(reload);
+    }
+    expect(getHtmlDiff(html(first + second), html(second + first), path)).deep.eq(reload);
+    expect(getHtmlDiff(html(first), html('', `正文${first}`), path)).deep.eq(reload);
+    expect(getHtmlDiff(html(first), html(first), path)).deep.eq([]);
+    expect(getHtmlDiff(html(first), html(first, '新正文'), path)[0].kind).eq(HMRUpdateKind.HTML);
+  });
+
+  it('样式路径不变、媒体条件或跨域配置变化时整页刷新', () => {
+    const style = '<link rel="stylesheet" href="/styles/test.css">';
+    for (const attr of [
+      'media="print"', 'media="screen and (min-width: 768px)"', 'crossorigin="anonymous"',
+    ]) {
+      expect(getHtmlDiff(html(style), html(style.replace('<link ', `<link ${attr} `)), path))
+        .deep.eq([{ kind: HMRUpdateKind.Reload, path }]);
+    }
+  });
+
+  it('head 或带加载配置的 body 脚本更新时通过刷新保留其执行语义', () => {
+    const runtime = bundle('../plugins/development/runtime/utils.ts', 'hmr');
+    for (const config of [
+      { head: true }, { type: 'module' }, { defer: true }, { async: true },
+      { crossOrigin: 'anonymous' }, { crossOrigin: 'use-credentials' },
+    ]) {
+      let reloads = 0;
+      const context = createContext({
+        window: {},
+        location: { reload: () => reloads++ },
+        document: {
+          querySelectorAll: () => [{ ...config, getAttribute: () => '/scripts/init.js?123' }],
+          head: { contains: () => Boolean(config.head) },
+        },
+      });
+      runInContext(runtime, context);
+      context.hmr.reloadJS('/scripts/init.js', 'throw new Error("应通过刷新加载");');
+      expect(reloads, JSON.stringify(config)).eq(1);
+    }
+  });
+
   it('页面更新精确匹配路径，首页不会响应所有文章的更新', () => {
     const context = createContext({ window: {}, location: { pathname: '/' } });
     runInContext(bundle('../plugins/development/runtime/utils.ts', 'hmr'), context);
@@ -51,8 +103,10 @@ describe('按需资源热更新', () => {
     const helper = bundle('../../../../utils/web/src/element.ts', 'web');
     const context = createContext({ window: {}, active: 0, removed: 0, ids: [] as string[] });
     const scripts: unknown[] = [];
+    const externalScripts: { getAttribute: (name: string) => string | null }[] = [];
     const document = {
       currentScript: null as any,
+      querySelectorAll: () => externalScripts,
       createElement: () => {
         const attributes = new Map<string, string>();
         const script = {
@@ -64,6 +118,7 @@ describe('按需资源热更新', () => {
         return script;
       },
       head: {
+        contains: () => false,
         appendChild(script: { textContent: string }) {
           scripts.push(script);
           document.currentScript = script;
@@ -88,6 +143,7 @@ describe('按需资源热更新', () => {
     })();`;
     const initial = document.createElement();
     initial.setAttribute('src', '/scripts/post.js');
+    externalScripts.push(initial);
     document.currentScript = initial;
     runInContext(code + code, context);
     document.currentScript = null;

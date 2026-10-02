@@ -44,6 +44,17 @@ export function reloadHTML(selector: string, content: string) {
 }
 
 export function reloadJS(file: string, code: string) {
+  const scripts = Array.from(document.querySelectorAll<HTMLScriptElement>('script[src]'));
+  const needsReload = scripts.some((script) => (
+    script.getAttribute('src')?.split('?')[0] === file.split('?')[0]
+    && (document.head.contains(script) || script.type === 'module' || script.defer || script.async || script.crossOrigin)
+  ));
+  if (needsReload) {
+    // 保留 head 脚本及带加载配置的脚本的执行时机、模块类型和请求方式。
+    location.reload();
+    return;
+  }
+
   module.uninstall(file);
   // 使用真实脚本元素，保证所有模块都能通过公共方法取得当前脚本路径。
   const script = document.createElement('script');
