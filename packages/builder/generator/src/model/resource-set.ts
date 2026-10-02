@@ -5,34 +5,47 @@ import type {
   IFontBucketConfig,
   IResourceSet,
   PreloadAssetData,
+  ScriptAssetData,
+  StyleAssetData,
   IBuildFontsOptions,
 } from '@blog/types';
 
 export abstract class ResourceSet implements IResourceSet {
-  #styles: string[] = [];
-  #scripts: string[] = [];
+  #styles: StyleAssetData[] = [];
+  #scripts: ScriptAssetData[] = [];
+  #preScripts: ScriptAssetData[] = [];
   #preloads: PreloadAssetData[] = [];
   #assets: AssetData[] = [];
   #fontBuckets = new Map<string, FontBucket>();
 
-  addStyle(path: string): void {
-    if (!this.#styles.includes(path)) {
-      this.#styles.push(path);
+  addStyle(style: StyleAssetData): void {
+    if (!this.#styles.some(({ href }) => href === style.href)) {
+      this.#styles.push(style);
     }
   }
 
-  getStyles(): string[] {
+  getStyles(): StyleAssetData[] {
     return this.#styles.slice();
   }
 
-  addScript(path: string): void {
-    if (!this.#scripts.includes(path)) {
-      this.#scripts.push(path);
+  addScript(script: ScriptAssetData): void {
+    if (!this.#scripts.some(({ src }) => src === script.src)) {
+      this.#scripts.push(script);
     }
   }
 
-  getScripts(): string[] {
+  getScripts(): ScriptAssetData[] {
     return this.#scripts.slice();
+  }
+
+  addPreScript(script: ScriptAssetData): void {
+    if (!this.#preScripts.some(({ src }) => src === script.src)) {
+      this.#preScripts.push(script);
+    }
+  }
+
+  getPreScripts(): ScriptAssetData[] {
+    return this.#preScripts.slice();
   }
 
   addPreload(preload: PreloadAssetData): void {
@@ -109,7 +122,7 @@ export abstract class ResourceSet implements IResourceSet {
       .join('');
     const cssFinal = normalize(scope, format({ path: `${cssFileName}.css`, content: Buffer.from(css) }));
 
-    this.addStyle(cssFinal);
+    this.addStyle({ href: cssFinal });
     this.addAsset({ path: cssFinal, content: Buffer.from(css) });
 
     // 字体文件（路径已含 scope）

@@ -1,7 +1,7 @@
 import { ScrollBar } from '@blog/component-scrollbar';
 import { normalizeUrl } from '@blog/node';
 import { HMRClientScriptPath } from '@blog/shared';
-import type { PreloadAssetData } from '@blog/types';
+import type { PreloadAssetData, ScriptAssetData, StyleAssetData } from '@blog/types';
 import { default as React, type PropsWithChildren } from 'react';
 
 import favicon from '../../assets/images/favicon.ico';
@@ -35,11 +35,25 @@ export interface LayoutProps extends HeaderProps, MainContentProps {
   /** 网站根路径 */
   publicPath: string;
   /** 样式资源列表 */
-  styles: string[];
+  styles: StyleAssetData[];
   /** 脚本资源列表 */
-  scripts: string[];
+  scripts: ScriptAssetData[];
+  /** head 脚本资源及标签配置 */
+  preScripts: ScriptAssetData[];
   /** 预加载资源列表 */
   preloadAssets: PreloadAssetData[];
+}
+
+function Script({ script, publicPath }: { script: ScriptAssetData; publicPath: string }) {
+  return (
+    <script
+      type={script.type ?? 'text/javascript'}
+      src={normalizeUrl(publicPath, script.src)}
+      defer={script.defer}
+      async={script.async}
+      crossOrigin={script.crossOrigin}
+    />
+  );
 }
 
 export function Layout(props: PropsWithChildren<LayoutProps>) {
@@ -50,6 +64,13 @@ export function Layout(props: PropsWithChildren<LayoutProps>) {
       <head>
         <meta charSet="utf-8" />
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+        {props.preScripts.map((script, i) => (
+          <Script
+            key={`pre-script-${i}`}
+            script={script}
+            publicPath={publicPath}
+          />
+        ))}
         <SeoMeta {...props} />
         <OgMeta {...props} />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -66,12 +87,14 @@ export function Layout(props: PropsWithChildren<LayoutProps>) {
           />
         ))}
         {props.hmr ? <script type="text/javascript" src={HMRClientScriptPath} /> : ''}
-        {props.styles.map((pathname, i) => (
+        {props.styles.map((style, i) => (
           <link
             key={`style-${i}`}
             rel="stylesheet"
             type="text/css"
-            href={normalizeUrl(publicPath, pathname)}
+            href={normalizeUrl(publicPath, style.href)}
+            media={style.media}
+            crossOrigin={style.crossOrigin}
           />
         ))}
       </head>
@@ -81,11 +104,11 @@ export function Layout(props: PropsWithChildren<LayoutProps>) {
         <Footer />
         <GotoTop />
         <ScrollBar width={8} mode="y" />
-        {props.scripts.map((pathname, i) => (
-          <script
+        {props.scripts.map((script, i) => (
+          <Script
             key={`script-${i}`}
-            type="text/javascript"
-            src={normalizeUrl(publicPath, pathname)}
+            script={script}
+            publicPath={publicPath}
           />
         ))}
       </body>

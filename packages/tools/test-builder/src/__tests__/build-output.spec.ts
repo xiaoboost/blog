@@ -1,6 +1,6 @@
 import { Builder } from '@blog/core';
 import { expect, describe, it } from '@blog/test-toolkit';
-import type { AssetData } from '@blog/types';
+import type { AssetData, IResourceSet, PageType, ScriptAssetData, StyleAssetData } from '@blog/types';
 import { before } from 'mocha';
 
 /**
@@ -69,6 +69,15 @@ describe('博客构建 e2e', () => {
   let assetMap = new Map<string, Buffer>();
   let htmlAssets: AssetData[] = [];
   let errors: string[] = [];
+  const resourcePages = new Map<string, {
+    type: PageType;
+    preScript: ScriptAssetData;
+    script: ScriptAssetData;
+    style: StyleAssetData;
+  }>();
+  const sharedPreScripts: ScriptAssetData[] = [];
+  const sharedScripts: ScriptAssetData[] = [];
+  const sharedStyles: StyleAssetData[] = [];
 
   before(async function () {
     this.timeout(120_000);
@@ -78,6 +87,89 @@ describe('博客构建 e2e', () => {
       write: false,
       logLevel: 'Silence',
       typeCheck: false,
+      plugins: [
+        {
+          name: 'test-resource-config',
+          apply(builder) {
+            builder.hooks.runner.tap('test-resource-config', (runner) => {
+              runner.registerHook(({ hooks }) => {
+                hooks.afterReady.tap('test-resource-config', ({ site, pages, rename }) => {
+                  const addAsset = (resources: IResourceSet, name: string) => {
+                    const content = Buffer.from(name.endsWith('.css')
+                      ? `:root{--${name.slice(0, -4)}:1}`
+                      : `window.testScriptAsset = ${JSON.stringify(name)};`);
+                    const path = rename({ path: name, content });
+                    resources.addAsset({ path, content });
+                    return path;
+                  };
+                  sharedPreScripts.push(
+                    { src: addAsset(site, 'test-pre-sync.js') },
+                    { src: addAsset(site, 'test-pre-defer.js'), defer: true },
+                    {
+                      src: addAsset(site, 'test-pre-module.js'),
+                      type: 'module',
+                      async: true,
+                      crossOrigin: 'anonymous',
+                    },
+                  );
+                  sharedScripts.push(
+                    { src: addAsset(site, 'test-script-sync.js'), defer: false, async: false },
+                    { src: addAsset(site, 'test-script-defer.js'), defer: true },
+                    {
+                      src: addAsset(site, 'test-script-module.js'),
+                      type: 'module',
+                      async: true,
+                      crossOrigin: 'anonymous',
+                    },
+                  );
+                  sharedStyles.push(
+                    { href: addAsset(site, 'test-style-default.css') },
+                    { href: addAsset(site, 'test-style-print.css'), media: 'print' },
+                    {
+                      href: addAsset(site, 'test-style-screen.css'),
+                      media: 'screen and (min-width: 768px)',
+                      crossOrigin: 'anonymous',
+                    },
+                  );
+                  sharedPreScripts.forEach((script) => site.addPreScript(script));
+                  sharedScripts.forEach((script) => site.addScript(script));
+                  sharedStyles.forEach((style) => site.addStyle(style));
+                  site.addPreScript({ ...sharedPreScripts[0] });
+                  site.addScript({ ...sharedScripts[0] });
+                  site.addStyle({ ...sharedStyles[0] });
+
+                  // 每种页面只选一页，验证所有渲染入口及页面之间的隔离。
+                  const selected = new Set<PageType>();
+                  for (const page of pages) {
+                    if (selected.has(page.type)) continue;
+                    selected.add(page.type);
+                    const preScript: ScriptAssetData = {
+                      src: addAsset(page, `test-pre-${page.type}.js`),
+                      defer: true,
+                    };
+                    const script: ScriptAssetData = {
+                      src: addAsset(page, `test-script-${page.type}.js`),
+                      defer: true,
+                      crossOrigin: 'use-credentials',
+                    };
+                    const style: StyleAssetData = {
+                      href: addAsset(page, `test-style-${page.type}.css`),
+                      media: 'print',
+                      crossOrigin: 'use-credentials',
+                    };
+                    resourcePages.set(page.toAsset().path, {
+                      type: page.type, preScript, script, style,
+                    });
+                    page.addPreScript(preScript);
+                    page.addScript(script);
+                    page.addStyle(style);
+                  }
+                });
+              });
+            });
+          },
+        },
+      ],
     });
 
     await builder.init();
@@ -473,6 +565,72 @@ describe('博客构建 e2e', () => {
       const stylesheet = html.indexOf('rel="stylesheet"');
       expect(script, path).greaterThan(-1);
       expect(stylesheet, path).greaterThan(script);
+    }
+  });
+
+  it('所有页面类型通过 head 引用普通脚本产物，保留配置和顺序且不泄漏页面专属引用', () => {
+    expect([...resourcePages.values()].map(({ type }) => type).sort()).deep.eq([
+      'index', 'post', 'tag-list', 'tag-post-list', 'year-list', 'year-post-list',
+    ]);
+    expect(htmlAssets.length).greaterThan(resourcePages.size);
+
+    for (const { path, content } of htmlAssets) {
+      const html = content.toString();
+      const head = /<head>([\s\S]*?)<\/head>/.exec(html)![1];
+      const scripts = [...head.matchAll(/<script\b[^>]*\bsrc="([^"]+)"[^>]*><\/script>/g)];
+      const pageScript = resourcePages.get(path)?.preScript;
+      const expected = pageScript ? [...sharedPreScripts, pageScript] : sharedPreScripts;
+      expect(scripts.map((match) => match[1]), path).deep.eq(expected.map(({ src }) => src));
+      scripts.forEach(([tag, src], index) => {
+        const config = expected[index];
+        expect(head.indexOf(tag), path).lessThan(head.indexOf('rel="stylesheet"'));
+        expect(/\bdefer=""/.test(tag), path).eq(Boolean(config.defer));
+        expect(/\basync=""/.test(tag), path).eq(Boolean(config.async));
+        expect(tag, path).include(`type="${config.type ?? 'text/javascript'}"`);
+        if (config.crossOrigin) expect(tag, path).match(/\bcrossorigin="anonymous"/i);
+        expect(assetMap.has(src), `${path} 引用的脚本未输出：${src}`).true;
+        expect(assetMap.get(src)!.toString()).include('window.testScriptAsset');
+      });
+      expect(html, path).not.include('window.testScriptAsset');
+    }
+  });
+
+  it('所有页面类型的 body 脚本保留标签配置、去重和页面隔离', () => {
+    for (const { path, content } of htmlAssets) {
+      const html = content.toString();
+      const body = /<body>([\s\S]*?)<\/body>/.exec(html)![1];
+      const scripts = [...body.matchAll(/<script\b[^>]*\bsrc="([^"]+)"[^>]*><\/script>/g)]
+        .filter(([, src]) => /\/test-script-[^/]+\.js$/.test(src));
+      const pageScript = resourcePages.get(path)?.script;
+      const expected = pageScript ? [...sharedScripts, pageScript] : sharedScripts;
+      expect(scripts.map((match) => match[1]), path).deep.eq(expected.map(({ src }) => src));
+      scripts.forEach(([tag, src], index) => {
+        const config = expected[index];
+        expect(/\bdefer=""/.test(tag), path).eq(Boolean(config.defer));
+        expect(/\basync=""/.test(tag), path).eq(Boolean(config.async));
+        expect(tag, path).include(`type="${config.type ?? 'text/javascript'}"`);
+        expect(/\bcrossorigin="([^"]+)"/i.exec(tag)?.[1], path).eq(config.crossOrigin);
+        expect(assetMap.has(src), `${path} 引用的脚本未输出：${src}`).true;
+      });
+    }
+  });
+
+  it('所有页面类型的样式保留媒体条件、跨域配置、去重和页面隔离', () => {
+    for (const { path, content } of htmlAssets) {
+      const head = /<head>([\s\S]*?)<\/head>/.exec(content.toString())![1];
+      const styleTags = /<link\b[^>]*\brel="stylesheet"[^>]*\bhref="([^"]+)"[^>]*>/g;
+      const styles = [...head.matchAll(styleTags)]
+        .filter(([, href]) => /\/test-style-[^/]+\.css$/.test(href));
+      const pageStyle = resourcePages.get(path)?.style;
+      const expected = pageStyle ? [...sharedStyles, pageStyle] : sharedStyles;
+      expect(styles.map((match) => match[1]), path).deep.eq(expected.map(({ href }) => href));
+      styles.forEach(([tag, href], index) => {
+        const config = expected[index];
+        expect(tag, path).include('type="text/css"');
+        expect(/\bmedia="([^"]+)"/.exec(tag)?.[1], path).eq(config.media);
+        expect(/\bcrossorigin="([^"]+)"/i.exec(tag)?.[1], path).eq(config.crossOrigin);
+        expect(assetMap.has(href), `${path} 引用的样式未输出：${href}`).true;
+      });
     }
   });
 

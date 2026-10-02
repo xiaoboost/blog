@@ -28,13 +28,16 @@ export function getHtmlDiff(html1: string, html2: string, path: string): HMRUpda
     ...(html.match(/<link\b[^>]*\brel="(?:stylesheet|preload|modulepreload)"[^>]*>/g) ?? []),
     ...(html.match(/<style\b[^>]*>[\s\S]*?<\/style>/g) ?? []),
   ];
-  const scripts = (html: string) => Array.from(
-    html.matchAll(/<script\b[^>]*\bsrc="([^"]+)"[^>]*>/g), (match) => match[1],
-  );
-  // 仅资源引用变化时刷新；标题、meta 等变化不应扩大为整页刷新。
+  const scripts = (html: string) => html.match(/<script\b[^>]*\bsrc="[^"]+"[^>]*>/g) ?? [];
+  const preScripts = (html: string) => {
+    const head = /<head>[\s\S]*?<\/head>/.exec(html)?.[0] ?? '';
+    return scripts(head);
+  };
+  // 资源引用、标签配置或脚本位置变化时刷新；标题、meta 等变化不应扩大为整页刷新。
   if (
     JSON.stringify(styles(html1)) !== JSON.stringify(styles(html2))
     || JSON.stringify(scripts(html1)) !== JSON.stringify(scripts(html2))
+    || JSON.stringify(preScripts(html1)) !== JSON.stringify(preScripts(html2))
   ) {
     return [{ kind: HMRUpdateKind.Reload, path }];
   }

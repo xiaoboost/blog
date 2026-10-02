@@ -47,12 +47,16 @@ export function renderListPage({
     styles: [
       ...site.getStyles(),
       ...page.getStyles(),
-      ...utils.getStyleNames(),
+      ...utils.getStyleNames().map((href) => ({ href })),
     ],
     scripts: [
       ...site.getScripts(),
       ...page.getScripts(),
-      ...utils.getScriptNames(),
+      ...utils.getScriptNames().map((src) => ({ src })),
+    ],
+    preScripts: [
+      ...site.getPreScripts(),
+      ...page.getPreScripts(),
     ],
     preloadAssets: [
       ...site.getPreloads(),
