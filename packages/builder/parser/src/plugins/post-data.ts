@@ -7,6 +7,10 @@ export const remarkPostData: Plugin<[], Mdx.Root> = () => (tree, file) => {
   // 与资源插件一致，仅在收到文章配置时导出文章数据。
   if (typeof file.data.template !== 'string') return;
 
-  const json = JSON.stringify({ ...file.data, ast: tree });
+  // 仅精简导出的快照，编译中的原树保留位置和 ESTree 信息。
+  const json = JSON.stringify(
+    { ...file.data, ast: tree },
+    (key, value) => key === 'position' || key === 'data' ? undefined : value,
+  );
   tree.children.push(createExport('data', createJsonExpression(JSON.parse(json)), json));
 };
