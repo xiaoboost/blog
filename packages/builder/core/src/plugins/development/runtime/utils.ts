@@ -45,8 +45,16 @@ export function reloadHTML(selector: string, content: string) {
 
 export function reloadJS(file: string, code: string) {
   module.uninstall(file);
-  // TODO: 有时候会报 JSON 错误，需要再查
-  (0, eval)(code);
+  // 使用真实脚本元素，保证所有模块都能通过公共方法取得当前脚本路径。
+  const script = document.createElement('script');
+  script.setAttribute('data-script-src', file);
+  script.textContent = code;
+  try {
+    document.head.appendChild(script);
+  }
+  finally {
+    script.remove();
+  }
 }
 
 export function hasCSS(src: string) {
@@ -78,5 +86,6 @@ export function hasJs(src: string) {
 }
 
 export function isHTMLFile(filePath: string) {
-  return filePath.indexOf(location.pathname) === 0;
+  const normalize = (path: string) => path.replace(/\/index\.html$/, '/').replace(/\/$/, '');
+  return normalize(filePath) === normalize(location.pathname);
 }

@@ -24,6 +24,20 @@ export function isFileEqual(file1: FileInput, file2: FileInput): boolean {
 }
 
 export function getHtmlDiff(html1: string, html2: string, path: string): HMRUpdate[] {
+  const styles = (html: string) => [
+    ...(html.match(/<link\b[^>]*\brel="(?:stylesheet|preload|modulepreload)"[^>]*>/g) ?? []),
+    ...(html.match(/<style\b[^>]*>[\s\S]*?<\/style>/g) ?? []),
+  ];
+  const scripts = (html: string) => Array.from(
+    html.matchAll(/<script\b[^>]*\bsrc="([^"]+)"[^>]*>/g), (match) => match[1],
+  );
+  // 仅资源引用变化时刷新；标题、meta 等变化不应扩大为整页刷新。
+  if (
+    JSON.stringify(styles(html1)) !== JSON.stringify(styles(html2))
+    || JSON.stringify(scripts(html1)) !== JSON.stringify(scripts(html2))
+  ) {
+    return [{ kind: HMRUpdateKind.Reload, path }];
+  }
   const bodyMatcher = /(<body>[\d\D]*<\/body>)<\/html>/;
   const body1 = bodyMatcher.exec(html1);
   const body2 = bodyMatcher.exec(html2);
