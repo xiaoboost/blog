@@ -1,5 +1,5 @@
 import { expect, describe, it } from '@blog/test-toolkit';
-import { getPostMetaData } from '../post/transformer';
+import { getPostMetaData } from '../post';
 
 describe('getPostMetaData', () => {
   it('rejects a non-boolean LSP setting', () => {

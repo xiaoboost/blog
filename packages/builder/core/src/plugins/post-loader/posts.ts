@@ -1,33 +1,13 @@
 import { realpath } from 'fs/promises';
 import { join } from 'path';
 import { normalize } from '@blog/node';
-import { getImportCode } from '@blog/parser';
 import type { BuilderPlugin } from '@blog/types';
 
 import Glob from 'fast-glob';
 import { lookItUp } from 'look-it-up';
+import { getPostsInputCode } from './utils';
 
 const pluginName = 'posts-loader';
-
-function getPostsInputCode(posts: string[]) {
-  let code = '';
-
-  for (let i = 0; i < posts.length; i++) {
-    code += getImportCode(posts[i], `post_${i}`);
-  }
-
-  code += `\nconst posts = [
-  ${Array(posts.length)
-    .fill(0)
-    .map((_, i) => `post_${i}`)
-    .join(', ')}
-];
-
-export default posts;
-`;
-
-  return code;
-}
 
 export const PostsLoader = (): BuilderPlugin => ({
   name: pluginName,

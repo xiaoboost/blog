@@ -36,15 +36,13 @@ describe('compile', () => {
     );
   });
 
-  it('图片编译', async () => {
+  it('普通 Markdown 图片编译', async () => {
     expect(
       await compile(
         `
-import img0 from "../images/img.jpg";
-
 测试内容
 
-![测试图片](\`\${img0}\`)
+![测试图片](../images/img.jpg)
     `.trim(),
         true,
       ),
@@ -61,12 +59,11 @@ import img0 from "../images/img.jpg";
       <_components.p>{"测试内容"}</_components.p>
       {"\\n"}
       <_components.p>
-        <_components.img src={\`\${img0}\`} alt="测试图片" />
+        <_components.img src="../images/img.jpg" alt="测试图片" />
       </_components.p>
     </>
   );
     `.trim(),
-        'import img0 from "../images/img.jpg";',
       ),
     );
   });

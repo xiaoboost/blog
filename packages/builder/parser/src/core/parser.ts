@@ -1,87 +1,79 @@
-import type { ErrorData, Parser, Mdx as MdxAst } from '@blog/types';
+import type { ErrorData, PostBasicData, PostMeta, Mdx as MdxAst } from '@blog/types';
 import { format as formatCode } from 'prettier';
 import type { PluggableList } from 'unified';
-import { replaceMath } from '../plugins/math';
-import { decodeTemplate } from './image-template';
+import { remarkTsCodeBlock } from '../plugins/code-block';
+import { remarkMathComponents } from '../plugins/math';
+import { remarkPostAssets } from '../plugins/post-assets';
+import { remarkPostData } from '../plugins/post-data';
 
-const parserThen: Promise<Parser> = Promise.all([
-  import('unified'),
-  import('remark-mdx'),
-  import('remark-parse'),
-  import('remark-stringify'),
-  import('remark-math'),
-  import('remark-cjk-friendly/bidi'),
-]).then(([
-  { unified },
-  { default: mdx },
-  { default: parse },
-  { default: stringify },
-  { default: math },
-  { default: cjkFriendly },
-]) => {
-  return unified().use(parse).use(stringify).use(mdx).use(math).use(cjkFriendly);
-});
-
-// AST 解析与 MDX 编译采用相同的中文强调边界规则。
 const pluginThen: Promise<PluggableList> = Promise.all([
   import('remark-gfm'),
+  import('remark-math'),
   import('remark-cjk-friendly/parseOnly'),
 ]).then((val) => {
-  return val.map((i) => i.default);
+  return [
+    ...val.map((i) => i.default),
+    remarkMathComponents,
+    remarkTsCodeBlock,
+    remarkPostAssets,
+    remarkPostData,
+  ];
 });
 
 const compilerThen = import('@mdx-js/mdx');
 
-/** 编译代码到 JS */
-export async function compile(code: string, format = false) {
+/** parse 和 compile 共用语法配置，内置 remark 插件在这里统一注册。 */
+async function createProcessor() {
   const [compiler, plugins] = await Promise.all([compilerThen, pluginThen]);
-  const compiled = await compiler.compile(await transformMath(code), {
+  return compiler.createProcessor({
     format: 'mdx',
     jsx: true,
     outputFormat: 'program',
     remarkPlugins: plugins,
-    remarkRehypeOptions: {
-      footnoteLabel: '引用与参考资料',
-      footnoteLabelProperties: { className: ['footnote-title'] },
-      footnoteBackLabel: '返回正文引用',
-    },
   });
-
-  let jsxCode = compiled.toString();
-
-  if (format) {
-    jsxCode = await formatCode(jsxCode, {
-      parser: 'babel',
-    });
-  }
-
-  return decodeTemplate(jsxCode);
 }
 
-/** 让公式复用自定义组件的渲染与按文章收集资源流程。 */
-export async function transformMath(content: string, fileName = 'math.mdx') {
-  return replaceMath(content, await parse(fileName, content));
+function parsingError(err: any, filePath: string, content: string): ErrorData {
+  const position = err.place ?? err.position;
+  return {
+    project: 'UNKNOWN',
+    name: err.source,
+    message: err.message,
+    filePath,
+    codeFrame: position
+      ? {
+        content,
+        range: 'start' in position ? position : { start: position, end: position },
+      }
+      : undefined,
+  };
 }
 
-/** 代码转为 AST */
-export async function parse(fileName: string, content: string) {
-  const parser = await parserThen;
-
+/** 编译代码到 JS：正文只解析一次，所有 AST 修改均在同一次处理内完成。 */
+export async function compile(
+  code: string, format = false, data: Partial<Omit<PostBasicData, 'ast'>> = {},
+) {
+  const { filePath } = data;
+  const processor = await createProcessor();
   try {
-    return parser.parse(content) as MdxAst.Root;
+    const compiled = await processor.process({ path: filePath, value: code, data });
+    const jsxCode = compiled.toString();
+    return format ? await formatCode(jsxCode, { parser: 'babel' }) : jsxCode;
   }
   catch (err: any) {
-    const data: ErrorData = {
-      project: 'UNKNOWN',
-      name: err.source,
-      message: err.message,
-      filePath: fileName,
-      codeFrame: {
-        content,
-        range: err.position,
-      },
-    };
+    throw filePath ? parsingError(err, filePath, code) : err;
+  }
+}
 
-    throw data;
+/** 仅解析语法，不执行 remark 转换，也不生成 JS。 */
+export async function parse(filePath: string, content: string, data: Partial<PostMeta> = {}) {
+  const parser = await createProcessor();
+
+  try {
+    const file = { path: filePath, value: content, data };
+    return parser.parse(file) as MdxAst.Root;
+  }
+  catch (err: any) {
+    throw parsingError(err, filePath, content);
   }
 }

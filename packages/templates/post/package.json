@@ -21,7 +21,6 @@
     "@blog/icons": "workspace:*",
     "@blog/mdx-blur-reveal": "workspace:*",
     "@blog/mdx-code-block-normal": "workspace:*",
-    "@blog/mdx-code-block-typescript": "workspace:*",
     "@blog/mdx-font-block": "workspace:*",
     "@blog/mdx-typo": "workspace:*",
     "@blog/node": "workspace:*",

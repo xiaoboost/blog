@@ -121,7 +121,7 @@ export function getCurrentScript() {
 
 export function getCurrentScriptSrc() {
   const script = getCurrentScript();
-  const src = script.getAttribute('src');
+  const src = script.getAttribute('data-script-src') ?? script.getAttribute('src');
 
   if (!src) {
     throw new Error('未能得到脚本路径');

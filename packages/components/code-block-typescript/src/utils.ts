@@ -4,7 +4,6 @@ import { builtinModules } from 'module';
 import { join } from 'path';
 import type { PostExportData as PostData, Mdx } from '@blog/types';
 import { devDependencies as devPkg } from '../package.json';
-import { parseCodeBlockInfo, resolveCodeBlockOptions } from './config';
 
 const DefaultLibs = ['@types/react', `@types/node@${devPkg['@types/node']}`];
 const importRegex = /^import([\s\S]*?from)? ?['"]([^'"]+)['"]/;
@@ -74,46 +73,24 @@ export function removeReference(code: string) {
   return code.replace(new RegExp(referenceRegex.source, 'g'), '').trim();
 }
 
-function isMdxJsxAttribute(
-  attr: Mdx.MdxJsxAttribute | Mdx.MdxJsxExpressionAttribute,
-): attr is Mdx.MdxJsxAttribute {
-  return attr.type === 'mdxJsxAttribute';
-}
+/** 围栏已由 parser 转成组件，这里只还原代码，不再解析配置。 */
+export function getTsCodeBlockCode(node: Mdx.Nodes): string | undefined {
+  if (node.type !== 'mdxJsxFlowElement' || node.name !== 'TsCodeBlock') return;
+  const child = node.children[0];
+  if (!child || !('value' in child)) return;
 
-/** 从 MdxJsxAttribute 中提取字符串值，兼容字面量和表达式两种形式 */
-function getAttrValue(attr: Mdx.MdxJsxAttribute | undefined, fallback = ''): string {
-  const val = attr?.value;
-  if (typeof val === 'string') return val;
-  if (val && 'value' in val) return val.value;
-  return fallback;
-}
-
-export function getTsCodeBlockConfig(node: Mdx.Nodes, articleLsp = false) {
-  if (node.type === 'mdxJsxFlowElement' && node.name === 'TsCodeBlock') {
-    const findAttr = (name: string) =>
-      node.attributes.filter(isMdxJsxAttribute).find((attr) => attr.name === name);
-    // 直接使用 TsCodeBlock 就是显式启用 LSP，与组件本身的默认值一致。
-    const config = resolveCodeBlockOptions(getAttrValue(findAttr('lang'), 'ts'), {
-      platform: getAttrValue(findAttr('platform'), 'none'),
-    }, true);
-    if (!config.scriptKind) return;
-
-    return {
-      ...config,
-      // FIXME: 暂不处理
-      code: (node.children[0] as any).value,
-    };
+  if (child.type === 'mdxFlowExpression') {
+    try {
+      const code: unknown = JSON.parse(child.value);
+      return typeof code === 'string' ? code : undefined;
+    }
+    catch {
+      // 手写表达式沿用原来的源码扫描方式，不执行表达式。
+      return child.value;
+    }
   }
 
-  if (node.type === 'code') {
-    const config = parseCodeBlockInfo(node.lang ?? '', articleLsp);
-    if (!config.scriptKind) return;
-
-    return {
-      ...config,
-      code: node.value.trim(),
-    };
-  }
+  return child.value;
 }
 
 /** 获取 TS 代码中的所有引用 */
@@ -122,11 +99,11 @@ export function getImportedByPost(posts: PostData[]) {
 
   for (const { data: post } of posts) {
     const visit = (node: Mdx.Nodes) => {
-      const blockConfig = getTsCodeBlockConfig(node, post.lsp);
+      const code = getTsCodeBlockCode(node);
 
-      if (blockConfig?.enableLsp) {
+      if (code !== undefined) {
         DefaultLibs.forEach((pkg) => result.add(pkg));
-        for (const pkg of getImportModuleTypes(blockConfig.code)) {
+        for (const pkg of getImportModuleTypes(code)) {
           result.add(pkg);
         }
       }
