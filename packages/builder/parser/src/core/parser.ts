@@ -2,7 +2,6 @@ import type { ErrorData, Parser, Mdx as MdxAst } from '@blog/types';
 import { format as formatCode } from 'prettier';
 import type { PluggableList } from 'unified';
 import { replaceMath } from '../plugins/math';
-import { remarkReferences } from '../plugins/references';
 import { decodeTemplate } from './image-template';
 
 const parserThen: Promise<Parser> = Promise.all([
@@ -40,7 +39,7 @@ export async function compile(code: string, format = false) {
     format: 'mdx',
     jsx: true,
     outputFormat: 'program',
-    remarkPlugins: [...plugins, remarkReferences],
+    remarkPlugins: plugins,
     remarkRehypeOptions: {
       footnoteLabel: '引用与参考资料',
       footnoteLabelProperties: { className: ['footnote-title'] },
