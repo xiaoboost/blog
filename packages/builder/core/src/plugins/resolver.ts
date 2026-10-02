@@ -20,6 +20,11 @@ export const Resolver = (): BuilderPlugin => ({
     builder.hooks.bundler.tap(pluginName, (bundler) => {
       bundler.hooks.resolve.tap({ name: pluginName, stage: 999 }, (args) => {
         const result = resolve(args.path, args);
+
+        if (result.external) {
+          return result;
+        }
+
         const ext = extname(result.path);
 
         if (ext && !defaultExts.includes(ext)) {
