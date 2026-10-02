@@ -83,14 +83,14 @@ describe('remark TS code block', () => {
       'const text = `value: ${value}`;',
       '// 中文 <Tag> & {braces} $x$',
     ].join('\n');
-    const { data: { ast } } = await compilePost(fence('ts?lsp', code));
-    const child = components(ast)[0].children[0] as Mdx.MdxFlowExpression;
+    const post = await compilePost(fence('ts?lsp', code));
+    const block = components(post.data.ast)[0];
+    const child = block.children[0] as Mdx.MdxFlowExpression;
     expect(JSON.parse(child.value)).eq(code + '\n');
-    const statement = child.data!.estree!.body[0];
-    if (statement.type !== 'ExpressionStatement' || statement.expression.type !== 'Literal') {
-      throw new Error('预期字符串字面量');
-    }
-    expect(statement.expression.value).eq(code + '\n');
+    expect(post.default()).deep.eq({
+      type: '@blog/mdx-code-block-typescript.TsCodeBlock',
+      props: { ...props(block), children: code + '\n' },
+    });
     expect(await compile(fence('ts?lsp', code))).not.contain('@blog/mdx-katex');
   });
 

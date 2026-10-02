@@ -67,17 +67,11 @@ describe('post compile pipeline', () => {
     expect(post.utils.getAssetNames()).deep.eq([
       '@blog/template-custom', '@blog/mdx-katex', '@blog/mdx-font-block', '@blog/mdx-typo',
     ]);
-    const imports = post.data.ast.children.filter((node) => node.type === 'mdxjsEsm');
-    const utilsImports = imports.flatMap((node) => node.data?.estree?.body ?? [])
-      .filter((node) => node.type === 'ImportDeclaration' && node.specifiers.some((specifier) => (
-        specifier.type === 'ImportSpecifier'
-        && specifier.imported.type === 'Identifier'
-        && specifier.imported.name === 'utils'
-      )));
+    const utilsImports = post.code.match(/^import\s*\{\s*utils\s+as\s+/gm) ?? [];
     expect(utilsImports).length(4);
   });
 
-  it('保存供目录、字体、图片和代码扫描使用的 mdast，不包含 data 自身', async () => {
+  it('导出精简的 mdast，保留目录、字体和代码扫描所需的数据', async () => {
     const rawCode = 'import { value } from "example-package";\nconst text = `中文 ${value}`;';
     const source = [
       "import { FontBlock } from '@blog/mdx-font-block';",
@@ -101,7 +95,7 @@ describe('post compile pipeline', () => {
     visit(data.ast, (node) => nodes.push(node));
     const heading = nodes.find((node) => node.type === 'heading')!;
     expect(getChildrenContent(heading)).eq('中文 标题');
-    expect(heading.position?.start.line).eq(3);
+    expect(heading.depth).eq(1);
     const image = nodes.find((node) => node.type === 'image');
     expect(image?.url).eq('../images/image.jpg');
     const font = nodes.find((node) => node.type === 'mdxJsxFlowElement' && node.name === 'FontBlock');
@@ -118,6 +112,7 @@ describe('post compile pipeline', () => {
     const esm = nodes.filter((node) => node.type === 'mdxjsEsm').map((node) => node.value).join('\n');
     expect(esm).contain('export const utils');
     expect(esm).not.contain('export const data');
+    expect(JSON.stringify(data.ast)).not.match(/"(?:position|data)":/);
     expect(JSON.stringify(data.ast)).not.contain('"type":"JSXElement"');
   });
 
