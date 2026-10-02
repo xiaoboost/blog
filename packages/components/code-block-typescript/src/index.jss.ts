@@ -22,6 +22,13 @@ import {
   LspErrorBgHover,
 } from './theme/token';
 
+const errorUnderlineSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="6" height="3" viewBox="0 0 6 3">'
+  + '<g fill="#c94824">'
+  + '<polygon points="5.5,0 2.5,3 1.1,3 4.1,0"/>'
+  + '<polygon points="4,0 6,2 6,0.6 5.4,0"/>'
+  + '<polygon points="0,2 1,3 2.4,3 0,0.6"/>'
+  + '</g></svg>';
+
 function addTsxSelector(selector: string) {
   const selectorList = selector
     .trim()
@@ -55,7 +62,7 @@ export default createStyles({
       transition: `border-color ${DurationNormal}`,
     },
     '& $lspErrorToken': {
-      backgroundImage: 'url("./assets/red-under-wave-line.svg")',
+      backgroundImage: `url("data:image/svg+xml,${encodeURIComponent(errorUnderlineSvg)}")`,
       backgroundAttachment: 'scroll',
       backgroundClip: 'border-box',
       backgroundOrigin: 'padding-box',
