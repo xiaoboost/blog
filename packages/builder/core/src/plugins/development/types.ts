@@ -9,10 +9,15 @@ export enum HMRUpdateKind {
   CSS,
   JS,
   HTML,
+  Reload,
 }
 
 /** HMR 更新数据 */
 export type HMRUpdate =
+  | {
+    kind: HMRUpdateKind.Reload;
+    path: string;
+  }
   | {
     kind: HMRUpdateKind.CSS;
     path: string;

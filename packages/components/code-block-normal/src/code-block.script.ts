@@ -1,5 +1,6 @@
 import './theme/style.jss';
 import { ModuleLoader, assets } from '@blog/context/web';
+import { getCurrentScriptSrc } from '@blog/web';
 import { copyCode } from './copy';
 import styles from './index.jss';
 
@@ -62,13 +63,11 @@ function active() {
   };
 }
 
-// 热更新通过 eval 执行脚本，此时 currentScript 为空；使用固定标识替换旧绑定，供 HTML 更新后重绑。
-const hotReloadModuleId = '@blog/mdx-code-block-normal/copy';
-const currentScript = document.currentScript?.getAttribute('src') ?? hotReloadModuleId;
-
 if (process.env.NODE_ENV === 'development' && ModuleLoader) {
-  ModuleLoader.uninstall(hotReloadModuleId);
-  ModuleLoader.install({ currentScript, active });
+  ModuleLoader.install({
+    currentScript: getCurrentScriptSrc(),
+    active,
+  });
 }
 else {
   active();

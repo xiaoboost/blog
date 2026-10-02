@@ -33,6 +33,10 @@ function ReceiveHMRData(event: MessageEvent<string>) {
 }
 
 function updatePage(updates: HMRUpdate[]) {
+  if (updates.some((data) => data.kind === HMRUpdateKind.Reload && isHTMLFile(data.path))) {
+    location.reload();
+    return;
+  }
   for (const data of updates) {
     switch (data.kind) {
       case HMRUpdateKind.HTML: {

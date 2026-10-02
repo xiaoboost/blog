@@ -20,6 +20,7 @@
     "@blog/context": "workspace:*",
     "@blog/icons": "workspace:*",
     "@blog/styles": "workspace:*",
+    "@blog/web": "workspace:*",
     "@xiao-ai/utils": "1.6.7",
     "highlight.js": "11.11.1",
     "react": "18.3.1"

@@ -102,6 +102,7 @@ class InfoElement {
 }
 
 function active() {
+  const controller = new AbortController();
   const infoEle = new InfoElement();
   const elHasInfo = document.querySelectorAll<HTMLElement>(`pre span[${lsInfoAttrName}]`);
   // const errorTokenEl = document.querySelectorAll<HTMLElement>(
@@ -124,9 +125,9 @@ function active() {
 
     el.addEventListener('mouseenter', () => {
       infoEle.show(el, infoData);
-    });
+    }, { signal: controller.signal });
 
-    el.addEventListener('mouseleave', hiddenEvent);
+    el.addEventListener('mouseleave', hiddenEvent, { signal: controller.signal });
   }
 
   // for (const el of Array.from(errorTokenEl)) {
@@ -151,12 +152,8 @@ function active() {
   // }
 
   return () => {
+    controller.abort();
     infoEle.hidden();
-
-    /**
-     * 为什么不移除元素列表的事件，详细见
-     * https://stackoverflow.com/q/6033821
-     */
   };
 }
 
