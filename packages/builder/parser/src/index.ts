@@ -1,4 +1,4 @@
 export { parse, compile } from './core/parser';
-export { getImportCode, transform } from './post/transformer';
+export { transform } from './post';
 
 export * from './ast/walk';

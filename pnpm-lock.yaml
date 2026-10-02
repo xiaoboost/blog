@@ -474,9 +474,6 @@ importers:
       '@blog/node':
         specifier: workspace:*
         version: link:../../utils/node
-      '@blog/shared':
-        specifier: workspace:*
-        version: link:../../utils/shared
       '@blog/types':
         specifier: workspace:*
         version: link:../types
@@ -642,6 +639,9 @@ importers:
       '@blog/styles':
         specifier: workspace:*
         version: link:../../utils/styles
+      '@blog/web':
+        specifier: workspace:*
+        version: link:../../utils/web
       '@xiao-ai/utils':
         specifier: 1.6.7
         version: 1.6.7
@@ -1089,9 +1089,6 @@ importers:
       '@blog/mdx-code-block-normal':
         specifier: workspace:*
         version: link:../../components/code-block-normal
-      '@blog/mdx-code-block-typescript':
-        specifier: workspace:*
-        version: link:../../components/code-block-typescript
       '@blog/mdx-font-block':
         specifier: workspace:*
         version: link:../../components/font-block
@@ -1388,9 +1385,6 @@ importers:
 
   packages/utils/web:
     dependencies:
-      '@floating-ui/dom':
-        specifier: 1.7.4
-        version: 1.7.4
       '@xiao-ai/utils':
         specifier: 1.6.7
         version: 1.6.7

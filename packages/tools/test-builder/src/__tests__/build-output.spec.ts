@@ -441,6 +441,31 @@ describe('博客构建 e2e', () => {
     expect(code).include('blog-theme');
   });
 
+  it('类型提示脚本独立输出，普通文章不必加载，提示页面的 JS/CSS 不重复', () => {
+    const tooltipScripts = assets.filter(({ path }) => /\/code-block-ts\.[^/]+\.js$/.test(path));
+    expect(tooltipScripts).length(1);
+    const tooltipPath = tooltipScripts[0].path;
+    const postScript = assets.find(({ path }) => /\/post\.[^/]+\.js$/.test(path));
+    expect(postScript!.content.toString()).not.include('ls-info');
+    let withTooltip = 0;
+    let withoutScript = 0;
+    for (const { path, content } of htmlAssets.filter((asset) => asset.path.startsWith('/posts/'))) {
+      const html = content.toString();
+      const scripts = Array.from(html.matchAll(/<script[^>]+src="([^"]+)"/g), (match) => match[1]);
+      const references = scripts.filter((src) => src === tooltipPath);
+      expect(references.length, path).at.most(1);
+      if (html.includes(' ls-info="')) {
+        withTooltip++;
+        expect(references, path).length(1);
+        const styles = extractLinks(html).filter((src) => /\/code-block-ts\.[^/]+\.css$/.test(src));
+        expect(styles, path).length(1);
+      }
+      if (!references.length) withoutScript++;
+    }
+    expect(withTooltip).greaterThan(0);
+    expect(withoutScript).greaterThan(0);
+  });
+
   it('主题偏好初始化仍在 HTML 样式之前执行', () => {
     for (const { path, content } of htmlAssets) {
       const html = content.toString('utf-8');

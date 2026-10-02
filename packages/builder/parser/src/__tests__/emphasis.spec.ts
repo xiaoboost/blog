@@ -72,6 +72,6 @@ describe('CJK emphasis', () => {
     ]) {
       expect(code).contain(`<_components.${tag}>`);
     }
-    expect(code).contain('<BlogMathInline>');
+    expect(code).contain('<MathInline>');
   });
 });

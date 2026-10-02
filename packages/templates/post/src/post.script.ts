@@ -8,7 +8,6 @@ import './to-content/index.script';
 // 内置组件
 import '@blog/mdx-blur-reveal/src/index.script';
 import '@blog/mdx-code-block-normal/src/code-block.script';
-import '@blog/mdx-code-block-typescript/src/code-block-ts.script';
 import '@blog/mdx-typo/src/typo.script';
 import '@blog/mdx-font-block/src/font-block.script';
 

@@ -1,41 +1,36 @@
-import { Fixer } from '@blog/shared';
 import type { Mdx } from '@blog/types';
-import { visit } from '../ast/walk';
+import type { Plugin } from 'unified';
+import { createExpression, createImport } from '../ast/mdx';
 
-/** 只替换语法树中的公式，保留代码、MDX 表达式和其他原文。 */
-export function replaceMath(content: string, ast: Mdx.Root) {
-  const fixer = new Fixer(content);
-  const imports = new Map<string, string>();
+/** 在 remark 的转换阶段，将公式节点替换为 MDX 组件。 */
+export const remarkMathComponents: Plugin<[], Mdx.Root> = () => (tree) => {
+  const imports = new Set<string>();
 
-  visit(ast, (node) => {
-    if (node.type !== 'math' && node.type !== 'inlineMath') {
-      return;
+  function transform(node: Mdx.Nodes): Mdx.Nodes {
+    if (node.type === 'math' || node.type === 'inlineMath') {
+      const component = node.type === 'math' ? 'MathBlock' : 'MathInline';
+      imports.add(component);
+      const expression = createExpression(node.value);
+      return node.type === 'math'
+        ? {
+          type: 'mdxJsxFlowElement', name: component, attributes: [],
+          children: [expression], position: node.position,
+        }
+        : {
+          type: 'mdxJsxTextElement', name: component, attributes: [],
+          children: [{ ...expression, type: 'mdxTextExpression' }], position: node.position,
+        };
     }
 
-    const component = node.type === 'math' ? 'MathBlock' : 'MathInline';
-    let localName = imports.get(component);
-
-    if (!localName) {
-      localName = `Blog${component}`;
-      // 避免与文章手写的导入或变量重名。
-      while (content.includes(localName)) {
-        localName += '_';
-      }
-      imports.set(component, localName);
+    if ('children' in node) {
+      node.children = node.children.map(transform) as typeof node.children;
     }
-
-    fixer.fix({
-      start: node.position!.start.offset!,
-      end: node.position!.end.offset!,
-      newText: `<${localName}>{${JSON.stringify(node.value)}}</${localName}>`,
-    });
-  });
-
-  if (imports.size === 0) {
-    return content;
+    return node;
   }
 
-  // 在替换之后添加导入，避免与位于 offset 0 的公式替换重叠。
-  const names = Array.from(imports, ([name, localName]) => `${name} as ${localName}`);
-  return `import { ${names.join(', ')} } from '@blog/mdx-katex';\n\n${fixer.apply()}`;
-}
+  transform(tree);
+
+  if (imports.size) {
+    tree.children.unshift(createImport('@blog/mdx-katex', imports));
+  }
+};
