@@ -1,7 +1,6 @@
 import { assets, getGlobalContext, GlobalKey } from '@blog/context/web';
 import { getCurrentScriptSrc } from '@blog/web';
 
-import styles from './index.jss';
 import { getNextThemeMode, getThemeMode, getThemeTitle, ThemeStorageKey, type ThemeMode } from './theme';
 
 // 在 head 中同步恢复偏好，随后加载的 CSS 会直接使用正确的主题。
@@ -22,7 +21,7 @@ catch {
 const currentScript = process.env.NODE_ENV === 'development' ? getCurrentScriptSrc() : '';
 
 function active() {
-  const button = document.querySelector<HTMLButtonElement>(`.${styles.classes.toggle}`);
+  const button = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
 
   if (!button) {
     return () => {};

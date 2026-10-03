@@ -558,11 +558,13 @@ describe('博客构建 e2e', () => {
     expect(withoutScript).greaterThan(0);
   });
 
-  it('主题 JS/CSS 独立输出，所有页面在样式之前同步加载主题且不重复执行', () => {
+  it('主题 CSS 合入布局且不单独输出，所有页面在样式之前同步加载独立主题脚本', () => {
     const themeScripts = assets.filter(({ path }) => /\/theme\.[^/]+\.js$/.test(path));
     const themeStyles = assets.filter(({ path }) => /\/theme\.[^/]+\.css$/.test(path));
+    const layoutStyles = assets.filter(({ path }) => /\/layout\.[^/]+\.css$/.test(path));
     expect(themeScripts).length(1);
-    expect(themeStyles).length(1);
+    expect(themeStyles).length(0);
+    expect(layoutStyles).length(1);
     const themeCode = themeScripts[0].content.toString();
     expect(themeCode).include('blog-theme');
     expect(themeCode).include('DOMContentLoaded');
@@ -579,7 +581,14 @@ describe('博客构建 e2e', () => {
       const script = html.indexOf(tag);
       const stylesheet = html.indexOf('rel="stylesheet"');
       expect(stylesheet, path).greaterThan(script);
-      expect(extractLinks(head).filter((href) => href === themeStyles[0].path), path).length(1);
+      expect(extractLinks(head).filter((href) => href === layoutStyles[0].path), path).length(1);
+      const buttons = [...html.matchAll(/<button\b[^>]*\bdata-theme-toggle=""[^>]*>/g)];
+      expect(buttons, path).length(1);
+      const toggleClass = /\bclass="([^"]+)"/.exec(buttons[0][0])![1];
+      const themeStyleOwners = assets.filter((asset) => (
+        asset.path.endsWith('.css') && asset.content.toString().includes(`.${toggleClass}`)
+      ));
+      expect(themeStyleOwners.map((asset) => asset.path), path).deep.eq([layoutStyles[0].path]);
       expect(html, path).not.include('try{const theme=localStorage.getItem(');
     }
   });
