@@ -1,5 +1,4 @@
-import type { TemplateUtils, RuntimeHooks, PreloadAssetData } from '@blog/types';
-import { unique } from '@xiao-ai/utils';
+import type { RuntimeHooks } from '@blog/types';
 import { hooks } from './store';
 
 type GetAsyncHookParameter<T extends keyof RuntimeHooks> = Parameters<
@@ -16,42 +15,6 @@ export function callHook<T extends keyof RuntimeHooks>(
   ...args: GetAsyncHookParameter<T>
 ): GetAsyncHookReturnType<T> {
   return (hooks[name].promise as any)(...args);
-}
-
-/** 定义工具函数 */
-export function defineUtils(
-  assets: string[] = [],
-  preloadAssets: PreloadAssetData[] = [],
-): TemplateUtils {
-  const getAssetNames = () => {
-    const val = unique(assets.slice());
-    return process.env.NODE_ENV === 'production'
-      ? val.filter((item) => !item.endsWith('.map'))
-      : val.slice();
-  };
-  const getPreloadAssets = () => {
-    return unique(preloadAssets.slice(), (v) => v.href);
-  };
-  const addPreloadAssets = (...items: PreloadAssetData[]) => preloadAssets.push(...items);
-  const addAssetNames = (...newAssets: string[]) => assets.push(...newAssets);
-  const insertAssetNames = (...newAssets: string[]) => assets.unshift(...newAssets);
-  const replaceAssetName = (oldAsset: string, newAsset: string) => {
-    const index = assets.indexOf(oldAsset);
-    if (index !== -1) {
-      assets[index] = newAsset;
-    }
-  };
-
-  return {
-    getAssetNames,
-    getPreloadAssets,
-    addAssetNames,
-    addPreloadAssets,
-    insertAssetNames,
-    replaceAssetName,
-    getScriptNames: () => getAssetNames().filter((item) => item.endsWith('.js')),
-    getStyleNames: () => getAssetNames().filter((item) => item.endsWith('.css')),
-  };
 }
 
 /** 替换资源 */

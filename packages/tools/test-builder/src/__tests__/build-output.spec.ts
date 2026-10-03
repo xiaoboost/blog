@@ -529,8 +529,8 @@ describe('博客构建 e2e', () => {
     expect(code).not.include('window.device');
     expect(code).not.include('onorientationchange');
     expect(code).not.include('googletv');
-    // 主题切换仍保留在客户端。
-    expect(code).include('blog-theme');
+    // 主题初始化和切换已移到独立的 head 脚本。
+    expect(code).not.include('blog-theme');
   });
 
   it('类型提示脚本独立输出，普通文章不必加载，提示页面的 JS/CSS 不重复', () => {
@@ -558,13 +558,29 @@ describe('博客构建 e2e', () => {
     expect(withoutScript).greaterThan(0);
   });
 
-  it('主题偏好初始化仍在 HTML 样式之前执行', () => {
+  it('主题 JS/CSS 独立输出，所有页面在样式之前同步加载主题且不重复执行', () => {
+    const themeScripts = assets.filter(({ path }) => /\/theme\.[^/]+\.js$/.test(path));
+    const themeStyles = assets.filter(({ path }) => /\/theme\.[^/]+\.css$/.test(path));
+    expect(themeScripts).length(1);
+    expect(themeStyles).length(1);
+    const themeCode = themeScripts[0].content.toString();
+    expect(themeCode).include('blog-theme');
+    expect(themeCode).include('DOMContentLoaded');
+    expect(themeCode).not.include('__ModuleLoader');
     for (const { path, content } of htmlAssets) {
       const html = content.toString('utf-8');
-      const script = html.indexOf('try{const theme=localStorage.getItem(');
+      const head = /<head>([\s\S]*?)<\/head>/.exec(html)![1];
+      const scripts = [...html.matchAll(/<script\b[^>]*\bsrc="([^"]+)"[^>]*><\/script>/g)]
+        .filter(([, src]) => src === themeScripts[0].path);
+      expect(scripts, path).length(1);
+      const tag = scripts[0][0];
+      expect(head, path).include(tag);
+      expect(tag, path).not.match(/\b(?:defer|async)=|type="module"/);
+      const script = html.indexOf(tag);
       const stylesheet = html.indexOf('rel="stylesheet"');
-      expect(script, path).greaterThan(-1);
       expect(stylesheet, path).greaterThan(script);
+      expect(extractLinks(head).filter((href) => href === themeStyles[0].path), path).length(1);
+      expect(html, path).not.include('try{const theme=localStorage.getItem(');
     }
   });
 
@@ -577,7 +593,8 @@ describe('博客构建 e2e', () => {
     for (const { path, content } of htmlAssets) {
       const html = content.toString();
       const head = /<head>([\s\S]*?)<\/head>/.exec(html)![1];
-      const scripts = [...head.matchAll(/<script\b[^>]*\bsrc="([^"]+)"[^>]*><\/script>/g)];
+      const scripts = [...head.matchAll(/<script\b[^>]*\bsrc="([^"]+)"[^>]*><\/script>/g)]
+        .filter(([, src]) => !/\/theme\.[^/]+\.js$/.test(src));
       const pageScript = resourcePages.get(path)?.preScript;
       const expected = pageScript ? [...sharedPreScripts, pageScript] : sharedPreScripts;
       expect(scripts.map((match) => match[1]), path).deep.eq(expected.map(({ src }) => src));

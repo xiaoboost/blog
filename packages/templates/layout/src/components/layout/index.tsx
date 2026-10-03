@@ -9,7 +9,6 @@ import { Footer } from '../footer';
 import { GotoTop } from '../goto-top';
 import { type HeaderProps, Header } from '../header';
 import { type MainContentProps, MainContent } from '../main-content';
-import { themeInitScript } from '../theme-toggle/theme-init';
 import { OgMeta } from './og-meta';
 import { SeoMeta } from './seo-meta';
 
@@ -63,7 +62,6 @@ export function Layout(props: PropsWithChildren<LayoutProps>) {
     <html lang="zh-CN">
       <head>
         <meta charSet="utf-8" />
-        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         {props.preScripts.map((script, i) => (
           <Script
             key={`pre-script-${i}`}
