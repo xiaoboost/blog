@@ -1,7 +1,7 @@
 import { runInNewContext } from 'vm';
+import { defineUtils, mergeUtils } from '@blog/context/runtime';
 import type { PostExportData, TemplateAsset } from '@blog/types';
 import { JsxEmit, ModuleKind, ScriptTarget, transpileModule } from 'typescript';
-import { defineUtils, mergeUtils } from '../../../context/src/runtime/hook/assets';
 import { transform } from '../post';
 
 export function postSource(content: string, meta = '') {

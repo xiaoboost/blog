@@ -1,10 +1,10 @@
-import { fileURLToPath } from 'url';
+import { resolve } from 'path';
 import { runInNewContext } from 'vm';
 import { describe, expect, it } from '@blog/test-toolkit';
 import { buildSync } from 'esbuild';
 
 const source = buildSync({
-  entryPoints: [fileURLToPath(new URL('../plugins/development/runtime/utils.ts', import.meta.url))],
+  entryPoints: [resolve(__dirname, '../plugins/development/runtime/utils.ts')],
   bundle: true, write: false, platform: 'browser', format: 'iife', globalName: 'hmr',
 }).outputFiles[0].text;
 

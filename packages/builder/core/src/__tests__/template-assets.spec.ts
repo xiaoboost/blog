@@ -1,6 +1,6 @@
+import { defineUtils, mergeUtils, withScriptOptions } from '@blog/context/runtime';
 import { describe, expect, it } from '@blog/test-toolkit';
 import type { TemplateAsset } from '@blog/types';
-import { defineUtils, mergeUtils, withScriptOptions } from '../../../context/src/runtime/hook/assets';
 
 describe('模板资源引用', () => {
   it('兼容混合路径数组，自动分类且不丢失图片和字体引用', () => {

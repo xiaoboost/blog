@@ -1,4 +1,4 @@
-import { fileURLToPath } from 'url';
+import { resolve } from 'path';
 import { createContext, runInContext } from 'vm';
 import { describe, expect, it } from '@blog/test-toolkit';
 import { buildSync } from 'esbuild';
@@ -6,7 +6,7 @@ import { HMRUpdateKind } from '../plugins/development/types';
 import { getHtmlDiff } from '../plugins/development/utils';
 
 const bundle = (file: string, globalName: string) => buildSync({
-  entryPoints: [fileURLToPath(new URL(file, import.meta.url))],
+  entryPoints: [resolve(__dirname, file)],
   bundle: true, write: false, platform: 'browser', format: 'iife', globalName,
 }).outputFiles[0].text;
 
