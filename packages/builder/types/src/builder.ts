@@ -157,6 +157,10 @@ export interface BuilderInstance {
 export interface BundlerResult {
   source: string;
   sourceMap?: string;
+  /** 虚拟输出文件路径，用于调试器定位代码。 */
+  sourcePath?: string;
+  /** 原始 source map 路径，用于解析其中的相对源码路径。 */
+  sourceMapPath?: string;
 }
 
 /** 打包器实例 */
