@@ -19,16 +19,6 @@ async function bundleTheme(mode: 'production' | 'development') {
     },
     bundle: true, write: false, platform: 'browser', format: 'iife',
     define: { 'process.env.NODE_ENV': JSON.stringify(mode) },
-    plugins: [
-      {
-        name: 'theme-test-styles',
-        setup(builder) {
-          builder.onLoad({ filter: /\.jss\.ts$/ }, () => ({
-            contents: 'export default { classes: { toggle: "theme-toggle" } };', loader: 'js',
-          }));
-        },
-      },
-    ],
   });
   return result.outputFiles[0].text;
 }
@@ -70,9 +60,9 @@ function createPage(saved: string | null = null, storageBlocked = false) {
     readyState: 'loading',
     documentElement: { dataset: {} as Record<string, string> },
     currentScript: { getAttribute: () => '/scripts/theme.js' } as object | null,
-    querySelector: () => {
+    querySelector: (selector: string) => {
       queries++;
-      return button ?? null;
+      return selector === '[data-theme-toggle]' ? button ?? null : null;
     },
   };
   const context = createContext({

@@ -11,6 +11,7 @@ export function ThemeToggle() {
     <button
       type="button"
       className={styles.classes.toggle}
+      data-theme-toggle
       title={title}
       aria-label={title}
       disabled
