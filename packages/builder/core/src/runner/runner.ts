@@ -1,3 +1,4 @@
+import { resolve } from 'path';
 import { initGlobalContext } from '@blog/context';
 import {
   type RunnerInstance,
@@ -9,11 +10,14 @@ import {
 import { type RunError, runScript } from '@xiao-ai/utils/node';
 import { Instance } from 'chalk';
 import { Logger, getOriginCodeFrame } from '../utils';
+import { prepareDebugScript } from './debug';
+
+let nextRunnerId = 1;
 
 export class Runner implements RunnerInstance {
-  private builder: BuilderInstance;
+  private readonly debugId = nextRunnerId++;
 
-  private code = '';
+  private builder: BuilderInstance;
 
   private sourceMap = '';
 
@@ -23,11 +27,10 @@ export class Runner implements RunnerInstance {
 
   constructor(builder: BuilderInstance) {
     this.builder = builder;
-    this.init('');
+    this.init();
   }
 
-  private init(code?: string, sourceMap?: string) {
-    this.code = code ?? '';
+  private init(sourceMap?: string) {
     this.sourceMap = sourceMap ?? '';
     this.output = () => Promise.resolve([]);
   }
@@ -85,20 +88,35 @@ export class Runner implements RunnerInstance {
     return this.output;
   }
 
-  async run({ source, sourceMap }: BundlerResult): Promise<void> {
-    this.init(source, sourceMap);
+  async run(result: BundlerResult): Promise<void> {
+    const { source, sourceMap } = result;
+    this.init(sourceMap);
 
-    const result = runScript<RunnerCb>(this.code, {
+    let code = source;
+    try {
+      code = await prepareDebugScript(
+        result,
+        resolve(this.builder.root, this.builder.options.cache),
+        this.debugId,
+      );
+    }
+    catch (err) {
+      // 调试附件不可用时仍执行原脚本，不影响博客构建。
+      const message = err instanceof Error ? err.message : String(err);
+      this.builder.logger.error(`[Source Map] 无法准备调试映射：${message}`);
+    }
+
+    const execution = runScript<RunnerCb>(code, {
       dirname: __dirname,
       globalParams: this.getContext(),
     });
 
-    if (result.output) {
-      this.output = result.output;
+    if (execution.output) {
+      this.output = execution.output;
     }
 
-    if (result.error) {
-      throw await this.parseError(result.error);
+    if (execution.error) {
+      throw await this.parseError(execution.error);
     }
   }
 

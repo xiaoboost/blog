@@ -1,5 +1,9 @@
+import { join } from 'path';
+
 import type { BuilderPlugin } from '@blog/types';
 import { build } from 'esbuild';
+
+import { getCoreRoot } from '../../utils/path';
 
 /** 插件名称 */
 const PLUGIN_NAME = 'precache';
@@ -7,7 +11,7 @@ const PLUGIN_NAME = 'precache';
 /** 读取代码并转译 */
 async function loadTemplate(name: string, define: Record<string, string> = {}) {
   const result = await build({
-    entryPoints: [require.resolve(`@blog/core/src/plugins/precache/${name}`)],
+    entryPoints: [join(getCoreRoot(), 'src/plugins/precache', name)],
     // 注册脚本与 SW 共用策略和资源识别模块，构建时各自打成独立的浏览器脚本。
     bundle: true,
     write: false,

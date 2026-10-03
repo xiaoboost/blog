@@ -105,6 +105,8 @@ export class Bundler implements BundlerInstance {
     return {
       source: source?.text ?? '',
       sourceMap: sourceMap?.text ?? '',
+      sourcePath: source?.path,
+      sourceMapPath: sourceMap?.path,
     };
   }
 
