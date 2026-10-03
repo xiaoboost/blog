@@ -1,14 +1,13 @@
 import { readFile } from 'fs/promises';
-import { dirname } from 'path';
-import { fileURLToPath } from 'url';
+import { dirname, resolve } from 'path';
 import { createContext, runInContext } from 'vm';
 import { describe, expect, it } from '@blog/test-toolkit';
 import { build } from 'esbuild';
 import { before } from 'mocha';
 
-const themePath = fileURLToPath(new URL(
-  '../../../../templates/layout/src/components/theme-toggle/theme.script.ts', import.meta.url,
-));
+const themePath = resolve(
+  __dirname, '../../../../templates/layout/src/components/theme-toggle/theme.script.ts',
+);
 
 async function bundleTheme(mode: 'production' | 'development') {
   const source = await readFile(themePath, 'utf-8');
@@ -107,7 +106,7 @@ describe('head 主题脚本', () => {
   before(async () => {
     [production, development] = await Promise.all([bundleTheme('production'), bundleTheme('development')]);
     hmr = (await build({
-      entryPoints: [fileURLToPath(new URL('../plugins/development/runtime/module.ts', import.meta.url))],
+      entryPoints: [resolve(__dirname, '../plugins/development/runtime/module.ts')],
       bundle: true, write: false, platform: 'browser', format: 'iife', globalName: 'hmrRuntime',
     })).outputFiles[0].text;
   });

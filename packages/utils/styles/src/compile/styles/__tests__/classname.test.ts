@@ -1,5 +1,4 @@
-import { expect } from 'chai';
-import { describe, it } from 'mocha';
+import { describe, expect, it } from '@blog/test-toolkit';
 
 import { generateClassName } from '../classname';
 

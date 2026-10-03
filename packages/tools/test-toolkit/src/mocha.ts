@@ -7,7 +7,8 @@ export { expect, assert } from 'chai';
 export { describe, it } from 'mocha';
 
 export const mochaOptions: MochaOptions = {
-  require: [require.resolve('tsx/cjs')],
+  // 同时处理 import 和 require，避免 Node 24 绕过 tsx 用原生方式加载 TS。
+  require: [require.resolve('tsx')],
   timeout: 4000,
   color: true,
 };

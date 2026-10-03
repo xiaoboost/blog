@@ -1,5 +1,5 @@
 import { webcrypto } from 'crypto';
-import { fileURLToPath } from 'url';
+import { resolve } from 'path';
 import { runInNewContext } from 'vm';
 import { describe, expect, it } from '@blog/test-toolkit';
 import { buildSync } from 'esbuild';
@@ -7,7 +7,7 @@ import { cacheNames, metadata, messages, policy } from '../plugins/precache/poli
 import { htmlResources } from '../plugins/precache/resources';
 
 const source = buildSync({
-  entryPoints: [fileURLToPath(new URL('../plugins/precache/sw.ts', import.meta.url))],
+  entryPoints: [resolve(__dirname, '../plugins/precache/sw.ts')],
   bundle: true, write: false, platform: 'browser', format: 'iife',
 }).outputFiles[0].text;
 const origin = 'https://blog.test';

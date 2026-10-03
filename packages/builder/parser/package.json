@@ -22,7 +22,7 @@
     "watch": "npm run build -- -w",
     "lint": "eslint --quiet src/**/*.{ts,tsx,js,jsx}",
     "lint:fix": "eslint --quiet --fix src/**/*.{ts,tsx,js,jsx}",
-    "type-check": "tsc --noEmit -p ./tsconfig.build.json"
+    "type-check": "tsc --noEmit"
   },
   "repository": {
     "type": "git",
@@ -44,6 +44,7 @@
     "yaml": "2.8.2"
   },
   "devDependencies": {
+    "@blog/context": "workspace:*",
     "@blog/eslint-config": "workspace:*",
     "@blog/test-toolkit": "workspace:*",
     "@blog/tsconfig": "workspace:*",

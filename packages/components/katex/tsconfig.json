@@ -6,6 +6,7 @@
     "rootDir": "./src",
     "outDir": "./dist",
     "declaration": false,
-    "declarationMap": false
+    "declarationMap": false,
+    "lib": ["DOM", "ESNext"]
   }
 }
