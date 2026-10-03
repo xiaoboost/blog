@@ -582,7 +582,8 @@ describe('博客构建 e2e', () => {
       const stylesheet = html.indexOf('rel="stylesheet"');
       expect(stylesheet, path).greaterThan(script);
       expect(extractLinks(head).filter((href) => href === layoutStyles[0].path), path).length(1);
-      const buttons = [...html.matchAll(/<button\b[^>]*\bdata-theme-toggle=""[^>]*>/g)];
+      // 与运行时 [data-theme-toggle] 一致，只检查属性存在；React 会把 JSX 简写输出为 "true"。
+      const buttons = [...html.matchAll(/<button\b[^>]*\sdata-theme-toggle(?=[\s=>])[^>]*>/g)];
       expect(buttons, path).length(1);
       const toggleClass = /\bclass="([^"]+)"/.exec(buttons[0][0])![1];
       const themeStyleOwners = assets.filter((asset) => (
