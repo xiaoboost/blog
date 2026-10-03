@@ -33,19 +33,6 @@ function getImportComponentNode(ast: Mdx.Root) {
   return Array.from(importSet.values());
 }
 
-function callMethod(
-  object: EsTree.Expression, name: string, args: EsTree.Expression[] = [],
-): EsTree.CallExpression {
-  return {
-    type: 'CallExpression', optional: false,
-    callee: {
-      type: 'MemberExpression', object, property: { type: 'Identifier', name },
-      computed: false, optional: false,
-    },
-    arguments: args,
-  };
-}
-
 /** 在组件转换之后收集 import，并把模板和组件资源合并为 utils。 */
 export const remarkPostAssets: Plugin<[], Mdx.Root> = () => (tree, file) => {
   const { template } = file.data;
@@ -58,20 +45,13 @@ export const remarkPostAssets: Plugin<[], Mdx.Root> = () => (tree, file) => {
   const imports = components.map((name, i) => createImport(name, new Map([['utils', `c${i}`]])));
   imports.push(
     createImport(`@blog/template-${template}`, new Map([['utils', 'template']])),
-    createImport('@blog/context/runtime', new Set(['defineUtils'])),
+    createImport('@blog/context/runtime', new Set(['mergeUtils'])),
   );
 
-  let assets: EsTree.Expression = callMethod({ type: 'Identifier', name: 'template' }, 'getAssetNames');
-  let code = 'template.getAssetNames()';
-  if (components.length > 0) {
-    assets = callMethod(assets, 'concat', components.map((_, i) => (
-      callMethod({ type: 'Identifier', name: `c${i}` }, 'getAssetNames')
-    )));
-    code += `.concat(${components.map((_, i) => `c${i}.getAssetNames()`).join(', ')})`;
-  }
+  const sources = ['template', ...components.map((_, i) => `c${i}`)];
 
   tree.children.unshift(...imports, createExport('utils', {
-    type: 'CallExpression', callee: { type: 'Identifier', name: 'defineUtils' },
-    arguments: [assets], optional: false,
-  }, `defineUtils(${code})`));
+    type: 'CallExpression', callee: { type: 'Identifier', name: 'mergeUtils' },
+    arguments: sources.map((name): EsTree.Identifier => ({ type: 'Identifier', name })), optional: false,
+  }, `mergeUtils(${sources.join(', ')})`));
 };

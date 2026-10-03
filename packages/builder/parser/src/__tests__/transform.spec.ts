@@ -1,6 +1,6 @@
 import { mock } from 'node:test';
 import { expect, describe, it } from '@blog/test-toolkit';
-import type { Mdx } from '@blog/types';
+import type { Mdx, TemplateAsset } from '@blog/types';
 import { getAttribute, getChildrenContent, visit } from '../ast/walk';
 import { transform } from '../post';
 import { compilePost, postSource } from './helpers';
@@ -69,6 +69,38 @@ describe('post compile pipeline', () => {
     ]);
     const utilsImports = post.code.match(/^import\s*\{\s*utils\s+as\s+/gm) ?? [];
     expect(utilsImports).length(4);
+  });
+
+  it('文章合并保留模板及组件的 head 脚本、标签属性和预加载声明', async () => {
+    const resources: Record<string, TemplateAsset[]> = {
+      '@blog/template-post': [
+        { src: '/early.js', position: 'head', defer: true },
+        { href: '/layout.css', media: 'screen' },
+        { href: '/later.css', as: 'style' },
+      ],
+      '@blog/mdx-typo': [
+        '/early.js',
+        { src: '/component.js', type: 'module', async: true, crossOrigin: 'anonymous' },
+        { href: '/component.css', media: 'print', crossOrigin: 'use-credentials' },
+        { href: '/font.woff2', as: 'font', type: 'font/woff2', crossOrigin: 'anonymous' },
+      ],
+    };
+    // 同时验证 estree 和格式化后的模块源码，不依赖测试替身重建资源配置。
+    for (const format of [false, true]) {
+      const post = await compilePost(
+        'import { Intro } from "@blog/mdx-typo";\n\n<Intro>正文</Intro>', '', format, resources,
+      );
+      expect(post.utils.getPreScripts()).deep.eq([{ src: '/early.js', defer: true }]);
+      expect(post.utils.getScripts()).deep.eq([{ src: '/component.js', type: 'module', async: true, crossOrigin: 'anonymous' }]);
+      expect(post.utils.getStyles()).deep.eq([
+        { href: '/layout.css', media: 'screen' },
+        { href: '/component.css', media: 'print', crossOrigin: 'use-credentials' },
+      ]);
+      expect(post.utils.getPreloadAssets()).deep.eq([
+        { href: '/later.css', as: 'style' },
+        { href: '/font.woff2', as: 'font', type: 'font/woff2', crossOrigin: 'anonymous' },
+      ]);
+    }
   });
 
   it('导出精简的 mdast，保留目录、字体和代码扫描所需的数据', async () => {

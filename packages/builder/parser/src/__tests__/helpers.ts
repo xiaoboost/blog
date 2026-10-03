@@ -1,6 +1,7 @@
 import { runInNewContext } from 'vm';
-import type { PostExportData } from '@blog/types';
+import type { PostExportData, TemplateAsset } from '@blog/types';
 import { JsxEmit, ModuleKind, ScriptTarget, transpileModule } from 'typescript';
+import { defineUtils, mergeUtils } from '../../../context/src/runtime/hook/assets';
 import { transform } from '../post';
 
 export function postSource(content: string, meta = '') {
@@ -8,7 +9,12 @@ export function postSource(content: string, meta = '') {
 }
 
 /** 执行编译后的模块；只替换外部组件和资源，验证实际导出与渲染结果。 */
-export async function compilePost(content: string, meta = '', format = false) {
+export async function compilePost(
+  content: string,
+  meta = '',
+  format = false,
+  resources: Record<string, TemplateAsset[]> = {},
+) {
   const code = await transform(postSource(content, meta), '/test/post.mdx', format);
   const js = transpileModule(code, {
     compilerOptions: {
@@ -24,11 +30,9 @@ export async function compilePost(content: string, meta = '', format = false) {
     require(source: string) {
       if (source.endsWith('/jsx-runtime')) return { jsx, jsxs: jsx, Fragment: 'Fragment' };
       if (source === '@blog/context/runtime') {
-        return {
-          defineUtils: (assets: string[]) => ({ getAssetNames: () => [...new Set(assets)] }),
-        };
+        return { mergeUtils };
       }
-      return new Proxy({ utils: { getAssetNames: () => [source] } }, {
+      return new Proxy({ utils: defineUtils(resources[source] ?? [source]) }, {
         get(target, key) {
           return key === 'utils' ? target.utils : `${source}.${String(key)}`;
         },
