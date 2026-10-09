@@ -1,4 +1,4 @@
 import './global.jss';
 import './font.jss';
 import './theme/style.jss';
-import '@blog/icons/src/index.jss';
+import '@blog/icons/styles';
