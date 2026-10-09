@@ -6,10 +6,10 @@ import './to-content/index.jss';
 import './to-content/index.script';
 
 // 内置组件
-import '@blog/mdx-blur-reveal/src/index.script';
-import '@blog/mdx-code-block-normal/src/code-block.script';
-import '@blog/mdx-typo/src/typo.script';
-import '@blog/mdx-font-block/src/font-block.script';
+import '@blog/mdx-blur-reveal/script';
+import '@blog/mdx-code-block-normal/script';
+import '@blog/mdx-typo/script';
+import '@blog/mdx-font-block/script';
 
 import { assets } from '@blog/context/web';
 

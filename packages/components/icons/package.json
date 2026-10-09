@@ -6,6 +6,10 @@
   "license": "MIT",
   "source": "src/index.tsx",
   "types": "src/index.tsx",
+  "exports": {
+    ".": "./src/index.tsx",
+    "./styles": "./src/index.jss.ts"
+  },
   "scripts": {
     "lint": "eslint --quiet src/**/*.{ts,tsx,js,jsx}",
     "lint:fix": "eslint --quiet --fix src/**/*.{ts,tsx,js,jsx}",

@@ -4,8 +4,12 @@
   "version": "1.0.0",
   "main": "",
   "types": "index.d.ts",
+  "scripts": {
+    "type-check": "tsc --noEmit"
+  },
   "devDependencies": {
     "@blog/tsconfig": "workspace:*",
-    "@types/node": "24.12.2"
+    "@types/node": "24.12.2",
+    "typescript": "6.0.3"
   }
 }

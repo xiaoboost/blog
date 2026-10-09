@@ -6,6 +6,11 @@
   "license": "MIT",
   "source": "src/index.tsx",
   "types": "src/index.tsx",
+  "exports": {
+    ".": "./src/index.tsx",
+    "./theme": "./src/theme.ts",
+    "./script": "./src/code-block.script.ts"
+  },
   "scripts": {
     "test": "mocha",
     "lint": "eslint --quiet src/**/*.{ts,tsx,js,jsx}",

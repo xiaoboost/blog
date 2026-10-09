@@ -8,7 +8,7 @@ import './components/icons/index.jss';
 import './components/theme-toggle/index.jss';
 
 import './components/goto-top/index.script';
-import '@blog/component-scrollbar/src/index.script';
+import '@blog/component-scrollbar/script';
 
 import './views/main-index/index.jss';
 import './views/item-list/index.jss';

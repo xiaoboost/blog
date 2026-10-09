@@ -3,6 +3,7 @@
   "include": ["."],
   "exclude": ["node_modules", "dist"],
   "compilerOptions": {
+    "skipLibCheck": false,
     "rootDir": ".",
     "outDir": "./dist"
   }
