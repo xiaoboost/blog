@@ -10,7 +10,7 @@ const pluginName = 'type-checker';
 export const TypeChecker = (opt?: TypeCheckerOptions): BuilderPlugin => ({
   name: pluginName,
   apply(builder) {
-    const worker = new WorkerController(join(__dirname, './server/index.worker.js'));
+    const worker = new WorkerController(join(__dirname, './server/index.worker.ts'));
 
     builder.hooks.afterInitialized.tap(pluginName, () => {
       worker.send({

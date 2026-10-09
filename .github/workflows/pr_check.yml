@@ -44,6 +44,29 @@ jobs:
       - name: Check Code Style
         run: pnpm run lint
 
+  TypeCheck:
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+          - ubuntu-latest
+
+    name: 类型检查 ${{ matrix.platform }}
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+      - name: Checkout Commit
+        uses: actions/checkout@v6
+        with:
+          lfs: false
+          fetch-depth: 1
+
+      - name: Setup Environment
+        uses: './.github/actions/setup-env'
+
+      - name: Check Types
+        run: pnpm run type-check
+
   UnitTest:
     strategy:
       fail-fast: false
@@ -73,9 +96,6 @@ jobs:
 
       - name: Setup Environment
         uses: './.github/actions/setup-env'
-
-      - name: Build Prepare
-        run: pnpm run build:prepare
 
       - name: Test Code
         run: pnpm run test
@@ -109,9 +129,6 @@ jobs:
 
       - name: Setup Environment
         uses: './.github/actions/setup-env'
-
-      - name: Build Prepare
-        run: pnpm run build:prepare
 
       - name: Build Blog
         run: pnpm run build
@@ -151,9 +168,6 @@ jobs:
 
       - name: Setup Environment
         uses: './.github/actions/setup-env'
-
-      - name: Build Prepare
-        run: pnpm run build:prepare
 
       - name: Build Blog with debug
         run: pnpm run build:debug

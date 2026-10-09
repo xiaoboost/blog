@@ -10,11 +10,10 @@
     "url": "https://github.com/xiaoboost/blog"
   },
   "scripts": {
-    "build:prepare": "pnpm run --filter @blog/cli... build",
     "build": "blog build --outDir=dist --mode=production",
     "build:debug": "pnpm run build --debug",
     "serve": "sirv --host -p 9999 -G dist",
-    "static:serve": "pnpm run build:prepare && pnpm run build && pnpm run serve",
+    "static:serve": "pnpm run build && pnpm run serve",
     "watch": "blog watch --hmr --mode=development --port=5173",
     "watch:debug": "pnpm run watch --debug",
     "test": "pnpm run -r --parallel test",

@@ -1,2 +1,5 @@
+#!/usr/bin/env node
+
 require('dotenv').config();
-require('../dist').run();
+require('tsx');
+require('../src/index.ts').run();
