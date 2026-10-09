@@ -6,11 +6,11 @@
     ".": {
       "types": "./src/common/index.ts",
       "import": "./src/common/index.ts",
-      "require": "./dist/common/index.js"
+      "require": "./src/common/index.ts"
     },
     "./common": {
       "import": "./src/common/index.ts",
-      "require": "./dist/common/index.js",
+      "require": "./src/common/index.ts",
       "types": "./src/common/index.ts"
     },
     "./common/*": {
@@ -23,14 +23,14 @@
         "./src/common/*.ts"
       ],
       "require": [
-        "./dist/common/*",
-        "./dist/common/*.js"
+        "./src/common/*",
+        "./src/common/*.ts"
       ]
     },
     "./compile": {
       "types": "./src/compile/index.ts",
       "import": "./src/compile/index.ts",
-      "require": "./dist/compile/index.js"
+      "require": "./src/compile/index.ts"
     },
     "./compile/*": {
       "types": [
@@ -42,8 +42,8 @@
         "./src/compile/*.ts"
       ],
       "require": [
-        "./dist/compile/*",
-        "./dist/compile/*.js"
+        "./src/compile/*",
+        "./src/compile/*.ts"
       ]
     },
     "./fonts/*": {
@@ -53,8 +53,6 @@
     }
   },
   "scripts": {
-    "build": "tsc -p .",
-    "watch": "npm run build -- -w",
     "test": "mocha",
     "lint": "eslint --quiet src/**/*.{ts,tsx,js,jsx}",
     "lint:fix": "eslint --quiet --fix src/**/*.{ts,tsx,js,jsx}",

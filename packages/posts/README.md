@@ -19,7 +19,7 @@ lsp: true
 ## 内部排版样张
 
 在仓库根目录运行 `pnpm run watch`，打开 <http://localhost:5173/__dev/typography/>。
-首次运行前先执行 `pnpm run build:prepare`。
+安装依赖后即可运行，构建器直接加载 TypeScript 源码。
 
 样张源码在 `dev/typography/index.mdx`，直接使用正式文章的模板、主题与 MDX 组件。
 包含正文与强调、标题层级、引用与旁注、术语与夹注、列表与表格、代码与公式、图片与字体，以及嵌套组合。

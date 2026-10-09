@@ -5,6 +5,17 @@ import { WorkerController } from '../utils/worker';
 const fixturesDir = join(__dirname, 'fixtures');
 
 describe('WorkerController', () => {
+  it('直接加载 TS Worker 并转换参数属性', async () => {
+    const worker = new WorkerController(join(fixturesDir, 'echo-worker.ts'));
+    try {
+      const result = await worker.send({ msg: 'typescript' });
+      expect(result).deep.eq({ msg: 'typescript' });
+    }
+    finally {
+      await worker.worker.terminate();
+    }
+  });
+
   it('send 发送数据并收到返回值', async () => {
     const worker = new WorkerController(join(fixturesDir, 'echo-worker.js'));
     const result = await worker.send({ msg: 'hello' });

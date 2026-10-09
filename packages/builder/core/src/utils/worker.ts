@@ -1,3 +1,4 @@
+import { extname } from 'path';
 import { Worker } from 'worker_threads';
 
 export interface PostData<P = any> {
@@ -34,7 +35,10 @@ export class WorkerController {
   worker: Worker;
 
   constructor(workerPath: string) {
-    this.worker = new Worker(workerPath);
+    // Worker 不继承主线程中动态注册的加载器，从 CommonJS 引导 TS 入口。
+    this.worker = extname(workerPath) === '.ts'
+      ? new Worker(`require(${JSON.stringify(require.resolve('tsx/cjs'))}); require(${JSON.stringify(workerPath)});`, { eval: true })
+      : new Worker(workerPath);
     this.start();
   }
 

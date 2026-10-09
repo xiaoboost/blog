@@ -6,10 +6,12 @@
   "license": "MIT",
   "source": "src/index.ts",
   "types": "src/index.ts",
-  "main": "dist/index.js",
+  "main": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./setup": "./src/setup.cjs"
+  },
   "scripts": {
-    "build": "tsc -p .",
-    "watch": "npm run build -- -w",
     "lint": "eslint --quiet src/**/*.{ts,tsx,js,jsx}",
     "lint:fix": "eslint --quiet --fix src/**/*.{ts,tsx,js,jsx}",
     "type-check": "tsc --noEmit"
