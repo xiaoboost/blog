@@ -38,7 +38,12 @@ function getTableData(data: HookDataWithName[]) {
   }
 
   const headers = [
-    '插件名称', '构建阶段', '钩子函数', '调用次数', '平均耗时', '总耗时',
+    '插件名称',
+    '构建阶段',
+    '钩子函数',
+    '调用次数',
+    '平均耗时',
+    '总耗时',
   ];
   const tableData = data.map(getTableRow);
   const totalSortedTableData = data
@@ -108,6 +113,7 @@ function printHookData(
 
   // 处理最后一组的合并
   const lastIndex = data.length;
+
   if (lastIndex - col0Start > 1) {
     cells.push({
       col: 0,
@@ -115,6 +121,7 @@ function printHookData(
       rowSpan: lastIndex - col0Start,
     });
   }
+
   if (lastIndex - col1Start > 1) {
     cells.push({
       col: 1,

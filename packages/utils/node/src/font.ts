@@ -43,7 +43,10 @@ export class FontBucket implements IFontBucket {
 
   addText(...texts: string[]) {
     for (const text of texts) {
-      if (!text) continue;
+      if (!text) {
+        continue;
+      }
+
       for (const ch of text.normalize('NFC')) {
         this.chars.add(ch);
       }

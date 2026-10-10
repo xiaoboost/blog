@@ -10,7 +10,10 @@ describe('开发服务器静态资源', () => {
   let server: Server;
   let origin: string;
   const image = Buffer.from([
-    0xff, 0xd8, 0xff, 0xd9,
+    0xff,
+    0xd8,
+    0xff,
+    0xd9,
   ]);
 
   before(async () => {

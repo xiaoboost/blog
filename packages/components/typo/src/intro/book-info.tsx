@@ -81,7 +81,12 @@ export function BookInfo({
         <div className={stringifyClass(classes.bookRow, classes.bookDetails)}>{details}</div>
       )}
       {link && (
-        <a className={stringifyClass(classes.bookRow, classes.bookLink)} href={link.href} target="_blank" rel="noreferrer">
+        <a
+          className={stringifyClass(classes.bookRow, classes.bookLink)}
+          href={link.href}
+          target="_blank"
+          rel="noreferrer"
+        >
           <span>{link.context}</span>
           <ArrowUpRight className={classes.sourceIcon} aria-hidden="true" />
         </a>

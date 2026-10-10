@@ -14,9 +14,7 @@ export function getPostMetaData(content: string, fileName: string) {
     };
   }
 
-  const [
-    , metaStr, mdContent,
-  ] = result;
+  const [, metaStr, mdContent] = result;
   const meta = parseYaml(metaStr) as PostMeta;
 
   meta.content = mdContent.trim();

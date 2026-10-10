@@ -1,4 +1,12 @@
-import { createStyles, BgSecondary, RadiusMd, TextPrimary, TextTertiary, AccentPrimary, FontBody } from '@blog/styles/compile';
+import {
+  createStyles,
+  BgSecondary,
+  RadiusMd,
+  TextPrimary,
+  TextTertiary,
+  AccentPrimary,
+  FontBody,
+} from '@blog/styles/compile';
 import { PaginationShadow } from '../../styles/theme/token';
 
 export default createStyles({
@@ -22,16 +30,31 @@ export default createStyles({
   older: { display: 'flex', flex: 1, justifyContent: 'flex-end' },
   pageNumbers: { display: 'flex', alignItems: 'center', gap: 6 },
   pageNumber: {
-    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-    minWidth: 28, height: 28, padding: [0, 5], borderBottom: '1px solid transparent',
-    color: TextTertiary, fontFamily: FontBody, fontSize: 12, lineHeight: 1,
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    minWidth: 28,
+    height: 28,
+    padding: [0, 5],
+    borderBottom: '1px solid transparent',
+    color: TextTertiary,
+    fontFamily: FontBody,
+    fontSize: 12,
+    lineHeight: 1,
     '&:hover': { color: AccentPrimary },
     '&[aria-current="page"]': { borderBottomColor: TextPrimary, color: TextPrimary },
     '@media (max-width: 640px)': { display: 'none' },
   },
   pageCount: {
-    display: 'none', alignItems: 'center', height: 28, color: TextTertiary,
-    fontFamily: FontBody, fontSize: 12, lineHeight: 1, whiteSpace: 'nowrap', fontVariantNumeric: 'tabular-nums',
+    display: 'none',
+    alignItems: 'center',
+    height: 28,
+    color: TextTertiary,
+    fontFamily: FontBody,
+    fontSize: 12,
+    lineHeight: 1,
+    whiteSpace: 'nowrap',
+    fontVariantNumeric: 'tabular-nums',
     '@media (max-width: 640px)': { display: 'inline-flex' },
   },
 });

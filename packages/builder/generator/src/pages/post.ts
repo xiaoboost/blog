@@ -1,7 +1,12 @@
 import { normalize, normalizeUrl } from '@blog/node';
 import { utils as layoutUtils } from '@blog/template-layout';
 import { Post as PostRender, type PostProps } from '@blog/template-post';
-import type { IRenderContext, ISite, PostExportDataWithComponent, PostsExportType } from '@blog/types';
+import type {
+  IRenderContext,
+  ISite,
+  PostExportDataWithComponent,
+  PostsExportType,
+} from '@blog/types';
 import React from 'react';
 import { createHtml } from '../utils/react';
 
@@ -30,7 +35,13 @@ export function renderSpacePost(posts: PostsExportType) {
 
 export interface PostPageRenderProps extends IRenderContext, Pick<PostProps, 'post'> {}
 
-export function renderPost({ page, site, post, dev, isPreBuild }: PostPageRenderProps) {
+export function renderPost({
+  page,
+  site,
+  post,
+  dev,
+  isPreBuild,
+}: PostPageRenderProps) {
   const html = createPost({
     pageTitle: post.data.title,
     siteTitle: site.title,

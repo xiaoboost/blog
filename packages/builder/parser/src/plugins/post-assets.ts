@@ -36,6 +36,7 @@ function getImportComponentNode(ast: Mdx.Root) {
 /** 在组件转换之后收集 import，并把模板和组件资源合并为 utils。 */
 export const remarkPostAssets: Plugin<[], Mdx.Root> = () => (tree, file) => {
   const { template } = file.data;
+
   // 普通 MDX 编译没有文章配置。
   if (typeof template !== 'string') {
     return;
@@ -51,7 +52,9 @@ export const remarkPostAssets: Plugin<[], Mdx.Root> = () => (tree, file) => {
   const sources = ['template', ...components.map((_, i) => `c${i}`)];
 
   tree.children.unshift(...imports, createExport('utils', {
-    type: 'CallExpression', callee: { type: 'Identifier', name: 'mergeUtils' },
-    arguments: sources.map((name): EsTree.Identifier => ({ type: 'Identifier', name })), optional: false,
+    type: 'CallExpression',
+    callee: { type: 'Identifier', name: 'mergeUtils' },
+    arguments: sources.map((name): EsTree.Identifier => ({ type: 'Identifier', name })),
+    optional: false,
   }, `mergeUtils(${sources.join(', ')})`));
 };

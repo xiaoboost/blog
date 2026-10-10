@@ -33,11 +33,10 @@ function active() {
 
     setTimeout(() => {
       content.style.maxHeight = 'none';
-      [
-        classes.blurRevealFogLeft, classes.blurRevealFogRight, classes.blurRevealOverlay,
-      ].forEach(
+      [classes.blurRevealFogLeft, classes.blurRevealFogRight, classes.blurRevealOverlay].forEach(
         (className) => {
           const el = revealEl.querySelector<HTMLElement>(`.${className}`);
+
           if (el) {
             el.style.display = 'none';
           }
@@ -60,6 +59,7 @@ function active() {
   return () => {
     list.forEach((el) => {
       const handler = handlerMap.get(el);
+
       if (handler) {
         el.removeEventListener('click', handler);
         handlerMap.delete(el);

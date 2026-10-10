@@ -20,6 +20,7 @@ function active() {
 
     button.dataset.copyState = state;
     button.title = message || '复制代码';
+
     if (status) {
       status.textContent = message;
     }
@@ -28,17 +29,25 @@ function active() {
   buttons.forEach((button) => {
     button.addEventListener('click', async () => {
       const code = button.getAttribute('data-copy-code');
-      if (code === null || pending.has(button)) return;
+
+      if (code === null || pending.has(button)) {
+        return;
+      }
 
       pending.add(button);
       clearTimeout(timers.get(button));
 
       try {
         await copyCode(code);
-        if (!controller.signal.aborted) setStatus(button, 'success');
+
+        if (!controller.signal.aborted) {
+          setStatus(button, 'success');
+        }
       }
       catch {
-        if (!controller.signal.aborted) setStatus(button, 'error');
+        if (!controller.signal.aborted) {
+          setStatus(button, 'error');
+        }
       }
       finally {
         pending.delete(button);

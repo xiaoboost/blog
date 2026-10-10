@@ -13,7 +13,9 @@ export function img({ src, alt }: Props) {
   const finalPath = usePageAsset(src);
 
   // 预构建阶段不渲染
-  if (!finalPath) return null;
+  if (!finalPath) {
+    return null;
+  }
 
   // 外部 URL 直出
   if (isUrl(src)) {

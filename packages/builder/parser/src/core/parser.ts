@@ -1,4 +1,9 @@
-import type { ErrorData, PostBasicData, PostMeta, Mdx as MdxAst } from '@blog/types';
+import type {
+  ErrorData,
+  PostBasicData,
+  PostMeta,
+  Mdx as MdxAst,
+} from '@blog/types';
 import { format as formatCode } from 'prettier';
 import type { PluggableList } from 'unified';
 import { remarkTsCodeBlock } from '../plugins/code-block';

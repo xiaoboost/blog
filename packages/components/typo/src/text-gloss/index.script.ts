@@ -25,7 +25,10 @@ function active() {
     let distance = 0;
 
     const finish = () => {
-      if (frame !== undefined) cancelAnimationFrame(frame);
+      if (frame !== undefined) {
+        cancelAnimationFrame(frame);
+      }
+
       frame = undefined;
       reveal?.dispose();
       reveal = undefined;
@@ -34,7 +37,11 @@ function active() {
 
     const handler = () => {
       const expanded = el.getAttribute('aria-expanded') !== 'true';
-      if (frame !== undefined) cancelAnimationFrame(frame);
+
+      if (frame !== undefined) {
+        cancelAnimationFrame(frame);
+      }
+
       wrapper.classList.toggle(classes.glossActive, expanded);
       wrapper.classList.toggle(classes.glossClosing, !expanded);
       el.setAttribute('aria-expanded', String(expanded));
@@ -51,13 +58,16 @@ function active() {
         distance = expanded ? 0 : reveal.total;
         wrapper.classList.add(classes.glossAnimating);
       }
+
       const from = distance;
       const to = expanded ? reveal.total : 0;
       const duration = DURATION_NORMAL * 1000 * Math.abs(to - from) / reveal.total;
+
       if (!duration) {
         finish();
         return;
       }
+
       reveal.render(distance);
       const started = performance.now();
       const tick = (now: number) => {
@@ -65,8 +75,13 @@ function active() {
         const eased = progress * progress * (3 - 2 * progress);
         distance = from + (to - from) * eased;
         reveal!.render(distance);
-        if (progress < 1) frame = requestAnimationFrame(tick);
-        else finish();
+
+        if (progress < 1) {
+          frame = requestAnimationFrame(tick);
+        }
+        else {
+          finish();
+        }
       };
       frame = requestAnimationFrame(tick);
     };
@@ -77,7 +92,9 @@ function active() {
       if (event.target !== el || (event.key !== 'Enter' && event.key !== ' ')) {
         return;
       }
+
       event.preventDefault();
+
       if (!event.repeat) {
         handler();
       }

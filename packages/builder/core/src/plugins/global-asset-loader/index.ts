@@ -76,6 +76,7 @@ export const GlobalAssetLoader = (opt: GlobalAssetOption): BuilderPlugin => ({
       // 外部资源上报
       for (const [renamedPath, resolved] of filePathMap.entries()) {
         const cache = fileCache.get(resolved.path);
+
         if (cache) {
           builder.emitAsset({
             path: renamedPath,

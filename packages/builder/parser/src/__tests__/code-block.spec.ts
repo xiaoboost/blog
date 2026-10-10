@@ -10,7 +10,9 @@ const fence = (info: string, code = 'const value = 1;') => `\`\`\`${info}\n${cod
 function components(ast: Mdx.Root) {
   const result: Mdx.MdxJsxFlowElement[] = [];
   visit(ast, (node) => {
-    if (node.type === 'mdxJsxFlowElement' && node.name === 'TsCodeBlock') result.push(node);
+    if (node.type === 'mdxJsxFlowElement' && node.name === 'TsCodeBlock') {
+      result.push(node);
+    }
   });
   return result;
 }
@@ -20,32 +22,28 @@ function props(node: Mdx.MdxJsxFlowElement) {
     if (attr.type !== 'mdxJsxAttribute' || !attr.value || typeof attr.value === 'string') {
       throw new Error('预期插件生成表达式属性');
     }
+
     return [attr.name, JSON.parse(attr.value.value)];
   }));
 }
 
 describe('remark TS code block', () => {
   for (const lang of [
-    'ts', 'typescript', 'tsx', 'js', 'javascript', 'jsx',
+    'ts',
+    'typescript',
+    'tsx',
+    'js',
+    'javascript',
+    'jsx',
   ]) {
     it(`${lang}: 围栏配置覆盖文章配置，默认不开启 LSP`, async () => {
-      for (const [
-        info, lsp, enabled,
-      ] of [
-          [
-            lang, false, false,
-          ], [
-            lang, true, true,
-          ],
-          [
-            `${lang}?lsp=false`, true, false,
-          ], [
-            `${lang}?lsp=true`, false, true,
-          ],
-          [
-            `${lang}?lsp`, false, true,
-          ],
-        ] as const) {
+      for (const [info, lsp, enabled] of [
+        [lang, false, false],
+        [lang, true, true],
+        [`${lang}?lsp=false`, true, false],
+        [`${lang}?lsp=true`, false, true],
+        [`${lang}?lsp`, false, true],
+      ] as const) {
         const content = fence(info);
         const { data: { ast }, code } = await compilePost(content, `lsp: ${lsp}\n`);
         expect(components(ast).length).eq(enabled ? 1 : 0);
@@ -66,11 +64,20 @@ describe('remark TS code block', () => {
 
   it('插件确定语言、默认值和隐藏定义的参数', async () => {
     const defaults = components((await compilePost(fence('typescript?lsp'))).data.ast)[0];
-    expect(props(defaults)).deep.eq({ lang: 'ts', platform: 'none', showError: true, visible: true });
+    expect(props(defaults)).deep.eq({
+      lang: 'ts',
+      platform: 'none',
+      showError: true,
+      visible: true,
+    });
     const content = fence('javascript?lsp&platform=browser&showError=false&visible=false&exportAs=@@local/helper');
     const hidden = components((await compilePost(content)).data.ast)[0];
     expect(props(hidden)).deep.eq({
-      lang: 'js', platform: 'browser', showError: false, visible: false, exportAs: '@@local/helper',
+      lang: 'js',
+      platform: 'browser',
+      showError: false,
+      visible: false,
+      exportAs: '@@local/helper',
     });
     expect(await compile(content)).contain('visible={false}');
     expect(await compile(fence('json?visible=false'))).not.contain('_components.pre');
@@ -113,9 +120,7 @@ describe('remark TS code block', () => {
   it('文章编译传递 LSP 配置，资源收集识别插件生成的 import', async () => {
     const content = `$x$\n\n${fence('ts')}\n\n${fence('ts?lsp=false')}`;
     const post = await compilePost(content, 'lsp: true\n');
-    expect(post.utils.getAssetNames()).deep.eq([
-      '@blog/template-post', '@blog/mdx-code-block-typescript', '@blog/mdx-katex',
-    ]);
+    expect(post.utils.getAssetNames()).deep.eq(['@blog/template-post', '@blog/mdx-code-block-typescript', '@blog/mdx-katex']);
     expect(components(post.data.ast)).length(1);
     expect(post.code).contain('<MathInline>');
     expect(post.code).contain('<TsCodeBlock');

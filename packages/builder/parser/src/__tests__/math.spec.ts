@@ -31,9 +31,7 @@ g(\delta) &\simeq \gamma
 
   it('支持行内公式和双美元符号块级公式', async () => {
     const { imports, values } = await getFormulas('状态 $\\gamma$，执行 $e$。\n\n$$\nx^{2}\n$$');
-    expect(values).deep.eq([
-      '\\gamma', 'e', 'x^{2}',
-    ]);
+    expect(values).deep.eq(['\\gamma', 'e', 'x^{2}']);
     // 组件导入和资源 utils 导入各一条。
     expect(imports.match(/@blog\/mdx-katex/g)).length(2);
   });

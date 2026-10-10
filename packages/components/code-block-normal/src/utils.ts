@@ -181,7 +181,10 @@ export function getMinSpaceWidth(str: string) {
     }, 0);
 
   const widths = [
-    2, 4, 8, 16,
+    2,
+    4,
+    8,
+    16,
   ].sort((pre, next) => {
     const preRes = Math.abs(pre - result);
     const nextRes = Math.abs(next - result);

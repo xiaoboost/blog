@@ -1,4 +1,12 @@
-import { createStyles, BgSecondary, BorderPrimary, RadiusMd, ShadowCard, FontHeading, FontSizeMd } from '@blog/styles/compile';
+import {
+  createStyles,
+  BgSecondary,
+  BorderPrimary,
+  RadiusMd,
+  ShadowCard,
+  FontHeading,
+  FontSizeMd,
+} from '@blog/styles/compile';
 import { ListTitleFontFamily, ListTitleFontWeight } from '../../constant/font';
 import { PostTitleStyle, PostSubTitleStyle } from '../main-index/index.jss';
 
@@ -12,7 +20,10 @@ export default createStyles({
     '& $itemListTitle': {
       fontSize: '2.4em',
       margin: [
-        0, 10, 20, 10,
+        0,
+        10,
+        20,
+        10,
       ],
       fontFamily: `${ListTitleFontFamily}, ${FontHeading}`,
       fontWeight: ListTitleFontWeight,

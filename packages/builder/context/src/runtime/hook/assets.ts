@@ -21,13 +21,22 @@ function getKey(asset: TemplateAsset): string {
     const kind = isScriptPath(asset) ? 'script' : isStylePath(asset) ? 'style' : 'asset';
     return `${kind}:${asset}`;
   }
-  if ('src' in asset) return `script:${asset.src}`;
+
+  if ('src' in asset) {
+    return `script:${asset.src}`;
+  }
+
   if ('as' in asset) {
     // 同一地址可以有不同的预加载条件，不能只按 href 合并。
     return `preload:${JSON.stringify([
-      asset.href, asset.as, asset.type, asset.crossOrigin, asset.media,
+      asset.href,
+      asset.as,
+      asset.type,
+      asset.crossOrigin,
+      asset.media,
     ])}`;
   }
+
   return `style:${asset.href}`;
 }
 
@@ -40,9 +49,13 @@ export function defineUtils(assets: readonly TemplateAsset[] = []): TemplateUtil
   const getAssetReferences = (): TemplateAsset[] => {
     const result = new Map<string, TemplateAsset>();
     for (const asset of references) {
-      if (process.env.NODE_ENV === 'production' && getPath(asset).endsWith('.map')) continue;
+      if (process.env.NODE_ENV === 'production' && getPath(asset).endsWith('.map')) {
+        continue;
+      }
+
       const key = getKey(asset);
       const previous = result.get(key);
+
       if (previous === undefined || typeof previous === 'string' || typeof asset !== 'string') {
         result.set(key, asset);
       }
@@ -54,10 +67,12 @@ export function defineUtils(assets: readonly TemplateAsset[] = []): TemplateUtil
       if (typeof asset === 'string') {
         return position === 'body' && isScriptPath(asset) ? [{ src: asset }] : [];
       }
+
       if ('src' in asset) {
         const { position: target = 'body', ...script } = asset;
         return target === position ? [script] : [];
       }
+
       return [];
     })
   );
@@ -68,7 +83,10 @@ export function defineUtils(assets: readonly TemplateAsset[] = []): TemplateUtil
     getScripts: () => getScripts('body'),
     getPreScripts: () => getScripts('head'),
     getStyles: (): StyleAssetData[] => getAssetReferences().flatMap((asset) => {
-      if (typeof asset === 'string') return isStylePath(asset) ? [{ href: asset }] : [];
+      if (typeof asset === 'string') {
+        return isStylePath(asset) ? [{ href: asset }] : [];
+      }
+
       return 'href' in asset && !('as' in asset) ? [asset] : [];
     }),
     getPreloadAssets: () => getAssetReferences().filter(
@@ -85,7 +103,10 @@ export function defineUtils(assets: readonly TemplateAsset[] = []): TemplateUtil
     },
     replaceAssetName: (oldAsset, newAsset) => {
       references.forEach((asset, index) => {
-        if (getPath(asset) !== oldAsset) return;
+        if (getPath(asset) !== oldAsset) {
+          return;
+        }
+
         references[index] = typeof asset === 'string'
           ? newAsset
           : 'src' in asset ? { ...asset, src: newAsset } : { ...asset, href: newAsset };

@@ -75,9 +75,15 @@ export function removeReference(code: string) {
 
 /** 围栏已由 parser 转成组件，这里只还原代码，不再解析配置。 */
 export function getTsCodeBlockCode(node: Mdx.Nodes): string | undefined {
-  if (node.type !== 'mdxJsxFlowElement' || node.name !== 'TsCodeBlock') return;
+  if (node.type !== 'mdxJsxFlowElement' || node.name !== 'TsCodeBlock') {
+    return;
+  }
+
   const child = node.children[0];
-  if (!child || !('value' in child)) return;
+
+  if (!child || !('value' in child)) {
+    return;
+  }
 
   if (child.type === 'mdxFlowExpression') {
     try {
@@ -107,7 +113,10 @@ export function getImportedByPost(posts: PostData[]) {
           result.add(pkg);
         }
       }
-      if ('children' in node) node.children.forEach(visit);
+
+      if ('children' in node) {
+        node.children.forEach(visit);
+      }
     };
     visit(post.ast);
   }
@@ -143,7 +152,10 @@ export async function npmInstall(libs: string[], cwd: string, log?: (msg: string
 
   return new Promise<void>((resolve, reject) => {
     const args = [
-      'install', ...libs, '-D', '--ignore-scripts',
+      'install',
+      ...libs,
+      '-D',
+      '--ignore-scripts',
     ];
     // shell: true 必需（Windows 上 npm 是脚本），拼成完整命令字符串避免 DEP0190
     const childProcess = spawn(`npm ${args.join(' ')}`, {

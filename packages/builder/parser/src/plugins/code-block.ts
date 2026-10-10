@@ -49,8 +49,11 @@ export const remarkTsCodeBlock: Plugin<[], Mdx.Root> = () => (tree, file) => {
           };
         });
       return {
-        type: 'mdxJsxFlowElement', name: 'TsCodeBlock', attributes,
-        children: [createExpression(node.value + '\n')], position: node.position,
+        type: 'mdxJsxFlowElement',
+        name: 'TsCodeBlock',
+        attributes,
+        children: [createExpression(node.value + '\n')],
+        position: node.position,
       };
     }
 

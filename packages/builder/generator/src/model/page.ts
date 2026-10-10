@@ -1,5 +1,10 @@
 import { normalize } from '@blog/node';
-import type { IRenderContext, IPage, PageDataMap, PageType } from '@blog/types';
+import type {
+  IRenderContext,
+  IPage,
+  PageDataMap,
+  PageType,
+} from '@blog/types';
 import { ResourceSet } from './resource-set';
 
 export interface PageOptions<T extends PageType = PageType> {

@@ -14,7 +14,9 @@ import { useRef } from 'react';
 export function usePageAsset(src: string): string | null {
   const { page, isPreBuild } = useRenderContext();
 
-  if (isPreBuild || isUrl(src)) return null;
+  if (isPreBuild || isUrl(src)) {
+    return null;
+  }
 
   const assetRef = useRef<AssetData | null>(null);
   const addedRef = useRef(false);

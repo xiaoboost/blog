@@ -65,7 +65,10 @@ export default createStyles({
       },
       '& $bookSubtitle': {
         margin: [
-          -2, 0, 0, 0,
+          -2,
+          0,
+          0,
+          0,
         ],
         color: TextSecondary,
         fontFamily: FontBody,

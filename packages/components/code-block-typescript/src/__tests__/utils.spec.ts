@@ -4,7 +4,9 @@ import { getImportedByPost, getTsCodeBlockCode } from '../utils';
 
 function block(code: string): Mdx.MdxJsxFlowElement {
   return {
-    type: 'mdxJsxFlowElement', name: 'TsCodeBlock', attributes: [],
+    type: 'mdxJsxFlowElement',
+    name: 'TsCodeBlock',
+    attributes: [],
     children: [{ type: 'mdxFlowExpression', value: JSON.stringify(code) }],
   };
 }

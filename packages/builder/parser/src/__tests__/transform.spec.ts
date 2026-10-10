@@ -65,7 +65,10 @@ describe('post compile pipeline', () => {
       '<MathInline>x</MathInline>',
     ].join('\n'), 'template: custom\n');
     expect(post.utils.getAssetNames()).deep.eq([
-      '@blog/template-custom', '@blog/mdx-katex', '@blog/mdx-font-block', '@blog/mdx-typo',
+      '@blog/template-custom',
+      '@blog/mdx-katex',
+      '@blog/mdx-font-block',
+      '@blog/mdx-typo',
     ]);
     const utilsImports = post.code.match(/^import\s*\{\s*utils\s+as\s+/gm) ?? [];
     expect(utilsImports).length(4);
@@ -80,9 +83,19 @@ describe('post compile pipeline', () => {
       ],
       '@blog/mdx-typo': [
         '/early.js',
-        { src: '/component.js', type: 'module', async: true, crossOrigin: 'anonymous' },
+        {
+          src: '/component.js',
+          type: 'module',
+          async: true,
+          crossOrigin: 'anonymous',
+        },
         { href: '/component.css', media: 'print', crossOrigin: 'use-credentials' },
-        { href: '/font.woff2', as: 'font', type: 'font/woff2', crossOrigin: 'anonymous' },
+        {
+          href: '/font.woff2',
+          as: 'font',
+          type: 'font/woff2',
+          crossOrigin: 'anonymous',
+        },
       ],
     };
     // 同时验证 estree 和格式化后的模块源码，不依赖测试替身重建资源配置。
@@ -91,14 +104,26 @@ describe('post compile pipeline', () => {
         'import { Intro } from "@blog/mdx-typo";\n\n<Intro>正文</Intro>', '', format, resources,
       );
       expect(post.utils.getPreScripts()).deep.eq([{ src: '/early.js', defer: true }]);
-      expect(post.utils.getScripts()).deep.eq([{ src: '/component.js', type: 'module', async: true, crossOrigin: 'anonymous' }]);
+      expect(post.utils.getScripts()).deep.eq([
+        {
+          src: '/component.js',
+          type: 'module',
+          async: true,
+          crossOrigin: 'anonymous',
+        },
+      ]);
       expect(post.utils.getStyles()).deep.eq([
         { href: '/layout.css', media: 'screen' },
         { href: '/component.css', media: 'print', crossOrigin: 'use-credentials' },
       ]);
       expect(post.utils.getPreloadAssets()).deep.eq([
         { href: '/later.css', as: 'style' },
-        { href: '/font.woff2', as: 'font', type: 'font/woff2', crossOrigin: 'anonymous' },
+        {
+          href: '/font.woff2',
+          as: 'font',
+          type: 'font/woff2',
+          crossOrigin: 'anonymous',
+        },
       ]);
     }
   });
@@ -131,13 +156,25 @@ describe('post compile pipeline', () => {
     const image = nodes.find((node) => node.type === 'image');
     expect(image?.url).eq('../images/image.jpg');
     const font = nodes.find((node) => node.type === 'mdxJsxFlowElement' && node.name === 'FontBlock');
-    if (font?.type !== 'mdxJsxFlowElement') throw new Error('FontBlock 节点丢失');
+
+    if (font?.type !== 'mdxJsxFlowElement') {
+      throw new Error('FontBlock 节点丢失');
+    }
+
     expect(getChildrenContent(font)).eq('字体内容');
     expect(getAttribute('src', font.attributes)?.value).eq('../fonts/font.otf');
     const block = nodes.find((node) => node.type === 'mdxJsxFlowElement' && node.name === 'TsCodeBlock');
-    if (block?.type !== 'mdxJsxFlowElement') throw new Error('TS 代码节点丢失');
+
+    if (block?.type !== 'mdxJsxFlowElement') {
+      throw new Error('TS 代码节点丢失');
+    }
+
     const expression = block.children[0];
-    if (expression.type !== 'mdxFlowExpression') throw new Error('代码表达式丢失');
+
+    if (expression.type !== 'mdxFlowExpression') {
+      throw new Error('代码表达式丢失');
+    }
+
     expect(JSON.parse(expression.value)).eq(rawCode + '\n');
     expect(nodes.some((node) => node.type === 'delete')).true;
     expect(nodes.some((node) => node.type === 'table')).true;

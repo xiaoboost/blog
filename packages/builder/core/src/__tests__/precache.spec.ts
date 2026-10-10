@@ -3,12 +3,20 @@ import { resolve } from 'path';
 import { runInNewContext } from 'vm';
 import { describe, expect, it } from '@blog/test-toolkit';
 import { buildSync } from 'esbuild';
-import { cacheNames, metadata, messages, policy } from '../plugins/precache/policy';
+import {
+  cacheNames,
+  metadata,
+  messages,
+  policy,
+} from '../plugins/precache/policy';
 import { htmlResources } from '../plugins/precache/resources';
 
 const source = buildSync({
   entryPoints: [resolve(__dirname, '../plugins/precache/sw.ts')],
-  bundle: true, write: false, platform: 'browser', format: 'iife',
+  bundle: true,
+  write: false,
+  platform: 'browser',
+  format: 'iife',
 }).outputFiles[0].text;
 const origin = 'https://blog.test';
 const url = `${origin}/post/`;
@@ -31,13 +39,19 @@ function setup() {
     keys: async () => [...stores.keys()],
     delete: async (name: string) => stores.delete(name),
     open: async (name: string) => {
-      if (!stores.has(name)) stores.set(name, new Map());
+      if (!stores.has(name)) {
+        stores.set(name, new Map());
+      }
+
       const entries = stores.get(name)!;
       return {
         keys: async () => [...entries.keys()].map((value) => new Request(value)),
         match: async (request: string | { url: string }) => entries.get(key(request))?.clone(),
         put: async (request: string | { url: string }, response: Response) => {
-          if (rejectWrites) throw new Error('quota exceeded');
+          if (rejectWrites) {
+            throw new Error('quota exceeded');
+          }
+
           entries.set(key(request), response.clone());
         },
         delete: async (request: string | { url: string }) => entries.delete(key(request)),
@@ -47,7 +61,13 @@ function setup() {
   function boot() {
     listeners.clear();
     runInNewContext(source, {
-      URL, Request, Response, Headers, TextEncoder, Uint8Array, crypto: webcrypto,
+      URL,
+      Request,
+      Response,
+      Headers,
+      TextEncoder,
+      Uint8Array,
+      crypto: webcrypto,
       Date: class extends Date {
         static now() {
           return now;
@@ -88,7 +108,12 @@ function setup() {
     client(id, page);
     return dispatch('fetch', {
       resultingClientId: id,
-      request: { url: page, mode: 'navigate', method: 'GET', headers: new Headers() },
+      request: {
+        url: page,
+        mode: 'navigate',
+        method: 'GET',
+        headers: new Headers(),
+      },
     });
   }
   async function visit(id = 'page', page = url) {
@@ -99,7 +124,16 @@ function setup() {
   }
   boot();
   return {
-    stores, notices, warnings, requests, clients, client, dispatch, navigate, visit, boot,
+    stores,
+    notices,
+    warnings,
+    requests,
+    clients,
+    client,
+    dispatch,
+    navigate,
+    visit,
+    boot,
     setNetwork: (fn: typeof network) => {
       network = fn;
     },
@@ -114,7 +148,14 @@ function setup() {
       return dispatch('message', { source: clients.get(id), data: { type: messages.ready, url: clients.get(id)!.url, resources: refs } });
     },
     fetch(path: string, options: Record<string, unknown> = {}) {
-      return dispatch('fetch', { request: { url: asset(path), method: 'GET', headers: new Headers(), ...options } });
+      return dispatch('fetch', {
+        request: {
+          url: asset(path),
+          method: 'GET',
+          headers: new Headers(),
+          ...options,
+        },
+      });
     },
   };
 }
@@ -131,7 +172,11 @@ describe('HTML 直接资源声明', () => {
       <link rel=stylesheet href=https://other.test/x.css><img src=/body.png>
       <link rel=preload as=video href=/movie.mp4>`;
     expect(htmlResources(text, url)).deep.eq([
-      asset('a.css?x=1&y=2'), asset('a.js'), asset('font.woff2'), asset('favicon.ico'), asset('hero.webp'),
+      asset('a.css?x=1&y=2'),
+      asset('a.js'),
+      asset('font.woff2'),
+      asset('favicon.ico'),
+      asset('hero.webp'),
     ]);
   });
 });
@@ -173,9 +218,7 @@ describe('页面和资源一起更新', () => {
     const sw = setup();
     sw.setNetwork(async (value) => value === url ? html(document('a', '<img src="/body.jpg">')) : new Response('asset'));
     await sw.visit();
-    expect(sw.requests.sort()).deep.eq([
-      url, asset('a.css'), asset('a.js'),
-    ].sort());
+    expect(sw.requests.sort()).deep.eq([url, asset('a.css'), asset('a.js')].sort());
     sw.requests.length = 0;
     await sw.visit('next');
     expect(sw.requests).deep.eq([url]);
@@ -296,7 +339,9 @@ describe('回收和运行时缓存', () => {
     await sw.visit();
     const store = sw.stores.get(cacheNames.html)!;
     const template = store.get(url)!;
-    for (let index = 0; index < policy.pageLimit; index += 1) store.set(`${origin}/seed/${index}`, template.clone());
+    for (let index = 0; index < policy.pageLimit; index += 1) {
+      store.set(`${origin}/seed/${index}`, template.clone());
+    }
     sw.clients.clear();
     await sw.dispatch('activate').done();
     expect(store.size).eq(policy.pageLimit);
@@ -314,13 +359,17 @@ describe('回收和运行时缓存', () => {
     expect(sw.requests).deep.eq([asset('image.png')]);
     const store = sw.stores.get(cacheNames.runtime)!;
     const template = store.get(asset('image.png'))!;
-    for (let index = 0; index < policy.runtimeLimit; index += 1) store.set(asset(`seed-${index}.png`), template.clone());
+    for (let index = 0; index < policy.runtimeLimit; index += 1) {
+      store.set(asset(`seed-${index}.png`), template.clone());
+    }
     await sw.dispatch('activate').done();
     expect(store.size).eq(policy.runtimeLimit);
     store.clear();
-    const large = new Response('body', { headers: {
-      [metadata.used]: String(Date.now()), [metadata.bytes]: String(policy.runtimeBytes * 0.75),
-    } });
+    const large = new Response('body', {
+      headers: {
+        [metadata.used]: String(Date.now()), [metadata.bytes]: String(policy.runtimeBytes * 0.75),
+      },
+    });
     store.set(asset('one.png'), large.clone());
     store.set(asset('two.png'), large.clone());
     await sw.dispatch('activate').done();
@@ -330,12 +379,15 @@ describe('回收和运行时缓存', () => {
   it('媒体、分段请求、跨域和非 GET 不接管，失败图片不缓存', async () => {
     const sw = setup();
     for (const event of [
-      sw.fetch('movie.mp4'), sw.fetch('sound.mp3'),
+      sw.fetch('movie.mp4'),
+      sw.fetch('sound.mp3'),
       sw.fetch('file', { destination: 'video' }),
       sw.fetch('image.jpg', { headers: new Headers({ range: 'bytes=0-99' }) }),
       sw.fetch('image.jpg', { method: 'POST' }),
       sw.fetch('image.jpg', { url: 'https://elsewhere.test/a.jpg' }),
-    ]) expect(event.response).eq(undefined);
+    ]) {
+      expect(event.response).eq(undefined);
+    }
     sw.setNetwork(async () => new Response('missing', { status: 404 }));
     await sw.fetch('missing.png').done();
     expect(sw.stores.get(cacheNames.runtime)!.size).eq(0);

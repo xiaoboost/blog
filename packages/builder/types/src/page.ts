@@ -1,4 +1,9 @@
-import type { AssetData, PreloadAssetData, ScriptAssetData, StyleAssetData } from './asset';
+import type {
+  AssetData,
+  PreloadAssetData,
+  ScriptAssetData,
+  StyleAssetData,
+} from './asset';
 import type { IFontBucket, IFontBucketConfig, IBuildFontsOptions } from './font';
 import type { PostExportData, PostExportDataWithComponent } from './post';
 

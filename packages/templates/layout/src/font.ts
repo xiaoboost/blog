@@ -4,7 +4,15 @@ import ListItemTitleFontFile from '@blog/styles/fonts/SourceHanSerif/SourceHanSe
 import type { BuildContext } from '@blog/types';
 import SiteTitleFontFile from './assets/fonts/dancing/dancing.ttf?raw';
 import ArchiveYearFontFile from './assets/fonts/Lora/Lora-Regular.ttf?raw';
-import { SiteTitleFontFamily, ListTitleFontFamily, ListTitleFontWeight, ListItemTitleFontFamily, ListItemTitleFontWeight, ArchiveYearFontFamily, ArchiveYearFontWeight } from './constant/font';
+import {
+  SiteTitleFontFamily,
+  ListTitleFontFamily,
+  ListTitleFontWeight,
+  ListItemTitleFontFamily,
+  ListItemTitleFontWeight,
+  ArchiveYearFontFamily,
+  ArchiveYearFontWeight,
+} from './constant/font';
 
 onBuild((runtime) => {
   // 注册共享字体
@@ -20,12 +28,16 @@ onBuild((runtime) => {
   // 注册列表项标题字体
   runtime.hooks.afterReady.tap('layout:list-item-font', ({ pages }: BuildContext) => {
     for (const page of pages) {
-      if (page.type === 'post') continue;
+      if (page.type === 'post') {
+        continue;
+      }
+
       page.ensureFontBucket(
         ListItemTitleFontFamily,
         ListItemTitleFontFile,
         { fontWeight: ListItemTitleFontWeight },
       );
+
       if (page.type === 'year-list') {
         page.ensureFontBucket(
           ArchiveYearFontFamily,

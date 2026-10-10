@@ -3,7 +3,13 @@ import { builtinModules } from 'module';
 import { dirname, isAbsolute } from 'path';
 import { parse } from 'querystring';
 import { isUrl } from '@blog/shared';
-import type { Resolver, ResolveCreatorOptions, ResolveOptions, Query, PathData } from '@blog/types';
+import type {
+  Resolver,
+  ResolveCreatorOptions,
+  ResolveOptions,
+  Query,
+  PathData,
+} from '@blog/types';
 import {
   type ResolveOptions as EnhancedResolveOptions,
   CachedInputFileSystem,
@@ -42,18 +48,19 @@ export function createResolver(options: ResolveCreatorOptions): Resolver {
   const resolveOptions: EnhancedResolveOptions = {
     // @ts-expect-error 文件系统兼容
     fileSystem: new CachedInputFileSystem(fs, 4000),
-    conditionNames: [
-      'import', 'require', 'node',
-    ],
-    mainFields: [
-      'source', 'module', 'main',
-    ],
+    conditionNames: ['import', 'require', 'node'],
+    mainFields: ['source', 'module', 'main'],
     ...options,
   };
   const jsResolver = create.sync({
     ...resolveOptions,
     extensions: [
-      '.jsx', '.tsx', '.mjs', '.js', '.ts', '.json',
+      '.jsx',
+      '.tsx',
+      '.mjs',
+      '.js',
+      '.ts',
+      '.json',
     ],
     preferRelative: false,
   });

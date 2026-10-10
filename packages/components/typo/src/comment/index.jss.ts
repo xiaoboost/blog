@@ -1,4 +1,10 @@
-import { createStyles, createThemeStyles, createToken, FontSizeRegular, Gray } from '@blog/styles/compile';
+import {
+  createStyles,
+  createThemeStyles,
+  createToken,
+  FontSizeRegular,
+  Gray,
+} from '@blog/styles/compile';
 
 const [CommentCornerColorToken, CommentCornerColor] = createToken('comment-corner-color');
 

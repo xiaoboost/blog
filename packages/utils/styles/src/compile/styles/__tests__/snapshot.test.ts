@@ -53,7 +53,10 @@ describe('snapshot — 综合场景', () => {
           '& > strong': {
             fontWeight: 'bold',
             padding: [
-              0, 2, 2.5, 2,
+              0,
+              2,
+              2.5,
+              2,
             ],
           },
         },

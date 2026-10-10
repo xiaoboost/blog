@@ -7,7 +7,12 @@ import Ws from 'koa-websocket';
 
 import type { WebSocket } from 'ws';
 import { staticServe, transformServe } from './middleware';
-import { type HMRData, type DevOptions, HMRKind, HMRUpdateKind } from './types';
+import {
+  type HMRData,
+  type DevOptions,
+  HMRKind,
+  HMRUpdateKind,
+} from './types';
 import { isFileEqual, getHtmlDiff, getAllLocalIp } from './utils';
 
 const pluginName = 'development';

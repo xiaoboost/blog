@@ -4,7 +4,12 @@ import assets from './typo.script';
 export { TextGloss, type TextGlossProps } from './text-gloss';
 export { Subtitle, type SubtitleProps } from './subtitle';
 export { Comment, type CommentProps } from './comment';
-export { ArticleIntro, BookInfo, type ArticleIntroProps, type BookInfoProps } from './intro';
+export {
+  ArticleIntro,
+  BookInfo,
+  type ArticleIntroProps,
+  type BookInfoProps,
+} from './intro';
 export {
   DefinitionList,
   Definition,

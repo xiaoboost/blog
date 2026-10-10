@@ -58,18 +58,22 @@ export abstract class ResourceSet implements IResourceSet {
 
   ensureFontBucket(family: string, source: Buffer, options?: IFontBucketConfig): IFontBucket {
     let bucket = this.#fontBuckets.get(family);
+
     if (!bucket) {
       bucket = new FontBucket({ ...options, fontContent: source, fontFamily: family });
       this.#fontBuckets.set(family, bucket);
     }
+
     return bucket as IFontBucket;
   }
 
   getFontBucket(family: string): IFontBucket {
     const bucket = this.#fontBuckets.get(family);
+
     if (!bucket) {
       throw new Error(`FontBucket "${family}" 未注册`);
     }
+
     return bucket as IFontBucket;
   }
 
@@ -107,7 +111,9 @@ export abstract class ResourceSet implements IResourceSet {
         .filter(([, b]) => !b.isEmpty && !b.isBuilt);
     }
 
-    if (entries.length === 0) return;
+    if (entries.length === 0) {
+      return;
+    }
 
     // 构建字体桶
     await Promise.all(entries.map(([, b]) => b.build({ format, cssFileName, scope })));
@@ -129,7 +135,12 @@ export abstract class ResourceSet implements IResourceSet {
     for (const [, b] of entries) {
       const fontAsset = b.getFont();
       this.addAsset(fontAsset);
-      this.addPreload({ href: fontAsset.path, as: 'font', type: 'font/woff2', crossOrigin: 'anonymous' });
+      this.addPreload({
+        href: fontAsset.path,
+        as: 'font',
+        type: 'font/woff2',
+        crossOrigin: 'anonymous',
+      });
     }
   }
 }

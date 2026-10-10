@@ -3,6 +3,11 @@
   "version": "1.0.0",
   "description": "blog's ESLint configuration",
   "main": "index.mjs",
+  "scripts": {
+    "lint": "eslint --no-error-on-unmatched-pattern --no-quiet --max-warnings=0 \"**/*.mjs\"",
+    "lint:fix": "eslint --fix --no-error-on-unmatched-pattern --no-quiet --max-warnings=0 \"**/*.mjs\"",
+    "test": "node --test tests/*.test.mjs"
+  },
   "dependencies": {
     "@stylistic/eslint-plugin": "5.10.0",
     "eslint": "10.2.1",

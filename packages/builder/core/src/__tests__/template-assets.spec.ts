@@ -5,7 +5,11 @@ import type { TemplateAsset } from '@blog/types';
 describe('模板资源引用', () => {
   it('兼容混合路径数组，自动分类且不丢失图片和字体引用', () => {
     const paths = [
-      '/layout.js', '/layout.css', '/font.woff2', '/image.png', '/layout.js',
+      '/layout.js',
+      '/layout.css',
+      '/font.woff2',
+      '/image.png',
+      '/layout.js',
     ];
     const utils = defineUtils(paths);
     expect(utils.getScripts()).deep.eq([{ src: '/layout.js' }]);
@@ -18,7 +22,12 @@ describe('模板资源引用', () => {
   it('显式配置覆盖普通引用，合并后 head 脚本不回到 body，预加载不会变成样式标签', () => {
     const base = defineUtils(['/shared.js', '/shared.css']);
     const configured = defineUtils([
-      { src: '/shared.js', position: 'head', defer: true, crossOrigin: 'anonymous' },
+      {
+        src: '/shared.js',
+        position: 'head',
+        defer: true,
+        crossOrigin: 'anonymous',
+      },
       { href: '/shared.css', media: 'print' },
       { href: '/later.css', as: 'style' },
       { href: '/font.woff2', as: 'font', media: 'print' },
@@ -30,14 +39,20 @@ describe('模板资源引用', () => {
     expect(merged.getStyles()).deep.eq([{ href: '/shared.css', media: 'print' }]);
     expect(merged.getPreloadAssets()).length(3);
     expect(merged.getAssetNames()).deep.eq([
-      '/shared.js', '/shared.css', '/later.css', '/font.woff2',
+      '/shared.js',
+      '/shared.css',
+      '/later.css',
+      '/font.woff2',
     ]);
     expect(base.getScripts()).deep.eq([{ src: '/shared.js' }]);
   });
 
   it('成组配置只处理 JS，CSS、字体和图片仍按原来的方式收集', () => {
     const paths = [
-      '/theme.js?version=1', '/theme.css', '/font.woff2', '/image.png',
+      '/theme.js?version=1',
+      '/theme.css',
+      '/font.woff2',
+      '/image.png',
     ];
     const utils = defineUtils(withScriptOptions(paths, { position: 'head', type: 'module' }));
     expect(utils.getPreScripts()).deep.eq([{ src: paths[0], type: 'module' }]);
@@ -62,7 +77,10 @@ describe('模板资源引用', () => {
     utils.addAssetNames('/last.css');
     utils.addPreloadAssets({ href: '/font.woff2', as: 'font' });
     expect(utils.getAssetNames()).deep.eq([
-      '/first.css', '/new.js', '/last.css', '/font.woff2',
+      '/first.css',
+      '/new.js',
+      '/last.css',
+      '/font.woff2',
     ]);
   });
 });

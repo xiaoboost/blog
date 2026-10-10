@@ -1,6 +1,12 @@
 import { Builder } from '@blog/core';
 import { expect, describe, it } from '@blog/test-toolkit';
-import type { AssetData, IResourceSet, PageType, ScriptAssetData, StyleAssetData } from '@blog/types';
+import type {
+  AssetData,
+  IResourceSet,
+  PageType,
+  ScriptAssetData,
+  StyleAssetData,
+} from '@blog/types';
 import { before } from 'mocha';
 
 /**
@@ -13,9 +19,11 @@ function extractLinks(html: string): string[] {
 
   for (const match of html.matchAll(attrRegex)) {
     const url = match[1];
+
     if (/^(https?:|\/\/|#|mailto:|tel:|data:)/i.test(url)) {
       continue;
     }
+
     links.push(url);
   }
 
@@ -59,9 +67,7 @@ function linkToAssetPaths(link: string): string[] {
   }
 
   // 无扩展名无斜杠 → 既可能是文件也可能是目录
-  return [
-    normalized, `${normalized}/index.html`, `${normalized}.html`,
-  ];
+  return [normalized, `${normalized}/index.html`, `${normalized}.html`];
 }
 
 describe('博客构建 e2e', () => {
@@ -141,7 +147,10 @@ describe('博客构建 e2e', () => {
                   // 每种页面只选一页，验证所有渲染入口及页面之间的隔离。
                   const selected = new Set<PageType>();
                   for (const page of pages) {
-                    if (selected.has(page.type)) continue;
+                    if (selected.has(page.type)) {
+                      continue;
+                    }
+
                     selected.add(page.type);
                     const preScript: ScriptAssetData = {
                       src: addAsset(page, `test-pre-${page.type}.js`),
@@ -158,7 +167,10 @@ describe('博客构建 e2e', () => {
                       crossOrigin: 'use-credentials',
                     };
                     resourcePages.set(page.toAsset().path, {
-                      type: page.type, preScript, script, style,
+                      type: page.type,
+                      preScript,
+                      script,
+                      style,
                     });
                     page.addPreScript(preScript);
                     page.addScript(script);
@@ -176,6 +188,7 @@ describe('博客构建 e2e', () => {
     await builder.build();
 
     const buildErrors = builder.getErrors();
+
     if (buildErrors.length > 0) {
       errors = buildErrors.map((e) => `${e.name}: ${e.message}`);
     }
@@ -208,6 +221,7 @@ describe('博客构建 e2e', () => {
       for (const link of links) {
         const candidates = linkToAssetPaths(link);
         const found = candidates.some((c) => assetMap.has(c));
+
         if (!found) {
           brokenLinks.push(`${path} → ${link}`);
         }
@@ -231,9 +245,13 @@ describe('博客构建 e2e', () => {
       for (const regex of [cssRegex, jsRegex]) {
         for (const match of html.matchAll(regex)) {
           const src = match[1];
-          if (/^(https?:|\/\/)/i.test(src)) continue;
+
+          if (/^(https?:|\/\/)/i.test(src)) {
+            continue;
+          }
 
           const assetPath = src.startsWith('/') ? src : `/${src}`;
+
           if (!assetMap.has(assetPath)) {
             missingAssets.push(`${path} → ${src}`);
           }
@@ -322,7 +340,11 @@ describe('博客构建 e2e', () => {
     pages.forEach(({ content }, index) => {
       const links = postLinks(content.toString());
       expect(links.length).to.be.within(1, 12);
-      if (index < pages.length - 1) expect(links.length).eq(12);
+
+      if (index < pages.length - 1) {
+        expect(links.length).eq(12);
+      }
+
       actual.push(...links);
     });
     const expected = htmlAssets
@@ -354,11 +376,18 @@ describe('博客构建 e2e', () => {
     for (const { content } of htmlAssets) {
       const html = content.toString();
       const nav = /<nav[^>]+aria-label="文章分页"[^>]*>([\s\S]*?)<\/nav>/.exec(html)?.[1];
-      if (!nav) continue;
+
+      if (!nav) {
+        continue;
+      }
+
       const newer = /<a[^>]+rel="prev"[^>]*>[\s\S]*?新篇<\/a>/.exec(nav);
       const older = /<a[^>]+rel="next"[^>]*>旧闻[\s\S]*?<\/a>/.exec(nav);
       expect(Boolean(newer || older), '缺少有方向语义的翻页链接').true;
-      if (newer && older) expect(newer.index).lessThan(older.index);
+
+      if (newer && older) {
+        expect(newer.index).lessThan(older.index);
+      }
     }
     const pageTwo = assetMap.get('/archive/1/index.html')!.toString();
     expect(pageTwo).match(/href="\/archive\/" rel="prev"/);
@@ -370,7 +399,11 @@ describe('博客构建 e2e', () => {
     const pages = new Map<string, { nav: string; newer?: string; older?: string }>();
     for (const { path, content } of htmlAssets) {
       const nav = /<nav[^>]+aria-label="文章分页"[^>]*>([\s\S]*?)<\/nav>/.exec(content.toString())?.[1];
-      if (!nav) continue;
+
+      if (!nav) {
+        continue;
+      }
+
       pages.set(path.replace(/index\.html$/, ''), {
         nav,
         newer: /href="([^"]+)" rel="prev"/.exec(nav)?.[1],
@@ -379,7 +412,10 @@ describe('博客构建 e2e', () => {
     }
     const counts = new Set<number>();
     for (const [root, first] of pages) {
-      if (first.newer) continue;
+      if (first.newer) {
+        continue;
+      }
+
       const urls: string[] = [];
       let url: string | undefined = root;
       while (url) {
@@ -393,7 +429,11 @@ describe('博客构建 e2e', () => {
         const { nav } = pages.get(pageUrl)!;
         expect(nav.includes('aria-current="page"'), pageUrl).eq(urls.length >= 3);
         expect(/aria-label="第 \d+ 页，共 \d+ 页"/.test(nav), pageUrl).eq(urls.length >= 3);
-        if (urls.length < 3) return;
+
+        if (urls.length < 3) {
+          return;
+        }
+
         expect(nav).include(`aria-current="page" aria-label="第 ${index + 1} 页"`);
         for (const link of nav.matchAll(/href="([^"]+)" aria-label="第 (\d+) 页"/g)) {
           expect(link[1], pageUrl).eq(urls[Number(link[2]) - 1]);
@@ -416,6 +456,7 @@ describe('博客构建 e2e', () => {
 
     for (const { path, content } of htmlAssets) {
       const html = content.toString('utf-8');
+
       if (!/^\s*<!DOCTYPE\s+html/i.test(html)) {
         missingDoctype.push(path);
       }
@@ -546,13 +587,17 @@ describe('博客构建 e2e', () => {
       const scripts = Array.from(html.matchAll(/<script[^>]+src="([^"]+)"/g), (match) => match[1]);
       const references = scripts.filter((src) => src === tooltipPath);
       expect(references.length, path).at.most(1);
+
       if (html.includes(' ls-info="')) {
         withTooltip++;
         expect(references, path).length(1);
         const styles = extractLinks(html).filter((src) => /\/code-block-ts\.[^/]+\.css$/.test(src));
         expect(styles, path).length(1);
       }
-      if (!references.length) withoutScript++;
+
+      if (!references.length) {
+        withoutScript++;
+      }
     }
     expect(withTooltip).greaterThan(0);
     expect(withoutScript).greaterThan(0);
@@ -596,7 +641,12 @@ describe('博客构建 e2e', () => {
 
   it('所有页面类型通过 head 引用普通脚本产物，保留配置和顺序且不泄漏页面专属引用', () => {
     expect([...resourcePages.values()].map(({ type }) => type).sort()).deep.eq([
-      'index', 'post', 'tag-list', 'tag-post-list', 'year-list', 'year-post-list',
+      'index',
+      'post',
+      'tag-list',
+      'tag-post-list',
+      'year-list',
+      'year-post-list',
     ]);
     expect(htmlAssets.length).greaterThan(resourcePages.size);
 
@@ -614,7 +664,11 @@ describe('博客构建 e2e', () => {
         expect(/\bdefer=""/.test(tag), path).eq(Boolean(config.defer));
         expect(/\basync=""/.test(tag), path).eq(Boolean(config.async));
         expect(tag, path).include(`type="${config.type ?? 'text/javascript'}"`);
-        if (config.crossOrigin) expect(tag, path).match(/\bcrossorigin="anonymous"/i);
+
+        if (config.crossOrigin) {
+          expect(tag, path).match(/\bcrossorigin="anonymous"/i);
+        }
+
         expect(assetMap.has(src), `${path} 引用的脚本未输出：${src}`).true;
         expect(assetMap.get(src)!.toString()).include('window.testScriptAsset');
       });

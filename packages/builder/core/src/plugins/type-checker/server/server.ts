@@ -77,6 +77,7 @@ export class LanguageService {
 
     parsedCommand.fileNames.forEach((file) => {
       const content = tsModule.sys.readFile(file);
+
       if (content) {
         files.setScript(file, content);
       }
@@ -179,7 +180,12 @@ export class LanguageService {
         });
       },
       getScriptSnapshot: (fileName: string) => {
-        const { tsModule, files, basePath, tsConfigData } = this;
+        const {
+          tsModule,
+          files,
+          basePath,
+          tsConfigData,
+        } = this;
 
         if (files.has(fileName)) {
           return files.get(fileName)!.snapshot;
@@ -264,7 +270,13 @@ export class LanguageService {
           && item.code !== 6059
         );
       })
-      .map(({ code, file, messageText, start, length }): ErrorData => {
+      .map(({
+        code,
+        file,
+        messageText,
+        start,
+        length,
+      }): ErrorData => {
         const baseData: ErrorData = {
           name: `TS${code}`,
           project: 'Main',

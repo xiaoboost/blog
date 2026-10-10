@@ -5,7 +5,11 @@ import { buildSync } from 'esbuild';
 
 const source = buildSync({
   entryPoints: [resolve(__dirname, '../plugins/development/runtime/utils.ts')],
-  bundle: true, write: false, platform: 'browser', format: 'iife', globalName: 'hmr',
+  bundle: true,
+  write: false,
+  platform: 'browser',
+  format: 'iife',
+  globalName: 'hmr',
 }).outputFiles[0].text;
 
 function setup() {

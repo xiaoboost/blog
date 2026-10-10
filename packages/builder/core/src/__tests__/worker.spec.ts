@@ -32,9 +32,7 @@ describe('WorkerController', () => {
       worker.send('third'),
     ]);
 
-    expect(results).deep.eq([
-      'first', 'second', 'third',
-    ]);
+    expect(results).deep.eq(['first', 'second', 'third']);
     await worker.worker.terminate();
   });
 

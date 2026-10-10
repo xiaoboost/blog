@@ -5,7 +5,8 @@ import {
   type BuilderInstance,
   type BundlerResult,
   type ErrorData,
-  type RunnerCb, type BuildHook,
+  type RunnerCb,
+  type BuildHook,
 } from '@blog/types';
 import { type RunError, runScript } from '@xiao-ai/utils/node';
 import { Instance } from 'chalk';

@@ -1,4 +1,9 @@
-import { HMRKind, type HMRData, type HMRUpdate, HMRUpdateKind } from '../types';
+import {
+  HMRKind,
+  type HMRData,
+  type HMRUpdate,
+  HMRUpdateKind,
+} from '../types';
 import { showError, closeError } from './error';
 
 import {
@@ -37,6 +42,7 @@ function updatePage(updates: HMRUpdate[]) {
     location.reload();
     return;
   }
+
   for (const data of updates) {
     switch (data.kind) {
       case HMRUpdateKind.HTML: {
