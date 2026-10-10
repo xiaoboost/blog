@@ -1,4 +1,9 @@
-import { createStyles, TextTertiary, DurationNormal, DurationFast } from '@blog/styles/compile';
+import {
+  createStyles,
+  TextTertiary,
+  DurationNormal,
+  DurationFast,
+} from '@blog/styles/compile';
 
 export default createStyles({
   invisible: {},

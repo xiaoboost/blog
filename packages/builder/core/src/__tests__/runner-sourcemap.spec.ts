@@ -12,7 +12,8 @@ describe('Runner 调试 source map', function () {
   before(() => {
     // 隔离 inspector，避免开关测试进程或开发者当前连接的调试服务器。
     const child = spawnSync(process.execPath, [
-      '--import', pathToFileURL(require.resolve('tsx')).href,
+      '--import',
+      pathToFileURL(require.resolve('tsx')).href,
       resolve(__dirname, 'fixtures/runner-sourcemap-probe.cjs'),
     ], {
       cwd: resolve(__dirname, '../..'),

@@ -15,12 +15,22 @@ import type {
   SyncHook,
 } from 'tapable';
 import type { AssetData } from './asset';
-import type { BuilderOptions, BuilderInstance, BundlerInstance, RunnerInstance } from './builder';
+import type {
+  BuilderOptions,
+  BuilderInstance,
+  BundlerInstance,
+  RunnerInstance,
+} from './builder';
 import type { ErrorData } from './error';
 import type { BuildContext, BuildContextWithPage } from './page';
 import type { PostBasicData, PostExportData } from './post';
 
-export { OnResolveArgs, OnResolveResult, OnLoadResult, OnLoadArgs } from 'esbuild';
+export {
+  OnResolveArgs,
+  OnResolveResult,
+  OnLoadResult,
+  OnLoadArgs,
+} from 'esbuild';
 
 /** resolve 回调返回参数 */
 export type OnResolveCallbackResult = OnResolveResult | null | undefined | void;

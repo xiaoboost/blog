@@ -5,9 +5,11 @@ export function getNodeText(node: any): string {
   if ('children' in node && Array.isArray(node.children)) {
     return node.children.map(getNodeText).join('');
   }
+
   if ('value' in node) {
     return String(node.value);
   }
+
   return '';
 }
 

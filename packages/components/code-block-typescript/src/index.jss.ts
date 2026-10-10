@@ -9,7 +9,13 @@ import {
   CodeSyntaxProperty,
   CodeSyntaxOperator,
 } from '@blog/mdx-code-block-normal/theme';
-import { createStyles, FontCode, DurationNormal, DurationFast, FontSizeSm } from '@blog/styles/compile';
+import {
+  createStyles,
+  FontCode,
+  DurationNormal,
+  DurationFast,
+  FontSizeSm,
+} from '@blog/styles/compile';
 import { lsInfoAttrName } from './constant';
 import {
   LspInfoBg,

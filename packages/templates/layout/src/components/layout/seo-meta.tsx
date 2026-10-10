@@ -3,7 +3,13 @@ import React from 'react';
 import { toAbsoluteUrl } from './absolute-url';
 import type { LayoutProps } from '.';
 
-export function SeoMeta({ pageTitle, pathname, author, description, keywords }: LayoutProps) {
+export function SeoMeta({
+  pageTitle,
+  pathname,
+  author,
+  description,
+  keywords,
+}: LayoutProps) {
   const { site } = useRenderContext();
   const canonicalUrl = toAbsoluteUrl(site.origin, pathname);
   const metaAuthor = author ?? site.author;

@@ -16,9 +16,7 @@ const baseOptions: Record<string, yargs.Options> = {
     type: 'string',
     describe: '输出日志等级',
     default: 'Info',
-    choices: [
-      'Debug', 'Info', 'Error',
-    ],
+    choices: ['Debug', 'Info', 'Error'],
   },
   debug: {
     type: 'boolean',

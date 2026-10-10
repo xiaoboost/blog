@@ -4,7 +4,13 @@ import { createResolver } from '../utils';
 
 const pluginName = 'resolver';
 const defaultExts = [
-  '.mjs', '.js', '.jsx', '.ts', '.tsx', '.json', '.css',
+  '.mjs',
+  '.js',
+  '.jsx',
+  '.ts',
+  '.tsx',
+  '.json',
+  '.css',
 ];
 
 export const Resolver = (): BuilderPlugin => ({

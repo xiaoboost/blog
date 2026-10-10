@@ -32,7 +32,13 @@ export class BuilderError extends Error implements ErrorData {
   }
 
   toString(printer: Chalk = chalk) {
-    const { project, name, message: msg, filePath, codeFrame } = this;
+    const {
+      project,
+      name,
+      message: msg,
+      filePath,
+      codeFrame,
+    } = this;
 
     let message = '';
 

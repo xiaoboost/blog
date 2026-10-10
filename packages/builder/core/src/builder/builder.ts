@@ -11,7 +11,12 @@ import type {
 } from '@blog/types';
 import { Watcher } from '@xiao-ai/utils';
 import { FSWatcher } from 'chokidar';
-import { AsyncSeriesHook, AsyncParallelHook, AsyncSeriesWaterfallHook, SyncHook } from 'tapable';
+import {
+  AsyncSeriesHook,
+  AsyncParallelHook,
+  AsyncSeriesWaterfallHook,
+  SyncHook,
+} from 'tapable';
 import { Bundler } from '../bundler';
 import { Runner } from '../runner';
 import { BuilderError, Logger } from '../utils';
@@ -141,7 +146,10 @@ export class Builder implements BuilderInstance {
     if (watch) {
       this.watcher = new FSWatcher({
         ignored: [
-          'node_modules', '.git', '.gitignore', outDir,
+          'node_modules',
+          '.git',
+          '.gitignore',
+          outDir,
         ],
         cwd: root,
       });
@@ -165,6 +173,7 @@ export class Builder implements BuilderInstance {
   addWatchFiles(...files: string[]) {
     files.forEach((file) => {
       const fullPath = normalize(file);
+
       if (!this.watchFiles.has(fullPath)) {
         this.watchFiles.add(fullPath);
         this.watcher?.add(fullPath);

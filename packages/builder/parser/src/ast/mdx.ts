@@ -29,15 +29,22 @@ export function createJsonExpression(value: JsonValue): EsTree.Expression {
   if (Array.isArray(value)) {
     return { type: 'ArrayExpression', elements: value.map(createJsonExpression) };
   }
+
   if (value !== null && typeof value === 'object') {
     return {
       type: 'ObjectExpression',
       properties: Object.entries(value).map(([key, item]) => ({
-        type: 'Property', kind: 'init', method: false, shorthand: false, computed: false,
-        key: { type: 'Literal', value: key }, value: createJsonExpression(item),
+        type: 'Property',
+        kind: 'init',
+        method: false,
+        shorthand: false,
+        computed: false,
+        key: { type: 'Literal', value: key },
+        value: createJsonExpression(item),
       })),
     };
   }
+
   return { type: 'Literal', value };
 }
 

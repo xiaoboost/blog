@@ -20,6 +20,7 @@ export function toRound(origin: number, bits = 6) {
 
   // 插入小数点
   let str = '';
+
   if (toInt === 0) {
     str = round;
   }

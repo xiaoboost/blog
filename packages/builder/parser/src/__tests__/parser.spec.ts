@@ -33,9 +33,7 @@ describe('parser stages', () => {
     const ast = await parse('/test/post.mdx', source, { lsp: true });
     const types: string[] = [];
     visit(ast, (node) => types.push(node.type));
-    expect(types).include.members([
-      'inlineMath', 'code', 'table',
-    ]);
+    expect(types).include.members(['inlineMath', 'code', 'table']);
     expect(types).not.include('mdxjsEsm');
     expect(types).not.include('mdxJsxFlowElement');
   });

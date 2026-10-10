@@ -33,7 +33,12 @@ export async function prepareDebugScript(
   cacheDirectory: string,
   runnerId: number,
 ): Promise<string> {
-  const { source, sourceMap, sourcePath, sourceMapPath } = result;
+  const {
+    source,
+    sourceMap,
+    sourcePath,
+    sourceMapPath,
+  } = result;
 
   if (!inspectorUrl() || !sourceMap || !sourcePath || !sourceMapPath) {
     return source;

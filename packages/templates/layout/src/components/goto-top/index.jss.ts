@@ -1,4 +1,10 @@
-import { createStyles, TextSecondary, BgSecondary, BorderPrimary, DurationNormal } from '@blog/styles/compile';
+import {
+  createStyles,
+  TextSecondary,
+  BgSecondary,
+  BorderPrimary,
+  DurationNormal,
+} from '@blog/styles/compile';
 import { GotoTopShadow } from '../../styles/theme/token';
 
 export default createStyles({

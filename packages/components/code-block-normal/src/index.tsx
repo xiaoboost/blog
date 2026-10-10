@@ -7,7 +7,12 @@ import React from 'react';
 import script from './code-block.script';
 import styles from './index.jss';
 
-import { getHighlightCode, getMinSpaceWidth, addSplitLabel, getLangLabel } from './utils';
+import {
+  getHighlightCode,
+  getMinSpaceWidth,
+  addSplitLabel,
+  getLangLabel,
+} from './utils';
 
 export * from './utils';
 export { styles };
@@ -51,7 +56,14 @@ export interface WrapperProps {
 
 export function CodeBlockWrapper(props: React.PropsWithChildren<WrapperProps>) {
   const { classes } = styles;
-  const { lang, copyText, lineCount, highlightLines = {}, customLines = {}, children } = props;
+  const {
+    lang,
+    copyText,
+    lineCount,
+    highlightLines = {},
+    customLines = {},
+    children,
+  } = props;
   const lines: React.JSX.Element[] = [];
 
   for (let i = 1, lineIndex = 1; i <= lineCount; i++, lineIndex++) {
@@ -135,9 +147,7 @@ export function CodeBlock({ lang, children }: React.PropsWithChildren<CodeBlockP
   const cache = getReference<Map<string, CodeBlockData>>('code-block-normal', new Map());
   const { lines, highlight } = (() => {
     // 缓存的 HTML 含缩进线类名，样式热更新后不能复用旧类名。
-    const key = JSON.stringify([
-      lan, children, classes.codeBlockSplit,
-    ]);
+    const key = JSON.stringify([lan, children, classes.codeBlockSplit]);
 
     if (cache.has(key)) {
       return cache.get(key)!;

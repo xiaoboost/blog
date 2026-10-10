@@ -13,18 +13,25 @@ export const remarkMathComponents: Plugin<[], Mdx.Root> = () => (tree) => {
       const expression = createExpression(node.value);
       return node.type === 'math'
         ? {
-          type: 'mdxJsxFlowElement', name: component, attributes: [],
-          children: [expression], position: node.position,
+          type: 'mdxJsxFlowElement',
+          name: component,
+          attributes: [],
+          children: [expression],
+          position: node.position,
         }
         : {
-          type: 'mdxJsxTextElement', name: component, attributes: [],
-          children: [{ ...expression, type: 'mdxTextExpression' }], position: node.position,
+          type: 'mdxJsxTextElement',
+          name: component,
+          attributes: [],
+          children: [{ ...expression, type: 'mdxTextExpression' }],
+          position: node.position,
         };
     }
 
     if ('children' in node) {
       node.children = node.children.map(transform) as typeof node.children;
     }
+
     return node;
   }
 

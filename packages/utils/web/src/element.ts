@@ -41,9 +41,7 @@ export function getScrollContainer(el: HTMLElement, mode: ScrollMode): Window | 
   let parent = el;
 
   while (parent) {
-    if ([
-      window, document, document.documentElement,
-    ].includes(parent)) {
+    if ([window, document, document.documentElement].includes(parent)) {
       return window;
     }
 

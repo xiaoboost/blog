@@ -1,5 +1,11 @@
 import { readFile } from 'fs/promises';
-import { dirname, isAbsolute, join, basename, parse } from 'path';
+import {
+  dirname,
+  isAbsolute,
+  join,
+  basename,
+  parse,
+} from 'path';
 import { getAccessor, Builder } from '@blog/context/runtime';
 import { normalize, isRootDirectory, toPinyin } from '@blog/node';
 import { getChildrenContent, getAttribute, visit } from '@blog/parser/walk';

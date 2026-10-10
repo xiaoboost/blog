@@ -91,7 +91,9 @@ export function interceptHookMap(
  *   - 入参/出参单位均为`纳秒`
  */
 function mergeIntervals(intervals: Array<{ startAt: bigint; endAt: bigint }>): bigint {
-  if (intervals.length === 0) return 0n;
+  if (intervals.length === 0) {
+    return 0n;
+  }
 
   const sorted = intervals.slice().sort((a, b) =>
     a.startAt < b.startAt ? -1 : a.startAt > b.startAt ? 1 : 0,

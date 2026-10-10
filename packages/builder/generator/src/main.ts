@@ -181,7 +181,12 @@ function createAllPages(): Omit<RenderOptions, 'isPreBuild'> {
         title: nav.index === 0
           ? '归档聚合页'
           : `归档聚合 | 第 ${nav.index + 1} 页`,
-        data: { listTitle: '旧闻与来处', groups, yearRange, ...nav },
+        data: {
+          listTitle: '旧闻与来处',
+          groups,
+          yearRange,
+          ...nav,
+        },
         render: (props) => renderYearListPage({
           ...props,
           listTitle: '旧闻与来处',
@@ -220,7 +225,12 @@ function createAllPages(): Omit<RenderOptions, 'isPreBuild'> {
   return { site, allPages };
 }
 
-async function render({ isPreBuild, site, allPages, ctx }: RenderOptions): Promise<AssetData[]> {
+async function render({
+  isPreBuild,
+  site,
+  allPages,
+  ctx,
+}: RenderOptions): Promise<AssetData[]> {
   const assets: AssetData[] = [];
 
   for (const page of allPages) {
@@ -228,7 +238,12 @@ async function render({ isPreBuild, site, allPages, ctx }: RenderOptions): Promi
       await callHook('beforePageRender', { ...ctx, page });
     }
 
-    page.html = page.render({ page, site, isPreBuild, dev: Builder.options.hmr });
+    page.html = page.render({
+      page,
+      site,
+      isPreBuild,
+      dev: Builder.options.hmr,
+    });
 
     if (!isPreBuild && ctx) {
       await callHook('afterPageRender', { ...ctx, page });
@@ -272,7 +287,12 @@ const main: RunnerCb = async (assets) => {
   await callHook('beforeBuild', ctx);
 
   // 正式构建
-  const htmlAssets = await render({ isPreBuild: false, site, allPages, ctx });
+  const htmlAssets = await render({
+    isPreBuild: false,
+    site,
+    allPages,
+    ctx,
+  });
   const staticAssets = assets.concat(preAssets).concat(htmlAssets);
   const allProcessed = await callHook('processAssets', staticAssets);
 

@@ -9,7 +9,10 @@ onBuild((runtime) => {
   // 注册字体桶
   runtime.hooks.afterReady.tap(PostTemplate, (ctx: BuildContext) => {
     for (const page of ctx.pages) {
-      if (page.type !== 'post') continue;
+      if (page.type !== 'post') {
+        continue;
+      }
+
       page.ensureFontBucket(
         PrimaryTitleFont.fontFamily,
         PrimaryTitleFontFile,

@@ -28,7 +28,11 @@ export function createInlineReveal(description: HTMLElement, classes: typeof sty
   measure.append(measuredDescription);
   // 字距也受夹注外紧接的标点影响，测量时保留这段行内上下文。
   const following = description.nextSibling || description.parentElement!.nextSibling;
-  if (following) measure.append(following.cloneNode(true));
+
+  if (following) {
+    measure.append(following.cloneNode(true));
+  }
+
   description.parentElement!.append(measure);
 
   const measuredSource = measuredDescription.querySelector<HTMLElement>(`.${classes.glossDescriptionText}`)!;
@@ -59,7 +63,14 @@ export function createInlineReveal(description: HTMLElement, classes: typeof sty
       prefixRange.setEnd(node, index);
       prefixMeasure.replaceChildren(prefixRange.cloneContents());
       const prefixWidth = prefixMeasure.getBoundingClientRect().width;
-      glyphs.push({ node: node as Text, start: index, end, left: textWidth, right, prefixWidth });
+      glyphs.push({
+        node: node as Text,
+        start: index,
+        end,
+        left: textWidth,
+        right,
+        prefixWidth,
+      });
       textWidth = right;
     }
   }
@@ -85,8 +96,13 @@ export function createInlineReveal(description: HTMLElement, classes: typeof sty
 
       const next = glyphs.find((glyph) => glyph.right > width);
       range.selectNodeContents(source);
-      if (next) range.setEnd(next.node, next.start);
+
+      if (next) {
+        range.setEnd(next.node, next.start);
+      }
+
       const content = range.cloneContents();
+
       if (next && width > 0) {
         // 复制末尾字形的强调、链接等行内格式，字形本身保持原字号。
         let partial: Node = document.createTextNode(next.node.data.slice(next.start, next.end));
@@ -107,6 +123,7 @@ export function createInlineReveal(description: HTMLElement, classes: typeof sty
         clip.append(partial);
         content.append(clip);
       }
+
       visual.replaceChildren(content);
     },
     dispose() {

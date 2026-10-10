@@ -49,6 +49,7 @@ export function reloadJS(file: string, code: string) {
     script.getAttribute('src')?.split('?')[0] === file.split('?')[0]
     && (document.head.contains(script) || script.type === 'module' || script.defer || script.async || script.crossOrigin)
   ));
+
   if (needsReload) {
     // 保留 head 脚本及带加载配置的脚本的执行时机、模块类型和请求方式。
     location.reload();

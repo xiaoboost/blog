@@ -1,4 +1,12 @@
-import { createStyles, TextPrimary, FontSizeMd, RadiusLg, DurationSlow, DurationNormal, DurationFast } from '@blog/styles/compile';
+import {
+  createStyles,
+  TextPrimary,
+  FontSizeMd,
+  RadiusLg,
+  DurationSlow,
+  DurationNormal,
+  DurationFast,
+} from '@blog/styles/compile';
 import { maxHeight } from './constant';
 import {
   FogGradientLeft,

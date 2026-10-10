@@ -19,7 +19,10 @@ serviceWorker?.addEventListener('message', (event) => {
 });
 
 async function ready() {
-  if (!serviceWorker) return;
+  if (!serviceWorker) {
+    return;
+  }
+
   const registration = await serviceWorker.ready;
   const resources = new Set<string>();
   // 报告当前 DOM 实际声明的资源，不能用缓存中新 HTML 的引用代替旧窗口的引用。
@@ -28,7 +31,10 @@ async function ready() {
       [...element.attributes].map(({ name, value }) => [name.toLowerCase(), value]),
     );
     const resource = declaredResource(element.tagName, attrs, document.baseURI);
-    if (resource) resources.add(resource);
+
+    if (resource) {
+      resources.add(resource);
+    }
   }
   // 首次安装时当前页可能还没有 controller，仍可通知已激活的 SW 预热当前文章。
   (serviceWorker.controller ?? registration.active)?.postMessage({

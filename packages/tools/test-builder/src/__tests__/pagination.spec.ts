@@ -3,17 +3,33 @@ import { describe, expect, it } from '@blog/test-toolkit';
 
 describe('分页页码', () => {
   it('少量页码完整显示，大量页码保留首尾及当前位置', () => {
-    expect(getPageIndexes(1, 3)).deep.eq([
-      0, 1, 2,
-    ]);
+    expect(getPageIndexes(1, 3)).deep.eq([0, 1, 2]);
     expect(getPageIndexes(0, 20)).deep.eq([
-      0, 1, 2, 3, 4, 'gap', 19,
+      0,
+      1,
+      2,
+      3,
+      4,
+      'gap',
+      19,
     ]);
     expect(getPageIndexes(9, 20)).deep.eq([
-      0, 'gap', 8, 9, 10, 'gap', 19,
+      0,
+      'gap',
+      8,
+      9,
+      10,
+      'gap',
+      19,
     ]);
     expect(getPageIndexes(19, 20)).deep.eq([
-      0, 'gap', 15, 16, 17, 18, 19,
+      0,
+      'gap',
+      15,
+      16,
+      17,
+      18,
+      19,
     ]);
   });
 

@@ -33,6 +33,7 @@ export function getHtmlDiff(html1: string, html2: string, path: string): HMRUpda
     const head = /<head>[\s\S]*?<\/head>/.exec(html)?.[0] ?? '';
     return scripts(head);
   };
+
   // 资源引用、标签配置或脚本位置变化时刷新；标题、meta 等变化不应扩大为整页刷新。
   if (
     JSON.stringify(styles(html1)) !== JSON.stringify(styles(html2))
@@ -41,6 +42,7 @@ export function getHtmlDiff(html1: string, html2: string, path: string): HMRUpda
   ) {
     return [{ kind: HMRUpdateKind.Reload, path }];
   }
+
   const bodyMatcher = /(<body>[\d\D]*<\/body>)<\/html>/;
   const body1 = bodyMatcher.exec(html1);
   const body2 = bodyMatcher.exec(html2);

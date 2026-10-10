@@ -20,6 +20,7 @@ export function callHook<T extends keyof RuntimeHooks>(
 /** 替换资源 */
 export function replaceAsset(assets: string[], oldAsset: string, newAsset: string): void {
   const index = assets.indexOf(oldAsset);
+
   if (index !== -1) {
     assets[index] = newAsset;
   }

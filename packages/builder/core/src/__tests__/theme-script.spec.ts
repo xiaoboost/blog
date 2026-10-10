@@ -15,9 +15,14 @@ async function bundleTheme(mode: 'production' | 'development') {
     stdin: {
       // 与 script-loader 一样移除仅用于类型检查的虚拟导出。
       contents: source.replace(/export default assets;/, ''),
-      loader: 'ts', resolveDir: dirname(themePath), sourcefile: themePath,
+      loader: 'ts',
+      resolveDir: dirname(themePath),
+      sourcefile: themePath,
     },
-    bundle: true, write: false, platform: 'browser', format: 'iife',
+    bundle: true,
+    write: false,
+    platform: 'browser',
+    format: 'iife',
     define: { 'process.env.NODE_ENV': JSON.stringify(mode) },
   });
   return result.outputFiles[0].text;
@@ -43,7 +48,8 @@ function eventTarget() {
 function createButton() {
   return {
     ...eventTarget(),
-    title: '', disabled: true,
+    title: '',
+    disabled: true,
     attributes: new Map<string, string>(),
     setAttribute(name: string, value: string) {
       this.attributes.set(name, value);
@@ -70,22 +76,37 @@ function createPage(saved: string | null = null, storageBlocked = false) {
     document,
     localStorage: {
       getItem(key: string) {
-        if (storageBlocked) throw new Error('storage blocked');
+        if (storageBlocked) {
+          throw new Error('storage blocked');
+        }
+
         return storage.get(key) ?? null;
       },
       setItem(key: string, value: string) {
-        if (storageBlocked) throw new Error('storage blocked');
+        if (storageBlocked) {
+          throw new Error('storage blocked');
+        }
+
         storage.set(key, value);
       },
       removeItem(key: string) {
-        if (storageBlocked) throw new Error('storage blocked');
+        if (storageBlocked) {
+          throw new Error('storage blocked');
+        }
+
         storage.delete(key);
       },
     },
   });
   context.window = context;
   const mountButton = () => (button = createButton());
-  return { context, document, storage, mountButton, queryCount: () => queries };
+  return {
+    context,
+    document,
+    storage,
+    mountButton,
+    queryCount: () => queries,
+  };
 }
 
 describe('head 主题脚本', () => {
@@ -97,7 +118,11 @@ describe('head 主题脚本', () => {
     [production, development] = await Promise.all([bundleTheme('production'), bundleTheme('development')]);
     hmr = (await build({
       entryPoints: [resolve(__dirname, '../plugins/development/runtime/module.ts')],
-      bundle: true, write: false, platform: 'browser', format: 'iife', globalName: 'hmrRuntime',
+      bundle: true,
+      write: false,
+      platform: 'browser',
+      format: 'iife',
+      globalName: 'hmrRuntime',
     })).outputFiles[0].text;
   });
 

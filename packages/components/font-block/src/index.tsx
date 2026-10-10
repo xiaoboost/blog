@@ -139,7 +139,9 @@ onBuild((runtime) => {
           const post = d.post;
           const fontDataList = getCustomTextByPost(post);
 
-          if (fontDataList.length === 0) return;
+          if (fontDataList.length === 0) {
+            return;
+          }
 
           const families: string[] = [];
 

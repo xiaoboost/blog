@@ -13,9 +13,7 @@ export async function getScriptBuilder(entry: string, parent: BuilderInstance) {
       name: 'Script',
       write: false,
       logLevel: 'Silence',
-      plugins: [
-        AssetExtractor(), Transformer(), JssLoader({ extractAsset: true }),
-      ],
+      plugins: [AssetExtractor(), Transformer(), JssLoader({ extractAsset: true })],
     });
 
   if (!builderCache.has(key)) {

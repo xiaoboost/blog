@@ -1,11 +1,18 @@
 import { assets, getGlobalContext, GlobalKey } from '@blog/context/web';
 import { getCurrentScriptSrc } from '@blog/web';
 
-import { getNextThemeMode, getThemeMode, getThemeTitle, ThemeStorageKey, type ThemeMode } from './theme';
+import {
+  getNextThemeMode,
+  getThemeMode,
+  getThemeTitle,
+  ThemeStorageKey,
+  type ThemeMode,
+} from './theme';
 
 // 在 head 中同步恢复偏好，随后加载的 CSS 会直接使用正确的主题。
 try {
   const mode = getThemeMode(localStorage.getItem(ThemeStorageKey));
+
   if (mode === 'auto') {
     delete document.documentElement.dataset.theme;
   }
@@ -81,11 +88,13 @@ function initialize() {
   if (process.env.NODE_ENV === 'development') {
     // head 中的主题脚本先于 HMR 客户端执行，待 DOM 就绪后再读取加载器。
     const moduleLoader = getGlobalContext()[GlobalKey.ModuleLoader];
+
     if (moduleLoader) {
       moduleLoader.install({ currentScript, active });
       return;
     }
   }
+
   active();
 }
 

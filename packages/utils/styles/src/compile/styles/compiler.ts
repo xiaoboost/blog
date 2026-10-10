@@ -17,7 +17,9 @@ interface FlatRule {
 function buildClassMap(styles: Styles, salt?: string): Record<string, string> {
   const map: Record<string, string> = {};
   for (const key of Object.keys(styles)) {
-    if (!key.startsWith('@')) map[key] = generateClassName(key, salt);
+    if (!key.startsWith('@')) {
+      map[key] = generateClassName(key, salt);
+    }
   }
   return map;
 }
@@ -70,9 +72,18 @@ function compileAtRule(
   selector: string,
   classMap: Record<string, string>,
 ): FlatRule[] {
-  if (atKey === '@global') return compileGlobal(value, classMap);
-  if (atKey === '@font-face') return compileFontFace(value);
-  if (atKey.startsWith('@media')) return compileMedia(atKey, value, selector, classMap);
+  if (atKey === '@global') {
+    return compileGlobal(value, classMap);
+  }
+
+  if (atKey === '@font-face') {
+    return compileFontFace(value);
+  }
+
+  if (atKey.startsWith('@media')) {
+    return compileMedia(atKey, value, selector, classMap);
+  }
+
   return [];
 }
 

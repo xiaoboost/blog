@@ -37,7 +37,11 @@ export function resolveSelector(
 
   for (const p of parentParts) {
     const pt = p.trim();
-    if (!pt) continue;
+
+    if (!pt) {
+      continue;
+    }
+
     for (const n of nestedParts) {
       resolved.push(resolveSingle(n.trim(), pt, classMap));
     }
@@ -67,7 +71,11 @@ function resolveSingle(
   // 替换 $ref → 实际 class 名
   result = result.replace(REF_RE, (_match, ref) => {
     const className = classMap[ref];
-    if (className) return `.${className}`;
+
+    if (className) {
+      return `.${className}`;
+    }
+
     return `.${ref}`; // fallback：未找到引用时保持原样
   });
 

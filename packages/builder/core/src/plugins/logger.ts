@@ -22,10 +22,16 @@ function getShortString(current: number, unit: string) {
 
 function getShortTime(time: number) {
   const units = [
-    '毫秒', '秒', '分钟', '小时',
+    '毫秒',
+    '秒',
+    '分钟',
+    '小时',
   ];
   const ranks = [
-    1000, 60, 60, Infinity,
+    1000,
+    60,
+    60,
+    Infinity,
   ];
 
   let current = time;
@@ -41,7 +47,10 @@ function getShortTime(time: number) {
 
 function getShortSize(size: number) {
   const units = [
-    'B', 'kB', 'MB', 'GB',
+    'B',
+    'kB',
+    'MB',
+    'GB',
   ];
 
   let current = size;

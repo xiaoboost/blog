@@ -1,5 +1,10 @@
 import { getScrollContainer, getDataFromEl, isDesktop } from '@blog/web';
-import { supportsPassive, addClassName, removeClassName, MouseButtons } from '@xiao-ai/utils/web';
+import {
+  supportsPassive,
+  addClassName,
+  removeClassName,
+  MouseButtons,
+} from '@xiao-ai/utils/web';
 import type { ScrollMode } from './constant';
 
 import styles from './index.jss';
@@ -228,7 +233,12 @@ export class ScrollBar {
       return;
     }
 
-    const { clientLength: client, scrollLength: scroll, slider, isVertical } = this;
+    const {
+      clientLength: client,
+      scrollLength: scroll,
+      slider,
+      isVertical,
+    } = this;
     const currentOffset = isVertical ? ev.clientY : ev.clientX;
 
     if (mouse.offset === -1) {

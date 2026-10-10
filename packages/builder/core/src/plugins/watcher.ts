@@ -23,6 +23,7 @@ export const Watcher = (): BuilderPlugin => ({
         const changeFiles = Array.from(changeMap.values());
         builder.setChangeFiles(...changeFiles);
         await builder.hooks.filesChange.promise(changeFiles);
+
         if (builder.shouldBuild) {
           await builder.build();
         }

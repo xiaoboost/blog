@@ -30,7 +30,12 @@ export function Pagination({ newer, older, numbered }: PaginationProps) {
     <nav className={classes.pagination} aria-label="文章分页">
       <div className={classes.newer}>
         {newer && (
-          <a className={classes.paginationAction} href={normalizeUrl(newer)} rel="prev" aria-label="新篇">
+          <a
+            className={classes.paginationAction}
+            href={normalizeUrl(newer)}
+            rel="prev"
+            aria-label="新篇"
+          >
             <ArrowLeft />
             {' 新篇'}
           </a>
@@ -42,9 +47,28 @@ export function Pagination({ newer, older, numbered }: PaginationProps) {
             if (index === 'gap') {
               return <span key={`gap-${position}`} className={classes.pageNumber} aria-hidden="true">…</span>;
             }
+
             return index === numbered.index
-              ? <span key={index} className={classes.pageNumber} aria-current="page" aria-label={`第 ${index + 1} 页`}>{index + 1}</span>
-              : <a key={index} className={classes.pageNumber} href={normalizeUrl(numbered.urlForIndex(index))} aria-label={`第 ${index + 1} 页`}>{index + 1}</a>;
+              ? (
+                <span
+                  key={index}
+                  className={classes.pageNumber}
+                  aria-current="page"
+                  aria-label={`第 ${index + 1} 页`}
+                >
+                  {index + 1}
+                </span>
+              )
+              : (
+                <a
+                  key={index}
+                  className={classes.pageNumber}
+                  href={normalizeUrl(numbered.urlForIndex(index))}
+                  aria-label={`第 ${index + 1} 页`}
+                >
+                  {index + 1}
+                </a>
+              );
           })}
           <span className={classes.pageCount} aria-label={`第 ${numbered.index + 1} 页，共 ${numbered.count} 页`}>
             {`第 ${numbered.index + 1} / ${numbered.count} 页`}
@@ -53,7 +77,12 @@ export function Pagination({ newer, older, numbered }: PaginationProps) {
       )}
       <div className={classes.older}>
         {older && (
-          <a className={classes.paginationAction} href={normalizeUrl(older)} rel="next" aria-label="旧闻">
+          <a
+            className={classes.paginationAction}
+            href={normalizeUrl(older)}
+            rel="next"
+            aria-label="旧闻"
+          >
             {'旧闻 '}
             <ArrowRight />
           </a>

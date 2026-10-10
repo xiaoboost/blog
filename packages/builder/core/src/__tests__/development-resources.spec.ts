@@ -7,7 +7,11 @@ import { getHtmlDiff } from '../plugins/development/utils';
 
 const bundle = (file: string, globalName: string) => buildSync({
   entryPoints: [resolve(__dirname, file)],
-  bundle: true, write: false, platform: 'browser', format: 'iife', globalName,
+  bundle: true,
+  write: false,
+  platform: 'browser',
+  format: 'iife',
+  globalName,
 }).outputFiles[0].text;
 
 describe('按需资源热更新', () => {
@@ -40,7 +44,10 @@ describe('按需资源热更新', () => {
     expect(getHtmlDiff(html(first), html(), path)).deep.eq(reload);
     expect(getHtmlDiff(html(first), html(first.replace('theme.js', 'theme.v2.js')), path)).deep.eq(reload);
     for (const attr of [
-      'defer=""', 'async=""', 'type="module"', 'crossorigin="anonymous"',
+      'defer=""',
+      'async=""',
+      'type="module"',
+      'crossorigin="anonymous"',
     ]) {
       expect(getHtmlDiff(html(first), html(first.replace('<script ', `<script ${attr} `)), path))
         .deep.eq(reload);
@@ -55,9 +62,7 @@ describe('按需资源热更新', () => {
 
   it('样式路径不变、媒体条件或跨域配置变化时整页刷新', () => {
     const style = '<link rel="stylesheet" href="/styles/test.css">';
-    for (const attr of [
-      'media="print"', 'media="screen and (min-width: 768px)"', 'crossorigin="anonymous"',
-    ]) {
+    for (const attr of ['media="print"', 'media="screen and (min-width: 768px)"', 'crossorigin="anonymous"']) {
       expect(getHtmlDiff(html(style), html(style.replace('<link ', `<link ${attr} `)), path))
         .deep.eq([{ kind: HMRUpdateKind.Reload, path }]);
     }
@@ -66,8 +71,12 @@ describe('按需资源热更新', () => {
   it('head 或带加载配置的 body 脚本更新时通过刷新保留其执行语义', () => {
     const runtime = bundle('../plugins/development/runtime/utils.ts', 'hmr');
     for (const config of [
-      { head: true }, { type: 'module' }, { defer: true }, { async: true },
-      { crossOrigin: 'anonymous' }, { crossOrigin: 'use-credentials' },
+      { head: true },
+      { type: 'module' },
+      { defer: true },
+      { async: true },
+      { crossOrigin: 'anonymous' },
+      { crossOrigin: 'use-credentials' },
     ]) {
       let reloads = 0;
       const context = createContext({
@@ -89,9 +98,7 @@ describe('按需资源热更新', () => {
     runInContext(bundle('../plugins/development/runtime/utils.ts', 'hmr'), context);
     expect(context.hmr.isHTMLFile('/index.html')).true;
     expect(context.hmr.isHTMLFile(path)).false;
-    for (const pathname of [
-      '/posts/test', '/posts/test/', path,
-    ]) {
+    for (const pathname of ['/posts/test', '/posts/test/', path]) {
       context.location.pathname = pathname;
       expect(context.hmr.isHTMLFile(path)).true;
       expect(context.hmr.isHTMLFile('/posts/test/other/index.html')).false;
@@ -101,7 +108,12 @@ describe('按需资源热更新', () => {
   it('同文件内的模块连续更新仍按原文件路径卸载，不影响其他文件', () => {
     const runtime = bundle('../plugins/development/runtime/utils.ts', 'hmr');
     const helper = bundle('../../../../utils/web/src/element.ts', 'web');
-    const context = createContext({ window: {}, active: 0, removed: 0, ids: [] as string[] });
+    const context = createContext({
+      window: {},
+      active: 0,
+      removed: 0,
+      ids: [] as string[],
+    });
     const scripts: unknown[] = [];
     const externalScripts: { getAttribute: (name: string) => string | null }[] = [];
     const document = {
@@ -155,7 +167,9 @@ describe('按需资源热更新', () => {
       expect(scripts).length(0);
     }
     expect(context.ids).deep.eq([
-      '/scripts/post.js', '/scripts/post.js', '/scripts/other.js',
+      '/scripts/post.js',
+      '/scripts/post.js',
+      '/scripts/other.js',
       ...Array(6).fill('/scripts/post.js'),
     ]);
   });

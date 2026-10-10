@@ -1,7 +1,12 @@
 import { runInNewContext } from 'vm';
 import { defineUtils, mergeUtils } from '@blog/context/runtime';
 import type { PostExportData, TemplateAsset } from '@blog/types';
-import { JsxEmit, ModuleKind, ScriptTarget, transpileModule } from 'typescript';
+import {
+  JsxEmit,
+  ModuleKind,
+  ScriptTarget,
+  transpileModule,
+} from 'typescript';
 import { transform } from '../post';
 
 export function postSource(content: string, meta = '') {
@@ -28,10 +33,14 @@ export async function compilePost(
   runInNewContext(js, {
     exports,
     require(source: string) {
-      if (source.endsWith('/jsx-runtime')) return { jsx, jsxs: jsx, Fragment: 'Fragment' };
+      if (source.endsWith('/jsx-runtime')) {
+        return { jsx, jsxs: jsx, Fragment: 'Fragment' };
+      }
+
       if (source === '@blog/context/runtime') {
         return { mergeUtils };
       }
+
       return new Proxy({ utils: defineUtils(resources[source] ?? [source]) }, {
         get(target, key) {
           return key === 'utils' ? target.utils : `${source}.${String(key)}`;

@@ -96,7 +96,19 @@ export function isDesktop(): boolean {
 
 export function isTelevision(): boolean {
   return [
-    'googletv', 'viera', 'smarttv', 'internet.tv', 'netcast', 'nettv', 'appletv',
-    'boxee', 'kylo', 'roku', 'dlnadoc', 'pov_tv', 'hbbtv', 'ce-html',
+    'googletv',
+    'viera',
+    'smarttv',
+    'internet.tv',
+    'netcast',
+    'nettv',
+    'appletv',
+    'boxee',
+    'kylo',
+    'roku',
+    'dlnadoc',
+    'pov_tv',
+    'hbbtv',
+    'ce-html',
   ].some(hasUserAgent);
 }

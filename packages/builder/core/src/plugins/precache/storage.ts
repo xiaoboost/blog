@@ -22,7 +22,11 @@ export function readPage(response: Response): PageInfo | undefined {
     const revision = response.headers.get(metadata.revision);
     const resources: unknown = JSON.parse(decodeURIComponent(response.headers.get(metadata.resources) ?? ''));
     const used = Number(response.headers.get(metadata.used));
-    if (!revision || !used || !Array.isArray(resources) || !resources.every((item) => typeof item === 'string')) return undefined;
+
+    if (!revision || !used || !Array.isArray(resources) || !resources.every((item) => typeof item === 'string')) {
+      return undefined;
+    }
+
     return { revision, resources, used };
   }
   catch {
@@ -41,7 +45,9 @@ export function decorate(
   headers.delete('content-encoding');
   headers.delete('content-length');
   headers.delete('transfer-encoding');
-  for (const [key, value] of Object.entries(values)) headers.set(key, value);
+  for (const [key, value] of Object.entries(values)) {
+    headers.set(key, value);
+  }
   return new Response(body, { status: response.status, statusText: response.statusText, headers });
 }
 
@@ -61,7 +67,9 @@ export async function readClient(id: string): Promise<ClientInfo | undefined> {
 }
 
 export async function saveClient(id: string, info: ClientInfo): Promise<void> {
-  if (id) await (await caches.open(cacheNames.meta)).put(metaUrl(`client/${id}`), Response.json(info));
+  if (id) {
+    await (await caches.open(cacheNames.meta)).put(metaUrl(`client/${id}`), Response.json(info));
+  }
 }
 
 /** 所有调用由 SW 的短事务串行执行；网络请求不占用事务。 */

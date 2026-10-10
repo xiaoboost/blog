@@ -45,7 +45,10 @@ describe('normalizeValue — 属性值规范化', () => {
     expect(normalizeValue('padding', [10, 24])).to.equal('10px 24px');
     expect(normalizeValue('margin', [0, 2])).to.equal('0 2px');
     expect(normalizeValue('margin', [
-      0, 10, 20, 10,
+      0,
+      10,
+      20,
+      10,
     ])).to.equal('0 10px 20px 10px');
   });
 

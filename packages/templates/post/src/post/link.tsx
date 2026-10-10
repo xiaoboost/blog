@@ -17,6 +17,7 @@ onBuild((runtime) => {
 export function Link({ href = '', children, ...props }: Props) {
   const { page } = useRenderContext();
   const { post } = page.data as PageDataMap['post'];
+
   if (href.startsWith('.')) {
     const fullPath = normalize(post.data.filePath, '..', decodeURIComponent(href));
     const linkPost = postPathMap.get(fullPath);
@@ -37,7 +38,12 @@ export function Link({ href = '', children, ...props }: Props) {
   }
 
   return (
-    <a {...props} target="_blank" rel="noreferrer" href={href}>
+    <a
+      {...props}
+      target="_blank"
+      rel="noreferrer"
+      href={href}
+    >
       {children}
     </a>
   );

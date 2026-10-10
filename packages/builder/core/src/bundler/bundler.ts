@@ -12,7 +12,13 @@ import type {
   OnResolveCallbackResult,
   OnLoadCallbackResult,
 } from '@blog/types';
-import { type BuildOptions, type BuildContext, type BuildResult, type OnLoadResult, context } from 'esbuild';
+import {
+  type BuildOptions,
+  type BuildContext,
+  type BuildResult,
+  type OnLoadResult,
+  context,
+} from 'esbuild';
 import { AsyncSeriesBailHook, AsyncSeriesHook, SyncWaterfallHook } from 'tapable';
 import { BridgePlugin } from './bridge';
 import { BundleFileName, isBundleFile } from './utils';
@@ -61,11 +67,14 @@ export class Bundler implements BundlerInstance {
         logLevel: 'silent',
         sourcemap: 'external',
         minify: false,
-        mainFields: [
-          'source', 'module', 'main',
-        ],
+        mainFields: ['source', 'module', 'main'],
         resolveExtensions: [
-          '.ts', '.tsx', '.mjs', '.js', '.jsx', '.json',
+          '.ts',
+          '.tsx',
+          '.mjs',
+          '.js',
+          '.jsx',
+          '.json',
         ],
         publicPath: opt.publicPath,
         external: builtinModules.slice(),

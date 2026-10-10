@@ -37,7 +37,10 @@ export interface DiagnosticData {
 
 /** 不需要样式的数据类型 */
 const infoNoStyleKinds = toBoolMap([
-  'space', 'text', 'lineBreak', 'punctuation',
+  'space',
+  'text',
+  'lineBreak',
+  'punctuation',
 ]);
 
 /** 语言服务器 */
