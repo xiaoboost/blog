@@ -1,6 +1,7 @@
 export * from './builder';
 export * from './plugin';
 export * from './hooks';
+export * from './transform';
 export * from './module-loader';
 export * from './asset';
 export * from './accessor';

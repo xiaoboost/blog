@@ -24,8 +24,9 @@ import type {
 import type { ErrorData } from './error';
 import type { BuildContext, BuildContextWithPage } from './page';
 import type { PostBasicData, PostExportData } from './post';
+import type { TransformState, TransformContext } from './transform';
 
-export {
+export type {
   OnResolveArgs,
   OnResolveResult,
   OnLoadResult,
@@ -125,6 +126,8 @@ export interface BundlerHooks {
   resolve: AsyncSeriesBailHook<[OnResolveArgs], OnResolveCallbackResult>;
   /** 读取文件 */
   load: AsyncSeriesBailHook<[OnLoadArgs], OnLoadCallbackResult>;
+  /** 代码转换 */
+  transform: AsyncSeriesWaterfallHook<[TransformState, TransformContext]>;
   /** 路径请求结果 */
   resolveResult: AsyncSeriesHook<[OnResolveResult, OnResolveArgs]>;
   /** 读取文件结果 */
