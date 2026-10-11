@@ -85,7 +85,12 @@ export function createResolver(options: ResolveCreatorOptions): Resolver {
     return externals.includes(pkgName);
   };
   const resolver = (request: string, opt?: ResolveOptions) => {
-    const cacheKey = `${request}:${opt?.importer}:${opt?.kind}`;
+    const cacheKey = JSON.stringify([
+      request,
+      opt?.importer,
+      opt?.resolveDir,
+      opt?.kind,
+    ]);
 
     if (resolveCache.has(cacheKey)) {
       return resolveCache.get(cacheKey)!;

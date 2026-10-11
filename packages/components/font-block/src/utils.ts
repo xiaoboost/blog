@@ -1,122 +1,150 @@
-import { readFile } from 'fs/promises';
+import { readFile, stat } from 'fs/promises';
 import {
   dirname,
   isAbsolute,
-  join,
+  resolve,
   basename,
   parse,
 } from 'path';
-import { getAccessor, Builder } from '@blog/context/runtime';
+import { Builder, getAccessor } from '@blog/context/runtime';
 import { normalize, isRootDirectory, toPinyin } from '@blog/node';
-import { getChildrenContent, getAttribute, visit } from '@blog/parser/walk';
-import type { PostExportData } from '@blog/types';
+import type { IPage, PageDataMap } from '@blog/types';
+import React from 'react';
 
-export interface FontBlockData {
-  /** 字体文件原始路径 */
-  originSrc: string;
-  /** 字体文件解析后的路径 */
+interface FontBlockData {
   src: string;
-  /** 字体名称 */
   family: string;
-  /** 原文文本 */
   text: string[];
 }
 
-/** 字体源文件缓存 */
-const fileCache = getAccessor('font-block:source', new Map<string, Buffer>()).get();
-/** 字体 className 缓存 */
-const classCache = getAccessor('font-block:class', new Map<string, string>()).get();
+interface FontFileCache {
+  version: string;
+  content: Buffer;
+}
 
-/** 获取字体完整路径 */
-function resolveFontPath(src: string, postPath: string) {
-  function getBasePath(input: string) {
-    let current = input;
+/** 字体源文件跨构建缓存 */
+const fileCache = getAccessor('font-block:source', new Map<string, FontFileCache>()).get();
+/** 字体请求 */
+const pendingFiles = new Map<string, Promise<Buffer>>();
+/** 页面字体数据 */
+const pageFonts = new WeakMap<IPage, Map<string, FontBlockData>>();
 
-    while (basename(current) !== 'posts' && !isRootDirectory(current)) {
+/** 获取字体路径 */
+export function resolveFontPath(src: string, postPath?: string, baseDir?: string) {
+  if (baseDir !== undefined && !isAbsolute(baseDir)) {
+    throw new Error('FontBlock 的 baseDir 必须是绝对目录，请使用 baseDir={__dirname}');
+  }
+
+  const directory = baseDir ?? (postPath ? dirname(postPath) : undefined);
+  let fontPath: string;
+
+  if (isAbsolute(src)) {
+    fontPath = src;
+  }
+  else if (src.startsWith('@blog/')) {
+    fontPath = Builder.resolve(src, { importer: postPath, resolveDir: directory }).path;
+  }
+  else if (baseDir !== undefined || src.startsWith('.')) {
+    if (!directory) {
+      throw new Error('FontBlock 的相对字体路径需要 baseDir={__dirname}');
+    }
+
+    fontPath = resolve(directory, src);
+  }
+  else {
+    let current = directory;
+
+    while (current && basename(current) !== 'posts' && !isRootDirectory(current)) {
       current = dirname(current);
     }
 
-    if (isRootDirectory(current)) {
-      throw new Error('获取字体路径时计算错误');
+    if (!current || isRootDirectory(current)) {
+      throw new Error('FontBlock 未找到 posts 目录，请显式提供 baseDir={__dirname}');
     }
 
-    return current;
+    fontPath = resolve(current, src);
   }
 
-  function getFontFilePath(input: string, file: string) {
-    if (input.startsWith('.')) {
-      return join(dirname(file), input);
-    }
-    else if (input.startsWith('@blog/')) {
-      return Builder.resolve(input, {
-        importer: file,
-      }).path;
-    }
-    else if (isAbsolute(input)) {
-      return input;
-    }
-    else {
-      return join(getBasePath(file), input);
-    }
-  }
-
-  return normalize(require.resolve(getFontFilePath(src, postPath)));
+  // 先登记再读取，字体被删除或暂时缺失时，重新创建文件也能触发重建。
+  fontPath = normalize(fontPath);
+  Builder.addWatchFiles(fontPath);
+  return fontPath;
 }
 
-/** 获取字体文件原始文件数据 */
-export async function getFontContentBySrc(src: string) {
-  const content = fileCache.has(src) ? fileCache.get(src)! : await readFile(src);
+/** 获取字体块内文本 */
+export function getFontText(children: React.ReactNode): string {
+  if (typeof children === 'string' || typeof children === 'number') {
+    return String(children);
+  }
 
-  if (!fileCache.has(src)) {
-    fileCache.set(src, content);
+  if (React.isValidElement<{ children?: React.ReactNode }>(children)) {
+    return getFontText(children.props.children);
+  }
+
+  if (Array.isArray(children)) {
+    return children.map(getFontText).join('');
+  }
+
+  return '';
+}
+
+/** 编译当前页面内自定义字体 */
+export function getFontData(page: IPage, src: string, baseDir?: string) {
+  const postPath = page.type === 'post'
+    ? (page.data as PageDataMap['post']).post.data.filePath
+    : undefined;
+  const fontPath = resolveFontPath(src, postPath, baseDir);
+  let fonts = pageFonts.get(page);
+
+  if (!fonts) {
+    fonts = new Map();
+    pageFonts.set(page, fonts);
+  }
+
+  let data = fonts.get(fontPath);
+
+  if (!data) {
+    const name = toPinyin(parse(fontPath).name);
+    const used = new Set([...fonts.values()].map((font) => font.family));
+    let family = name;
+    let suffix = 2;
+
+    while (used.has(family) || page.getFontBuckets().has(family)) {
+      family = `${name}-${suffix++}`;
+    }
+
+    data = { src: fontPath, family, text: [] };
+    fonts.set(fontPath, data);
+  }
+
+  return data;
+}
+
+export function getPageFonts(page: IPage) {
+  return [...pageFonts.get(page)?.values() ?? []];
+}
+
+export function getFontContentBySrc(src: string): Promise<Buffer> {
+  let content = pendingFiles.get(src);
+
+  if (!content) {
+    content = stat(src).then(async ({ mtimeMs, ctimeMs, size }) => {
+      const version = `${mtimeMs}:${ctimeMs}:${size}`;
+      const cached = fileCache.get(src);
+
+      if (cached?.version === version) {
+        return cached.content;
+      }
+
+      const buffer = await readFile(src);
+      fileCache.set(src, { version, content: buffer });
+      return buffer;
+    }).catch((error) => {
+      fileCache.delete(src);
+      throw error;
+    });
+    pendingFiles.set(src, content);
   }
 
   return content;
-}
-
-/** 缓存字体 className */
-export function setFontClass(src: string, className: string): void {
-  classCache.set(src, className);
-}
-
-/** 渲染时查找字体 className */
-export function getFontClass(src: string): string | undefined {
-  return classCache.get(src);
-}
-
-/** 获取文章内所有自定义文本 */
-export function getCustomTextByPost({ data: post }: PostExportData) {
-  const result: FontBlockData[] = [];
-
-  visit(post.ast, (node) => {
-    if (node.type !== 'mdxJsxFlowElement' || node.name !== 'FontBlock') {
-      return;
-    }
-
-    const text = getChildrenContent(node);
-    const srcAttr = getAttribute('src', node.attributes)?.value;
-    const src = (srcAttr ?? (srcAttr as any)?.value) as string;
-
-    if (!src) {
-      throw new Error('FontBlock 组件必须含有`src`属性');
-    }
-
-    const fontPath = resolveFontPath(src, post.filePath);
-    const family = toPinyin(parse(fontPath).name);
-    const oldFontData = result.find((item) => item.src === fontPath);
-
-    if (oldFontData) {
-      oldFontData.text.push(text);
-    }
-    else {
-      result.push({
-        originSrc: src,
-        src: fontPath,
-        family,
-        text: [text],
-      });
-    }
-  });
-
-  return result;
 }

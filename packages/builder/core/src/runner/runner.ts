@@ -44,6 +44,8 @@ export class Runner implements RunnerInstance {
       ...initGlobalContext(this.builder, this.hookCallbacks),
       process,
       Buffer,
+      URL,
+      URLSearchParams,
       setTimeout,
       setImmediate,
       setInterval,

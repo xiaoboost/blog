@@ -1,3 +1,11 @@
+import {
+  mkdtemp,
+  mkdir,
+  rm,
+  writeFile,
+} from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join, normalize } from 'node:path';
 import { expect, describe, it } from '@blog/test-toolkit';
 import { parsePath, isCssImport, createResolver } from '../utils/resolve';
 
@@ -58,6 +66,26 @@ describe('isCssImport', () => {
 });
 
 describe('createResolver', () => {
+  it('同一 importer 切换 resolveDir 不复用另一个目录的缓存', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'blog-resolve-dir-'));
+
+    try {
+      const resolve = createResolver({ root });
+      const importer = join(root, 'index.mdx');
+
+      for (const name of ['one', 'two']) {
+        const resolveDir = join(root, name);
+        await mkdir(resolveDir);
+        await writeFile(join(resolveDir, 'font.ttf'), name);
+        expect(normalize(resolve('./font.ttf', { importer, resolveDir }).path))
+          .eq(join(resolveDir, 'font.ttf'));
+      }
+    }
+    finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+
   it('URL 被标记为 external', () => {
     const resolve = createResolver({ root: '/' });
     const result = resolve('https://example.com/style.css');
