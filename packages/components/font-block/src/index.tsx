@@ -1,14 +1,13 @@
-import { onBuild, defineUtils } from '@blog/context/runtime';
-import type { PageDataMap } from '@blog/types';
+import { onBuild, defineUtils, useRenderContext } from '@blog/context/runtime';
 import { stringifyClass } from '@xiao-ai/utils';
 import React from 'react';
 import script from './font-block.script';
 import styles from './index.jss';
 import {
-  getCustomTextByPost,
   getFontContentBySrc,
-  getFontClass,
-  setFontClass,
+  getFontData,
+  getFontText,
+  getPageFonts,
 } from './utils';
 
 const componentName = 'font-block';
@@ -17,11 +16,13 @@ export interface FontBlockProps {
   /**
    * 自定义字体路径
    *
-   * @description 绝对路径
-   * @description 以文章文件路径为主的相对路径
-   * @description 以 posts 路径为的主的缺省路径
+   * @description 支持绝对路径和 @blog 包内路径
+   * @description 传 baseDir 时，相对路径以 baseDir 为准
+   * @description 省略 baseDir 时，./ 相对文章路径，其他路径相对 posts 根目录
    */
   src: string;
+  /** 相对字体路径的基准目录；传 __dirname，省略时沿用文章的旧路径规则。 */
+  baseDir?: string;
   /**
    * 文字方向
    *   - `'horizontal'` - 横向，从上往下
@@ -42,13 +43,13 @@ export interface FontBlockProps {
    *
    * @default 24
    */
-  fontSize: number;
+  fontSize?: number;
   /**
    * 段落间距
    *
    * @default 0
    */
-  paragraphGutter: number;
+  paragraphGutter?: number;
   /**
    * 行高
    *
@@ -69,17 +70,20 @@ export interface FontBlockProps {
    */
   indent?: string | false;
   /** 输入文本 */
-  children: string;
+  children: React.ReactNode;
 }
 
 /** 自定义字体块 */
 export function FontBlock(props: FontBlockProps) {
-  const { children } = (props.children as any).props;
-  const className = getFontClass(props.src);
+  const { page, isPreBuild } = useRenderContext();
+  const children = getFontText(props.children);
+  const data = getFontData(page, props.src, props.baseDir);
 
-  if (!className) {
-    throw new Error(`未发现自定义字体实例：${JSON.stringify(props)}`);
+  if (isPreBuild) {
+    data.text.push(children);
   }
+
+  const className = isPreBuild ? '' : page.getFontBucket(data.family).getClassName();
 
   const {
     direction = 'horizontal',
@@ -129,15 +133,14 @@ export function FontBlock(props: FontBlockProps) {
 export const utils = defineUtils(script);
 
 onBuild((runtime) => {
-  // 预构建之前执行
-  runtime.hooks.afterReady.tapPromise(componentName, async ({ pages, rename }) => {
+  // 预渲染收集完成后构建；排在模板字体之前，保持旧页面 CSS / preload 的顺序。
+  runtime.hooks.beforeBuild.tapPromise({ name: componentName, stage: -100 }, async (ctx) => {
+    const { pages, rename } = ctx;
+
     await Promise.all(
       pages
-        .filter((page) => page.type === 'post')
         .map(async (page) => {
-          const d = page.data as PageDataMap['post'];
-          const post = d.post;
-          const fontDataList = getCustomTextByPost(post);
+          const fontDataList = getPageFonts(page);
 
           if (fontDataList.length === 0) {
             return;
@@ -150,8 +153,6 @@ onBuild((runtime) => {
             const bucket = page.ensureFontBucket(data.family, content);
 
             bucket.addText(...data.text);
-            setFontClass(data.originSrc, bucket.getClassName());
-            setFontClass(data.src, bucket.getClassName());
             families.push(data.family);
           }
 

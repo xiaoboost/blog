@@ -27,34 +27,13 @@ function isExternal(file: string) {
   return true;
 }
 
-function parsePathFromModulePath(path: string) {
-  const matcher = new RegExp(`^([\\d\\D]+)\\_([^_]+)\\_${moduleSuffix}$`);
-  const result = matcher.exec(path);
-
-  if (!result) {
-    throw new Error(`路径解析错误：${path}`);
-  }
-
-  return [result[1], result[2]] as const;
-}
-
-function parsePathFromRequirePath(path: string) {
-  const matcher = new RegExp(`^([\\d\\D]+)\\_${requireSuffix}$`);
-  const result = matcher.exec(path);
-
-  if (!result) {
-    throw new Error(`路径解析错误：${path}`);
-  }
-
-  return result[1];
-}
+type LocalPackageData =
+  | { kind: 'require'; importer: string }
+  | { kind: 'module'; importer: string; request: string };
 
 export const LocalPackageRequirer = (): BuilderPlugin => ({
   name: pluginName,
   apply(builder) {
-    const requireSuffixMatcher = new RegExp(`\\_${requireSuffix}$`);
-    const moduleSuffixMatcher = new RegExp(`\\_${moduleSuffix}$`);
-
     builder.hooks.bundler.tap(pluginName, (bundler) => {
       bundler.hooks.resolve.tap(pluginName, (args) => {
         // 排除 css 引用
@@ -63,10 +42,13 @@ export const LocalPackageRequirer = (): BuilderPlugin => ({
         }
 
         if (args.namespace === pluginName) {
-          if (requireSuffixMatcher.test(args.path)) {
+          const data = args.pluginData as LocalPackageData;
+
+          if (data.kind === 'module' && args.path === `${data.importer}_${requireSuffix}`) {
             return {
               path: args.path,
               namespace: pluginName,
+              pluginData: { kind: 'require', importer: data.importer } satisfies LocalPackageData,
             };
           }
         }
@@ -74,6 +56,11 @@ export const LocalPackageRequirer = (): BuilderPlugin => ({
           return {
             path: `${normalize(args.importer)}_${args.path}_${moduleSuffix}`,
             namespace: pluginName,
+            pluginData: {
+              kind: 'module',
+              importer: normalize(args.importer),
+              request: args.path,
+            } satisfies LocalPackageData,
           };
         }
       });
@@ -83,22 +70,26 @@ export const LocalPackageRequirer = (): BuilderPlugin => ({
           return;
         }
 
-        if (requireSuffixMatcher.test(args.path)) {
-          const file = parsePathFromRequirePath(args.path);
+        const data = args.pluginData as LocalPackageData;
+        const file = data.importer;
+
+        if (data.kind === 'require') {
           return {
             resolveDir: dirname(file),
             loader: 'ts',
+            pluginData: data,
             contents: `
 import { createRequire } from "module";
 export default createRequire("${file}");
             `.trim(),
           };
         }
-        else if (moduleSuffixMatcher.test(args.path)) {
-          const [file, moduleName] = parsePathFromModulePath(args.path);
+        else {
+          const moduleName = data.request;
           return {
             resolveDir: dirname(file),
             loader: 'ts',
+            pluginData: data,
             contents: `
 import localRequire from '${file}_${requireSuffix}';
 export = localRequire('${moduleName}');

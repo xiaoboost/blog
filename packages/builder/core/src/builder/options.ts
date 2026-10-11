@@ -15,6 +15,7 @@ import { PostLoader } from '../plugins/post-loader';
 import { RawLoader } from '../plugins/raw-loader';
 import { Resolver } from '../plugins/resolver';
 import { ScriptLoader } from '../plugins/script-loader';
+import { SourceLocation } from '../plugins/source-location';
 import { getCoreRoot } from '../utils';
 import type { Builder } from './builder';
 
@@ -31,6 +32,7 @@ export async function applyPlugin(builder: Builder) {
   }
 
   Resolver().apply(builder);
+  SourceLocation().apply(builder);
   PathLoader({ test: /\.(plist|wasm)$/ }).apply(builder);
   AssetRenameLoader([
     {
