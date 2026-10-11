@@ -11,6 +11,8 @@ import type {
   OnLoadArgs,
   OnResolveCallbackResult,
   OnLoadCallbackResult,
+  TransformState,
+  TransformContext,
 } from '@blog/types';
 import {
   type BuildOptions,
@@ -19,7 +21,12 @@ import {
   type OnLoadResult,
   context,
 } from 'esbuild';
-import { AsyncSeriesBailHook, AsyncSeriesHook, SyncWaterfallHook } from 'tapable';
+import {
+  AsyncSeriesBailHook,
+  AsyncSeriesHook,
+  AsyncSeriesWaterfallHook,
+  SyncWaterfallHook,
+} from 'tapable';
 import { BridgePlugin } from './bridge';
 import { BundleFileName, isBundleFile } from './utils';
 
@@ -40,6 +47,7 @@ export class Bundler implements BundlerInstance {
       initialization: new SyncWaterfallHook<[BuildOptions]>(['options']),
       resolve: new AsyncSeriesBailHook<[OnResolveArgs], OnResolveCallbackResult>(['resolveArgs']),
       load: new AsyncSeriesBailHook<[OnLoadArgs], OnLoadCallbackResult>(['loadArgs']),
+      transform: new AsyncSeriesWaterfallHook<[TransformState, TransformContext]>(['input', 'context']),
       resolveResult: new AsyncSeriesHook<[OnResolveResult, OnResolveArgs]>(['result', 'args']),
       loadResult: new AsyncSeriesHook<[OnLoadResult, OnLoadArgs]>(['result', 'args']),
     };
