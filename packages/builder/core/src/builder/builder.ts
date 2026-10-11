@@ -35,6 +35,8 @@ export class Builder implements BuilderInstance {
 
   private watchFiles = new Set<string>();
 
+  private watchDirs = new Set<string>();
+
   private changedFiles = new Set<string>();
 
   private errors: BuilderError[] = [];
@@ -44,6 +46,8 @@ export class Builder implements BuilderInstance {
   private children: Builder[] = [];
 
   private buildStatus = new Watcher(false);
+
+  private initialized = false;
 
   readonly parent?: Builder;
 
@@ -67,6 +71,7 @@ export class Builder implements BuilderInstance {
       filesChange: new AsyncParallelHook<[string[]]>(['Files']),
       watcher: new AsyncSeriesHook<[FSWatcher]>(['Watcher']),
       bundler: new SyncHook<[Bundler]>(['Bundler']),
+      beforeBundler: new AsyncSeriesHook<[BuilderHookContext]>(['Context']),
       runner: new SyncHook<[Runner]>(['Runner']),
       afterBundler: new AsyncSeriesHook<[BuilderHookContext]>(['Context']),
       afterRunner: new AsyncSeriesHook<[BuilderHookContext]>(['Context']),
@@ -90,7 +95,7 @@ export class Builder implements BuilderInstance {
   get shouldBuild(): boolean {
     if (
       // watchFiles 为空表示是首次构建
-      this.watchFiles.size === 0
+      (this.watchFiles.size === 0 && this.watchDirs.size === 0)
       // changedFiles 有值表示有文件变更
       || this.changedFiles.size > 0
     ) {
@@ -136,6 +141,10 @@ export class Builder implements BuilderInstance {
   }
 
   async init() {
+    if (this.initialized) {
+      return;
+    }
+
     const { options, root } = this;
     const { watch, outDir } = options;
 
@@ -145,6 +154,7 @@ export class Builder implements BuilderInstance {
 
     if (watch) {
       this.watcher = new FSWatcher({
+        ignoreInitial: true,
         ignored: [
           'node_modules',
           '.git',
@@ -156,6 +166,9 @@ export class Builder implements BuilderInstance {
 
       await this.hooks.watcher.promise(this.watcher);
     }
+
+    this.hooks.bundler.call(this.bundler);
+    this.initialized = true;
   }
 
   isChild() {
@@ -179,6 +192,19 @@ export class Builder implements BuilderInstance {
         this.watcher?.add(fullPath);
       }
     });
+    this.parent?.addWatchFiles(...files);
+  }
+
+  addWatchDirs(...dirs: string[]) {
+    dirs.forEach((dir) => {
+      const fullPath = normalize(dir);
+
+      if (!this.watchDirs.has(fullPath)) {
+        this.watchDirs.add(fullPath);
+        this.watcher?.add(fullPath);
+      }
+    });
+    this.parent?.addWatchDirs(...dirs);
   }
 
   setChangeFiles(...files: string[]) {
@@ -186,8 +212,11 @@ export class Builder implements BuilderInstance {
 
     for (const file of files) {
       const full = normalize(file);
+      const inWatchedDir = [...this.watchDirs].some((dir) =>
+        full === dir || full.startsWith(dir.endsWith('/') ? dir : `${dir}/`),
+      );
 
-      if (this.watchFiles.has(full)) {
+      if (this.watchFiles.has(full) || inWatchedDir) {
         this.changedFiles.add(full);
       }
     }
@@ -275,7 +304,7 @@ export class Builder implements BuilderInstance {
 
     try {
       await this.hooks.start.promise();
-      this.hooks.bundler.call(this.bundler);
+      await this.hooks.beforeBundler.promise(this._getHookContext());
       await this.bundler.bundle();
       await this.hooks.afterBundler.promise(this._getHookContext());
       this.hooks.runner.call(this.runner);

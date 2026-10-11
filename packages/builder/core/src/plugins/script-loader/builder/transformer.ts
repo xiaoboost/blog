@@ -1,5 +1,3 @@
-import { readFile } from 'fs/promises';
-import { dirname } from 'path';
 import type { BuilderPlugin } from '@blog/types';
 
 import * as ts from 'typescript';
@@ -70,19 +68,19 @@ export const Transformer = (): BuilderPlugin => ({
         minify,
       }));
 
-      bundler.hooks.load.tapPromise(pluginName, async (args) => {
-        if (!EntrySuffix.test(args.path)) {
-          return;
+      bundler.hooks.transform.tap(pluginName, (input, ctx) => {
+        if (
+          !input.module.sourcePath || !EntrySuffix.test(input.module.sourcePath)
+          || (input.format !== 'ts' && input.format !== 'js')
+        ) {
+          return input;
         }
 
-        const content = await readFile(args.path, 'utf-8');
+        const content = input.code;
         const newContent = replaceByText(content) ?? replaceByAST(content);
 
-        return {
-          contents: newContent,
-          loader: 'ts',
-          resolveDir: dirname(args.path),
-        };
+        // 沿用旧 loader 和替换算法，先保证迁移产物逐字节一致。
+        return ctx.update(input, { code: newContent, format: 'ts', map: 'identity' });
       });
     });
   },

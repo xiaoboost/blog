@@ -1,4 +1,3 @@
-import { dirname } from 'path';
 import type { BuilderPlugin } from '@blog/types';
 import { getScriptBuilder } from './builder';
 import { EntrySuffix, builderCache } from './utils';
@@ -13,19 +12,21 @@ export const ScriptLoader = (): BuilderPlugin => ({
     } = builder;
 
     builder.hooks.bundler.tap(pluginName, (bundler) => {
-      bundler.hooks.load.tapPromise(pluginName, async (args) => {
-        if (!EntrySuffix.test(args.path)) {
-          return;
+      bundler.hooks.transform.tapPromise(pluginName, async (input, ctx) => {
+        const path = input.module.sourcePath;
+
+        if (!path || !EntrySuffix.test(path)) {
+          return input;
         }
 
-        const scriptBuilder = await getScriptBuilder(args.path, builder);
+        const scriptBuilder = await getScriptBuilder(path, builder, input);
         const assets = scriptBuilder.getAssets();
 
-        return {
-          contents: `export default [\n${assets.map((item) => `  "${item.path}",\n`).join('')}]`,
-          loader: 'js',
-          resolveDir: dirname(args.path),
-        };
+        return ctx.update(input, {
+          code: `export default [\n${assets.map((item) => `  "${item.path}",\n`).join('')}]`,
+          format: 'js',
+          map: null,
+        });
       });
     });
 

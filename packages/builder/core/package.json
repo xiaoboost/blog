@@ -17,6 +17,7 @@
     "url": "https://github.com/xiaoboost/blog"
   },
   "dependencies": {
+    "@ampproject/remapping": "2.3.0",
     "@babel/code-frame": "7.24.2",
     "@blog/builder-generator": "workspace:*",
     "@blog/context": "workspace:*",

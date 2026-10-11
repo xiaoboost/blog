@@ -1,7 +1,9 @@
 import { readFile } from 'fs/promises';
 import { dirname } from 'path';
+import { normalize } from '@blog/node';
 import { transform } from '@blog/parser';
 import type { BuilderPlugin } from '@blog/types';
+import { parsePath } from '../../utils';
 import { mdxMatcher } from './utils';
 
 const pluginName = 'mdx-loader';
@@ -14,12 +16,17 @@ export const MdxLoader = (): BuilderPlugin => ({
 
     builder.hooks.bundler.tap(pluginName, (bundler) => {
       bundler.hooks.resolve.tap(pluginName, (args) => {
-        if (mdxMatcher.test(args.path)) {
+        const { basic, rawQuery } = parsePath(args.path);
+
+        if (mdxMatcher.test(basic)) {
+          const resolved = builder.resolve(basic, args);
           return {
+            ...resolved,
             namespace: pluginName,
             sideEffects: false,
             external: false,
-            path: args.path,
+            path: normalize(resolved.path),
+            suffix: rawQuery === undefined ? undefined : `?${rawQuery}`,
           };
         }
       });
@@ -28,31 +35,24 @@ export const MdxLoader = (): BuilderPlugin => ({
           return;
         }
 
-        const content = await readFile(args.path, 'utf-8');
-        const cacheKey = `${args.path}:\n${content}`;
-        const cacheCode = mdxCache.get(cacheKey);
-        const basicResult = {
-          loader: 'jsx' as const,
+        return {
+          contents: await readFile(args.path, 'utf-8'),
+          source: { sourcePath: args.path, format: 'mdx' },
           watchFiles: [args.path],
           resolveDir: dirname(args.path),
         };
-
-        if (cacheCode) {
-          return {
-            ...basicResult,
-            contents: cacheCode,
-          };
+      });
+      bundler.hooks.transform.tapPromise({ name: pluginName, stage: -100 }, async (input, ctx) => {
+        if (input.module.id.namespace !== pluginName || input.format !== 'mdx' || !input.module.sourcePath) {
+          return input;
         }
 
-        const code = await transform(content, args.path, opt.mode === 'development');
+        const cacheKey = `${input.module.sourcePath}:\n${input.code}`;
+        const code = mdxCache.get(cacheKey)
+          ?? await transform(input.code, input.module.sourcePath, opt.mode === 'development');
 
         mdxCache.set(cacheKey, code);
-
-        return {
-          ...basicResult,
-          contents: code,
-          loader: 'jsx',
-        };
+        return ctx.update(input, { code, format: 'jsx', map: null });
       });
     });
 

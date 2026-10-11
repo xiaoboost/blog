@@ -84,7 +84,7 @@ export const Logger = (): BuilderPlugin => ({
 
     let timer: number;
 
-    builder.hooks.bundler.tap(pluginName, () => {
+    builder.hooks.beforeBundler.tap(pluginName, () => {
       timer = Date.now();
       spinner.text = '代码打包...';
       spinner.start();

@@ -3,7 +3,7 @@ import type { Mode } from './builder';
 /** 源码当前的语法格式，可能不同于原文件扩展名 */
 export type SourceFormat = 'mdx' | 'js' | 'jsx' | 'ts' | 'tsx' | 'css' | 'json';
 
-/** 模块身份与来源；转换时 id 和 sourcePath 保持不变 */
+/** 模块身份与来源 */
 export interface ModuleInfo {
   readonly id: {
     readonly namespace: string;
@@ -14,7 +14,7 @@ export interface ModuleInfo {
   readonly sourcePath?: string;
 }
 
-/** 标准的非分段 source map v3 数据，不绑定具体映射库 */
+/** 标准的非分段 source map v3 数据 */
 export interface SourceMapV3 {
   readonly version: 3;
   readonly file?: string;
@@ -26,9 +26,7 @@ export interface SourceMapV3 {
 }
 
 /**
- * 每步转换接收和返回的完整状态。
- * Waterfall 直接传递返回值，不自动合并部分字段；跳过时返回原状态。
- * 可调用 context.update，也可直接构造新状态；后者需自行维护累计映射。
+ * 每步转换的状态
  */
 export interface TransformState {
   readonly module: ModuleInfo;
@@ -40,7 +38,7 @@ export interface TransformState {
   readonly map: SourceMapV3 | 'identity' | null;
 }
 
-/** 传给 context.update 的本步修改，不可直接作为钩子的返回值 */
+/** 本次修改 */
 export interface TransformChange {
   code: string;
   /** 未指定时沿用当前格式 */
@@ -51,11 +49,15 @@ export interface TransformChange {
   map: SourceMapV3 | 'identity' | null;
 }
 
-/** 单个模块的转换上下文，不在并发模块间共享可变状态 */
+/** 单个模块的转换上下文 */
 export interface TransformContext {
+  /** 当前构建模式 */
   readonly mode: Mode;
-  /** 可选辅助方法：校验并合并修改、连接本步映射，返回新状态；不修改 input */
-  update(input: TransformState, change: TransformChange): TransformState;
+  /** 合并修改 */
+  update(
+    input: Readonly<TransformState>,
+    change: Readonly<TransformChange>,
+  ): Readonly<TransformState>;
   /** 登记插件额外读取的文件依赖 */
   addWatchFile(absolutePath: string): void;
   /** 登记目录依赖，例如需要跟踪文件增删的模板目录 */

@@ -91,7 +91,7 @@ export class Bundler implements BundlerInstance {
         logLimit: 5,
         platform: 'node',
         define: opt.defined,
-        plugins: [BridgePlugin(this)],
+        plugins: [BridgePlugin(this, builder)],
       });
 
       this.instance = await context(esbuildConfig);

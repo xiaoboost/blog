@@ -1,7 +1,8 @@
+import type { BuilderInstance, BundlerInstance } from '@blog/types';
 import type { Plugin, PluginBuild } from 'esbuild';
-import type { Bundler } from './bundler';
+import { loadAndTransform } from './pipeline';
 
-export const BridgePlugin = (bundler: Bundler): Plugin => {
+export const BridgePlugin = (bundler: BundlerInstance, builder: BuilderInstance): Plugin => {
   return {
     name: 'bridge-plugin',
     setup: (esbuild: PluginBuild) => {
@@ -15,12 +16,12 @@ export const BridgePlugin = (bundler: Bundler): Plugin => {
         return result ?? null;
       });
       esbuild.onLoad({ filter: /.*/ }, async (loadArgs) => {
-        const result = await bundler.hooks.load.promise(loadArgs);
-
-        if (result) {
-          await bundler.hooks.loadResult.promise(result, loadArgs);
-        }
-
+        const result = await loadAndTransform(
+          builder,
+          bundler.hooks,
+          loadArgs,
+          esbuild.initialOptions,
+        );
         return result ?? null;
       });
     },
