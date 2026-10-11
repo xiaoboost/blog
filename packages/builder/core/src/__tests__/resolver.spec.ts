@@ -22,7 +22,7 @@ async function bundleCss(contents: string) {
     bundle: true,
     write: false,
     logLevel: 'silent',
-    plugins: [BridgePlugin(bundler)],
+    plugins: [BridgePlugin(bundler, builder)],
   });
 }
 

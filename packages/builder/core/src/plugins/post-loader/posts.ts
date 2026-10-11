@@ -1,4 +1,4 @@
-import { realpath } from 'fs/promises';
+import { readFile, realpath } from 'fs/promises';
 import { join } from 'path';
 import { normalize } from '@blog/node';
 import type { BuilderPlugin } from '@blog/types';
@@ -37,8 +37,9 @@ export const PostsLoader = (): BuilderPlugin => ({
 
         const realPostDir: string = args.pluginData;
         const packageFile = join(realPostDir, 'package.json');
-        // eslint-disable-next-line @typescript-eslint/no-require-imports
-        const packageJson = require(packageFile);
+        const packageJson = JSON.parse(await readFile(packageFile, 'utf8'));
+
+        builder.addWatchFiles(packageFile);
 
         if (!packageJson.main) {
           return {
@@ -50,6 +51,7 @@ export const PostsLoader = (): BuilderPlugin => ({
             ],
             contents: 'export default []',
             resolveDir: realPostDir,
+            watchFiles: [packageFile],
           };
         }
 
@@ -60,13 +62,17 @@ export const PostsLoader = (): BuilderPlugin => ({
           postSearchers.push(packageJson.devMain);
         }
 
-        const postFiles = await Glob(
-          postSearchers.map((pattern) => normalize(join(realPostDir, pattern))),
-        );
+        const patterns = postSearchers.map((pattern) => normalize(join(realPostDir, pattern)));
+        const watchDirs = Glob.generateTasks(patterns).map((task) => task.base);
+        const postFiles = await Glob(patterns);
+
+        builder.addWatchDirs(...watchDirs);
 
         return {
           contents: getPostsInputCode(postFiles),
           resolveDir: realPostDir,
+          watchFiles: [packageFile],
+          watchDirs,
         };
       });
     });

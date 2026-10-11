@@ -1,5 +1,5 @@
 import { realpath } from 'fs/promises';
-import { join } from 'path';
+import { resolve } from 'path';
 import { normalize } from '@blog/node';
 import type { BuilderPlugin } from '@blog/types';
 import { debounce } from '@xiao-ai/utils';
@@ -21,6 +21,7 @@ export const Watcher = (): BuilderPlugin => ({
       const changeMap = new Set<string>();
       const reBuild = debounce(async () => {
         const changeFiles = Array.from(changeMap.values());
+        changeMap.clear();
         builder.setChangeFiles(...changeFiles);
         await builder.hooks.filesChange.promise(changeFiles);
 
@@ -29,7 +30,14 @@ export const Watcher = (): BuilderPlugin => ({
         }
       }, 200);
       const changeHandler = async (file: string) => {
-        const realPath = normalize(await realpath(join(watcher.options.cwd!, file)));
+        const path = resolve(watcher.options.cwd!, file);
+        const realPath = normalize(await realpath(path).catch((error: NodeJS.ErrnoException) => {
+          if (error.code !== 'ENOENT') {
+            throw error;
+          }
+
+          return path;
+        }));
         changeMap.add(realPath);
         await reBuild();
       };
@@ -38,7 +46,8 @@ export const Watcher = (): BuilderPlugin => ({
         .on('ready', () => {
           if (!ready) {
             ready = true;
-            watcher.on('change', changeHandler);
+            watcher.on('change', changeHandler).on('add', changeHandler).on('unlink', changeHandler)
+              .on('addDir', changeHandler).on('unlinkDir', changeHandler);
           }
         })
         .once('restart', () => {
@@ -46,27 +55,32 @@ export const Watcher = (): BuilderPlugin => ({
           watcher
             .removeAllListeners('change')
             .removeAllListeners('add')
-            .removeAllListeners('unlink');
+            .removeAllListeners('unlink')
+            .removeAllListeners('addDir')
+            .removeAllListeners('unlinkDir');
         });
     });
 
     builder.hooks.bundler.tap(pluginName, (bundler) => {
-      bundler.hooks.resolveResult.tap(pluginName, ({ path, watchFiles }) => {
+      bundler.hooks.resolveResult.tap(pluginName, ({ path, watchFiles, watchDirs }) => {
         if (watchFiles) {
           watchFiles.forEach((file) => builder.addWatchFiles(file));
         }
         else if (path) {
           builder.addWatchFiles(path);
         }
+
+        builder.addWatchDirs(...watchDirs ?? []);
       });
-      bundler.hooks.loadResult.tap(pluginName, ({ watchFiles }) => {
+      bundler.hooks.loadResult.tap(pluginName, ({ watchFiles, watchDirs }) => {
         watchFiles?.forEach((file) => builder.addWatchFiles(file));
+        builder.addWatchDirs(...watchDirs ?? []);
       });
     });
 
-    builder.hooks.done.tap(pluginName, ({ watcher }) => {
+    builder.hooks.done.tapPromise(pluginName, async ({ watcher }) => {
       if (watcher) {
-        watcher.close();
+        await watcher.close();
       }
     });
   },

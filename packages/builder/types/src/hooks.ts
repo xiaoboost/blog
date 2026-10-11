@@ -24,7 +24,7 @@ import type {
 import type { ErrorData } from './error';
 import type { BuildContext, BuildContextWithPage } from './page';
 import type { PostBasicData, PostExportData } from './post';
-import type { TransformState, TransformContext } from './transform';
+import type { TransformState, TransformContext, SourceFormat } from './transform';
 
 export type {
   OnResolveArgs,
@@ -37,7 +37,15 @@ export type {
 export type OnResolveCallbackResult = OnResolveResult | null | undefined | void;
 
 /** load 回调返回参数 */
-export type OnLoadCallbackResult = OnLoadResult | null | undefined | void;
+export type OnLoadCallbackResult = ModuleLoadResult | null | undefined | void;
+
+/** load 提供初始内容；source 仅供内部转换使用，不传给 esbuild */
+export interface ModuleLoadResult extends OnLoadResult {
+  source?: {
+    sourcePath?: string;
+    format?: SourceFormat;
+  };
+}
 
 /** 钩子上下文数据 */
 export interface BuilderHookContext {
@@ -97,9 +105,11 @@ export interface BuilderHooks {
   watcher: AsyncSeriesHook<[FSWatcher]>;
   /**
    * 打包器创建后
-   *   - 运行打包之前
+   *   - 初始化末尾，每个实例只触发一次，用于注册插件
    */
   bundler: SyncHook<[BundlerInstance]>;
+  /** 每轮打包之前 */
+  beforeBundler: AsyncSeriesHook<[BuilderHookContext]>;
   /**
    * 打包代码完成
    */
@@ -130,7 +140,7 @@ export interface BundlerHooks {
   transform: AsyncSeriesWaterfallHook<[TransformState, TransformContext]>;
   /** 路径请求结果 */
   resolveResult: AsyncSeriesHook<[OnResolveResult, OnResolveArgs]>;
-  /** 读取文件结果 */
+  /** 转换完成后的最终读取结果，包含所有附加依赖 */
   loadResult: AsyncSeriesHook<[OnLoadResult, OnLoadArgs]>;
 }
 

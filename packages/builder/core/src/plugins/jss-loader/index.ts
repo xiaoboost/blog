@@ -59,13 +59,15 @@ export const JssLoader = ({ extractAsset = true }: JssLoaderOptions = {}): Build
     }
 
     builder.hooks.bundler.tap(pluginName, (bundler) => {
-      bundler.hooks.load.tapPromise(pluginName, async (args) => {
-        if (!/\.jss\.(t|j)s$/.test(args.path)) {
-          return;
+      bundler.hooks.transform.tapPromise(pluginName, async (input, ctx) => {
+        const path = input.module.sourcePath;
+
+        if (!path || !/\.jss\.(t|j)s$/.test(path)) {
+          return input;
         }
 
-        const jssBuilder = await getJssBuilder(args.path, builder);
-        const cssFilePath = replaceExt(args.path, '.css');
+        const jssBuilder = await getJssBuilder(path, builder, input);
+        const cssFilePath = replaceExt(path, '.css');
 
         let classesCode = '{}';
 
@@ -84,15 +86,16 @@ export const JssLoader = ({ extractAsset = true }: JssLoaderOptions = {}): Build
           builder.emitAsset(asset);
         }
 
-        return {
-          loader: 'js',
-          contents: `
+        return ctx.update(input, {
+          format: 'js',
+          map: null,
+          code: `
             ${extractAsset ? `import '${cssFilePath}';\n` : ''}
             export default {
               classes: ${classesCode},
             };
           `,
-        };
+        });
       });
     });
   },

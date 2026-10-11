@@ -235,7 +235,7 @@ export class LanguageService {
     let change = false;
 
     for (const file of fileNames) {
-      if (/\.mdx?/.test(file)) {
+      if (!/\.(?:[cm]?[jt]s|[jt]sx|json)$/i.test(file)) {
         continue;
       }
 

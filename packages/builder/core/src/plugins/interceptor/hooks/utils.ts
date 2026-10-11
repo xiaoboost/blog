@@ -62,11 +62,13 @@ export function interceptHookMap(
           };
         }
         else if (type === 'async') {
-          tap.fn = async function (...args: any[]) {
+          tap.fn = function (...args: any[]) {
             const startAt = process.hrtime.bigint();
-            const result = await cb.apply(this, args);
-            addHookData(pluginName, hookMapName, tapName, startAt);
-            return result;
+            const callback = args.pop();
+            return cb.call(this, ...args, (...result: any[]) => {
+              addHookData(pluginName, hookMapName, tapName, startAt);
+              callback(...result);
+            });
           };
         }
         else if (type === 'promise') {

@@ -133,6 +133,8 @@ export interface BuilderInstance {
   createChild(opt?: BuilderOptions): Promise<BuilderInstance>;
   /** 添加监听文件 */
   addWatchFiles(...files: string[]): void;
+  /** 添加目录依赖，跟踪目录内文件的变更与增删 */
+  addWatchDirs(...dirs: string[]): void;
   /** 是否是监听文件 */
   setChangeFiles(...files: string[]): void;
   /**
