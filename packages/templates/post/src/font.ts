@@ -1,7 +1,7 @@
 import { onBuild } from '@blog/context/runtime';
 import PrimaryTitleFontFile from '@blog/styles/fonts/SourceHanSerif/SourceHanSerifSC-Bold.otf?raw';
 import SecondaryTitleFontFile from '@blog/styles/fonts/SourceHanSerif/SourceHanSerifSC-SemiBold.otf?raw';
-import type { BuildContext, PageDataMap } from '@blog/types';
+import type { BuildContext } from '@blog/types';
 import { PostTemplate, PrimaryTitleFont, SecondaryTitleFont } from './constant';
 import { getNavList } from './to-content';
 
@@ -9,7 +9,7 @@ onBuild((runtime) => {
   // 注册字体桶
   runtime.hooks.afterReady.tap(PostTemplate, (ctx: BuildContext) => {
     for (const page of ctx.pages) {
-      if (page.type !== 'post') {
+      if (page.type !== 'post' || page.data.post.data.template !== 'post') {
         continue;
       }
 
@@ -31,9 +31,9 @@ onBuild((runtime) => {
     await Promise.all(
       pages
         .filter((page) => page.type === 'post')
+        .filter((page) => page.data.post.data.template === 'post')
         .map(async (page) => {
-          const d = page.data as PageDataMap['post'];
-          const post = d.post;
+          const { post } = page.data;
           const titles = getNavList(post.data.ast);
 
           page.getFontBucket(PrimaryTitleFont.fontFamily).addText(post.data.title);
