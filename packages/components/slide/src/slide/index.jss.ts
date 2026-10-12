@@ -4,7 +4,6 @@ export default createStyles({
   slide: {
     color: TextPrimary,
     background: BgSecondary,
-    cursor: 'default !important',
   },
   section: {
     position: 'relative',
