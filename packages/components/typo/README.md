@@ -1,6 +1,6 @@
 # @blog/mdx-typo
 
-排版相关组件合集，用于 MDX 文章中增强文本表现力。
+文章内容展示与交互组件合集，用于 MDX 文章中增强文本表现力。
 
 ## 组件
 
@@ -102,6 +102,27 @@ import { Comment } from '@blog/mdx-typo';
 ```
 
 `children` 接收 MDX 段落、强调和链接等内容。段落不使用首行缩进，多段之间保留小段距。作品原文引用继续使用引用块，正文的主要论述也无需放进旁注。
+
+### BlurReveal（模糊遮盖）
+
+用于遮盖剧透等需要读者主动展开的内容。初始内容模糊显示，最大高度为 240px；点击按钮后展开完整内容并移除遮罩，展开后不再收起。
+
+```mdx
+import { BlurReveal } from '@blog/mdx-typo';
+
+<BlurReveal buttonText="展开剧透内容">
+  这里可以书写正文段落、标题，以及其他 MDX 内容。
+</BlurReveal>
+```
+
+**Props**
+
+| 参数 | 类型 | 默认值 | 说明 |
+|---|---|---|---|
+| `children` | `React.ReactNode` | — | 必填，需要遮盖的内容 |
+| `buttonText` | `string` | `查看更多` | 展开按钮的文字 |
+| `className` | `string` | — | 自定义类名 |
+| `styles` | `React.CSSProperties` | — | 自定义行内样式 |
 
 ### DefinitionList / Definition（名称与说明列表）
 
