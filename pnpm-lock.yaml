@@ -588,52 +588,6 @@ importers:
         specifier: 6.0.3
         version: 6.0.3
 
-  packages/components/blur-reveal:
-    dependencies:
-      '@blog/context':
-        specifier: workspace:*
-        version: link:../../builder/context
-      '@blog/styles':
-        specifier: workspace:*
-        version: link:../../utils/styles
-      '@blog/web':
-        specifier: workspace:*
-        version: link:../../utils/web
-      '@xiao-ai/utils':
-        specifier: 1.6.7
-        version: 1.6.7
-      react:
-        specifier: 18.3.1
-        version: 18.3.1
-    devDependencies:
-      '@blog/eslint-config':
-        specifier: workspace:*
-        version: link:../../tools/eslint-config
-      '@blog/test-toolkit':
-        specifier: workspace:*
-        version: link:../../tools/test-toolkit
-      '@blog/tsconfig':
-        specifier: workspace:*
-        version: link:../../tools/tsconfig
-      '@types/blog':
-        specifier: workspace:*
-        version: link:../../tools/typings
-      '@types/node':
-        specifier: 24.12.2
-        version: 24.12.2
-      '@types/react':
-        specifier: 18.3.27
-        version: 18.3.27
-      eslint:
-        specifier: 10.2.1
-        version: 10.2.1(supports-color@8.1.1)
-      tslib:
-        specifier: 2.8.1
-        version: 2.8.1
-      typescript:
-        specifier: 6.0.3
-        version: 6.0.3
-
   packages/components/code-block-normal:
     dependencies:
       '@blog/context':
@@ -1043,9 +997,6 @@ importers:
       '@blog/context':
         specifier: workspace:*
         version: link:../builder/context
-      '@blog/mdx-blur-reveal':
-        specifier: workspace:*
-        version: link:../components/blur-reveal
       '@blog/mdx-code-block-typescript':
         specifier: workspace:*
         version: link:../components/code-block-typescript
@@ -1144,9 +1095,6 @@ importers:
       '@blog/icons':
         specifier: workspace:*
         version: link:../../components/icons
-      '@blog/mdx-blur-reveal':
-        specifier: workspace:*
-        version: link:../../components/blur-reveal
       '@blog/mdx-code-block-normal':
         specifier: workspace:*
         version: link:../../components/code-block-normal

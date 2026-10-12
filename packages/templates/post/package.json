@@ -19,7 +19,6 @@
   "dependencies": {
     "@blog/context": "workspace:*",
     "@blog/icons": "workspace:*",
-    "@blog/mdx-blur-reveal": "workspace:*",
     "@blog/mdx-code-block-normal": "workspace:*",
     "@blog/mdx-font-block": "workspace:*",
     "@blog/mdx-typo": "workspace:*",
