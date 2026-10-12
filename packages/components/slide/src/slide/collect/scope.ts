@@ -13,14 +13,10 @@ export interface StepScope extends StepConfig {
 
 export interface SectionScope {
   index: number;
-  id?: string;
-  title?: string;
   player?: PlayerScope;
 }
 
 export interface SectionConfig {
-  id?: string;
-  title?: string;
   steps: StepConfig[];
 }
 

@@ -4,7 +4,7 @@ import { useSlideStore } from '../slide/collect/context';
 import { ScopeEnd } from '../slide/collect/end';
 import type { StepProps } from './types';
 
-export function Step(props: StepProps) {
+export function Step({ children, ...props }: StepProps) {
   const store = useSlideStore();
 
   useRenderOnce(() => {
@@ -13,7 +13,7 @@ export function Step(props: StepProps) {
 
   return (
     <>
-      {props.children}
+      {children}
       <ScopeEnd scope="step" />
     </>
   );

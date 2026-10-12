@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { ReactNode, CSSProperties } from 'react';
 
 export interface ResolvedTransition {
   duration: number;
@@ -8,13 +8,8 @@ export interface ResolvedTransition {
 
 export type Transition = Partial<ResolvedTransition>;
 
-export interface AnimationState {
-  opacity?: number;
-  transform?: string;
-  color?: string;
-  backgroundColor?: string;
-  visibility?: 'visible' | 'hidden';
-}
+/** 样式输入范围 */
+export type AnimationState = CSSProperties;
 
 export interface PlayerProps {
   children: ReactNode;
@@ -26,26 +21,43 @@ export interface StepProps {
   transition?: Transition;
 }
 
-export interface AnimateProps {
+export interface AnimationBase {
+  /** 动画目标元素的 id。 */
   target: string;
-  from?: AnimationState;
-  to: AnimationState;
+  /** 动作时间配置；未指定的字段依次继承 Step、Player 和默认值。 */
   transition?: Transition;
+  /** 动画开始前直接设置的样式，不参与动画插值。 */
+  before?: AnimationState;
+  /** 动画完成后直接设置的样式，不参与动画插值。 */
+  after?: AnimationState;
 }
+
+export interface AnimateFromToProps extends AnimationBase {
+  /** 动画起始样式；省略时使用目标在播放时的当前样式。 */
+  from?: AnimationState;
+  /** 动画终点样式，与 keyframes 二选一。 */
+  to: AnimationState;
+  keyframes?: never;
+}
+
+export interface AnimateKeyframesProps extends AnimationBase {
+  /** 按顺序播放的样式关键帧，与 from / to 二选一。 */
+  keyframes: readonly AnimationState[];
+  from?: never;
+  to?: never;
+}
+
+/** 起终点与多段关键帧二选一，避免同一动作有两套状态来源。 */
+export type AnimateProps = AnimateFromToProps | AnimateKeyframesProps;
 
 export interface EffectProps {
   target: string;
   transition?: Transition;
 }
 
-/** 离散样式在动作开始 / 结束时设置，不参与连续插值。 */
-export interface ActionConfig {
-  target: string;
-  from?: AnimationState;
-  to: AnimationState;
+/** 收集后的动作配置 */
+export interface ActionConfig extends AnimateKeyframesProps {
   transition: ResolvedTransition;
-  before?: { visibility?: 'visible' | 'hidden'; transformOrigin?: string };
-  after?: { visibility?: 'visible' | 'hidden' };
 }
 
 export interface StepConfig {

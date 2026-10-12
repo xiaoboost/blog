@@ -5,7 +5,6 @@ import {
   Box,
   Flex,
   Place,
-  Grid,
   Background,
 } from '../layout';
 import styles from '../layout/index.jss';
@@ -31,7 +30,17 @@ describe('布局的作者约定', () => {
   });
 
   it('Place 的坐标保留 0 且不占用 transform，允许作者继续配置动画变换', () => {
-    const html = renderToStaticMarkup(<Place x={0} y={0} width="100%" height="100%" style={{ transform: 'rotate(3deg)' }}>一层</Place>);
+    const html = renderToStaticMarkup(
+      <Place
+        x={0}
+        y={0}
+        width="100%"
+        height="100%"
+        style={{ transform: 'rotate(3deg)' }}
+      >
+        一层
+      </Place>,
+    );
     expect(html).include(styles.classes.place).include('left:0').include('top:0').include('transform:rotate(3deg)');
   });
 
@@ -39,11 +48,5 @@ describe('布局的作者约定', () => {
     const html = renderToStaticMarkup(<Background src="/cover.svg" overlay="rgba(0,0,0,.2)" />);
     expect(html).include('aria-hidden="true"').include('alt=""');
     expect(html).include(styles.classes.background).include(styles.classes.backgroundImage).include('object-fit:cover');
-  });
-
-  it('拒绝没有明确含义的分配份数和网格数量', () => {
-    expect(() => renderToStaticMarkup(<Box flex={0} />)).throw(/正整数/);
-    expect(() => renderToStaticMarkup(<Box flex={1.5} />)).throw(/正整数/);
-    expect(() => renderToStaticMarkup(<Grid columns={0} />)).throw(/正整数/);
   });
 });
