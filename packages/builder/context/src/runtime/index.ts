@@ -2,5 +2,5 @@ export * from './accessor';
 export * from './hook';
 export { GlobalKey } from './constant';
 export { Builder } from './builder';
-export { RenderContext, useRenderContext } from './render-context';
+export { RenderContext, useRenderContext, useRenderOnce } from './render-context';
 export { useFontText } from './font';
