@@ -8,6 +8,7 @@ import type { ScopeKind, SlideConfig } from './scope';
 
 /** PPT 数据储存 */
 export interface ISlideStore {
+  collecting: boolean;
   beginSection(): number;
   beginPlayer(props: Omit<PlayerProps, 'children'>): void;
   beginStep(props: Omit<StepProps, 'children'>): void;
@@ -24,7 +25,7 @@ export function useSlideStore(): ISlideStore {
   const store = useContext(SlideStoreContext);
 
   if (!store) {
-    throw new Error('[mdx-slide] PPT 组件必须要在 Slide 子元素内');
+    throw new Error('[mdx-slide] PPT 组件必须属于 Slide。');
   }
 
   return store;

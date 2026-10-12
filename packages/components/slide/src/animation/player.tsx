@@ -4,16 +4,24 @@ import { useSlideStore } from '../slide/collect/context';
 import { ScopeEnd } from '../slide/collect/end';
 import type { PlayerProps } from './types';
 
-export function Player(props: PlayerProps) {
-  const context = useSlideStore();
+export function Player({ children, ...props }: PlayerProps) {
+  const store = useSlideStore();
 
   useRenderOnce(() => {
-    context.beginPlayer(props);
+    store.beginPlayer(props);
+
+    if (!store.collecting) {
+      store.end('player');
+    }
   });
+
+  if (!store.collecting) {
+    return null;
+  }
 
   return (
     <>
-      {props.children}
+      {children}
       <ScopeEnd scope="player" />
     </>
   );

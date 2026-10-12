@@ -1,5 +1,6 @@
 import { useRenderOnce } from '@blog/context/runtime';
-import React from 'react';
+import { stringifyClass } from '@xiao-ai/utils';
+import React, { useRef } from 'react';
 import { useSlideStore } from './collect/context';
 import { ScopeEnd } from './collect/end';
 import styles from './index.jss';
@@ -13,17 +14,20 @@ export function Section({
   style,
   ...attributes
 }: SectionProps) {
-  const context = useSlideStore();
+  const store = useSlideStore();
+  const index = useRef(-1);
 
-  const index = useRenderOnce(() => context.beginSection());
+  useRenderOnce(() => {
+    index.current = store.beginSection();
+  });
 
   return (
     <section
       {...attributes}
       id={id}
-      className={[styles.classes.section, className].filter(Boolean).join(' ')}
+      className={stringifyClass(styles.classes.section, className)}
       style={style}
-      data-slide-section={index}
+      data-slide-section={index.current}
       data-slide-title={title}
     >
       {children}

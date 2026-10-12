@@ -1,8 +1,9 @@
 import { useRenderContext } from '@blog/context/runtime';
 import { useContext, useRef } from 'react';
-import { mergeTransition } from '../../animation/normalize';
+import { mergeTransition, normalizeAction } from '../../animation/normalize';
 import { SlideStoreContext, type ISlideStore } from './context';
 import type { PlayerScope, SectionScope, StepScope } from './scope';
+import { registerSlide } from './session';
 
 type Scope =
   | { kind: 'section'; value: SectionScope }
@@ -25,17 +26,18 @@ export function useSlideValue(): ISlideStore {
     const collecting = renderContext?.isPreBuild === true;
 
     contextRef.current = {
+      collecting,
       beginSection() {
         if (stack.length) {
           throw new Error('[mdx-slide] Section 不能嵌套。');
         }
 
-        const section = { ...metadata, index: sections.length };
+        const section = { index: sections.length };
         sections.push(section);
         stack.push({ kind: 'section', value: section });
         return section.index;
       },
-      beginPlayer(transition) {
+      beginPlayer(props) {
         const parent = stack.at(-1);
 
         if (!parent) {
@@ -50,11 +52,11 @@ export function useSlideValue(): ISlideStore {
           throw new Error(`[mdx-slide] 第 ${parent.value.index + 1} 页发现多个 Player，每个 Section 最多允许一个。`);
         }
 
-        const player = { transition: mergeTransition(transition), steps: [] };
+        const player = { transition: mergeTransition(props.transition), steps: [] };
         parent.value.player = player;
         stack.push({ kind: 'player', value: player });
       },
-      beginStep(transition) {
+      beginStep(props) {
         const parent = stack.at(-1);
 
         if (parent?.kind === 'step') {
@@ -65,18 +67,25 @@ export function useSlideValue(): ISlideStore {
           throw new Error('[mdx-slide] Step 必须属于 Player。');
         }
 
-        const step = { transition: mergeTransition(parent.value.transition, transition), actions: [] };
+        const step = {
+          transition: mergeTransition(parent.value.transition, props.transition),
+          actions: [],
+        };
         parent.value.steps.push(step);
         stack.push({ kind: 'step', value: step });
       },
-      addAction(action) {
+      addAction(props) {
         const current = stack.at(-1);
 
         if (current?.kind !== 'step') {
           throw new Error('[mdx-slide] Animate 或效果组件必须属于 Step。');
         }
 
-        current.value.actions.push({ ...action, transition: mergeTransition(current.value.transition, action.transition) });
+        const action = normalizeAction(props);
+        current.value.actions.push({
+          ...action,
+          transition: mergeTransition(current.value.transition, props.transition),
+        });
       },
       end(kind) {
         const current = stack.at(-1);
@@ -106,15 +115,26 @@ export function useSlideValue(): ISlideStore {
 
         return {
           version: 1,
-          ...slideSize,
-          sections: sections.map(({ id, title, player }) => ({
-            ...(id === undefined ? {} : { id }),
-            ...(title === undefined ? {} : { title }),
-            steps: (player?.steps ?? []).map(({ actions }) => ({ actions })),
+          width: 2560,
+          height: 1440,
+          sections: sections.map(({ player }) => ({
+            steps: (player?.steps ?? []).map(({ actions }) => ({
+              actions: actions.map((action) => ({
+                ...action,
+                keyframes: action.keyframes.map((frame) => ({ ...frame })),
+                transition: { ...action.transition },
+                ...(action.before === undefined ? {} : { before: { ...action.before } }),
+                ...(action.after === undefined ? {} : { after: { ...action.after } }),
+              })),
+            })),
           })),
         };
       },
     };
+
+    if (collecting) {
+      registerSlide(renderContext.page, contextRef.current);
+    }
   }
 
   return contextRef.current;

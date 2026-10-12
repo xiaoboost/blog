@@ -14,20 +14,8 @@ export interface GridProps extends BoxProps {
   justify?: Alignment;
 }
 
-function tracks(value: number | string, name: string): string {
-  if (typeof value === 'string') {
-    if (!value.trim()) {
-      throw new Error(`[mdx-slide] Grid.${name} 不能为空。`);
-    }
-
-    return value;
-  }
-
-  if (!Number.isSafeInteger(value) || value <= 0) {
-    throw new Error(`[mdx-slide] Grid.${name} 必须是正整数或 CSS 轨道字符串。`);
-  }
-
-  return `repeat(${value}, minmax(0, 1fr))`;
+function tracks(value: number | string): string {
+  return typeof value === 'string' ? value : `repeat(${value}, minmax(0, 1fr))`;
 }
 
 export function Grid({
@@ -50,8 +38,8 @@ export function Grid({
       {...attributes}
       className={stringifyClass(styles.classes.box, styles.classes.grid, className)}
       style={{
-        gridTemplateColumns: columns === undefined ? undefined : tracks(columns, 'columns'),
-        gridTemplateRows: rows === undefined ? undefined : tracks(rows, 'rows'),
+        gridTemplateColumns: columns === undefined ? undefined : tracks(columns),
+        gridTemplateRows: rows === undefined ? undefined : tracks(rows),
         columnGap: columnGap ?? gap,
         rowGap: rowGap ?? gap,
         alignItems: align,

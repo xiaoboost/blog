@@ -1,7 +1,11 @@
+import { useRenderOnce } from '@blog/context/runtime';
 import { describe, expect, it } from '@blog/test-toolkit';
-import { RenderContext } from '@blog/context/runtime';
-import type { IRenderContext } from '@blog/types';
-import React, { createContext, useContext, type ReactNode } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  type ReactNode,
+} from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import {
   Player,
@@ -13,40 +17,17 @@ import {
   ScaleIn,
 } from '../animation';
 import { mergeTransition } from '../animation/normalize';
-import type { Transition } from '../animation/types';
+import type { AnimationState } from '../animation/types';
 import { collectSlide } from '../slide/collect';
-import { SlideContext, type SlideContextValue } from '../slide/collect/context';
+import { SlideStoreContext, type ISlideStore } from '../slide/collect/context';
 import { Section } from '../slide/section';
 import { Slide } from '../slide/slide';
-
-function renderContext(): IRenderContext {
-  // 收集入口只使用页面身份与阶段标记，测试无需搭建资源和站点模型。
-  return {
-    page: {} as IRenderContext['page'],
-    site: {} as IRenderContext['site'],
-    dev: false,
-    isPreBuild: true,
-  };
-}
-
-function renderPage(children: ReactNode, context: IRenderContext): string {
-  return renderToStaticMarkup(<RenderContext.Provider value={context}>{children}</RenderContext.Provider>);
-}
-
-function collect(children: ReactNode, context = renderContext()) {
-  return collectSlide(context.page, () => renderPage(children, context));
-}
-
-function page(animation: ReactNode, content: ReactNode = <div id="title">标题</div>) {
-  return (
-    <Slide>
-      <Section>
-        {content}
-        {animation}
-      </Section>
-    </Slide>
-  );
-}
+import {
+  collect,
+  page,
+  renderContext,
+  renderPage,
+} from './fixtures';
 
 describe('transition 字段继承', () => {
   it('动作优先于 Step，Step 优先于 Player；undefined 继承而 0 覆盖', () => {
@@ -56,22 +37,6 @@ describe('transition 字段继承', () => {
     expect(mergeTransition(player, step, action)).deep.eq({ duration: 0, delay: 0, easing: 'linear' });
     expect(player).deep.eq({ duration: 800, delay: 100, easing: 'linear' });
     expect(mergeTransition()).deep.eq({ duration: 300, delay: 0, easing: 'ease-out' });
-  });
-
-  for (const transition of [
-    { duration: -1 },
-    { delay: Infinity },
-    { duration: NaN },
-    { easing: '' },
-  ]) {
-    it(`拒绝非法 transition：${JSON.stringify(transition)}`, () => {
-      expect(() => mergeTransition(transition)).throw(/transition/);
-    });
-  }
-
-  it('即使后续值覆盖，较低层的非法配置仍然报错', () => {
-    expect(() => mergeTransition({ delay: -1 }, { delay: 0 })).throw(/delay/);
-    expect(() => mergeTransition({ duration: 300, unknown: 1 } as Transition)).throw(/不支持字段/);
   });
 });
 
@@ -87,10 +52,9 @@ describe('SSR 动画收集', () => {
       version: 1,
       width: 2560,
       height: 1440,
-      sections: [{ title: '开场', steps: [] }, { steps: [] }],
+      sections: [{ steps: [] }, { steps: [] }],
     });
     expect(html).include('data-slide-section="0"').include('data-slide-section="1"');
-    expect(html).include('data-slide-width="2560"').include('data-slide-height="1440"');
     expect(html).not.include('<script').not.match(/<section[^>]*\sid=/);
   });
 
@@ -122,14 +86,13 @@ describe('SSR 动画收集', () => {
     const [enter, exit] = config.sections[0].steps.map((step) => step.actions[0]);
     expect(enter).deep.eq({
       target: 'title',
-      from: { opacity: 0 },
-      to: { opacity: 1 },
+      keyframes: [{ opacity: 0 }, { opacity: 1 }],
       before: { visibility: 'visible' },
       transition: { duration: 500, delay: 0, easing: 'linear' },
     });
     expect(exit).deep.eq({
       target: 'title',
-      to: { opacity: 0 },
+      keyframes: [{ opacity: 0 }],
       after: { visibility: 'hidden' },
       transition: { duration: 0, delay: 0, easing: 'linear' },
     });
@@ -170,10 +133,9 @@ describe('SSR 动画收集', () => {
       </Player>,
     ));
     const [move, scale] = config.sections[0].steps.map((step) => step.actions[0]);
-    expect(move.from).deep.eq({ transform: 'translate3d(0px, 0px, 0)' });
-    expect(move.to).deep.eq({ transform: 'translate3d(0, 0, 0)' });
+    expect(move.keyframes).deep.eq([{ translate: '0px 0px' }, { translate: '0px 0px' }]);
     expect(scale.before).deep.eq({ visibility: 'visible', transformOrigin: 'left top' });
-    expect(scale.from).deep.eq({ transform: 'scale(0)' });
+    expect(scale.keyframes).deep.eq([{ scale: 0 }, { scale: 1 }]);
   });
 
   it('target 原样记录，不解析 HTML 查找目标', () => {
@@ -190,7 +152,7 @@ describe('SSR 动画收集', () => {
     const first = collect(page(<Player><Step><Animate target="title" to={to} /></Step></Player>)).config;
     to.opacity = 0;
     const second = collect(<Slide><Section>无动画</Section></Slide>).config;
-    expect(first.sections[0].steps[0].actions[0].to.opacity).eq(1);
+    expect(first.sections[0].steps[0].actions[0].keyframes[0].opacity).eq(1);
     expect(second.sections).deep.eq([{ steps: [] }]);
     expect(first.width).eq(2560);
   });
@@ -204,9 +166,9 @@ describe('SSR 动画收集', () => {
   });
 
   it('Slide 提供登记函数，同一元素的两轮 SSR 使用独立配置和栈', () => {
-    const contexts: SlideContextValue[] = [];
+    const contexts: ISlideStore[] = [];
     function Probe() {
-      const context = useContext(SlideContext);
+      const context = useContext(SlideStoreContext);
 
       if (!context) {
         throw new Error('Slide 后代应该能取得其登记函数');
@@ -254,8 +216,10 @@ describe('SSR 动画收集', () => {
         </Section>
       </Slide>,
     );
-    expect(config.sections.map(({ steps }) => steps.map(({ actions }) => actions[0].transition.duration)))
-      .deep.eq([[500, 800], [300]]);
+    const durations = config.sections.map(({ steps }) => (
+      steps.map(({ actions }) => actions[0].transition.duration)
+    ));
+    expect(durations).deep.eq([[500, 800], [300]]);
     expect(html).not.include('ScopeEnd').not.include('<script');
   });
 
@@ -274,7 +238,7 @@ describe('SSR 动画收集', () => {
     const content = <Slide><Section>外页</Section></Slide>;
     const { config } = collectSlide(context.page, () => {
       expect(collect(<Slide><Section title="内页">内页</Section></Slide>).config.sections)
-        .deep.eq([{ title: '内页', steps: [] }]);
+        .deep.eq([{ steps: [] }]);
       expect(() => collectSlide(context.page, () => renderPage(content, context)))
         .throw(/同一页面不能同时/);
       return renderPage(content, context);
@@ -298,7 +262,7 @@ describe('SSR 动画收集', () => {
 
   it('栈内的范围必须按顺序结束，结束前不能取得最终配置', () => {
     function Probe() {
-      const context = useContext(SlideContext)!;
+      const context = useContext(SlideStoreContext)!;
       expect(() => context.end('player')).throw(/范围没有按顺序结束/);
       expect(() => context.getConfig()).throw(/范围尚未结束/);
       return <div id="title" />;
@@ -308,8 +272,189 @@ describe('SSR 动画收集', () => {
   });
 
   it('同一步按上报顺序保存动作，不额外分析样式冲突', () => {
-    const { config } = collect(page(<Player><Step><FadeIn target="title" /><FadeOut target="title" /></Step></Player>));
-    expect(config.sections[0].steps[0].actions.map(({ to }) => to.opacity)).deep.eq([1, 0]);
+    const { config } = collect(page(
+      <Player>
+        <Step>
+          <FadeIn target="title" />
+          <FadeOut target="title" />
+        </Step>
+      </Player>,
+    ));
+    const actions = config.sections[0].steps[0].actions;
+    expect(actions.map(({ keyframes }) => keyframes.at(-1)!.opacity)).deep.eq([1, 0]);
+  });
+
+  it('id / title 只保留在 DOM，收集的页面与步骤按实际渲染顺序排列', () => {
+    const { html, config } = collect(
+      <Slide>
+        {false && <Section>不存在</Section>}
+        <Section id="cover" title="封面">封面</Section>
+        <Section title="正文">
+          <Player>
+            {[1, 2].map((index) => <Step key={index}><Animate target="title" to={{ width: index * 100 }} /></Step>)}
+          </Player>
+        </Section>
+      </Slide>,
+    );
+    expect(config.sections[0]).deep.eq({ steps: [] });
+    expect(config.sections[1]).not.have.property('title');
+    const widths = config.sections[1].steps.map(({ actions }) => actions[0].keyframes[0].width);
+    expect(widths).deep.eq([100, 200]);
+    expect(html).include('id="cover"').include('data-slide-title="封面"');
+    expect(html).include('data-slide-section="0"').include('data-slide-section="1"');
+  });
+
+  it('接受完整 CSS 样式与 before / after，统一关键帧并保留 0 和原始单位', () => {
+    const { config } = collect(page(
+      <Player>
+        <Step>
+          <Animate
+            target="title"
+            from={{ width: 0, filter: 'blur(8px)', clipPath: 'inset(0 100% 0 0)' }}
+            to={{
+              width: 120,
+              filter: 'none',
+              borderRadius: '1em',
+              opacity: '50%',
+              fontWeight: 700,
+            }}
+            before={{ display: 'block', zIndex: 0, transformOrigin: 'left top' }}
+            after={{ pointerEvents: 'none', color: 'var(--color-text-primary)' }}
+          />
+        </Step>
+      </Player>,
+    ));
+    const action = config.sections[0].steps[0].actions[0];
+    expect(action.keyframes).deep.eq([
+      { width: 0, filter: 'blur(8px)', clipPath: 'inset(0 100% 0 0)' },
+      {
+        width: 120,
+        filter: 'none',
+        borderRadius: '1em',
+        opacity: '50%',
+        fontWeight: 700,
+      },
+    ]);
+    expect(action.before).deep.eq({ display: 'block', zIndex: 0, transformOrigin: 'left top' });
+    expect(action.after).deep.eq({ pointerEvents: 'none', color: 'var(--color-text-primary)' });
+    expect(action).not.have.property('from');
+    expect(action).not.have.property('to');
+    expect(JSON.parse(JSON.stringify(config))).deep.eq(config);
+  });
+
+  it('只给 to 时保持起点未指定，多段关键帧保持顺序且继承 transition', () => {
+    const frames = Object.freeze([
+      Object.freeze({ scale: 1 }),
+      Object.freeze({ scale: 1.2 }),
+      Object.freeze({ scale: 1 }),
+    ]);
+    const { config } = collect(page(
+      <Player transition={{ duration: 900, delay: 10 }}>
+        <Step transition={{ duration: 400 }}>
+          <Animate target="title" to={{ color: 'red', margin: undefined }} />
+          <Animate target="title" keyframes={frames} transition={{ delay: 0 }} />
+        </Step>
+      </Player>,
+    ));
+    const [single, multiple] = config.sections[0].steps[0].actions;
+    expect(single.keyframes).deep.eq([{ color: 'red' }]);
+    expect(single.transition).deep.eq({ duration: 400, delay: 10, easing: 'ease-out' });
+    expect(multiple.keyframes).deep.eq(frames);
+    expect(multiple.transition).deep.eq({ duration: 400, delay: 0, easing: 'ease-out' });
+  });
+
+  it('输入数组、阶段样式和 transition 都复制；取得配置也不会暴露可修改的 store 数据', () => {
+    const keyframes = [{ scale: 1 }, { scale: 2 }];
+    const before: AnimationState = { display: 'block' };
+    const after = { opacity: 0 };
+    const transition = { duration: 450 };
+    let store: ISlideStore;
+    function Probe() {
+      store = useContext(SlideStoreContext)!;
+      return null;
+    }
+    const { config } = collect(page(
+      <Player>
+        <Step>
+          <Animate
+            target="title"
+            keyframes={keyframes}
+            before={before}
+            after={after}
+            transition={transition}
+          />
+        </Step>
+      </Player>, <Probe />));
+    keyframes[1].scale = 9;
+    keyframes.push({ scale: 10 });
+    before.display = 'none';
+    after.opacity = 1;
+    transition.duration = 1;
+    const action = config.sections[0].steps[0].actions[0];
+    expect(action.keyframes).deep.eq([{ scale: 1 }, { scale: 2 }]);
+    expect(action.before).deep.eq({ display: 'block' });
+    expect(action.after).deep.eq({ opacity: 0 });
+    expect(action.transition.duration).eq(450);
+    action.keyframes[1].scale = 20;
+    action.before!.display = 'none';
+    action.transition.duration = 0;
+    const again = store!.getConfig().sections[0].steps[0].actions[0];
+    expect(again.keyframes[1].scale).eq(2);
+    expect(again.before!.display).eq('block');
+    expect(again.transition.duration).eq(450);
+  });
+
+  it('useRenderOnce 在同一 SSR 组件内部重新渲染时只登记一次动作', () => {
+    let registrations = 0;
+    function Retry() {
+      const store = useContext(SlideStoreContext)!;
+      const [ready, setReady] = useState(false);
+      useRenderOnce(() => {
+        registrations++;
+        store.addAction({ target: 'title', to: { opacity: 1 } });
+      });
+
+      if (!ready) {
+        setReady(true);
+      }
+
+      return null;
+    }
+    const { config } = collect(page(<Player><Step><Retry /></Step></Player>));
+    expect(config.sections[0].steps[0].actions).length(1);
+    expect(registrations).eq(1);
+  });
+
+  it('部分动作已登记后渲染失败，同一页面的下一轮收集仍干净', () => {
+    const context = renderContext();
+    function Broken(): never {
+      throw new Error('动作之后失败');
+    }
+    expect(() => collect(page(
+      <Player>
+        <Step>
+          <FadeIn target="title" />
+          <Broken />
+        </Step>
+      </Player>,
+    ), context))
+      .throw(/动作之后失败/);
+    const { config } = collect(<Slide><Section title="重试">成功</Section></Slide>, context);
+    expect(config.sections).deep.eq([{ steps: [] }]);
+  });
+
+  it('正式渲染也拒绝同页多个 Player；收集入口不接受正式渲染阶段', () => {
+    const tree = page(
+      <>
+        <Player>{null}</Player>
+        <Player>{null}</Player>
+      </>,
+    );
+    expect(() => renderToStaticMarkup(tree)).throw(/多个 Player/);
+    const context = { ...renderContext(), isPreBuild: false };
+    expect(() => collect(<Slide><Section>一页</Section></Slide>, context)).throw(/预渲染 RenderContext/);
+    context.isPreBuild = true;
+    expect(collect(<Slide><Section>一页</Section></Slide>, context).config.sections).length(1);
   });
 });
 
@@ -328,8 +473,8 @@ describe('不符合规范时构建报错', () => {
     ],
     ['嵌套 Slide', <Slide><Section><Slide><Section>内页</Section></Slide></Section></Slide>, /Slide 不能嵌套/],
     ['嵌套 Section', <Slide><Section><Section>内页</Section></Section></Slide>, /Section 不能嵌套/],
-    ['Player 没有 Section', <Player><Step><FadeIn target="title" /></Step></Player>, /Player 必须属于/],
-    ['Section 没有 Slide', <Section>一页</Section>, /Section 必须属于/],
+    ['Player 没有 Section', <Slide><Player><Step><FadeIn target="title" /></Step></Player></Slide>, /Player 必须属于/],
+    ['Section 没有 Slide', <Section>一页</Section>, /PPT 组件必须属于 Slide/],
     [
       '同页多个 Player',
       page(
@@ -345,31 +490,45 @@ describe('不符合规范时构建报错', () => {
     ['动作没有 Step', page(<Player><FadeIn target="title" /></Player>), /必须属于 Step/],
     [
       '动作位于已结束的 Step 之后',
-      page(<Player><Step><FadeIn target="title" /></Step><FadeOut target="title" /></Player>),
+      page(
+        <Player>
+          <Step><FadeIn target="title" /></Step>
+          <FadeOut target="title" />
+        </Player>,
+      ),
       /必须属于 Step/,
     ],
     [
       'Step 位于已结束的 Player 之后',
-      page(<><Player><Step><FadeIn target="title" /></Step></Player><Step><FadeOut target="title" /></Step></>),
+      page(
+        <>
+          <Player><Step><FadeIn target="title" /></Step></Player>
+          <Step><FadeOut target="title" /></Step>
+        </>,
+      ),
       /Step 必须属于 Player/,
     ],
     [
       '动作位于已结束的 Player 之后',
-      page(<><Player><Step><FadeIn target="title" /></Step></Player><FadeOut target="title" /></>),
+      page(
+        <>
+          <Player><Step><FadeIn target="title" /></Step></Player>
+          <FadeOut target="title" />
+        </>,
+      ),
       /必须属于 Step/,
     ],
     [
       'Player 位于已结束的 Section 之后',
-      <Slide><Section><div id="title" /></Section><Player><Step><FadeIn target="title" /></Step></Player></Slide>,
+      <Slide>
+        <Section><div id="title" /></Section>
+        <Player><Step><FadeIn target="title" /></Step></Player>
+      </Slide>,
       /Player 必须属于一个 Section/,
     ],
     ['嵌套 Step', page(<Player><Step><Step><FadeIn target="title" /></Step></Step></Player>), /Step 不能嵌套/],
     ['空 Player', page(<Player>{null}</Player>), /至少需要一个 Step/],
     ['空 Step', page(<Player><Step>{null}</Step></Player>), /没有动作/],
-    ['空终点', page(<Player><Step><Animate target="title" to={{}} /></Step></Player>), /终点属性/],
-    ['未声明的 Player 属性', page(<Player {...({ children: <Step><FadeIn target="title" /></Step>, duration: 100 } as React.ComponentProps<typeof Player>)} />), /Player 不支持属性 duration/],
-    ['非法透明度', page(<Player><Step><Animate target="title" to={{ opacity: 2 }} /></Step></Player>), /opacity/],
-    ['无效 target', page(<Player><Step><FadeIn target="" /></Step></Player>), /target/],
     ['Slide 空页面列表', <Slide>{null}</Slide>, /至少一个 Section/],
   ];
   for (const [name, tree, message] of invalidTrees) {

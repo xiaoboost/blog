@@ -1,6 +1,7 @@
 import { stringifyClass } from '@xiao-ai/utils';
 import React from 'react';
-import { SlideStoreContext, useSlideStore } from './collect/context';
+import { SlideStoreContext } from './collect/context';
+import { useSlideValue } from './collect/use-slide-provider';
 import styles from './index.jss';
 import type { SlideProps } from './types';
 
@@ -10,8 +11,8 @@ export function Slide({
   style,
   ...attributes
 }: SlideProps) {
-  const store = useSlideStore();
-  const classes = stringifyClass('reveal', styles.classes.slide, className);
+  const store = useSlideValue();
+  const classes = stringifyClass(styles.classes.slide, className);
 
   return (
     <SlideStoreContext.Provider value={store}>

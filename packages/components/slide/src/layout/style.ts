@@ -39,10 +39,6 @@ function flexSize(value: FlexSize = 'content'): CSSProperties {
     return { flex: '1 1 0px', minWidth: 0, minHeight: 0 };
   }
 
-  if (typeof value !== 'number' || !Number.isSafeInteger(value) || value <= 0) {
-    throw new Error('[mdx-slide] Box.flex 必须是 content、fill、fixed 或正整数。');
-  }
-
   return { flex: `${value} 1 0px`, minWidth: 0, minHeight: 0 };
 }
 
@@ -65,11 +61,6 @@ export function extractBoxProps(props: Omit<BoxProps, 'children' | 'className' |
     flex,
     ...attributes
   } = props;
-
-  if (border && typeof border.thickness === 'number'
-    && (!Number.isFinite(border.thickness) || border.thickness < 0)) {
-    throw new Error('[mdx-slide] 边框粗细必须为非负有限数值。');
-  }
 
   const sizing = {
     width,

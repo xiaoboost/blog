@@ -18,11 +18,11 @@ export function collectSlide(
       throw new Error('[mdx-slide] 预渲染必须同步返回完整 HTML 字符串。');
     }
 
-    if (!session.slide) {
+    if (!session.store) {
       throw new Error('[mdx-slide] PPT 必须包含一个 Slide 和至少一个 Section，并提供本页的预渲染 RenderContext。');
     }
 
-    return { html, config: session.slide.getConfig() };
+    return { html, config: session.store.getConfig() };
   }
   finally {
     endCollection(page);
