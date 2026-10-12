@@ -16,12 +16,15 @@
     "@blog/mdx-code-block-typescript": "workspace:*",
     "@blog/mdx-font-block": "workspace:*",
     "@blog/mdx-katex": "workspace:*",
+    "@blog/mdx-slide": "workspace:*",
     "@blog/mdx-typo": "workspace:*",
-    "@blog/template-post": "workspace:*",
     "@blog/styles": "workspace:*",
+    "@blog/template-post": "workspace:*",
+    "@blog/template-slide": "workspace:*",
     "react": "18.3.1"
   },
   "devDependencies": {
-    "@blog/types": "workspace:*"
+    "@blog/types": "workspace:*",
+    "@types/react": "18.3.27"
   }
 }
