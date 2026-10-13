@@ -4,7 +4,7 @@ import {
   Builder,
 } from '@blog/context/runtime';
 import posts from '@blog/posts';
-import type { AssetData, RunnerCb } from '@blog/types';
+import type { AssetData, IPage, RunnerCb } from '@blog/types';
 import {
   pageConfig,
   site as siteConfig,
@@ -39,9 +39,9 @@ import { paginate } from './utils/pagination';
 interface RenderOptions {
   isPreBuild: boolean;
   site: Site;
-  allPages: Page[];
+  allPages: IPage[];
   ctx?: {
-    pages: Page[];
+    pages: IPage[];
     site: Site;
     rename: (asset: AssetData) => string;
     logger: any;
@@ -61,7 +61,7 @@ function createAllPages(): Omit<RenderOptions, 'isPreBuild'> {
     archivePath,
   });
 
-  const allPages: Page[] = [];
+  const allPages: IPage[] = [];
 
   // 文章页面
   for (let i = 0; i < posts.length; i++) {

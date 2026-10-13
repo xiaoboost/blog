@@ -9,7 +9,7 @@
   "exports": {
     ".": "./src/index.tsx",
     "./script": "./src/index.script.ts",
-    "./collect": "./src/slide/collect/index.ts"
+    "./plugin": "./src/slide/collect/plugin.ts"
   },
   "scripts": {
     "test": "mocha",
@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@blog/context": "workspace:*",
+    "@blog/node": "workspace:*",
     "@blog/styles": "workspace:*",
     "@blog/web": "workspace:*",
     "@xiao-ai/utils": "1.6.7",

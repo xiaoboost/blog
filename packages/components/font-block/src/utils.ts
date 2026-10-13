@@ -8,7 +8,7 @@ import {
 } from 'path';
 import { Builder, getAccessor } from '@blog/context/runtime';
 import { normalize, isRootDirectory, toPinyin } from '@blog/node';
-import type { IPage, PageDataMap } from '@blog/types';
+import type { IPage } from '@blog/types';
 import React from 'react';
 
 interface FontBlockData {
@@ -91,7 +91,7 @@ export function getFontText(children: React.ReactNode): string {
 /** 编译当前页面内自定义字体 */
 export function getFontData(page: IPage, src: string, baseDir?: string) {
   const postPath = page.type === 'post'
-    ? (page.data as PageDataMap['post']).post.data.filePath
+    ? page.data.post.data.filePath
     : undefined;
   const fontPath = resolveFontPath(src, postPath, baseDir);
   let fonts = pageFonts.get(page);

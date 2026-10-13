@@ -4,6 +4,7 @@ import { createExport, createImport } from '../ast/mdx';
 
 function getImportComponentNode(ast: Mdx.Root) {
   const importSet = new Set<string>();
+  const assets = new Set<string>();
 
   // 只会在首层存在
   for (const node of ast.children) {
@@ -21,6 +22,15 @@ function getImportComponentNode(ast: Mdx.Root) {
 
         const importSource = String(item.source.value ?? '');
 
+        // assets: 默认导出资源列表，沿用作者已有的导入变量。
+        if (importSource.startsWith('assets:')) {
+          const specifier = item.specifiers.find((item) => item.type === 'ImportDefaultSpecifier');
+
+          if (specifier) {
+            assets.add(specifier.local.name);
+          }
+        }
+
         if (!importSource.startsWith('@blog/mdx-')) {
           continue;
         }
@@ -30,7 +40,7 @@ function getImportComponentNode(ast: Mdx.Root) {
     }
   }
 
-  return Array.from(importSet.values());
+  return { components: Array.from(importSet), assets: Array.from(assets) };
 }
 
 /** 在组件转换之后收集 import，并把模板和组件资源合并为 utils。 */
@@ -42,19 +52,31 @@ export const remarkPostAssets: Plugin<[], Mdx.Root> = () => (tree, file) => {
     return;
   }
 
-  const components = getImportComponentNode(tree);
+  const { components, assets } = getImportComponentNode(tree);
   const imports = components.map((name, i) => createImport(name, new Map([['utils', `c${i}`]])));
+
   imports.push(
     createImport(`@blog/template-${template}`, new Map([['utils', 'template']])),
-    createImport('@blog/context/runtime', new Set(['mergeUtils'])),
+    createImport('@blog/context/runtime', new Set(['mergeUtils', 'defineUtils'])),
   );
 
   const sources = ['template', ...components.map((_, i) => `c${i}`)];
+  const assetCalls: EsTree.CallExpression[] = assets.map((name) => ({
+    type: 'CallExpression',
+    callee: { type: 'Identifier', name: 'defineUtils' },
+    arguments: [{ type: 'Identifier', name }],
+    optional: false,
+  }));
 
-  tree.children.unshift(...imports, createExport('utils', {
+  tree.children.unshift(...imports);
+  // 放在原有 import 之后，转成 CommonJS 时也能先取得资源列表。
+  tree.children.push(createExport('utils', {
     type: 'CallExpression',
     callee: { type: 'Identifier', name: 'mergeUtils' },
-    arguments: sources.map((name): EsTree.Identifier => ({ type: 'Identifier', name })),
+    arguments: [
+      ...sources.map((name): EsTree.Identifier => ({ type: 'Identifier', name })),
+      ...assetCalls,
+    ],
     optional: false,
-  }, `mergeUtils(${sources.join(', ')})`));
+  }, `mergeUtils(${[...sources, ...assets.map((name) => `defineUtils(${name})`)].join(', ')})`));
 };

@@ -49,3 +49,8 @@ declare module '*?raw' {
 }
 
 declare module '*.css';
+
+declare module 'assets:*' {
+  const assets: string[];
+  export default assets;
+}

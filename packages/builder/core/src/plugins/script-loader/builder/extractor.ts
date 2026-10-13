@@ -15,6 +15,17 @@ export const AssetExtractor = (): BuilderPlugin => ({
       options: { entry },
     } = builder;
     const chunkName = basename(entry).replace(EntrySuffix, '');
+    let previousBundles = new Set<string>();
+    let currentBundles = new Set<string>();
+
+    // 增量构建可能不再输出 CSS / JS，资源列表不能继续保留上一轮的产物。
+    builder.hooks.processAssets.tap(pluginName, (assets) => {
+      const result = assets.filter((asset) =>
+        !previousBundles.has(asset.path) || currentBundles.has(asset.path),
+      );
+      previousBundles = currentBundles;
+      return result;
+    });
 
     builder.hooks.bundler.tap(pluginName, (bundler) => {
       bundler.hooks.resolveResult.tap(pluginName, (result) => {
@@ -30,6 +41,8 @@ export const AssetExtractor = (): BuilderPlugin => ({
     });
 
     builder.hooks.afterBundler.tap(pluginName, ({ bundler }) => {
+      currentBundles = new Set();
+
       // 当前插件是内部插件，则跳过
       if (scriptIsInside.get(entry)) {
         return;
@@ -69,6 +82,7 @@ export const AssetExtractor = (): BuilderPlugin => ({
           return;
         }
 
+        currentBundles.add(newPath);
         builder.emitAsset({
           path: newPath,
           content,

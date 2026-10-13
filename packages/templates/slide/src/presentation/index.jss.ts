@@ -27,7 +27,7 @@ export default createStyles({
     maxWidth: 1600,
     aspectRatio: '16 / 9',
     overflow: 'clip',
-    borderRadius: 8,
+    borderRadius: 6,
     background: BgSecondary,
     color: TextPrimary,
     boxShadow: `0 0 0 1px ${BorderPrimary}, 0 8px 32px rgba(0,0,0,.04)`,

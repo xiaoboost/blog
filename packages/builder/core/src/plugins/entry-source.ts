@@ -11,6 +11,13 @@ export const EntrySource = (): BuilderPlugin => ({
   name: pluginName,
   apply(builder) {
     builder.hooks.bundler.tap(pluginName, (bundler) => {
+      // 内存入口没有磁盘文件，直接交给下面的 load 提供源码。
+      bundler.hooks.resolve.tap(pluginName, (args) => {
+        if (args.kind === 'entry-point' && sources.has(builder)
+          && normalize(args.path) === normalize(builder.options.entry)) {
+          return { path: args.path, namespace: 'file' };
+        }
+      });
       bundler.hooks.load.tap(pluginName, (args) => {
         const source = sources.get(builder);
 

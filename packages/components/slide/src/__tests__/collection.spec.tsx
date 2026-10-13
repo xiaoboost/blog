@@ -18,8 +18,8 @@ import {
 } from '../animation';
 import { mergeTransition } from '../animation/normalize';
 import type { AnimationState } from '../animation/types';
-import { collectSlide } from '../slide/collect';
 import { SlideStoreContext, type ISlideStore } from '../slide/collect/context';
+import { slideConfigs } from '../slide/collect/plugin';
 import { Section } from '../slide/section';
 import { Slide } from '../slide/slide';
 import {
@@ -50,8 +50,8 @@ describe('SSR 动画收集', () => {
     );
     expect(config).deep.eq({
       version: 1,
-      width: 2560,
-      height: 1440,
+      width: 1920,
+      height: 1080,
       sections: [{ steps: [] }, { steps: [] }],
     });
     expect(html).include('data-slide-section="0"').include('data-slide-section="1"');
@@ -154,7 +154,7 @@ describe('SSR 动画收集', () => {
     const second = collect(<Slide><Section>无动画</Section></Slide>).config;
     expect(first.sections[0].steps[0].actions[0].keyframes[0].opacity).eq(1);
     expect(second.sections).deep.eq([{ steps: [] }]);
-    expect(first.width).eq(2560);
+    expect(first.width).eq(1920);
   });
 
   it('正式渲染不展开动画子树、不再次收集，也不输出资源标签', () => {
@@ -186,18 +186,19 @@ describe('SSR 动画收集', () => {
     expect(second.config).deep.eq(first.config);
   });
 
-  it('预渲染入口只调用渲染一次，失败后不影响下一份 PPT', () => {
-    let renders = 0;
+  it('普通 SSR 即可登记配置，Slide 完成前不发布', () => {
     const context = renderContext();
-    const content = page(<Player><Step><FadeIn target="title" /></Step></Player>);
-    const { config } = collectSlide(context.page, () => {
+    let renders = 0;
+    function Probe() {
       renders++;
-      return renderPage(content, context);
-    });
+      expect(slideConfigs.has(context.page)).eq(false);
+      return <div id="title" />;
+    }
+    const html = renderPage(page(<Player><Step><FadeIn target="title" /></Step></Player>, <Probe />), context);
     expect(renders).eq(1);
-    expect(config.sections[0].steps).length(1);
+    expect(slideConfigs.get(context.page)!.sections[0].steps).length(1);
+    expect(html).include('id="title"').not.include('<script');
     expect(() => collect(<Slide>{null}</Slide>)).throw(/至少一个 Section/);
-    expect(collect(<Slide><Section>一页</Section></Slide>).config.sections).deep.eq([{ steps: [] }]);
   });
 
   it('各页的 Player 和默认 transition 独立，结束标记不生成 HTML', () => {
@@ -223,41 +224,48 @@ describe('SSR 动画收集', () => {
     expect(html).not.include('ScopeEnd').not.include('<script');
   });
 
-  it('同一页面在渲染异常或配置错误后，可以重新收集', () => {
+  it('渲染失败不发布半成品配置，下一轮预渲染可重新收集', () => {
     const context = renderContext();
-    expect(() => collectSlide(context.page, () => {
+    function Broken(): never {
       throw new Error('渲染失败');
-    })).throw(/渲染失败/);
+    }
+    expect(() => renderPage(page(<Player><Step><Broken /></Step></Player>), context)).throw(/渲染失败/);
+    expect(slideConfigs.has(context.page)).eq(false);
     expect(() => collect(page(<Player>{null}</Player>), context)).throw(/至少需要一个 Step/);
     expect(collect(page(<Player><Step><FadeIn target="title" /></Step></Player>), context)
       .config.sections[0].steps).length(1);
   });
 
-  it('不同页面的收集入口可以嵌套，同一页面不能重入', () => {
-    const context = renderContext();
-    const content = <Slide><Section>外页</Section></Slide>;
-    const { config } = collectSlide(context.page, () => {
-      expect(collect(<Slide><Section title="内页">内页</Section></Slide>).config.sections)
-        .deep.eq([{ steps: [] }]);
-      expect(() => collectSlide(context.page, () => renderPage(content, context)))
-        .throw(/同一页面不能同时/);
-      return renderPage(content, context);
-    });
-    expect(config.width).eq(2560);
-    expect(config.sections).deep.eq([{ steps: [] }]);
+  it('不同页面的普通 SSR 配置互不影响', () => {
+    const outer = renderContext();
+    const inner = renderContext();
+    function NestedRender() {
+      renderPage(
+        <Slide>
+          <Section>内页</Section>
+          <Section>内页第二页</Section>
+        </Slide>, inner);
+      return null;
+    }
+    renderPage(
+      <Slide>
+        <Section>
+          <NestedRender />
+          外页
+        </Section>
+      </Slide>, outer);
+    expect(slideConfigs.get(outer.page)!.sections).length(1);
+    expect(slideConfigs.get(inner.page)!.sections).length(2);
   });
 
-  it('入口必须同步返回 HTML，且使用本页的预渲染 RenderContext', () => {
+  it('正式渲染不覆盖预渲染配置，也不要求外部收集入口', () => {
     const context = renderContext();
-    const content = <Slide><Section>一页</Section></Slide>;
-    expect(() => collectSlide(context.page, (() => Promise.resolve('')) as unknown as () => string))
-      .throw(/同步返回完整 HTML/);
-    expect(() => collectSlide(context.page, () => renderToStaticMarkup(content)))
-      .throw(/预渲染 RenderContext/);
-    expect(() => collectSlide(context.page, () => renderPage(content, renderContext())))
-      .throw(/预渲染必须通过 collectSlide/);
-    expect(() => renderPage(content, context)).throw(/预渲染必须通过 collectSlide/);
-    expect(collect(content, context).config.sections).length(1);
+    renderPage(page(<Player><Step><FadeIn target="title" /></Step></Player>), context);
+    const config = slideConfigs.get(context.page);
+    context.isPreBuild = false;
+    const html = renderPage(<Slide><Section>正式内容</Section></Slide>, context);
+    expect(slideConfigs.get(context.page)).eq(config);
+    expect(html).include('正式内容').not.include('<script');
   });
 
   it('栈内的范围必须按顺序结束，结束前不能取得最终配置', () => {
@@ -443,7 +451,7 @@ describe('SSR 动画收集', () => {
     expect(config.sections).deep.eq([{ steps: [] }]);
   });
 
-  it('正式渲染也拒绝同页多个 Player；收集入口不接受正式渲染阶段', () => {
+  it('正式渲染也拒绝同页多个 Player', () => {
     const tree = page(
       <>
         <Player>{null}</Player>
@@ -451,16 +459,11 @@ describe('SSR 动画收集', () => {
       </>,
     );
     expect(() => renderToStaticMarkup(tree)).throw(/多个 Player/);
-    const context = { ...renderContext(), isPreBuild: false };
-    expect(() => collect(<Slide><Section>一页</Section></Slide>, context)).throw(/预渲染 RenderContext/);
-    context.isPreBuild = true;
-    expect(collect(<Slide><Section>一页</Section></Slide>, context).config.sections).length(1);
   });
 });
 
 describe('不符合规范时构建报错', () => {
   const invalidTrees: [string, ReactNode, RegExp][] = [
-    ['缺失 Slide', <div>普通内容</div>, /必须包含一个 Slide/],
     [
       '整篇多个 Slide',
       (

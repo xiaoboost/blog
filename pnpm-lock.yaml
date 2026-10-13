@@ -431,6 +431,9 @@ importers:
       '@blog/template-post':
         specifier: workspace:*
         version: link:../../templates/post
+      '@blog/template-slide':
+        specifier: workspace:*
+        version: link:../../templates/slide
       '@blog/types':
         specifier: workspace:*
         version: link:../types
@@ -890,6 +893,9 @@ importers:
       '@blog/context':
         specifier: workspace:*
         version: link:../../builder/context
+      '@blog/node':
+        specifier: workspace:*
+        version: link:../../utils/node
       '@blog/styles':
         specifier: workspace:*
         version: link:../../utils/styles
@@ -1006,6 +1012,9 @@ importers:
       '@blog/mdx-katex':
         specifier: workspace:*
         version: link:../components/katex
+      '@blog/mdx-slide':
+        specifier: workspace:*
+        version: link:../components/slide
       '@blog/mdx-typo':
         specifier: workspace:*
         version: link:../components/typo
@@ -1015,6 +1024,9 @@ importers:
       '@blog/template-post':
         specifier: workspace:*
         version: link:../templates/post
+      '@blog/template-slide':
+        specifier: workspace:*
+        version: link:../templates/slide
       react:
         specifier: 18.3.1
         version: 18.3.1
@@ -1022,6 +1034,9 @@ importers:
       '@blog/types':
         specifier: workspace:*
         version: link:../builder/types
+      '@types/react':
+        specifier: 18.3.27
+        version: 18.3.27
 
   packages/templates/layout:
     dependencies:
@@ -1131,6 +1146,55 @@ importers:
       moment:
         specifier: 2.30.1
         version: 2.30.1
+      react:
+        specifier: 18.3.1
+        version: 18.3.1
+      tslib:
+        specifier: 2.8.1
+        version: 2.8.1
+    devDependencies:
+      '@blog/eslint-config':
+        specifier: workspace:*
+        version: link:../../tools/eslint-config
+      '@blog/tsconfig':
+        specifier: workspace:*
+        version: link:../../tools/tsconfig
+      '@blog/types':
+        specifier: workspace:*
+        version: link:../../builder/types
+      '@types/blog':
+        specifier: workspace:*
+        version: link:../../tools/typings
+      '@types/node':
+        specifier: 24.12.2
+        version: 24.12.2
+      '@types/react':
+        specifier: 18.3.27
+        version: 18.3.27
+      eslint:
+        specifier: 10.2.1
+        version: 10.2.1(supports-color@8.1.1)
+      typescript:
+        specifier: 6.0.3
+        version: 6.0.3
+
+  packages/templates/slide:
+    dependencies:
+      '@blog/context':
+        specifier: workspace:*
+        version: link:../../builder/context
+      '@blog/mdx-slide':
+        specifier: workspace:*
+        version: link:../../components/slide
+      '@blog/styles':
+        specifier: workspace:*
+        version: link:../../utils/styles
+      '@blog/template-layout':
+        specifier: workspace:*
+        version: link:../layout
+      '@blog/web':
+        specifier: workspace:*
+        version: link:../../utils/web
       react:
         specifier: 18.3.1
         version: 18.3.1

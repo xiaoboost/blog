@@ -1,7 +1,6 @@
 import { normalize } from '@blog/node';
 import type {
   IRenderContext,
-  IPage,
   PageDataMap,
   PageType,
 } from '@blog/types';
@@ -15,7 +14,7 @@ export interface PageOptions<T extends PageType = PageType> {
   render: (props: IRenderContext) => string;
 }
 
-export class Page<T extends PageType = PageType> extends ResourceSet implements IPage<T> {
+export class Page<T extends PageType> extends ResourceSet {
   readonly type: T;
   readonly pathname: string;
   readonly title: string;

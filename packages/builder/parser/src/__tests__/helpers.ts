@@ -38,7 +38,11 @@ export async function compilePost(
       }
 
       if (source === '@blog/context/runtime') {
-        return { mergeUtils };
+        return { mergeUtils, defineUtils };
+      }
+
+      if (source.startsWith('assets:') || /\.script(?:\.[cm]?[jt]s)?$/.test(source)) {
+        return { __esModule: true, default: resources[source] ?? [] };
       }
 
       return new Proxy({ utils: defineUtils(resources[source] ?? [source]) }, {
