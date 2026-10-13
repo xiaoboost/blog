@@ -1,3 +1,5 @@
+import './slide/collect/plugin';
+
 import { defineUtils } from '@blog/context/runtime';
 import assets from './index.script';
 

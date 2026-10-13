@@ -3,7 +3,6 @@ import { useContext, useRef } from 'react';
 import { mergeTransition, normalizeAction } from '../../animation/normalize';
 import { SlideStoreContext, type ISlideStore } from './context';
 import type { PlayerScope, SectionScope, StepScope } from './scope';
-import { registerSlide } from './session';
 
 type Scope =
   | { kind: 'section'; value: SectionScope }
@@ -115,8 +114,8 @@ export function useSlideValue(): ISlideStore {
 
         return {
           version: 1,
-          width: 2560,
-          height: 1440,
+          width: 1920,
+          height: 1080,
           sections: sections.map(({ player }) => ({
             steps: (player?.steps ?? []).map(({ actions }) => ({
               actions: actions.map((action) => ({
@@ -131,10 +130,6 @@ export function useSlideValue(): ISlideStore {
         };
       },
     };
-
-    if (collecting) {
-      registerSlide(renderContext.page, contextRef.current);
-    }
   }
 
   return contextRef.current;

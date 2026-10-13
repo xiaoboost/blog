@@ -6,6 +6,39 @@ import { transform } from '../post';
 import { compilePost, postSource } from './helpers';
 
 describe('post compile pipeline', () => {
+  it('通过公共 assets: 导入合并资源，保留原有绑定且不重复生成 import', async () => {
+    for (const format of [false, true]) {
+      const post = await compilePost(
+        "import pageAssets from 'assets:./**/*.{script,jss}.ts';\nimport { Page } from './pages/01';\n\n<Page />",
+        'template: custom\n', format,
+        {
+          '@blog/template-custom': ['/viewer.js', '/slide.css'],
+          'assets:./**/*.{script,jss}.ts': ['/deck.css', '/page-01.css'],
+        },
+      );
+      expect(post.utils.getStyles()).deep.eq([{ href: '/slide.css' }, { href: '/deck.css' }, { href: '/page-01.css' }]);
+      expect(post.utils.getScripts()).deep.eq([{ src: '/viewer.js' }]);
+      expect(post.code.match(/^import .+ from ["']assets:/gm)).length(1);
+      expect(post.code).contain('defineUtils(pageAssets)');
+    }
+  });
+
+  it('多个 assets: 导入按声明顺序合并，普通 script import 不再隐式加入资源', async () => {
+    const post = await compilePost([
+      "import scripts from 'assets:./scripts/*.ts';",
+      "import styles from 'assets:./styles/*.jss.ts';",
+      "import './manual.script';",
+      '',
+      '# 正文',
+    ].join('\n'), '', false, {
+      '@blog/template-post': ['/post.css'],
+      'assets:./scripts/*.ts': ['/article.js'],
+      'assets:./styles/*.jss.ts': ['/article.css'],
+      './manual.script': ['/manual.js'],
+    });
+    expect(post.utils.getAssetNames()).deep.eq(['/post.css', '/article.js', '/article.css']);
+  });
+
   it('文章正文只 parse 一次、run 一次', async () => {
     const { createProcessor } = await import('@mdx-js/mdx');
     const prototype = Object.getPrototypeOf(createProcessor());

@@ -1,5 +1,6 @@
 import { stringifyClass } from '@xiao-ai/utils';
 import React from 'react';
+import { SlideComplete } from './collect/complete';
 import { SlideStoreContext } from './collect/context';
 import { useSlideValue } from './collect/use-slide-provider';
 import styles from './index.jss';
@@ -23,6 +24,7 @@ export function Slide({
       >
         {children}
       </div>
+      <SlideComplete />
     </SlideStoreContext.Provider>
   );
 }

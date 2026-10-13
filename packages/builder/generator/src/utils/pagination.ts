@@ -1,5 +1,5 @@
+import type { IPage } from '@blog/types';
 import { cut } from '@xiao-ai/utils';
-import type { Page } from '../model/page';
 
 export interface PageNav {
   older?: string;
@@ -27,8 +27,8 @@ export function paginate<T>(
   items: T[],
   pageSize: number,
   urlForIndex: (i: number) => string,
-  buildPage: (chunk: T[], nav: PageNav) => Page,
-): Page[] {
+  buildPage: (chunk: T[], nav: PageNav) => IPage,
+): IPage[] {
   const chunks = cut(items, pageSize);
   return chunks.map((chunk, i) =>
     buildPage(chunk, pageNav(urlForIndex, i, chunks.length)),

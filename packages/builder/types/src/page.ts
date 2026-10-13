@@ -113,19 +113,25 @@ export interface IResourceSet {
 
 // ── Page ──
 
-/** Page 实例 — 表示一个正在构建的页面 */
-export interface IPage<T extends PageType = PageType> extends IResourceSet {
-  readonly type: T;
+/**
+ * 正在构建的页面。
+ * type 与 data 组成联合类型，判断 type 后即可得到对应的 data。
+ */
+export type IPage = IResourceSet & {
   readonly pathname: string;
   readonly title: string;
-  readonly data: PageDataMap[T];
   readonly render: (props: IRenderContext) => string;
 
   html: string;
 
   /** 产出最终的 HTML AssetData */
   toAsset(): AssetData;
-}
+} & {
+  [T in PageType]: {
+    readonly type: T;
+    readonly data: PageDataMap[T];
+  };
+}[PageType];
 
 // ── Site ──
 

@@ -1,6 +1,7 @@
 import { normalize, normalizeUrl } from '@blog/node';
 import { utils as layoutUtils } from '@blog/template-layout';
 import { Post as PostRender, type PostProps } from '@blog/template-post';
+import { SlidePage } from '@blog/template-slide';
 import type {
   IRenderContext,
   ISite,
@@ -11,6 +12,7 @@ import React from 'react';
 import { createHtml } from '../utils/react';
 
 const createPost = createHtml(PostRender);
+const createSlide = createHtml(SlidePage);
 
 export function filterSortPosts(posts: PostsExportType) {
   return posts
@@ -42,7 +44,8 @@ export function renderPost({
   dev,
   isPreBuild,
 }: PostPageRenderProps) {
-  const html = createPost({
+  const render = post.data.template === 'slide' ? createSlide : createPost;
+  const props = {
     pageTitle: post.data.title,
     siteTitle: site.title,
     pathname: post.data.pathname,
@@ -81,7 +84,7 @@ export function renderPost({
     page,
     site,
     isPreBuild,
-  });
+  };
 
-  return html;
+  return render(props);
 }
