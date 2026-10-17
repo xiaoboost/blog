@@ -5,7 +5,6 @@ import Moment from 'moment';
 import React from 'react';
 
 import { ToContent } from '../to-content';
-import { resetAnchorPointer } from '../to-content/utils';
 
 import * as blockquote from './blockquote';
 import { Pre } from './code';
@@ -14,7 +13,7 @@ import * as image from './image';
 import styles from './index.jss';
 import { Link } from './link';
 import * as paragraph from './paragraph';
-import * as title from './title';
+import { createHeadComponents } from './title';
 
 export interface PostProps extends LayoutProps {
   /** 文章数据 */
@@ -23,10 +22,7 @@ export interface PostProps extends LayoutProps {
 
 export function Post(props: PostProps) {
   const { post } = props;
-
-  if (post.data.toc) {
-    resetAnchorPointer();
-  }
+  const title = createHeadComponents();
 
   return (
     <Layout {...props}>

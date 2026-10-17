@@ -6,6 +6,7 @@ import { supportsPassive, addClassName, removeClassName } from '@xiao-ai/utils/w
 import postStyles from '../post/index.jss';
 import { levelLimit, tocMarginLeft, tocWidth } from './constant';
 import tocStyles from './index.jss';
+import { getHeadHref } from './utils';
 
 const enum Status {
   Init,
@@ -69,7 +70,7 @@ function active() {
     }
 
     const first = titlePosition.find((item) => item.offsetTop < top);
-    const anchor = first && menu.querySelector<HTMLAnchorElement>(`[href="#${first.title}"]`);
+    const anchor = first && menu.querySelector<HTMLAnchorElement>(`[href="${getHeadHref(first.title)}"]`);
     const highLightItem = anchor?.parentElement;
     const highLightListItem = highLightItem?.parentElement;
 

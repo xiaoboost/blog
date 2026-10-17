@@ -1,21 +1,17 @@
 import { Circle } from '@blog/icons';
-import { visit } from '@blog/parser/walk';
 import type { Mdx } from '@blog/types';
 import { stringifyClass } from '@xiao-ai/utils';
 import React from 'react';
 
 import { levelLimit } from './constant';
 import styles from './index.jss';
-import { getHeadAnchor, getNodeText, resetAnchorPointer } from './utils';
+import { getHeadingAnchors, getHeadHref, type HeadingAnchor } from './utils';
 
 export interface Props {
   data: Mdx.Root;
 }
 
-export interface NavTitleData {
-  content: string;
-  hash: string;
-  level: number;
+export interface NavTitleData extends HeadingAnchor {
   parent?: NavTitleData;
   children?: NavTitleData[];
 }
@@ -25,23 +21,10 @@ export interface NavTitleProps {
 }
 
 export function getNavList(ast: Mdx.Root) {
-  const list: NavTitleData[] = [];
-
-  visit(ast, (node) => {
-    if (node.type === 'heading') {
-      list.push({
-        content: getNodeText(node),
-        level: node.depth,
-        // 占位，无用字段
-        hash: '',
-      });
-    }
-  });
-
-  return list;
+  return getHeadingAnchors(ast);
 }
 
-function createNavFromAst(ast: Mdx.Root, _: number): NavTitleData[] {
+function createNavFromAst(ast: Mdx.Root): NavTitleData[] {
   const root: NavTitleData = {
     content: 'root',
     hash: '',
@@ -51,19 +34,10 @@ function createNavFromAst(ast: Mdx.Root, _: number): NavTitleData[] {
 
   let current = root;
 
-  visit(ast, (token) => {
-    if (token.type !== 'heading') {
-      return;
+  for (const { content, hash, level } of getHeadingAnchors(ast)) {
+    if (level > levelLimit) {
+      continue;
     }
-
-    const content = getNodeText(token);
-    const hash = getHeadAnchor(content);
-
-    if (token.depth > levelLimit) {
-      return;
-    }
-
-    const level = token.depth;
 
     if (level > current.level) {
       const now: NavTitleData = {
@@ -112,7 +86,7 @@ function createNavFromAst(ast: Mdx.Root, _: number): NavTitleData[] {
       parent.children?.push(now);
       current = now;
     }
-  });
+  }
 
   return root.children!;
 }
@@ -130,7 +104,7 @@ function NavTitle({ titles }: NavTitleProps) {
             cla[`menuLevel${title.level}` as keyof typeof cla],
           )}
         >
-          <a href={`#${title.hash}`}>
+          <a href={getHeadHref(title.hash)}>
             {title.level === 1 ? <Circle className={cla.menuIcon} /> : ''}
             <span className={cla.menuTitle}>{title.content}</span>
           </a>
@@ -142,10 +116,7 @@ function NavTitle({ titles }: NavTitleProps) {
 }
 
 export function ToContent({ data }: Props) {
-  // 先重置计数器
-  resetAnchorPointer();
-
-  const titles = createNavFromAst(data, levelLimit);
+  const titles = createNavFromAst(data);
 
   return (
     <nav className={styles.classes.toContent} aria-label="文章目录">
