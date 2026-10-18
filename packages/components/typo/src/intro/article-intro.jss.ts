@@ -55,7 +55,7 @@ export default createStyles({
       display: 'grid',
       gridTemplateColumns: 'minmax(180px, 29%) minmax(0, 1fr)',
       gap: 24,
-      alignItems: 'start',
+      alignItems: 'stretch',
     },
     '& $introAside': {
       minWidth: 0,
