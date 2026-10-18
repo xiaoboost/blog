@@ -25,13 +25,13 @@ onBuild((runtime) => {
         continue;
       }
 
-      // 外部数据脚本先于模板播放脚本加载；播放端从此处读取配置。
+      // head 中的配置脚本同步执行，确保早于 body 末尾的模板播放脚本。
       const json = JSON.stringify(config);
       const content = Buffer.from(`globalThis.__BLOG_SLIDE_CONFIG__ = ${json};`);
       const asset = { path: 'slide-data.js', content };
       const src = normalize(page.pathname, rename(asset));
       page.addAsset({ path: src, content });
-      page.addPreScript({ src, defer: true });
+      page.addPreScript({ src });
     }
   });
 });
