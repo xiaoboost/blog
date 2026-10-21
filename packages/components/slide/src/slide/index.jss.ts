@@ -1,4 +1,5 @@
 import { createStyles, BgSecondary, TextPrimary } from '@blog/styles/compile';
+import { SlideWidth, SlideHeight } from '../shared';
 
 export default createStyles({
   slide: {
@@ -10,7 +11,7 @@ export default createStyles({
     isolation: 'isolate',
     overflow: 'hidden',
     boxSizing: 'border-box',
-    width: 1920,
-    height: 1080,
+    width: SlideWidth,
+    height: SlideHeight,
   },
 });

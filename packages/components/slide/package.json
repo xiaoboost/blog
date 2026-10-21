@@ -8,6 +8,7 @@
   "types": "src/index.tsx",
   "exports": {
     ".": "./src/index.tsx",
+    "./shared": "./src/shared.ts",
     "./script": "./src/index.script.ts",
     "./plugin": "./src/slide/collect/plugin.ts"
   },

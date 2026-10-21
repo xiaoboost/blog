@@ -1205,6 +1205,9 @@ importers:
       '@blog/eslint-config':
         specifier: workspace:*
         version: link:../../tools/eslint-config
+      '@blog/test-toolkit':
+        specifier: workspace:*
+        version: link:../../tools/test-toolkit
       '@blog/tsconfig':
         specifier: workspace:*
         version: link:../../tools/tsconfig
@@ -1223,6 +1226,9 @@ importers:
       eslint:
         specifier: 10.2.1
         version: 10.2.1(supports-color@8.1.1)
+      mocha:
+        specifier: 10.8.2
+        version: 10.8.2
       typescript:
         specifier: 6.0.3
         version: 6.0.3

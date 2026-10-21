@@ -1,8 +1,10 @@
 import { ModuleLoader } from '@blog/context/web';
+import { SlideWidth } from '@blog/mdx-slide/shared';
 import { getCurrentScriptSrc } from '@blog/web';
 import loadingStyles from './loading/index.jss';
 import styles from './presentation/index.jss';
 import toolbarStyles from './toolbar/index.jss';
+import { waitForSlideConfig } from './wait-for-slide-config';
 
 /** 等当前页图片解码和字体就绪；资源失败或超时不阻塞浏览。 */
 async function waitForPage(section: HTMLElement, signal: AbortSignal) {
@@ -47,15 +49,46 @@ function active() {
   const totalPages = find<HTMLElement>(toolbarStyles.classes.totalPages);
   const play = find<HTMLButtonElement>(toolbarStyles.classes.play);
   const loading = find<HTMLElement>(loadingStyles.classes.loading);
+  const spinner = find<HTMLElement>(loadingStyles.classes.spinner);
+  const loadingError = find<HTMLElement>(loadingStyles.classes.error);
+  const retry = find<HTMLButtonElement>(loadingStyles.classes.retry);
   const sections = Array.from(canvas.querySelectorAll<HTMLElement>('[data-slide-section]'));
   totalPages.textContent = String(sections.length).padStart(2, '0');
   const events = new AbortController();
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   let pending: AbortController | undefined;
+  let revealAnimations: Animation[] = [];
   let page = 0;
   let loadingTimer = 0;
+  let ready = false;
+  let configFailed = false;
+  loadingError.hidden = true;
+  const configReady = waitForSlideConfig(events.signal)
+    .then((config) => {
+      if (config.sections.length !== sections.length) {
+        throw new Error('幻灯片动画配置与页面数量不一致。');
+      }
+
+      return config;
+    })
+    .catch((error: unknown) => {
+      if (!events.signal.aborted) {
+        configFailed = true;
+        console.error('[slide] 动画配置加载失败。', error);
+      }
+    });
+
+  function finishReveal() {
+    loading.style.visibility = 'hidden';
+    revealAnimations.forEach((animation) => {
+      animation.onfinish = null;
+      animation.cancel();
+    });
+    revealAnimations = [];
+  }
 
   function resize() {
-    canvas.style.transform = `scale(${card.clientWidth / 1920})`;
+    canvas.style.transform = `scale(${card.clientWidth / SlideWidth})`;
   }
 
   async function show(index: number) {
@@ -64,15 +97,17 @@ function active() {
     }
 
     pending?.abort();
+    finishReveal();
     const request = new AbortController();
+    let loadingShown = false;
     pending = request;
     page = index;
     currentPage.textContent = String(page + 1).padStart(2, '0');
     card.setAttribute('aria-busy', 'true');
     canvas.style.visibility = 'hidden';
-    loading.style.visibility = 'hidden';
     window.clearTimeout(loadingTimer);
     loadingTimer = window.setTimeout(() => {
+      loadingShown = true;
       loading.style.visibility = 'visible';
     }, 200);
 
@@ -80,16 +115,46 @@ function active() {
       section.hidden = i !== page;
       section.style.display = i === page ? 'block' : 'none';
     });
-    await waitForPage(sections[page], request.signal);
+    await Promise.all([
+      configReady,
+      waitForPage(sections[page], request.signal),
+    ]);
 
     if (request.signal.aborted || events.signal.aborted) {
       return;
     }
 
     window.clearTimeout(loadingTimer);
-    loading.style.visibility = 'hidden';
+    loadingError.hidden = !configFailed;
     canvas.style.visibility = 'visible';
+
+    if (loadingShown && !reducedMotion.matches) {
+      const fadeOut = loading.animate(
+        [{ opacity: 1 }, { opacity: 0 }],
+        { duration: 120, easing: 'ease-out', fill: 'forwards' },
+      );
+      const fadeIn = canvas.animate(
+        [{ opacity: 0 }, { opacity: 1 }],
+        { duration: 180, easing: 'ease-out' },
+      );
+      revealAnimations = [fadeOut, fadeIn];
+      fadeOut.onfinish = () => {
+        if (!request.signal.aborted && !events.signal.aborted) {
+          loading.style.visibility = 'hidden';
+        }
+      };
+      fadeIn.onfinish = () => {
+        if (!request.signal.aborted && !events.signal.aborted) {
+          finishReveal();
+        }
+      };
+    }
+    else {
+      finishReveal();
+    }
+
     card.setAttribute('aria-busy', 'false');
+    ready = true;
 
     // 顺便解码下一页，切页时更容易命中缓存。
     sections[page + 1]?.querySelectorAll('img').forEach((image) => {
@@ -99,13 +164,34 @@ function active() {
   }
 
   const options = { signal: events.signal };
+  const spinnerAnimation = spinner.animate(
+    [{ transform: 'rotate(0deg)' }, { transform: 'rotate(360deg)' }],
+    { duration: 900, iterations: Infinity },
+  );
+  const updateSpinnerMotion = () => {
+    if (reducedMotion.matches) {
+      spinnerAnimation.pause();
+
+      if (revealAnimations.length) {
+        finishReveal();
+      }
+    }
+    else {
+      spinnerAnimation.play();
+    }
+  };
+  reducedMotion.addEventListener('change', updateSpinnerMotion, options);
+  updateSpinnerMotion();
+
   const interactive = (target: EventTarget | null) => target instanceof Element
     && !!target.closest('a, button, input, textarea, select, [contenteditable="true"]');
 
   card.addEventListener('click', (event) => {
     if (
-      interactive(event.target)
+      !ready
+      || interactive(event.target)
       || toolbar.contains(event.target as Node)
+      || loadingError.contains(event.target as Node)
       || window.getSelection()?.toString()
     ) {
       return;
@@ -115,7 +201,7 @@ function active() {
     void show(page + 1);
   }, options);
   document.addEventListener('keydown', (event) => {
-    if (interactive(event.target) || event.altKey || event.ctrlKey || event.metaKey) {
+    if (!ready || interactive(event.target) || event.altKey || event.ctrlKey || event.metaKey) {
       return;
     }
 
@@ -126,6 +212,7 @@ function active() {
       void show(page + direction);
     }
   }, options);
+  retry.addEventListener('click', () => window.location.reload(), options);
   play.addEventListener('click', async () => {
     try {
       if (document.fullscreenElement === presentation) {
@@ -156,6 +243,8 @@ function active() {
   return () => {
     events.abort();
     pending?.abort();
+    finishReveal();
+    spinnerAnimation.cancel();
     observer.disconnect();
     window.clearTimeout(loadingTimer);
   };

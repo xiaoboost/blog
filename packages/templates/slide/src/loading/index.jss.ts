@@ -1,4 +1,13 @@
-import { createStyles, BorderPrimary, TextSecondary } from '@blog/styles/compile';
+import {
+  createStyles,
+  BgSecondary,
+  BorderPrimary,
+  RadiusLg,
+  RadiusMd,
+  ShadowCard,
+  TextPrimary,
+  TextSecondary,
+} from '@blog/styles/compile';
 
 export default createStyles({
   loading: {
@@ -10,19 +19,96 @@ export default createStyles({
     pointerEvents: 'none',
   },
   spinner: {
-    width: 22,
-    height: 22,
-    border: `2px solid ${BorderPrimary}`,
-    borderTopColor: TextSecondary,
+    width: 48,
+    height: 48,
+    border: `4px solid ${BorderPrimary}`,
+    borderTopColor: TextPrimary,
     borderRadius: '50%',
-    animation: '$spin 900ms linear infinite',
-    '@media (prefers-reduced-motion: reduce)': {
-      animation: 'none',
+  },
+  error: {
+    position: 'absolute',
+    left: '50%',
+    bottom: 76,
+    transform: 'translateX(-50%)',
+    display: 'grid',
+    gridTemplateColumns: 'auto minmax(0, 1fr) auto',
+    alignItems: 'center',
+    gap: 14,
+    width: 'max-content',
+    maxWidth: 'calc(100% - 32px)',
+    boxSizing: 'border-box',
+    padding: [12, 16],
+    border: `1px solid ${BorderPrimary}`,
+    borderRadius: RadiusLg,
+    background: BgSecondary,
+    boxShadow: ShadowCard,
+    color: TextPrimary,
+    '&[hidden]': { display: 'none' },
+    '@media (max-width: 768px)': {
+      position: 'static',
+      transform: 'none',
+      marginTop: 12,
+      gap: 10,
+      padding: [10, 12],
+    },
+    ':fullscreen &': {
+      position: 'absolute',
+      transform: 'translateX(-50%)',
+      marginTop: 0,
+      bottom: 24,
     },
   },
-  '@keyframes spin': {
-    to: {
-      transform: 'rotate(360deg)',
+  errorIcon: {
+    display: 'block',
+    color: TextSecondary,
+  },
+  errorMessage: {
+    minWidth: 0,
+    '& strong': {
+      display: 'block',
+      fontSize: 14,
+      lineHeight: '22px',
+      fontWeight: 500,
+    },
+    '& span': {
+      display: 'block',
+      color: TextSecondary,
+      fontSize: 12,
+      lineHeight: '20px',
+    },
+  },
+  retry: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    minHeight: 40,
+    padding: [8, 12],
+    marginLeft: 6,
+    border: `1px solid ${BorderPrimary}`,
+    borderRadius: RadiusMd,
+    background: 'transparent',
+    color: TextPrimary,
+    font: 'inherit',
+    fontSize: 13,
+    fontWeight: 400,
+    lineHeight: '20px',
+    whiteSpace: 'nowrap',
+    userSelect: 'none',
+    cursor: 'pointer',
+    transition: 'background 150ms ease, color 150ms ease, border-color 150ms ease',
+    '&:hover': {
+      borderColor: TextPrimary,
+      background: TextPrimary,
+      color: BgSecondary,
+    },
+    '&:focus-visible': {
+      outline: `1px solid ${TextPrimary}`,
+      outlineOffset: 3,
+    },
+    '@media (max-width: 480px)': {
+      marginLeft: 0,
+      padding: [8, 10],
     },
   },
 });

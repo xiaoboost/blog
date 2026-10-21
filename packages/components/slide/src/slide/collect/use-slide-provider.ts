@@ -113,9 +113,6 @@ export function useSlideValue(): ISlideStore {
         }
 
         return {
-          version: 1,
-          width: 1920,
-          height: 1080,
           sections: sections.map(({ player }) => ({
             steps: (player?.steps ?? []).map(({ actions }) => ({
               actions: actions.map((action) => ({

@@ -8,6 +8,7 @@
   "module": "src/index.ts",
   "types": "src/index.ts",
   "scripts": {
+    "test": "mocha",
     "lint": "eslint --no-error-on-unmatched-pattern --no-quiet --max-warnings=0 src/**/*.{ts,tsx,js,jsx}",
     "lint:fix": "eslint --fix --no-error-on-unmatched-pattern --no-quiet --max-warnings=0 src/**/*.{ts,tsx,js,jsx}",
     "type-check": "tsc --noEmit"
@@ -27,12 +28,14 @@
   },
   "devDependencies": {
     "@blog/eslint-config": "workspace:*",
+    "@blog/test-toolkit": "workspace:*",
     "@blog/tsconfig": "workspace:*",
     "@blog/types": "workspace:*",
     "@types/blog": "workspace:*",
     "@types/node": "24.12.2",
     "@types/react": "18.3.27",
     "eslint": "10.2.1",
+    "mocha": "10.8.2",
     "typescript": "6.0.3"
   }
 }
