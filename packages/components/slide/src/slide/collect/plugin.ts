@@ -1,7 +1,7 @@
 import { onBuild } from '@blog/context/runtime';
 import { normalize } from '@blog/node';
 import type { IPage } from '@blog/types';
-import type { SlideConfig } from './scope';
+import { SlideConfigGlobalKey, SlideConfigReadyEvent, type SlideConfig } from '../../shared';
 
 /** 预渲染收集的配置，按页面隔离；不保存 React store。 */
 export const slideConfigs = new WeakMap<IPage, SlideConfig>();
@@ -25,13 +25,16 @@ onBuild((runtime) => {
         continue;
       }
 
-      // head 中的配置脚本同步执行，确保早于 body 末尾的模板播放脚本。
+      // 异步脚本先保存配置，再通知播放器；两者不依赖执行先后顺序。
       const json = JSON.stringify(config);
-      const content = Buffer.from(`globalThis.__BLOG_SLIDE_CONFIG__ = ${json};`);
+      const content = Buffer.from([
+        `globalThis[${JSON.stringify(SlideConfigGlobalKey)}] = ${json};`,
+        `globalThis.dispatchEvent(new Event(${JSON.stringify(SlideConfigReadyEvent)}));`,
+      ].join('\n'));
       const asset = { path: 'slide-data.js', content };
       const src = normalize(page.pathname, rename(asset));
       page.addAsset({ path: src, content });
-      page.addPreScript({ src });
+      page.addPreScript({ src, async: true });
     }
   });
 });

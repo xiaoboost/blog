@@ -1,3 +1,4 @@
+import { SlideWidth, SlideHeight } from '@blog/mdx-slide/shared';
 import {
   createStyles,
   BgSecondary,
@@ -7,14 +8,16 @@ import {
 
 export default createStyles({
   presentation: {
+    position: 'relative',
     width: '100%',
     display: 'flex',
+    flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
     '&:fullscreen': {
       background: BgSecondary,
       '& $card': {
-        width: 'min(100vw, calc(100dvh * 16 / 9))',
+        width: `min(100vw, calc(100dvh * ${SlideWidth} / ${SlideHeight}))`,
         maxWidth: 'none',
         borderRadius: 0,
         boxShadow: 'none',
@@ -25,7 +28,7 @@ export default createStyles({
     position: 'relative',
     width: '100%',
     maxWidth: 1600,
-    aspectRatio: '16 / 9',
+    aspectRatio: `${SlideWidth} / ${SlideHeight}`,
     overflow: 'clip',
     borderRadius: 6,
     background: BgSecondary,
@@ -38,8 +41,8 @@ export default createStyles({
     position: 'absolute',
     left: 0,
     top: 0,
-    width: 1920,
-    height: 1080,
+    width: SlideWidth,
+    height: SlideHeight,
     transformOrigin: 'top left',
     visibility: 'hidden',
     '& [data-slide-section]': { display: 'none' },

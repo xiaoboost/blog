@@ -1,5 +1,5 @@
 import React, { type ReactNode } from 'react';
-import { Loading } from '../loading';
+import { Loading, LoadingError } from '../loading';
 import { Toolbar } from '../toolbar';
 import styles from './index.jss';
 
@@ -22,6 +22,7 @@ export function Presentation({ title, children }: PresentationProps) {
         <Toolbar title={title} />
         <noscript>请启用 JavaScript 查看幻灯片。</noscript>
       </article>
+      <LoadingError />
     </div>
   );
 }

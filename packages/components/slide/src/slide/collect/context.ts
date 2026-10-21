@@ -4,7 +4,8 @@ import type {
   PlayerProps,
   StepProps,
 } from '../../animation/types';
-import type { ScopeKind, SlideConfig } from './scope';
+import type { SlideConfig } from '../../shared';
+import type { ScopeKind } from './scope';
 
 /** PPT 数据储存 */
 export interface ISlideStore {

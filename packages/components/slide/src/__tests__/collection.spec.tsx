@@ -41,7 +41,7 @@ describe('transition 字段继承', () => {
 });
 
 describe('SSR 动画收集', () => {
-  it('固定画布、无 id 的页及没有动画的页都可收集，顺序与页码一致', () => {
+  it('无 id 的页及没有动画的页都可收集，顺序与页码一致', () => {
     const { html, config } = collect(
       <Slide>
         <Section title="开场"><h1>开场</h1></Section>
@@ -49,9 +49,6 @@ describe('SSR 动画收集', () => {
       </Slide>,
     );
     expect(config).deep.eq({
-      version: 1,
-      width: 1920,
-      height: 1080,
       sections: [{ steps: [] }, { steps: [] }],
     });
     expect(html).include('data-slide-section="0"').include('data-slide-section="1"');
@@ -154,7 +151,6 @@ describe('SSR 动画收集', () => {
     const second = collect(<Slide><Section>无动画</Section></Slide>).config;
     expect(first.sections[0].steps[0].actions[0].keyframes[0].opacity).eq(1);
     expect(second.sections).deep.eq([{ steps: [] }]);
-    expect(first.width).eq(1920);
   });
 
   it('正式渲染不展开动画子树、不再次收集，也不输出资源标签', () => {

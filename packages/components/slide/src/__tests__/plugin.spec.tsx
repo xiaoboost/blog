@@ -9,6 +9,7 @@ import {
   Player,
   Step,
 } from '../animation';
+import { SlideConfigGlobalKey, SlideConfigReadyEvent } from '../shared';
 import { slideConfigs } from '../slide/collect/plugin';
 import { Section } from '../slide/section';
 import { Slide } from '../slide/slide';
@@ -19,6 +20,15 @@ import {
   renderPage,
 } from './fixtures';
 
+function browserContext(): Record<string, any> {
+  const events = new EventTarget();
+  return {
+    Event,
+    dispatchEvent: events.dispatchEvent.bind(events),
+    addEventListener: events.addEventListener.bind(events),
+  };
+}
+
 describe('动画资源构建插件', () => {
   it('通过普通构建钩子生成外部配置脚本，并使用重命名后的路径上报', async () => {
     await waitReady;
@@ -26,7 +36,7 @@ describe('动画资源构建插件', () => {
     const build = buildContext(context);
     build.rename = (asset) => {
       expect(asset.path).eq('slide-data.js');
-      expect(asset.content.toString()).include('__BLOG_SLIDE_CONFIG__');
+      expect(asset.content.toString()).include(SlideConfigGlobalKey);
       return 'scripts/slide-data.hash.js';
     };
     await callHook('afterReady', build);
@@ -39,10 +49,16 @@ describe('动画资源构建插件', () => {
     const assets = context.page.getAssets();
     expect(assets).length(1);
     expect(assets[0].path).eq('/slides/example/scripts/slide-data.hash.js');
-    expect(context.page.getPreScripts()).deep.eq([{ src: assets[0].path }]);
-    const browser: Record<string, unknown> = {};
+    expect(context.page.getPreScripts()).deep.eq([{ src: assets[0].path, async: true }]);
+    const browser = browserContext();
+    let notified = false;
+    browser.addEventListener(SlideConfigReadyEvent, () => {
+      expect(browser[SlideConfigGlobalKey]).deep.eq(config);
+      notified = true;
+    });
     runInNewContext(assets[0].content.toString(), browser);
-    expect(browser.__BLOG_SLIDE_CONFIG__).deep.eq(config);
+    expect(browser[SlideConfigGlobalKey]).deep.eq(config);
+    expect(notified).eq(true);
 
     context.isPreBuild = false;
     renderPage(page(<Player><Step><FadeIn target="title" /></Step></Player>), context);
@@ -89,8 +105,8 @@ describe('动画资源构建插件', () => {
       </Slide>, first);
     renderPage(page(<Player><Step><FadeIn target="other" /></Step></Player>), second);
     await callHook('beforeBuild', build);
-    const a: Record<string, any> = {};
-    const b: Record<string, any> = {};
+    const a = browserContext();
+    const b = browserContext();
     runInNewContext(first.page.getAssets()[0].content.toString(), a);
     runInNewContext(second.page.getAssets()[0].content.toString(), b);
     expect(a.__BLOG_SLIDE_CONFIG__.sections[0]).deep.eq({ steps: [] });
@@ -125,7 +141,7 @@ describe('动画资源构建插件', () => {
       <Player><Step><Animate target={text} to={{ content: text }} /></Step></Player>,
     ), context);
     await callHook('beforeBuild', build);
-    const browser: Record<string, any> = {};
+    const browser = browserContext();
     runInNewContext(context.page.getAssets()[0].content.toString(), browser);
     expect(browser.injected).eq(undefined);
     const action = browser.__BLOG_SLIDE_CONFIG__.sections[0].steps[0].actions[0];
