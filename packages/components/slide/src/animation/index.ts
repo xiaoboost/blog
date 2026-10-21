@@ -1,6 +1,8 @@
 export { Player } from './player';
 export { Step } from './step';
 export { Animate } from './animate';
+export { Sequence, Parallel } from './group';
+export { Wait } from './wait';
 export {
   FadeIn,
   FadeOut,
@@ -30,6 +32,11 @@ export {
 export type {
   PlayerProps,
   StepProps,
+  GroupProps,
+  SequenceProps,
+  ParallelProps,
+  WaitProps,
+  Position,
   AnimationBase,
   AnimateFromToProps,
   AnimateKeyframesProps,

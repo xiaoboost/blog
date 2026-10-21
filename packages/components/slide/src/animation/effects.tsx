@@ -2,7 +2,7 @@ import React from 'react';
 import { Animate } from './animate';
 import type { EffectProps } from './types';
 
-/** 效果不设置时间默认值，继续按动作 → Step → Player → 默认值继承。 */
+/** 效果不设置时间默认值，继续按动作 → 最近分组 → Step → Player → 默认值继承。 */
 export function FadeIn(props: EffectProps) {
   return (
     <Animate

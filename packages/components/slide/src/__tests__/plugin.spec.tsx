@@ -6,8 +6,11 @@ import React from 'react';
 import {
   Animate,
   FadeIn,
+  Parallel,
   Player,
+  Sequence,
   Step,
+  Wait,
 } from '../animation';
 import { SlideConfigGlobalKey, SlideConfigReadyEvent } from '../shared';
 import { slideConfigs } from '../slide/collect/plugin';
@@ -30,6 +33,59 @@ function browserContext(): Record<string, any> {
 }
 
 describe('动画资源构建插件', () => {
+  it('嵌套编排通过构建插件输出为时间表，保留触发边界与纯等待时长', async () => {
+    await waitReady;
+    const context = renderContext();
+    const build = buildContext(context);
+    await callHook('afterReady', build);
+    renderPage(page(
+      <Player>
+        <Step />
+        <Step>
+          <Parallel id="anchor" at={200}>
+            <FadeIn target="a" transition={{ duration: 300, delay: 50 }} />
+          </Parallel>
+          <Sequence at={{ ref: 'anchor', edge: 'end', offset: -100 }}>
+            <Animate target="b" to={{ opacity: 1 }} transition={{ duration: 100 }} />
+            <Wait duration={200} />
+          </Sequence>
+        </Step>
+        <Step><Wait duration={100} /></Step>
+      </Player>,
+    ), context);
+    await callHook('beforeBuild', build);
+    const browser = browserContext();
+    runInNewContext(context.page.getAssets()[0].content.toString(), browser);
+    expect(browser[SlideConfigGlobalKey]).deep.eq({
+      sections: [
+        {
+          steps: [
+            { duration: 0, actions: [] },
+            {
+              duration: 750,
+              actions: [
+                {
+                  target: 'a',
+                  start: 250,
+                  keyframes: [{ opacity: 0 }, { opacity: 1 }],
+                  before: { visibility: 'visible' },
+                  transition: { duration: 300, easing: 'ease-out' },
+                },
+                {
+                  target: 'b',
+                  start: 450,
+                  keyframes: [{ opacity: 1 }],
+                  transition: { duration: 100, easing: 'ease-out' },
+                },
+              ],
+            },
+            { duration: 100, actions: [] },
+          ],
+        },
+      ],
+    });
+  });
+
   it('通过普通构建钩子生成外部配置脚本，并使用重命名后的路径上报', async () => {
     await waitReady;
     const context = renderContext();

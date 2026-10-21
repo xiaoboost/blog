@@ -1,13 +1,27 @@
 import { useRenderContext } from '@blog/context/runtime';
 import { useContext, useRef } from 'react';
-import { mergeTransition, normalizeAction } from '../../animation/normalize';
+import {
+  assertNoPosition,
+  assertTime,
+  mergeTransition,
+  normalizeAction,
+  normalizePosition,
+} from '../../animation/normalize';
+import { compileStep } from './compile';
 import { SlideStoreContext, type ISlideStore } from './context';
-import type { PlayerScope, SectionScope, StepScope } from './scope';
+import type {
+  GroupKind,
+  GroupScope,
+  PlayerScope,
+  SectionScope,
+  StepScope,
+} from './scope';
 
 type Scope =
   | { kind: 'section'; value: SectionScope }
   | { kind: 'player'; value: PlayerScope }
-  | { kind: 'step'; value: StepScope };
+  | { kind: 'step'; value: StepScope }
+  | { kind: GroupKind; value: GroupScope };
 
 /** PPT 储存器初始化 */
 export function useSlideValue(): ISlideStore {
@@ -24,6 +38,16 @@ export function useSlideValue(): ISlideStore {
     const stack: Scope[] = [];
     const collecting = renderContext?.isPreBuild === true;
 
+    function animationScope(component: string): StepScope {
+      const current = stack.at(-1);
+
+      if (current?.kind !== 'step' && current?.kind !== 'sequence' && current?.kind !== 'parallel') {
+        throw new Error(`[mdx-slide] ${component} 必须属于 Step，可以嵌套在其 Sequence / Parallel 中。`);
+      }
+
+      return current.value;
+    }
+
     contextRef.current = {
       collecting,
       beginSection() {
@@ -37,6 +61,7 @@ export function useSlideValue(): ISlideStore {
         return section.index;
       },
       beginPlayer(props) {
+        assertNoPosition(props);
         const parent = stack.at(-1);
 
         if (!parent) {
@@ -56,6 +81,7 @@ export function useSlideValue(): ISlideStore {
         stack.push({ kind: 'player', value: player });
       },
       beginStep(props) {
+        assertNoPosition(props);
         const parent = stack.at(-1);
 
         if (parent?.kind === 'step') {
@@ -68,23 +94,45 @@ export function useSlideValue(): ISlideStore {
 
         const step = {
           transition: mergeTransition(parent.value.transition, props.transition),
-          actions: [],
+          children: [],
         };
         parent.value.steps.push(step);
         stack.push({ kind: 'step', value: step });
       },
-      addAction(props) {
-        const current = stack.at(-1);
+      beginGroup(kind, props) {
+        const parent = animationScope('Sequence / Parallel');
 
-        if (current?.kind !== 'step') {
-          throw new Error('[mdx-slide] Animate 或效果组件必须属于 Step。');
+        if (props.id !== undefined && (typeof props.id !== 'string' || !props.id.trim())) {
+          throw new Error('[mdx-slide] 分组 id 必须是非空字符串。');
         }
 
+        const group: GroupScope = {
+          kind,
+          id: props.id,
+          at: normalizePosition(props.at),
+          transition: mergeTransition(parent.transition, props.transition),
+          children: [],
+        };
+        parent.children.push(group);
+        stack.push({ kind, value: group });
+      },
+      addAction(props) {
+        assertNoPosition(props);
+        const current = animationScope('Animate 或效果组件');
         const action = normalizeAction(props);
-        current.value.actions.push({
-          ...action,
-          transition: mergeTransition(current.value.transition, props.transition),
+        current.children.push({
+          kind: 'action',
+          value: {
+            ...action,
+            transition: mergeTransition(current.transition, props.transition),
+          },
         });
+      },
+      addWait(props) {
+        assertNoPosition(props);
+        const current = animationScope('Wait');
+        assertTime(props.duration, 'Wait.duration');
+        current.children.push({ kind: 'wait', duration: props.duration });
       },
       end(kind) {
         const current = stack.at(-1);
@@ -95,10 +143,6 @@ export function useSlideValue(): ISlideStore {
 
         if (collecting && current.kind === 'player' && !current.value.steps.length) {
           throw new Error('[mdx-slide] Player 至少需要一个 Step。');
-        }
-
-        if (current.kind === 'step' && !current.value.actions.length) {
-          throw new Error('[mdx-slide] Step 没有动作。');
         }
 
         stack.pop();
@@ -113,16 +157,8 @@ export function useSlideValue(): ISlideStore {
         }
 
         return {
-          sections: sections.map(({ player }) => ({
-            steps: (player?.steps ?? []).map(({ actions }) => ({
-              actions: actions.map((action) => ({
-                ...action,
-                keyframes: action.keyframes.map((frame) => ({ ...frame })),
-                transition: { ...action.transition },
-                ...(action.before === undefined ? {} : { before: { ...action.before } }),
-                ...(action.after === undefined ? {} : { after: { ...action.after } }),
-              })),
-            })),
+          sections: sections.map(({ player }, page) => ({
+            steps: (player?.steps ?? []).map((step, index) => compileStep(step, `第 ${page + 1} 页 Step ${index + 1}`)),
           })),
         };
       },
