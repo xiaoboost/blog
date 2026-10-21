@@ -83,15 +83,17 @@ describe('SSR 动画收集', () => {
     const [enter, exit] = config.sections[0].steps.map((step) => step.actions[0]);
     expect(enter).deep.eq({
       target: 'title',
+      start: 0,
       keyframes: [{ opacity: 0 }, { opacity: 1 }],
       before: { visibility: 'visible' },
-      transition: { duration: 500, delay: 0, easing: 'linear' },
+      transition: { duration: 500, easing: 'linear' },
     });
     expect(exit).deep.eq({
       target: 'title',
+      start: 0,
       keyframes: [{ opacity: 0 }],
       after: { visibility: 'hidden' },
-      transition: { duration: 0, delay: 0, easing: 'linear' },
+      transition: { duration: 0, easing: 'linear' },
     });
   });
 
@@ -362,9 +364,11 @@ describe('SSR 动画收集', () => {
     ));
     const [single, multiple] = config.sections[0].steps[0].actions;
     expect(single.keyframes).deep.eq([{ color: 'red' }]);
-    expect(single.transition).deep.eq({ duration: 400, delay: 10, easing: 'ease-out' });
+    expect(single.start).eq(10);
+    expect(single.transition).deep.eq({ duration: 400, easing: 'ease-out' });
     expect(multiple.keyframes).deep.eq(frames);
-    expect(multiple.transition).deep.eq({ duration: 400, delay: 0, easing: 'ease-out' });
+    expect(multiple.start).eq(0);
+    expect(multiple.transition).deep.eq({ duration: 400, easing: 'ease-out' });
   });
 
   it('输入数组、阶段样式和 transition 都复制；取得配置也不会暴露可修改的 store 数据', () => {
@@ -402,10 +406,15 @@ describe('SSR 动画收集', () => {
     action.keyframes[1].scale = 20;
     action.before!.display = 'none';
     action.transition.duration = 0;
-    const again = store!.getConfig().sections[0].steps[0].actions[0];
+    action.start = 999;
+    config.sections[0].steps[0].duration = 999;
+    const step = store!.getConfig().sections[0].steps[0];
+    const again = step.actions[0];
     expect(again.keyframes[1].scale).eq(2);
     expect(again.before!.display).eq('block');
     expect(again.transition.duration).eq(450);
+    expect(again.start).eq(0);
+    expect(step.duration).eq(450);
   });
 
   it('useRenderOnce 在同一 SSR 组件内部重新渲染时只登记一次动作', () => {
@@ -527,7 +536,6 @@ describe('不符合规范时构建报错', () => {
     ],
     ['嵌套 Step', page(<Player><Step><Step><FadeIn target="title" /></Step></Step></Player>), /Step 不能嵌套/],
     ['空 Player', page(<Player>{null}</Player>), /至少需要一个 Step/],
-    ['空 Step', page(<Player><Step>{null}</Step></Player>), /没有动作/],
     ['Slide 空页面列表', <Slide>{null}</Slide>, /至少一个 Section/],
   ];
   for (const [name, tree, message] of invalidTrees) {

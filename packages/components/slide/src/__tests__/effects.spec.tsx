@@ -128,8 +128,9 @@ describe('效果封装的公开约定', () => {
       const result = action(effect);
       expect(result).deep.eq({
         target: 'title',
+        start: 20,
         keyframes,
-        transition: { duration: 750, delay: 20, easing: 'ease-out' },
+        transition: { duration: 750, easing: 'ease-out' },
         ...(before === undefined ? {} : { before }),
         ...(after === undefined ? {} : { after }),
       });
@@ -205,6 +206,7 @@ describe('效果封装的公开约定', () => {
     );
     expect(result.keyframes).deep.eq([{ scale: 1 }, { scale: 1.2 }, { scale: 1 }]);
     expect(result.before).deep.eq({ transformOrigin: 'right bottom' });
-    expect(result.transition).deep.eq({ duration: 0, delay: 0, easing: 'ease-out' });
+    expect(result.start).eq(0);
+    expect(result.transition).deep.eq({ duration: 0, easing: 'ease-out' });
   });
 });
