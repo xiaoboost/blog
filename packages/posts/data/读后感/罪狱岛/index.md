@@ -1,5 +1,6 @@
 ---
 title: 我赌你没有必胜法
+pathname: posts/zuiyudao
 create: 2024/08/17
 description: 《罪狱岛》，比较少见的区域博弈智斗题材。
 tags: 书边碎笔

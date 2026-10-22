@@ -32,6 +32,7 @@ import {
   getYearPostListUrlPath,
   renderYearPostListPage,
 } from './pages/year';
+import { assertUniquePagePaths } from './utils/page-paths';
 import { paginate } from './utils/pagination';
 
 // ── 主流程 ──
@@ -221,6 +222,8 @@ function createAllPages(): Omit<RenderOptions, 'isPreBuild'> {
         }),
     ));
   }
+
+  assertUniquePagePaths(allPages);
 
   return { site, allPages };
 }

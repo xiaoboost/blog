@@ -1,5 +1,6 @@
 ---
 title: 万物皆插件，然后呢？
+pathname: posts/deepseek-harness
 create: 2026/09/14
 description: 作为正在学习 AI 编程的前端工程师，最近抽空看了看 DeepSeek 与北京大学的论文《A Programming Paradigm for Spatiotemporal Composability》。插件可以动态装卸和替换以后，系统怎样才能继续正常工作？结合平时做前端的经验，简单谈谈我对这篇论文的理解。
 tags:

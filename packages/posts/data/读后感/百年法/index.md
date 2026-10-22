@@ -1,5 +1,6 @@
 ---
 title: 看了就是浪费生命的作品
+pathname: posts/bainianfa
 create: 2025/12/24
 description: 山田宗树的《百年法》，4分，不及格，极度不推荐。
 tags: 

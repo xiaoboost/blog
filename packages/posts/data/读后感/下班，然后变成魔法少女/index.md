@@ -1,5 +1,6 @@
 ---
 title: 到了中年，除了发际线，我们还能守护什么？
+pathname: posts/xiaban-mofashaonv
 create: 2023/07/02
 description: 《下班，然后变成魔法少女》，怎么成为女儿的朋友，30 岁大龄社畜男主如是思考着。
 tags: 书边碎笔

@@ -1,5 +1,6 @@
 ---
 title: 天生万物以养人
+pathname: posts/shixiong-shuodedui
 create: 2023/12/17
 description: 《师兄说得对》，以杀止杀真的是澄清玉宇拯救世道的最好方法吗？
 tags: 书边碎笔

@@ -75,6 +75,8 @@ describe('博客构建 e2e', () => {
   let assetMap = new Map<string, Buffer>();
   let htmlAssets: AssetData[] = [];
   let errors: string[] = [];
+  const postAssetPaths = new Set<string>();
+  const listedPostUrls = new Set<string>();
   const resourcePages = new Map<string, {
     type: PageType;
     preScript: ScriptAssetData;
@@ -147,6 +149,14 @@ describe('博客构建 e2e', () => {
                   // 每种页面只选一页，验证所有渲染入口及页面之间的隔离。
                   const selected = new Set<PageType>();
                   for (const page of pages) {
+                    if (page.type === 'post') {
+                      postAssetPaths.add(page.toAsset().path);
+
+                      if (page.data.post.data.public && !page.data.post.data.draft) {
+                        listedPostUrls.add(page.pathname);
+                      }
+                    }
+
                     if (selected.has(page.type)) {
                       continue;
                     }
@@ -282,13 +292,13 @@ describe('博客构建 e2e', () => {
   // ── ④ 每篇文章都有对应 HTML ───────────────────────
 
   it('文章页面均生成', () => {
-    // 文章路径格式: /posts/<year>/<slug>/index.html
-    const postPages = htmlAssets.filter((a) => /^\/posts\/.+\/.+\/index\.html$/.test(a.path));
+    const postPages = htmlAssets.filter((a) => postAssetPaths.has(a.path));
     expect(postPages.length, '没有生成任何文章页面').to.be.greaterThan(0);
+    expect(postPages.length).eq(postAssetPaths.size);
   });
 
   it('每篇文章 HTML 都包含文章标题', () => {
-    const postPages = htmlAssets.filter((a) => /^\/posts\/.+\/.+\/index\.html$/.test(a.path));
+    const postPages = htmlAssets.filter((a) => postAssetPaths.has(a.path));
     const emptyTitles: string[] = [];
 
     for (const { path, content } of postPages) {
@@ -301,7 +311,7 @@ describe('博客构建 e2e', () => {
   });
 
   it('每篇文章 HTML 都包含实际内容', () => {
-    const postPages = htmlAssets.filter((a) => /^\/posts\/.+\/.+\/index\.html$/.test(a.path));
+    const postPages = htmlAssets.filter((a) => postAssetPaths.has(a.path));
     const tooSmall: string[] = [];
 
     for (const { path, content } of postPages) {
@@ -334,7 +344,7 @@ describe('博客构建 e2e', () => {
   it('归档按 12 篇分页，文章完整且没有重复', () => {
     const pages = archivePages();
     const postLinks = (html: string) => (
-      extractLinks(html).filter((href) => /^\/posts\/\d{4}\//.test(href))
+      extractLinks(html).filter((href) => listedPostUrls.has(href))
     );
     const actual: string[] = [];
     pages.forEach(({ content }, index) => {
@@ -527,7 +537,7 @@ describe('博客构建 e2e', () => {
 
   it('首页和文章页使用正确的 Open Graph 类型', () => {
     const indexHtml = assetMap.get('/index.html')!.toString('utf-8');
-    const postPage = htmlAssets.find((a) => /^\/posts\/.+\/.+\/index\.html$/.test(a.path));
+    const postPage = htmlAssets.find((a) => postAssetPaths.has(a.path));
 
     expect(extractMetaContent(indexHtml, 'og:type')).eq('website');
     expect(postPage, '没有找到文章页').not.undefined;

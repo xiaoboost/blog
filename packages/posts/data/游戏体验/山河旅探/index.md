@@ -1,5 +1,6 @@
 ---
 title: 在 1908 年的乱世里寻找正义
+pathname: posts/shanhe-lvtan
 create: 2024/02/12
 description: 简评游戏《山河旅探》。
 tags: 第九类书

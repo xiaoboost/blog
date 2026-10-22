@@ -1,5 +1,6 @@
 ---
 title: 权力的幻梦
+pathname: posts/xiyou-longjun
 create: 2025/06/14
 description: 《穿越西游：我为龙君》，有时候，看一本坏书，比看一本好书的触动更大，这本书毫无疑问就是坏书中的佼佼者。
 tags: 

@@ -1,5 +1,6 @@
 ---
 title: 涩涩后宫的日常
+pathname: posts/zhuanlun-daozhu
 create: 2024/03/18
 description: 《转轮道主》，我看这书改名叫《吃软饭道主》更贴切些。
 tags: 书边碎笔
