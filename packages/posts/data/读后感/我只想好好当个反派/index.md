@@ -1,5 +1,6 @@
 ---
 title: 小白文大杂烩
+pathname: posts/haofanpai
 create: 2023/04/10
 description: 《我只想好好当个反派》，糟糕，我被主角包围了！
 tags: 书边碎笔

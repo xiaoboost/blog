@@ -1,5 +1,6 @@
 ---
 title: 静态代码错误提示
+pathname: posts/code-errors
 create: 2024/05/08
 description: TypeScript 官网逆向工程其之二——代码框的错误提示功能。
 tags:

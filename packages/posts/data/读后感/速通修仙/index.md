@@ -1,5 +1,6 @@
 ---
 title: 无厘头搞笑文
+pathname: posts/sutong-xiuxian
 create: 2023/12/15
 description: 《速通修仙！》，久违的把我看的乐不可支~
 tags: 书边碎笔

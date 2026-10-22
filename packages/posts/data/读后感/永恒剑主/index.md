@@ -1,5 +1,6 @@
 ---
 title: 唯有死亡才是永恒
+pathname: posts/yongheng-jianzhu
 create: 2023/05/23
 description: 《永恒剑主》，永恒的终结。
 tags: 书边碎笔

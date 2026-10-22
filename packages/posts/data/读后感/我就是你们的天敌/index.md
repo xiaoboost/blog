@@ -1,5 +1,6 @@
 ---
 title: 你想过怎样的人生？
+pathname: posts/nimen-de-tiandi
 create: 2024/05/01
 description: 《我就是你们的天敌》，优雅的，悠闲的，热情的，冷漠的，激动的，中二的……还是说“体面的”？
 tags: 书边碎笔

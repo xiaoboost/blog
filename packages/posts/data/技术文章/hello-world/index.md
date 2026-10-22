@@ -1,5 +1,6 @@
 ---
 title: 重写博客
+pathname: posts/hello-world
 create: 2020/05/02
 description: 抽空把博客重写了，这里是新博客的一些碎碎念。
 tags: 网站说明
