@@ -205,7 +205,7 @@ describe('博客构建 e2e', () => {
     expect(brokenLinks).to.be.empty;
   });
 
-  it('404 单独加载页面资源，复用 layout 资源并保留站点字体预加载', () => {
+  it('404 单独加载页面资源和字体，同时复用 layout 的共享资源', () => {
     const html = assetMap.get('/404.html')?.toString();
     expect(html, '缺少根目录的 404.html').not.undefined;
     expect(assetMap.has('/404.html/index.html')).false;
@@ -218,7 +218,12 @@ describe('博客构建 e2e', () => {
       .map(([, href]) => href);
     const sharedFontPreloads = sharedPreloads.filter(({ as }) => as === 'font').map(({ href }) => href);
     expect(sharedFontPreloads).not.empty;
-    expect(fontPreloads).deep.eq(sharedFontPreloads);
+    const titleFontPath = fontPreloads.find((href) => (
+      /\/not-found-title\.[^/]+\.woff2$/.test(href)
+    ));
+    expect(titleFontPath, '缺少 404 标题字体').not.undefined;
+    expect(assetMap.has(titleFontPath!)).true;
+    expect(fontPreloads).have.members([...sharedFontPreloads, titleFontPath]);
     const links = extractLinks(html!);
     expect(links.some((href) => /\/layout\.[^/]+\.js$/.test(href))).true;
     const layoutCssPath = links.find((href) => /\/layout\.[^/]+\.css$/.test(href));
@@ -228,6 +233,7 @@ describe('博客构建 e2e', () => {
     for (const { path, content } of htmlAssets) {
       if (path !== '/404.html') {
         expect(extractLinks(content.toString()), path).not.include(cssPath);
+        expect(extractLinks(content.toString()), path).not.include(titleFontPath);
       }
     }
   });

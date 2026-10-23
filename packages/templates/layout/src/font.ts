@@ -4,6 +4,7 @@ import ListTitleFontFile from '@blog/styles/fonts/SourceHanSerif/SourceHanSerifS
 import ListItemTitleFontFile from '@blog/styles/fonts/SourceHanSerif/SourceHanSerifSC-SemiBold.otf?raw';
 import type { BuildContext } from '@blog/types';
 import SiteTitleFontFile from './assets/fonts/dancing/dancing.ttf?raw';
+import NotFoundTitleFontFile from './assets/fonts/KNMaiyuan/KNMaiyuan-Regular.ttf?raw';
 import ArchiveYearFontFile from './assets/fonts/Lora/Lora-Regular.ttf?raw';
 import {
   SiteTitleFontFamily,
@@ -13,6 +14,8 @@ import {
   ListItemTitleFontWeight,
   ArchiveYearFontFamily,
   ArchiveYearFontWeight,
+  NotFoundTitleFontFamily,
+  NotFoundTitleFontWeight,
 } from './constant/font';
 
 onBuild((runtime) => {
@@ -26,10 +29,19 @@ onBuild((runtime) => {
     );
   });
 
-  // 注册列表项标题字体
-  runtime.hooks.afterReady.tap('layout:list-item-font', ({ pages }: BuildContext) => {
+  // 注册页面字体
+  runtime.hooks.afterReady.tap('layout:page-fonts', ({ pages }: BuildContext) => {
     for (const page of pages) {
-      if (page.type === 'post' || page.type === 'not-found') {
+      if (page.type === 'post') {
+        continue;
+      }
+
+      if (page.type === 'not-found') {
+        page.ensureFontBucket(
+          NotFoundTitleFontFamily,
+          NotFoundTitleFontFile,
+          { fontWeight: NotFoundTitleFontWeight },
+        );
         continue;
       }
 
