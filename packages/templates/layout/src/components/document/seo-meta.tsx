@@ -4,7 +4,6 @@ import React from 'react';
 import type { DocumentProps } from '.';
 
 export function SeoMeta({
-  pageTitle,
   author,
   description,
   keywords,
@@ -17,7 +16,7 @@ export function SeoMeta({
 
   return (
     <>
-      <title>{pageTitle ?? page.title}</title>
+      <title>{page.title}</title>
       {noIndex
         ? <meta name="robots" content="noindex" />
         : <link rel="canonical" href={canonicalUrl} />}

@@ -61,6 +61,9 @@ async function buildPages(pathnames: string[]) {
     return {
       errors: builder.getErrors().map(({ message }) => message).join('\n'),
       paths: builder.getAssets().map(({ path }) => path),
+      html: new Map(builder.getAssets()
+        .filter(({ path }) => path.endsWith('.html'))
+        .map(({ path, content }) => [path, content.toString()])),
       renderedPages,
     };
   }
@@ -69,7 +72,7 @@ async function buildPages(pathnames: string[]) {
   }
 }
 
-describe('页面路径冲突', function () {
+describe('页面路径', function () {
   this.timeout(60_000);
 
   for (const [name, pathnames, outputPath] of [
@@ -105,6 +108,22 @@ describe('页面路径冲突', function () {
     assert.ok(result.renderedPages > 0);
     assert.ok(result.paths.includes('/404.html'));
     assert.ok(!result.paths.includes('/404.html/index.html'));
+  });
+
+  it('年份归档的数字分页使用原始年份，不把显示标题拼进路径', async () => {
+    // 同一年超过 40 篇才有三页，会显示数字分页并触发原来的错误。
+    const result = await buildPages(Array.from({ length: 41 }, (_, i) => `posts/year-${i}`));
+    assert.equal(result.errors, '');
+    const urls = ['/archive/2026/', '/archive/2026/1/', '/archive/2026/2/'];
+    urls.forEach((url, index) => {
+      const html = result.html.get(`${url}index.html`);
+      assert.ok(html, `缺少年份归档页 ${url}`);
+      const nav = /<nav[^>]+aria-label="文章分页"[^>]*>([\s\S]*?)<\/nav>/.exec(html)?.[1];
+      assert.ok(nav, `缺少分页导航 ${url}`);
+      const links = [...nav.matchAll(/href="([^"]+)" aria-label="第 \d+ 页"/g)]
+        .map(([, href]) => href);
+      assert.deepEqual(links, urls.filter((_, i) => i !== index));
+    });
   });
 
   it('文章目录不能占用 404.html 文件或它的子目录', async () => {

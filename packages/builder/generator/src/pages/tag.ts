@@ -1,12 +1,9 @@
 import { normalize, normalizeUrl, toPinyin } from '@blog/node';
-import {
-  PostList,
-  ItemList,
-  type ItemListProps,
-  type PostListProps,
-  type PaginationProps,
-} from '@blog/template-layout';
+import { PostList, ItemList } from '@blog/template-layout';
 import type { IRenderContext, ISite, PostExportData } from '@blog/types';
+import { pageConfig } from '../constant';
+import { Page } from '../model/page';
+import { paginate } from '../utils/pagination';
 import { createHtml } from '../utils/react';
 
 const createTagList = createHtml(ItemList);
@@ -72,70 +69,71 @@ export function getTagPostListAssetPath(site: ISite, tag: string, index: number)
   return normalize(getTagPostListUrlPath(site, tag, index), 'index.html');
 }
 
-export interface TagListPageRenderProps
-  extends IRenderContext, Pick<ItemListProps, 'listTitle' | 'data'>, PaginationProps {
-  index: number;
-  count: number;
+export function createTagPages(site: ISite, posts: PostExportData[]) {
+  const tags = getTagData(posts);
+  const pages = paginate(
+    tags,
+    pageConfig.archive,
+    (i) => getTagListUrlPath(site, i),
+    (chunk, nav) => {
+      const items = chunk.map(({ name, posts }) => ({
+        title: name,
+        subTitle: `共 ${posts.length} 篇`,
+        url: getTagPostListUrlPath(site, name, 0),
+      }));
+
+      return new Page({
+        type: 'tag-list',
+        pathname: getTagListUrlPath(site, nav.index),
+        title: nav.index === 0 ? '标签聚合页' : `标签聚合 | 第 ${nav.index + 1} 页`,
+        data: { listTitle: '标签归档', items, ...nav },
+        render: renderTagListPage,
+      });
+    },
+  );
+
+  for (const { name, posts: tagPosts } of tags) {
+    pages.push(...paginate(
+      tagPosts,
+      pageConfig.archive,
+      (i) => getTagPostListUrlPath(site, name, i),
+      (chunk, nav) => new Page({
+        type: 'tag-post-list',
+        pathname: getTagPostListUrlPath(site, name, nav.index),
+        title: nav.index === 0 ? `标签"${name}"` : `标签"${name}" | 第 ${nav.index + 1} 页`,
+        data: { listTitle: name, posts: chunk, ...nav },
+        render: renderTagPostListPage,
+      }),
+    ));
+  }
+
+  return pages;
 }
 
-export function renderTagListPage({
-  page,
-  site,
-  listTitle,
-  data,
-  older,
-  newer,
-  index,
-  count,
-  dev,
-  isPreBuild,
-}: TagListPageRenderProps) {
-  const pageTitle = index === 0 ? '标签聚合页' : `标签聚合 | 第 ${index + 1} 页`;
+function renderTagListPage(ctx: IRenderContext<'tag-list'>) {
+  const { page, site } = ctx;
+  const {
+    items,
+    index,
+    count,
+    ...data
+  } = page.data;
 
   return createTagList({
-    data,
-    listTitle,
-    pageTitle,
-    older,
-    newer,
+    ...ctx,
+    ...data,
+    data: items,
     numbered: { index, count, urlForIndex: (i) => getTagListUrlPath(site, i) },
-    page,
-    site,
-    dev,
-    isPreBuild,
   });
 }
 
-export interface TagPostListPageRenderProps
-  extends IRenderContext, Pick<PostListProps, 'listTitle' | 'posts'>, PaginationProps {
-  index: number;
-  count: number;
-}
-
-export function renderTagPostListPage({
-  page,
-  site,
-  listTitle,
-  posts,
-  older,
-  newer,
-  index,
-  count,
-  dev,
-  isPreBuild,
-}: TagPostListPageRenderProps) {
-  const pageTitle = index === 0 ? `标签"${listTitle}"` : `标签"${listTitle}" | 第 ${index + 1} 页`;
+function renderTagPostListPage(ctx: IRenderContext<'tag-post-list'>) {
+  const { page, site } = ctx;
+  const { index, count, ...data } = page.data;
 
   return createPostList({
-    posts,
-    listTitle,
-    pageTitle,
-    older,
-    newer,
-    numbered: { index, count, urlForIndex: (i) => getTagPostListUrlPath(site, listTitle, i) },
-    page,
-    site,
-    dev,
-    isPreBuild,
+    ...ctx,
+    ...data,
+    numbered: { index, count, urlForIndex: (i) => getTagPostListUrlPath(site, data.listTitle, i) },
   });
 }

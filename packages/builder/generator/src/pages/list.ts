@@ -1,10 +1,9 @@
 import { normalize, normalizeUrl } from '@blog/node';
-import {
-  MainIndex,
-  type PaginationProps,
-  type MainIndexProps,
-} from '@blog/template-layout';
-import type { IRenderContext, ISite } from '@blog/types';
+import { MainIndex } from '@blog/template-layout';
+import type { IRenderContext, ISite, PostExportData } from '@blog/types';
+import { pageConfig } from '../constant';
+import { Page } from '../model/page';
+import { paginate } from '../utils/pagination';
 import { createHtml } from '../utils/react';
 
 const createIndex = createHtml(MainIndex);
@@ -19,34 +18,28 @@ export function getIndexAssetPath(site: ISite, index: number) {
   return normalize(getIndexUrlPath(site, index), 'index.html');
 }
 
-export interface IndexPageRenderProps
-  extends IRenderContext, Pick<MainIndexProps, 'posts'>, PaginationProps {
-  index: number;
-  count: number;
+export function createIndexPages(site: ISite, posts: PostExportData[]) {
+  return paginate(
+    posts,
+    pageConfig.index,
+    (i) => getIndexUrlPath(site, i),
+    (chunk, nav) => new Page({
+      type: 'index',
+      pathname: getIndexUrlPath(site, nav.index),
+      title: nav.index === 0 ? site.title : `${site.title} | 第 ${nav.index + 1} 页`,
+      data: { posts: chunk, ...nav },
+      render: renderListPage,
+    }),
+  );
 }
 
-export function renderListPage({
-  page,
-  site,
-  posts,
-  older,
-  newer,
-  index,
-  count,
-  dev,
-  isPreBuild,
-}: IndexPageRenderProps) {
-  const pageTitle = index === 0 ? site.title : `${site.title} | 第 ${index + 1} 页`;
+function renderListPage(ctx: IRenderContext<'index'>) {
+  const { page, site } = ctx;
+  const { index, count, ...data } = page.data;
 
   return createIndex({
-    posts,
-    pageTitle,
-    older,
-    newer,
+    ...ctx,
+    ...data,
     numbered: { index, count, urlForIndex: (i) => getIndexUrlPath(site, i) },
-    page,
-    site,
-    dev,
-    isPreBuild,
   });
 }

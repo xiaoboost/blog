@@ -11,8 +11,8 @@ export interface PageOptions<T extends PageType = PageType> {
   pathname: string;
   outputPath?: string;
   title: string;
-  data: PageDataMap[T];
-  render: (props: IRenderContext) => string;
+  data: PageDataMap[NoInfer<T>];
+  render: (props: IRenderContext<NoInfer<T>>) => string;
 }
 
 export class Page<T extends PageType> extends ResourceSet {
@@ -21,7 +21,7 @@ export class Page<T extends PageType> extends ResourceSet {
   readonly outputPath: string;
   readonly title: string;
   readonly data: PageDataMap[T];
-  readonly render: (props: IRenderContext) => string;
+  readonly render: (props: IRenderContext<T>) => string;
 
   #html = '';
 

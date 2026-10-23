@@ -65,6 +65,7 @@ export interface PageDataMap {
     yearRange: string;
   };
   'year-post-list': PageListBase & {
+    year: string;
     listTitle: string;
     posts: PostExportData[];
   };
@@ -119,26 +120,25 @@ export interface IResourceSet {
  * 正在构建的页面。
  * type 与 data 组成联合类型，判断 type 后即可得到对应的 data。
  */
-export type IPage = IResourceSet & {
-  /** 页面 url 路径 */
-  readonly pathname: string;
-  /** 最终 HTML 文件路径 */
-  readonly outputPath: string;
-  /** 页面标题 */
-  readonly title: string;
+export type IPage<T extends PageType = PageType> = {
+  [P in T]: IResourceSet & {
+    readonly type: P;
+    readonly data: PageDataMap[P];
+    readonly render: (props: IRenderContext<P>) => string;
 
-  readonly render: (props: IRenderContext) => string;
+    /** 页面 url 路径 */
+    readonly pathname: string;
+    /** 最终 HTML 文件路径 */
+    readonly outputPath: string;
+    /** 页面标题 */
+    readonly title: string;
 
-  html: string;
+    html: string;
 
-  /** 产出最终的 HTML AssetData */
-  toAsset(): AssetData;
-} & {
-  [T in PageType]: {
-    readonly type: T;
-    readonly data: PageDataMap[T];
+    /** 产出最终的 HTML AssetData */
+    toAsset(): AssetData;
   };
-}[PageType];
+}[T];
 
 // ── Site ──
 
@@ -173,8 +173,8 @@ export interface BuildContextWithPage extends BuildContext {
 // ── Render ──
 
 /** 渲染上下文 */
-export interface IRenderContext {
-  page: IPage;
+export interface IRenderContext<T extends PageType = PageType> {
+  page: IPage<T>;
   site: ISite;
   dev: boolean;
   isPreBuild: boolean;

@@ -14,8 +14,6 @@ export interface DocumentProps {
   className?: string;
   /** 错误页不参与索引，也不声明 canonical 和分享地址 */
   noIndex?: boolean;
-  /** 网页标题 */
-  pageTitle?: string;
   /** 网页作者 */
   author?: string;
   /** 网页描述 */

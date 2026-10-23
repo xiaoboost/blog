@@ -1,17 +1,14 @@
 import { normalize, normalizeUrl } from '@blog/node';
-import {
-  PostList,
-  ArchiveList,
-  type ArchiveListProps,
-  type PostListProps,
-  type PaginationProps,
-} from '@blog/template-layout';
+import { PostList, ArchiveList } from '@blog/template-layout';
 import type {
   ArchiveYearGroup,
   IRenderContext,
   ISite,
   PostExportData,
 } from '@blog/types';
+import { pageConfig } from '../constant';
+import { Page } from '../model/page';
+import { paginate } from '../utils/pagination';
 import { createHtml } from '../utils/react';
 
 const createYearList = createHtml(ArchiveList);
@@ -90,72 +87,87 @@ export function getYearPostListAssetPath(site: ISite, year: string, index: numbe
   return normalize(getYearPostListUrlPath(site, year, index), 'index.html');
 }
 
-export interface YearListPageRenderProps
-  extends IRenderContext, Pick<ArchiveListProps, 'listTitle' | 'groups' | 'yearRange'>, PaginationProps {
-  index: number;
-  count: number;
+export function createYearPages(
+  site: ISite,
+  posts: PostExportData[],
+  sortedPosts: PostExportData[],
+) {
+  const years = getYearData(posts);
+  const yearRange = years.length ? `${years.at(-1)!.name} — ${years[0].name}` : '';
+
+  // 先按文章数量分页，再在各页内分年份。
+  const pages = paginate(
+    sortedPosts,
+    pageConfig.yearArchive,
+    (i) => getYearListUrlPath(site, i),
+    (chunk, nav) => {
+      const groups = getArchiveGroups(
+        chunk,
+        years,
+        sortedPosts[nav.index * pageConfig.yearArchive - 1],
+      );
+
+      return new Page({
+        type: 'year-list',
+        pathname: getYearListUrlPath(site, nav.index),
+        title: nav.index === 0 ? '归档聚合页' : `归档聚合 | 第 ${nav.index + 1} 页`,
+        data: {
+          listTitle: '旧闻与来处',
+          groups,
+          yearRange,
+          ...nav,
+        },
+        render: renderYearListPage,
+      });
+    },
+  );
+
+  for (const { name, posts: yearPosts } of years) {
+    pages.push(...paginate(
+      yearPosts,
+      pageConfig.archive,
+      (i) => getYearPostListUrlPath(site, name, i),
+      (chunk, nav) => new Page({
+        type: 'year-post-list',
+        pathname: getYearPostListUrlPath(site, name, nav.index),
+        title: nav.index === 0 ? `归档 ${name} 年` : `归档 ${name} 年 | 第 ${nav.index + 1} 页`,
+        data: {
+          year: name,
+          listTitle: `${name} 年`,
+          posts: chunk,
+          ...nav,
+        },
+        render: renderYearPostListPage,
+      }),
+    ));
+  }
+
+  return pages;
 }
 
-export function renderYearListPage({
-  page,
-  site,
-  listTitle,
-  groups,
-  yearRange,
-  older,
-  newer,
-  index,
-  count,
-  dev,
-  isPreBuild,
-}: YearListPageRenderProps) {
-  const pageTitle = index === 0 ? '归档聚合页' : `归档聚合 | 第 ${index + 1} 页`;
+function renderYearListPage(ctx: IRenderContext<'year-list'>) {
+  const { page, site } = ctx;
+  const { index, count, ...data } = page.data;
 
   return createYearList({
-    groups,
-    yearRange,
-    listTitle,
-    pageTitle,
-    older,
-    newer,
+    ...ctx,
+    ...data,
     numbered: { index, count, urlForIndex: (i) => getYearListUrlPath(site, i) },
-    page,
-    site,
-    dev,
-    isPreBuild,
   });
 }
 
-export interface YearPostListPageRenderProps
-  extends IRenderContext, Pick<PostListProps, 'listTitle' | 'posts'>, PaginationProps {
-  index: number;
-  count: number;
-}
-
-export function renderYearPostListPage({
-  page,
-  site,
-  listTitle,
-  posts,
-  older,
-  newer,
-  index,
-  count,
-  dev,
-  isPreBuild,
-}: YearPostListPageRenderProps) {
-  const pageTitle = index === 0 ? `归档 ${listTitle}` : `归档 ${listTitle} | 第 ${index + 1} 页`;
+function renderYearPostListPage(ctx: IRenderContext<'year-post-list'>) {
+  const { page, site } = ctx;
+  const {
+    year,
+    index,
+    count,
+    ...data
+  } = page.data;
 
   return createYearPostList({
-    posts,
-    listTitle,
-    pageTitle,
-    older,
-    newer,
-    numbered: { index, count, urlForIndex: (i) => getYearPostListUrlPath(site, listTitle, i) },
-    page,
-    site,
-    dev,
-    isPreBuild,
+    ...ctx,
+    ...data,
+    numbered: { index, count, urlForIndex: (i) => getYearPostListUrlPath(site, year, i) },
   });
 }

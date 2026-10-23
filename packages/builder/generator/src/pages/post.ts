@@ -1,5 +1,5 @@
 import { normalize, normalizeUrl } from '@blog/node';
-import { Post as PostRender, type PostProps } from '@blog/template-post';
+import { Post as PostRender } from '@blog/template-post';
 import { SlidePage } from '@blog/template-slide';
 import type {
   IRenderContext,
@@ -8,9 +8,10 @@ import type {
   PostsExportType,
 } from '@blog/types';
 import React from 'react';
+import { Page } from '../model/page';
 import { createHtml } from '../utils/react';
 
-const templates = new Map<string, (props: PostPageRenderProps) => string>([
+const templates = new Map([
   ['post', createHtml(PostRender)],
   ['slide', createHtml(SlidePage)],
 ]);
@@ -30,21 +31,24 @@ export function getPostAssetPath(post: PostExportDataWithComponent) {
   return normalize(post.data.pathname, 'index.html');
 }
 
+export function createPostPages(posts: PostsExportType) {
+  return posts.map((post) => new Page({
+    type: 'post',
+    pathname: post.data.pathname,
+    title: post.data.title,
+    data: { post },
+    render: renderPost,
+  }));
+}
+
 export function renderSpacePost(posts: PostsExportType) {
   posts.forEach(({ Component }) => {
     React.createElement(Component);
   });
 }
 
-export interface PostPageRenderProps extends IRenderContext, Pick<PostProps, 'post'> {}
-
-export function renderPost({
-  page,
-  site,
-  post,
-  dev,
-  isPreBuild,
-}: PostPageRenderProps) {
+function renderPost(ctx: IRenderContext<'post'>) {
+  const { post } = ctx.page.data;
   const render = templates.get(post.data.template);
 
   if (!render) {
@@ -53,11 +57,5 @@ export function renderPost({
     );
   }
 
-  return render({
-    post,
-    page,
-    site,
-    dev,
-    isPreBuild,
-  });
+  return render({ ...ctx, post });
 }
