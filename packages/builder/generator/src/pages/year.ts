@@ -2,7 +2,6 @@ import { normalize, normalizeUrl } from '@blog/node';
 import {
   PostList,
   ArchiveList,
-  utils,
   type ArchiveListProps,
   type PostListProps,
   type PaginationProps,
@@ -116,36 +115,13 @@ export function renderYearListPage({
     groups,
     yearRange,
     listTitle,
-    siteTitle: site.title,
     pageTitle,
-    pathname: page.pathname,
-    publicPath: site.publicPath,
-    hmr: dev,
     older,
     newer,
     numbered: { index, count, urlForIndex: (i) => getYearListUrlPath(site, i) },
-    styles: [
-      ...site.getStyles(),
-      ...page.getStyles(),
-      ...utils.getStyles(),
-    ],
-    scripts: [
-      ...site.getScripts(),
-      ...page.getScripts(),
-      ...utils.getScripts(),
-    ],
-    preScripts: [
-      ...site.getPreScripts(),
-      ...page.getPreScripts(),
-      ...utils.getPreScripts(),
-    ],
-    preloadAssets: [
-      ...site.getPreloads(),
-      ...page.getPreloads(),
-      ...utils.getPreloadAssets(),
-    ],
     page,
     site,
+    dev,
     isPreBuild,
   });
 }
@@ -173,36 +149,13 @@ export function renderYearPostListPage({
   return createYearPostList({
     posts,
     listTitle,
-    siteTitle: site.title,
     pageTitle,
-    pathname: page.pathname,
-    publicPath: site.publicPath,
-    hmr: dev,
     older,
     newer,
     numbered: { index, count, urlForIndex: (i) => getYearPostListUrlPath(site, listTitle, i) },
-    styles: [
-      ...site.getStyles(),
-      ...page.getStyles(),
-      ...utils.getStyles(),
-    ],
-    scripts: [
-      ...site.getScripts(),
-      ...page.getScripts(),
-      ...utils.getScripts(),
-    ],
-    preScripts: [
-      ...site.getPreScripts(),
-      ...page.getPreScripts(),
-      ...utils.getPreScripts(),
-    ],
-    preloadAssets: [
-      ...site.getPreloads(),
-      ...page.getPreloads(),
-      ...utils.getPreloadAssets(),
-    ],
     page,
     site,
+    dev,
     isPreBuild,
   });
 }

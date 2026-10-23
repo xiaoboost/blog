@@ -1,0 +1,7 @@
+@keyframes not-found-tail-peek {
+  0%, 66%, 100% { transform: rotate(0deg); }
+  73% { transform: rotate(-9deg); }
+  80% { transform: rotate(5deg); }
+  86% { transform: rotate(-3deg); }
+  92% { transform: rotate(0deg); }
+}

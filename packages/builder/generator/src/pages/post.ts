@@ -1,5 +1,4 @@
 import { normalize, normalizeUrl } from '@blog/node';
-import { utils as layoutUtils } from '@blog/template-layout';
 import { Post as PostRender, type PostProps } from '@blog/template-post';
 import { SlidePage } from '@blog/template-slide';
 import type {
@@ -11,8 +10,10 @@ import type {
 import React from 'react';
 import { createHtml } from '../utils/react';
 
-const createPost = createHtml(PostRender);
-const createSlide = createHtml(SlidePage);
+const templates = new Map<string, (props: PostPageRenderProps) => string>([
+  ['post', createHtml(PostRender)],
+  ['slide', createHtml(SlidePage)],
+]);
 
 export function filterSortPosts(posts: PostsExportType) {
   return posts
@@ -44,47 +45,19 @@ export function renderPost({
   dev,
   isPreBuild,
 }: PostPageRenderProps) {
-  const render = post.data.template === 'slide' ? createSlide : createPost;
-  const props = {
-    pageTitle: post.data.title,
-    siteTitle: site.title,
-    pathname: post.data.pathname,
-    author: site.author,
-    description: post.data.description,
-    keywords: post.data.tags.map(({ name }) => name),
-    publishedTime: post.data.create,
-    modifiedTime: post.data.update,
-    publicPath: site.publicPath,
-    hmr: dev,
-    styles: [
-      ...site.getStyles(),
-      ...page.getStyles(),
-      ...layoutUtils.getStyles(),
-      ...post.utils.getStyles(),
-    ],
-    scripts: [
-      ...site.getScripts(),
-      ...page.getScripts(),
-      ...layoutUtils.getScripts(),
-      ...post.utils.getScripts(),
-    ],
-    preScripts: [
-      ...site.getPreScripts(),
-      ...page.getPreScripts(),
-      ...layoutUtils.getPreScripts(),
-      ...post.utils.getPreScripts(),
-    ],
-    preloadAssets: [
-      ...site.getPreloads(),
-      ...page.getPreloads(),
-      ...layoutUtils.getPreloadAssets(),
-      ...post.utils.getPreloadAssets(),
-    ],
+  const render = templates.get(post.data.template);
+
+  if (!render) {
+    throw new Error(
+      `未知文章模板 ${JSON.stringify(post.data.template)}：${post.data.filePath}（支持：${[...templates.keys()].join(', ')}）`,
+    );
+  }
+
+  return render({
     post,
     page,
     site,
+    dev,
     isPreBuild,
-  };
-
-  return render(props);
+  });
 }

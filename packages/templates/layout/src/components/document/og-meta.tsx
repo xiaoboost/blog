@@ -1,10 +1,10 @@
 import { useRenderContext } from '@blog/context/runtime';
+import { toAbsoluteUrl } from '@blog/shared';
 import { imageMeta } from 'image-meta';
 import React from 'react';
 import defaultImagePath from '../../assets/images/og-default.jpg';
 import defaultImageSource from '../../assets/images/og-default.jpg?raw';
-import { toAbsoluteUrl } from './absolute-url';
-import type { LayoutProps } from '.';
+import type { DocumentProps } from '.';
 
 const defaultImageMetadata = imageMeta(defaultImageSource);
 const {
@@ -23,27 +23,25 @@ const defaultImageType = defaultImageFormat === 'jpg'
 
 export function OgMeta({
   pageTitle,
-  siteTitle,
-  pathname,
   description,
   keywords,
   publishedTime,
   modifiedTime,
-}: LayoutProps) {
+}: DocumentProps) {
   const { page, site } = useRenderContext();
-  const url = toAbsoluteUrl(site.origin, pathname);
+  const url = toAbsoluteUrl(site.origin, page.pathname);
   const image = toAbsoluteUrl(site.origin, defaultImagePath);
-  const metaDescription = description ?? site.description ?? siteTitle;
-  const imageAlt = `${siteTitle} 社交分享图`;
+  const metaDescription = description ?? site.description ?? site.title;
+  const imageAlt = `${site.title} 社交分享图`;
   const isArticle = page.type === 'post';
 
   return (
     <>
-      <meta property="og:title" content={pageTitle} />
+      <meta property="og:title" content={pageTitle ?? page.title} />
       <meta property="og:description" content={metaDescription} />
       <meta property="og:type" content={isArticle ? 'article' : 'website'} />
       <meta property="og:url" content={url} />
-      <meta property="og:site_name" content={siteTitle} />
+      <meta property="og:site_name" content={site.title} />
       <meta property="og:locale" content="zh_CN" />
       <meta property="og:image" content={image} />
       <meta property="og:image:secure_url" content={image} />

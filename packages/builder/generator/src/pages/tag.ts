@@ -2,7 +2,6 @@ import { normalize, normalizeUrl, toPinyin } from '@blog/node';
 import {
   PostList,
   ItemList,
-  utils,
   type ItemListProps,
   type PostListProps,
   type PaginationProps,
@@ -96,36 +95,13 @@ export function renderTagListPage({
   return createTagList({
     data,
     listTitle,
-    siteTitle: site.title,
     pageTitle,
-    pathname: page.pathname,
-    publicPath: site.publicPath,
-    hmr: dev,
     older,
     newer,
     numbered: { index, count, urlForIndex: (i) => getTagListUrlPath(site, i) },
-    styles: [
-      ...site.getStyles(),
-      ...page.getStyles(),
-      ...utils.getStyles(),
-    ],
-    scripts: [
-      ...site.getScripts(),
-      ...page.getScripts(),
-      ...utils.getScripts(),
-    ],
-    preScripts: [
-      ...site.getPreScripts(),
-      ...page.getPreScripts(),
-      ...utils.getPreScripts(),
-    ],
-    preloadAssets: [
-      ...site.getPreloads(),
-      ...page.getPreloads(),
-      ...utils.getPreloadAssets(),
-    ],
     page,
     site,
+    dev,
     isPreBuild,
   });
 }
@@ -153,36 +129,13 @@ export function renderTagPostListPage({
   return createPostList({
     posts,
     listTitle,
-    siteTitle: site.title,
     pageTitle,
-    pathname: page.pathname,
-    publicPath: site.publicPath,
-    hmr: dev,
     older,
     newer,
     numbered: { index, count, urlForIndex: (i) => getTagPostListUrlPath(site, listTitle, i) },
-    styles: [
-      ...site.getStyles(),
-      ...page.getStyles(),
-      ...utils.getStyles(),
-    ],
-    scripts: [
-      ...site.getScripts(),
-      ...page.getScripts(),
-      ...utils.getScripts(),
-    ],
-    preScripts: [
-      ...site.getPreScripts(),
-      ...page.getPreScripts(),
-      ...utils.getPreScripts(),
-    ],
-    preloadAssets: [
-      ...site.getPreloads(),
-      ...page.getPreloads(),
-      ...utils.getPreloadAssets(),
-    ],
     page,
     site,
+    dev,
     isPreBuild,
   });
 }

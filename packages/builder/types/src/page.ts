@@ -10,6 +10,7 @@ import type { PostExportData, PostExportDataWithComponent } from './post';
 /** 页面类型 */
 export type PageType =
   | 'post'
+  | 'not-found'
   | 'index'
   | 'tag-list'
   | 'tag-post-list'
@@ -43,6 +44,7 @@ export interface ArchiveYearGroup {
 
 /** 各页面类型对应的 data 类型 */
 export interface PageDataMap {
+  'not-found': Record<string, never>;
   'post': {
     post: PostExportDataWithComponent;
   };
@@ -118,8 +120,13 @@ export interface IResourceSet {
  * type 与 data 组成联合类型，判断 type 后即可得到对应的 data。
  */
 export type IPage = IResourceSet & {
+  /** 页面 url 路径 */
   readonly pathname: string;
+  /** 最终 HTML 文件路径 */
+  readonly outputPath: string;
+  /** 页面标题 */
   readonly title: string;
+
   readonly render: (props: IRenderContext) => string;
 
   html: string;

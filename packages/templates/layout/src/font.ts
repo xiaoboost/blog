@@ -1,3 +1,4 @@
+import { dirname } from 'path';
 import { onBuild } from '@blog/context/runtime';
 import ListTitleFontFile from '@blog/styles/fonts/SourceHanSerif/SourceHanSerifSC-Bold.otf?raw';
 import ListItemTitleFontFile from '@blog/styles/fonts/SourceHanSerif/SourceHanSerifSC-SemiBold.otf?raw';
@@ -28,7 +29,7 @@ onBuild((runtime) => {
   // 注册列表项标题字体
   runtime.hooks.afterReady.tap('layout:list-item-font', ({ pages }: BuildContext) => {
     for (const page of pages) {
-      if (page.type === 'post') {
+      if (page.type === 'post' || page.type === 'not-found') {
         continue;
       }
 
@@ -62,7 +63,7 @@ onBuild((runtime) => {
       pages
         .filter((page) => page.type !== 'post')
         .map((page) => page.buildFonts({
-          scope: page.pathname,
+          scope: dirname(page.outputPath),
           cssFileName: 'content-fonts',
           cssMode: 'font-face',
           format: rename,

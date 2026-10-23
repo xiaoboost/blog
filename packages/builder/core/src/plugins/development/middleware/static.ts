@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { extname, join } from 'path';
 import { normalize } from '@blog/node';
 import type { BuilderInstance } from '@blog/types';
 import type { ParameterizedContext } from 'koa';
@@ -35,8 +35,29 @@ export function staticServe(vfs: Map<string, Buffer>, builder: BuilderInstance) 
     const file = vfs.get(filePath);
 
     if (!file) {
+      const extension = extname(requestPath).toLowerCase();
+      const destination = ctx.get('Sec-Fetch-Dest');
+      const acceptsHtml = ctx.get('Accept').split(',').some((type) => type.trim().split(';')[0] === 'text/html');
+      const isNavigation = destination === 'document' || destination === 'iframe' || (!destination && acceptsHtml);
+      const isPage = !extension || extension === '.html' || extension === '.htm';
+      const notFound = isNavigation && isPage
+        ? vfs.get(normalize('/', builder.options.publicPath, '404.html'))
+        : undefined;
+
       ctx.status = 404;
-      ctx.length = 0;
+      ctx.set('Cache-Control', 'no-store');
+      ctx.vary('Accept');
+      ctx.vary('Sec-Fetch-Dest');
+
+      if (notFound) {
+        ctx.type = 'html';
+        ctx.body = notFound;
+        ctx.length = notFound.byteLength;
+      }
+      else {
+        ctx.length = 0;
+      }
+
       return;
     }
 

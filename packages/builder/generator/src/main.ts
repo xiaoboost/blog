@@ -16,6 +16,7 @@ import {
 import { Page } from './model/page';
 import { Site } from './model/site';
 import { renderListPage, getIndexUrlPath } from './pages/list';
+import { renderNotFoundPage, getNotFoundUrlPath } from './pages/not-found';
 import { filterSortPosts, getPostUrlPath, renderPost } from './pages/post';
 import {
   getTagData,
@@ -223,6 +224,16 @@ function createAllPages(): Omit<RenderOptions, 'isPreBuild'> {
     ));
   }
 
+  // 404 页面
+  const notFoundPathname = getNotFoundUrlPath(site);
+  allPages.push(new Page({
+    type: 'not-found',
+    pathname: notFoundPathname,
+    outputPath: notFoundPathname,
+    title: '页面未找到',
+    data: {},
+    render: renderNotFoundPage,
+  }));
   assertUniquePagePaths(allPages);
 
   return { site, allPages };

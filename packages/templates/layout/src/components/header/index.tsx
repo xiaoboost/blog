@@ -7,29 +7,14 @@ import { ThemeToggle } from '../theme-toggle';
 
 import styles from './index.jss';
 
-export interface HeaderProps {
-  /** 当前页面网址 */
-  pathname: string;
-  /** 网页标题 */
-  siteTitle: string;
-  /** 网站根路径 */
-  publicPath?: string;
-  /** 关于自己文章路径 */
-  aboutPath: string;
-  /** 标签页面路径 */
-  tagPath: string;
-  /** 归档页面路径 */
-  archivePath: string;
-}
-
-export function Header(props: HeaderProps) {
-  const { isPreBuild, site } = useRenderContext();
-  const publicPath = props.publicPath ?? '/';
-  const location = normalizeUrl(publicPath, props.pathname);
+export function Header() {
+  const { isPreBuild, site, page } = useRenderContext();
+  const publicPath = site.publicPath;
+  const location = normalizeUrl(publicPath, page.pathname);
   const indexHref = normalizeUrl(publicPath);
-  const aboutHref = normalizeUrl(publicPath, props.aboutPath);
-  const tagHref = normalizeUrl(publicPath, props.tagPath);
-  const archiveHref = normalizeUrl(publicPath, props.archivePath);
+  const aboutHref = normalizeUrl(publicPath, site.aboutPath);
+  const tagHref = normalizeUrl(publicPath, site.tagPath);
+  const archiveHref = normalizeUrl(publicPath, site.archivePath);
   const navLists = [
     {
       name: '首页',
@@ -55,14 +40,14 @@ export function Header(props: HeaderProps) {
 
   /** 预构建阶段收集站点标题字体字符 */
   if (isPreBuild && site) {
-    site.getFontBucket(SiteTitleFontFamily).addText(props.siteTitle);
+    site.getFontBucket(SiteTitleFontFamily).addText(site.title);
   }
 
   return (
     <header className={styles.classes.mainHeaderWrapper}>
       <div className={styles.classes.mainHeader}>
         <a className={styles.classes.mainTitle} href={indexHref}>
-          {props.siteTitle}
+          {site.title}
         </a>
         <nav className={styles.classes.mainNav} aria-label="主导航">
           {navLists.map((nav, i) => (

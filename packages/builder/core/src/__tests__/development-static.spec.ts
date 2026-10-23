@@ -9,6 +9,7 @@ import { staticServe } from '../plugins/development/middleware/static';
 describe('开发服务器静态资源', () => {
   let server: Server;
   let origin: string;
+  const notFound = '<!DOCTYPE html><html><body>这一页，好像溜走了。</body></html>';
   const image = Buffer.from([
     0xff,
     0xd8,
@@ -22,8 +23,9 @@ describe('开发服务器静态资源', () => {
       ['/images/%E9.jpg', image],
       ['/images/plain.jpg', image],
       ['/中文目录/index.html', Buffer.from('<p>文章</p>')],
+      ['/404.html', Buffer.from(notFound)],
     ]);
-    const builder = { logger: { info() {} } } as unknown as BuilderInstance;
+    const builder = { logger: { info() {} }, options: { publicPath: '/' } } as unknown as BuilderInstance;
     const app = new Koa().use(staticServe(files, builder));
     await new Promise<void>((resolve) => {
       server = app.listen(0, '127.0.0.1', resolve);
@@ -74,5 +76,51 @@ describe('开发服务器静态资源', () => {
     const post = await fetch(`${origin}/images/plain.jpg`, { method: 'POST' });
     expect(post.status).eq(405);
     expect(post.headers.get('allow')).eq('GET, HEAD');
+  });
+
+  it('缺失的页面返回自定义 HTML，保留原地址与 404 状态', async () => {
+    for (const path of ['/missing', '/deep/missing/', '/missing.html']) {
+      const response = await fetch(origin + path, { headers: { Accept: 'text/html' } });
+      expect(response.status).eq(404);
+      expect(response.redirected).false;
+      expect(response.url).eq(origin + path);
+      expect(response.headers.get('content-type')).include('text/html');
+      expect(response.headers.get('cache-control')).eq('no-store');
+      expect(await response.text()).eq(notFound);
+    }
+  });
+
+  it('HEAD 返回错误页长度但没有响应正文，直接预览 404.html 仍正常', async () => {
+    const head = await fetch(`${origin}/missing/`, { method: 'HEAD', headers: { Accept: 'text/html' } });
+    expect(head.status).eq(404);
+    expect(head.headers.get('content-length')).eq(String(Buffer.byteLength(notFound)));
+    expect(await head.text()).eq('');
+    const preview = await fetch(`${origin}/404.html`);
+    expect(preview.status).eq(200);
+    expect(await preview.text()).eq(notFound);
+  });
+
+  it('图片、脚本、样式和 API 请求不会被替换成错误页 HTML', async () => {
+    for (const path of ['/missing.jpg', '/missing.js', '/missing.css']) {
+      const response = await fetch(origin + path, { headers: { Accept: 'text/html' } });
+      expect(response.status).eq(404);
+      expect(await response.text()).not.eq(notFound);
+    }
+    const requests: Record<string, string>[] = [
+      { Accept: 'application/json' },
+      { Accept: '*/*' },
+      { Accept: 'text/html', 'Sec-Fetch-Dest': 'script' },
+    ];
+    for (const headers of requests) {
+      const response = await fetch(`${origin}/missing`, { headers });
+      expect(response.status).eq(404);
+      expect(await response.text()).not.eq(notFound);
+    }
+  });
+
+  it('显式的文档导航可以使用错误页', async () => {
+    const response = await fetch(`${origin}/missing`, { headers: { 'Sec-Fetch-Dest': 'document' } });
+    expect(response.status).eq(404);
+    expect(await response.text()).eq(notFound);
   });
 });

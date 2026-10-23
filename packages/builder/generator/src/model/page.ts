@@ -9,6 +9,7 @@ import { ResourceSet } from './resource-set';
 export interface PageOptions<T extends PageType = PageType> {
   type: T;
   pathname: string;
+  outputPath?: string;
   title: string;
   data: PageDataMap[T];
   render: (props: IRenderContext) => string;
@@ -17,6 +18,7 @@ export interface PageOptions<T extends PageType = PageType> {
 export class Page<T extends PageType> extends ResourceSet {
   readonly type: T;
   readonly pathname: string;
+  readonly outputPath: string;
   readonly title: string;
   readonly data: PageDataMap[T];
   readonly render: (props: IRenderContext) => string;
@@ -27,6 +29,7 @@ export class Page<T extends PageType> extends ResourceSet {
     super();
     this.type = options.type;
     this.pathname = options.pathname;
+    this.outputPath = normalize('/', options.outputPath ?? normalize(options.pathname, 'index.html'));
     this.title = options.title;
     this.data = options.data;
     this.render = options.render;
@@ -42,7 +45,7 @@ export class Page<T extends PageType> extends ResourceSet {
 
   toAsset(): { path: string; content: Buffer } {
     return {
-      path: normalize(this.pathname, 'index.html'),
+      path: this.outputPath,
       content: Buffer.from(this.#html),
     };
   }
