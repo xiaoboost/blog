@@ -56,6 +56,7 @@ async function createHarness(): Promise<Harness> {
         pathname: `/posts/${name}/`,
         title: name === 'target' ? '拉海洛' : name,
         create: 0,
+        tags: [],
         ast: await parse(filePath, source),
       },
     ];
@@ -77,7 +78,11 @@ async function createHarness(): Promise<Harness> {
         setPosts(Object.values(data));
         export function headings(name) { return getHeadingAnchors(data[name].ast); }
         export function render(name, toc) {
-          const post = { data: { ...data[name], toc }, Component: components[name] };
+          const post = {
+            data: { ...data[name], toc },
+            Component: components[name],
+            utils: { getAssetReferences: () => [] },
+          };
           setCurrentPost(post);
           return renderToStaticMarkup(<Post post={post} />);
         }

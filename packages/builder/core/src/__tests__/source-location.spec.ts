@@ -176,8 +176,9 @@ describe('构建期源文件位置', function () {
     const loaded = await loadAndTransform(builder, bundler.hooks, args(entry, 'mdx-loader'), {});
     const code = String(loaded!.contents);
     const render = code.slice(code.indexOf('function _createMdxContent'));
-    const directories = [...render.matchAll(/baseDir=\{([^}]+)\}/g)].map((match) => match[1]);
-    assert.deepEqual(directories, Array(4).fill(JSON.stringify(root)));
+    const directories = [...render.matchAll(/baseDir=\{("(?:\\.|[^"\\])*")\}/g)]
+      .map((match) => JSON.parse(match[1]));
+    assert.deepEqual(directories, Array(4).fill(root));
   });
 
   it('替换后错误位置仍映射到原文件同一行、同一列', async () => {

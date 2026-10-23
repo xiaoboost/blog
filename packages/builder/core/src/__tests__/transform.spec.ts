@@ -7,7 +7,6 @@ import {
   rm,
   writeFile,
 } from 'node:fs/promises';
-import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { runInNewContext } from 'node:vm';
 import type { SourceMapV3, TransformContext, TransformState } from '@blog/types';
@@ -59,7 +58,10 @@ describe('Transform 管道', function () {
   let bundler: Bundler;
 
   beforeEach(async () => {
-    root = await mkdtemp(join(tmpdir(), 'blog-transform-'));
+    // 避免系统临时目录中的 glob 元字符改变真实 watcher 的监听范围。
+    const fixturesDir = join(__dirname, '../../.cache');
+    await mkdir(fixturesDir, { recursive: true });
+    root = await mkdtemp(join(fixturesDir, 'blog-transform-'));
     builder = new Builder({ root, logLevel: 'Silence', typeCheck: false });
     bundler = new Bundler(builder);
   });

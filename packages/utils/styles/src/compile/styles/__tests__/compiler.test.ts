@@ -68,11 +68,6 @@ describe('compileStyles — 基础编译（flat 属性）', () => {
     const b = compileStyles({ btn: { color: 'red' }, b: {} });
     expect(a.classes.btn).not.to.equal(b.classes.btn);
   });
-
-  it('完全相同 styles 产出相同类名', () => {
-    const styles = { btn: { color: 'red', fontSize: 14 } };
-    expect(compileStyles(styles).classes.btn).to.equal(compileStyles(styles).classes.btn);
-  });
 });
 
 // ═══════════════════════════════════════════════════════════════

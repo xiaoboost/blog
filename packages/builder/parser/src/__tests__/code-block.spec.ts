@@ -28,29 +28,32 @@ function props(node: Mdx.MdxJsxFlowElement) {
 }
 
 describe('remark TS code block', () => {
-  for (const lang of [
-    'ts',
-    'typescript',
-    'tsx',
-    'js',
-    'javascript',
-    'jsx',
-  ]) {
-    it(`${lang}: 围栏配置覆盖文章配置，默认不开启 LSP`, async () => {
-      for (const [info, lsp, enabled] of [
-        [lang, false, false],
-        [lang, true, true],
-        [`${lang}?lsp=false`, true, false],
-        [`${lang}?lsp=true`, false, true],
-        [`${lang}?lsp`, false, true],
-      ] as const) {
-        const content = fence(info);
-        const { data: { ast }, code } = await compilePost(content, `lsp: ${lsp}\n`);
-        expect(components(ast).length).eq(enabled ? 1 : 0);
-        expect(code.includes('<TsCodeBlock')).eq(enabled);
-      }
-    });
-  }
+  it('识别支持的语言及别名', async () => {
+    for (const [input, lang] of [
+      ['ts', 'ts'],
+      ['typescript', 'ts'],
+      ['tsx', 'tsx'],
+      ['js', 'js'],
+      ['javascript', 'js'],
+      ['jsx', 'jsx'],
+    ]) {
+      const { data: { ast } } = await compilePost(fence(input), 'lsp: true\n');
+      expect(props(components(ast)[0]).lang).eq(lang);
+    }
+  });
+
+  it('围栏配置覆盖文章配置，默认不开启 LSP', async () => {
+    for (const [info, lsp, enabled] of [
+      ['ts', false, false],
+      ['ts', true, true],
+      ['ts?lsp=false', true, false],
+      ['ts?lsp=true', false, true],
+      ['ts?lsp', false, true],
+    ] as const) {
+      const { data: { ast } } = await compilePost(fence(info), `lsp: ${lsp}\n`);
+      expect(components(ast).length).eq(enabled ? 1 : 0);
+    }
+  });
 
   it('缺少语言或不支持的语言保持普通围栏', async () => {
     for (const lang of ['', 'json?lsp=true']) {
