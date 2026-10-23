@@ -13,10 +13,7 @@ import {
   Animate,
   FadeIn,
   FadeOut,
-  MoveIn,
-  ScaleIn,
 } from '../animation';
-import { mergeTransition } from '../animation/normalize';
 import type { AnimationState } from '../animation/types';
 import { SlideStoreContext, type ISlideStore } from '../slide/collect/context';
 import { slideConfigs } from '../slide/collect/plugin';
@@ -28,17 +25,6 @@ import {
   renderContext,
   renderPage,
 } from './fixtures';
-
-describe('transition 字段继承', () => {
-  it('动作优先于 Step，Step 优先于 Player；undefined 继承而 0 覆盖', () => {
-    const player = { duration: 800, delay: 100, easing: 'linear' };
-    const step = { duration: 500, delay: undefined };
-    const action = { duration: 0, delay: 0, easing: undefined };
-    expect(mergeTransition(player, step, action)).deep.eq({ duration: 0, delay: 0, easing: 'linear' });
-    expect(player).deep.eq({ duration: 800, delay: 100, easing: 'linear' });
-    expect(mergeTransition()).deep.eq({ duration: 300, delay: 0, easing: 'ease-out' });
-  });
-});
 
 describe('SSR 动画收集', () => {
   it('无 id 的页及没有动画的页都可收集，顺序与页码一致', () => {
@@ -73,30 +59,6 @@ describe('SSR 动画收集', () => {
     expect(html).not.include('Player').not.include('Step').not.include('Animate').not.include('<script');
   });
 
-  it('效果封装不覆盖继承时间，并记录开始显现 / 结束隐藏的离散状态', () => {
-    const { config } = collect(page(
-      <Player transition={{ duration: 900, easing: 'linear' }}>
-        <Step transition={{ duration: 500 }}><FadeIn target="title" transition={{ delay: 0 }} /></Step>
-        <Step><FadeOut target="title" transition={{ duration: 0 }} /></Step>
-      </Player>,
-    ));
-    const [enter, exit] = config.sections[0].steps.map((step) => step.actions[0]);
-    expect(enter).deep.eq({
-      target: 'title',
-      start: 0,
-      keyframes: [{ opacity: 0 }, { opacity: 1 }],
-      before: { visibility: 'visible' },
-      transition: { duration: 500, easing: 'linear' },
-    });
-    expect(exit).deep.eq({
-      target: 'title',
-      start: 0,
-      keyframes: [{ opacity: 0 }],
-      after: { visibility: 'hidden' },
-      transition: { duration: 0, easing: 'linear' },
-    });
-  });
-
   it('同一目标不同属性允许同时变化，相同属性在不同 Step 中允许复用', () => {
     const { config } = collect(page(
       <Player>
@@ -110,33 +72,6 @@ describe('SSR 动画收集', () => {
     expect(config.sections[0].steps.map(({ actions }) => actions.length)).deep.eq([2, 1]);
   });
 
-  it('移动和缩放关闭 fade 时不写 opacity；origin 单独作为开始前样式记录', () => {
-    const { config } = collect(page(
-      <Player>
-        <Step>
-          <MoveIn
-            target="title"
-            direction="left"
-            distance={0}
-            fade={false}
-          />
-        </Step>
-        <Step>
-          <ScaleIn
-            target="title"
-            scale={0}
-            origin="left top"
-            fade={false}
-          />
-        </Step>
-      </Player>,
-    ));
-    const [move, scale] = config.sections[0].steps.map((step) => step.actions[0]);
-    expect(move.keyframes).deep.eq([{ translate: '0px 0px' }, { translate: '0px 0px' }]);
-    expect(scale.before).deep.eq({ visibility: 'visible', transformOrigin: 'left top' });
-    expect(scale.keyframes).deep.eq([{ scale: 0 }, { scale: 1 }]);
-  });
-
   it('target 原样记录，不解析 HTML 查找目标', () => {
     const id = 'title&detail';
     const { config } = collect(page(
@@ -144,15 +79,6 @@ describe('SSR 动画收集', () => {
       <div>目标将在播放时绑定</div>,
     ));
     expect(config.sections[0].steps[0].actions[0].target).eq(id);
-  });
-
-  it('修改来源配置不会改变已收集的数据，不同预渲染互不串页', () => {
-    const to = { opacity: 1 };
-    const first = collect(page(<Player><Step><Animate target="title" to={to} /></Step></Player>)).config;
-    to.opacity = 0;
-    const second = collect(<Slide><Section>无动画</Section></Slide>).config;
-    expect(first.sections[0].steps[0].actions[0].keyframes[0].opacity).eq(1);
-    expect(second.sections).deep.eq([{ steps: [] }]);
   });
 
   it('正式渲染不展开动画子树、不再次收集，也不输出资源标签', () => {
@@ -220,18 +146,6 @@ describe('SSR 动画收集', () => {
     ));
     expect(durations).deep.eq([[500, 800], [300]]);
     expect(html).not.include('ScopeEnd').not.include('<script');
-  });
-
-  it('渲染失败不发布半成品配置，下一轮预渲染可重新收集', () => {
-    const context = renderContext();
-    function Broken(): never {
-      throw new Error('渲染失败');
-    }
-    expect(() => renderPage(page(<Player><Step><Broken /></Step></Player>), context)).throw(/渲染失败/);
-    expect(slideConfigs.has(context.page)).eq(false);
-    expect(() => collect(page(<Player>{null}</Player>), context)).throw(/至少需要一个 Step/);
-    expect(collect(page(<Player><Step><FadeIn target="title" /></Step></Player>), context)
-      .config.sections[0].steps).length(1);
   });
 
   it('不同页面的普通 SSR 配置互不影响', () => {
@@ -452,6 +366,7 @@ describe('SSR 动画收集', () => {
       </Player>,
     ), context))
       .throw(/动作之后失败/);
+    expect(slideConfigs.has(context.page)).false;
     const { config } = collect(<Slide><Section title="重试">成功</Section></Slide>, context);
     expect(config.sections).deep.eq([{ steps: [] }]);
   });

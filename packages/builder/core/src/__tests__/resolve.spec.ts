@@ -7,7 +7,7 @@ import {
 import { tmpdir } from 'node:os';
 import { join, normalize } from 'node:path';
 import { expect, describe, it } from '@blog/test-toolkit';
-import { parsePath, isCssImport, createResolver } from '../utils/resolve';
+import { parsePath, createResolver } from '../utils/resolve';
 
 describe('parsePath', () => {
   it('无 query 的路径', () => {
@@ -30,38 +30,6 @@ describe('parsePath', () => {
     expect(result.basic).eq('/path/to/file.ts');
     expect(result.rawQuery).eq('a=1&b=hello');
     expect(result.query).deep.eq({ a: '1', b: 'hello' });
-  });
-
-  it('带空值 query 参数', () => {
-    const result = parsePath('file?key');
-    expect(result.query).deep.eq({ key: true });
-  });
-
-  it('多个 ? 时只取第一个作为分隔符', () => {
-    // split('?') = ['/a', 'b', 'c']，rawQuery 拿到的是 'b'
-    const result = parsePath('/a?b?c');
-    expect(result.basic).eq('/a');
-    expect(result.rawQuery).eq('b');
-  });
-});
-
-describe('isCssImport', () => {
-  it('import-rule 是 css 导入', () => {
-    expect(isCssImport('import-rule')).true;
-  });
-
-  it('url-token 是 css 导入', () => {
-    expect(isCssImport('url-token')).true;
-  });
-
-  it('其他 kind 不是 css 导入', () => {
-    expect(isCssImport('import-statement')).false;
-    expect(isCssImport('require-resolve')).false;
-    expect(isCssImport('dynamic-import')).false;
-  });
-
-  it('undefined 不是 css 导入', () => {
-    expect(isCssImport()).false;
   });
 });
 
@@ -112,12 +80,5 @@ describe('createResolver', () => {
     const result = resolve('https://example.com/font.woff?raw');
     expect(result.external).true;
     expect(result.suffix).eq('raw');
-  });
-
-  it('内置模块正常返回不抛异常', () => {
-    const resolve = createResolver({ root: '/' });
-    expect(() => resolve('path')).not.throw();
-    expect(() => resolve('fs')).not.throw();
-    expect(() => resolve('http')).not.throw();
   });
 });

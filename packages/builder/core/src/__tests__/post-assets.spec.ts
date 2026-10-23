@@ -5,7 +5,6 @@ import {
   rm,
   writeFile,
 } from 'node:fs/promises';
-import { tmpdir } from 'node:os';
 import { basename, dirname, join } from 'node:path';
 import { runInNewContext } from 'node:vm';
 import { normalize } from '@blog/node';
@@ -34,7 +33,10 @@ describe('PostLoader 的 assets: 资源入口', function () {
   let children: BuilderInstance[];
 
   beforeEach(async () => {
-    root = normalize(await mkdtemp(join(tmpdir(), 'blog-assets-')));
+    // 系统临时目录可能带有 glob 元字符；这里专门验证文章内的资源匹配。
+    const fixturesDir = join(__dirname, '../../.cache');
+    await mkdir(fixturesDir, { recursive: true });
+    root = normalize(await mkdtemp(join(fixturesDir, 'blog-assets-')));
     parent = new Builder({
       root,
       mode: 'development',

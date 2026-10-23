@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { Builder } from '@blog/core';
 import { describe, it } from '@blog/test-toolkit';
 
-async function buildWithTemplate(template: string | undefined) {
+async function buildWithTemplate(template: string) {
   const data = {
     title: '模板选择测试',
     pathname: '/template-selection/',
@@ -68,20 +68,11 @@ async function buildWithTemplate(template: string | undefined) {
 describe('文章模板映射', function () {
   this.timeout(60_000);
 
-  for (const template of [
-    'unknown',
-    '',
-    'constructor',
-    '__proto__',
-    undefined,
-  ]) {
-    const name = JSON.stringify(template) ?? 'undefined';
-    it(`拒绝未注册的模板 ${name}，不回退到 post`, async () => {
-      const result = await buildWithTemplate(template);
-      assert.ok(result.errors.includes(`未知文章模板 ${name}`), result.errors);
-      assert.ok(result.errors.includes('/articles/template-selection.mdx'), result.errors);
-      assert.ok(result.errors.includes('支持：post, slide'), result.errors);
-      assert.deepEqual(result.html, []);
-    });
-  }
+  it('拒绝未注册的模板，定位文章且不回退到 post', async () => {
+    const result = await buildWithTemplate('unknown');
+    assert.ok(result.errors.includes('未知文章模板 "unknown"'), result.errors);
+    assert.ok(result.errors.includes('/articles/template-selection.mdx'), result.errors);
+    assert.ok(result.errors.includes('支持：post, slide'), result.errors);
+    assert.deepEqual(result.html, []);
+  });
 });

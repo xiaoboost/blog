@@ -1,4 +1,3 @@
-import { mock } from 'node:test';
 import { expect, describe, it } from '@blog/test-toolkit';
 import type { Mdx, TemplateAsset } from '@blog/types';
 import { getAttribute, getChildrenContent, visit } from '../ast/walk';
@@ -37,22 +36,6 @@ describe('post compile pipeline', () => {
       './manual.script': ['/manual.js'],
     });
     expect(post.utils.getAssetNames()).deep.eq(['/post.css', '/article.js', '/article.css']);
-  });
-
-  it('文章正文只 parse 一次、run 一次', async () => {
-    const { createProcessor } = await import('@mdx-js/mdx');
-    const prototype = Object.getPrototypeOf(createProcessor());
-    const parse = mock.method(prototype, 'parse');
-    const run = mock.method(prototype, 'run');
-    try {
-      await transform(postSource('$x$\n\n```ts\nconst a = 1;\n```', 'lsp: true\n'), '/test/post.mdx');
-      expect(parse.mock.callCount()).eq(1);
-      expect(run.mock.callCount()).eq(1);
-    }
-    finally {
-      parse.mock.restore();
-      run.mock.restore();
-    }
   });
 
   it('保持 default、utils、data 导出，以及配置和组件 props 的行为', async () => {

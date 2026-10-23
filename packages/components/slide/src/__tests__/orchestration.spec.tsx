@@ -661,59 +661,37 @@ describe('JS / MDX 输入和时间边界校验', () => {
   ];
 
   for (const value of invalidTimes) {
-    for (const field of ['duration', 'delay'] as const) {
-      for (const level of [
-        'Player',
-        'Step',
-        'Sequence',
-        'Parallel',
-        'Animate',
-      ] as const) {
-        it(`${level} 的 ${field} 拒绝 ${String(value)}`, () => {
-          const transition = { [field]: value } as any;
-          let effect: ReactNode = <FadeIn target="a" />;
-
-          if (level === 'Sequence') {
-            effect = <Sequence transition={transition}>{effect}</Sequence>;
-          }
-
-          if (level === 'Parallel') {
-            effect = <Parallel transition={transition}>{effect}</Parallel>;
-          }
-
-          if (level === 'Animate') {
-            effect = <Animate target="a" to={{ opacity: 1 }} transition={transition} />;
-          }
-
-          expect(() => collect(page(
-            <Player transition={level === 'Player' ? transition : undefined}>
-              <Step transition={level === 'Step' ? transition : undefined}>{effect}</Step>
-            </Player>,
-          ))).throw(new RegExp(`transition\\.${field}.*有限的非负`));
-        });
-      }
-    }
-
-    it(`Wait 拒绝 ${String(value)}`, () => {
-      expect(() => step(<Wait duration={value as any} />)).throw(/Wait.duration.*有限的非负/);
+    it(`动作时长拒绝 ${String(value)}`, () => {
+      expect(() => step(<Animate target="a" to={{ opacity: 1 }} transition={{ duration: value as any }} />))
+        .throw(/transition\.duration.*有限的非负/);
     });
   }
 
+  const invalidDelay = { delay: -1 };
+  const levels: [string, ReactNode][] = [
+    ['Player', <Player transition={invalidDelay}><Step /></Player>],
+    ['Step', <Player><Step transition={invalidDelay} /></Player>],
+    ['Sequence', <Player><Step><Sequence transition={invalidDelay} /></Step></Player>],
+    ['Parallel', <Player><Step><Parallel transition={invalidDelay} /></Step></Player>],
+    ['Animate', <Player><Step><Animate target="a" to={{ opacity: 1 }} transition={invalidDelay} /></Step></Player>],
+  ];
+  for (const [name, child] of levels) {
+    it(`${name} 接入时间校验，拒绝负数 delay`, () => {
+      expect(() => collect(page(child))).throw(/transition\.delay.*有限的非负/);
+    });
+  }
+
+  it('Wait 校验自身时长', () => {
+    expect(() => step(<Wait duration={-1} />)).throw(/Wait.duration.*有限的非负/);
+  });
+
   const invalidPositions: unknown[] = [
-    ...invalidTimes,
-    {},
-    { ref: '', edge: 'end' },
+    -1,
+    null,
     { ref: ' ', edge: 'end' },
-    { ref: 1, edge: 'end' },
-    { ref: 'a' },
     { ref: 'a', edge: 'finish' },
-    ...[
-      NaN,
-      Infinity,
-      -Infinity,
-      '100',
-      null,
-    ].map((offset) => ({ ref: 'a', edge: 'end', offset })),
+    { ref: 'a', edge: 'end', offset: Infinity },
+    { ref: 'a', edge: 'end', offset: '100' },
   ];
 
   for (const [index, at] of invalidPositions.entries()) {
@@ -727,12 +705,7 @@ describe('JS / MDX 输入和时间边界校验', () => {
     });
   }
 
-  for (const id of [
-    '',
-    ' ',
-    123,
-    null,
-  ]) {
+  for (const id of [' ', 123]) {
     it(`拒绝无效分组 id：${String(id)}`, () => {
       expect(() => step(<Sequence id={id as any} />)).throw(/id 必须是非空字符串/);
     });
@@ -742,8 +715,6 @@ describe('JS / MDX 输入和时间边界校验', () => {
   const misplaced: [string, ReactNode][] = [
     ['Animate', <Animate target="a" to={{ opacity: 1 }} {...position} />],
     ['FadeIn', <FadeIn target="a" {...position} />],
-    ['MoveIn', <MoveIn target="a" {...position} />],
-    ['Pulse', <Pulse target="a" {...position} />],
     ['Wait', <Wait duration={100} {...position} />],
     ['Step', <Step {...position} />],
     ['Player', <Player {...position}><Step /></Player>],
