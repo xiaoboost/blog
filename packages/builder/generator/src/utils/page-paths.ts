@@ -13,7 +13,7 @@ export function assertUniquePagePaths(pages: IPage[]) {
 
   for (const page of pages) {
     // 与 Page.toAsset 使用相同的输出规则，兼容首尾斜杠等写法差异。
-    const outputPath = normalize('/', page.pathname, 'index.html');
+    const outputPath = normalize('/', page.outputPath);
     const previous = paths.get(outputPath);
 
     if (previous) {
@@ -26,5 +26,23 @@ export function assertUniquePagePaths(pages: IPage[]) {
     }
 
     paths.set(outputPath, page);
+  }
+
+  // 文件不能同时作为其他页面的目录，例如 /404.html 与 /404.html/index.html。
+  for (const [outputPath, page] of paths) {
+    const parts = outputPath.split('/');
+    for (let i = 2; i < parts.length; i++) {
+      const ancestor = parts.slice(0, i).join('/');
+      const previous = paths.get(ancestor);
+
+      if (previous) {
+        throw new Error([
+          '页面路径重复：文件与目录冲突',
+          `输出文件：${ancestor} 与 ${outputPath}`,
+          `- ${describePage(previous)}`,
+          `- ${describePage(page)}`,
+        ].join('\n'));
+      }
+    }
   }
 }

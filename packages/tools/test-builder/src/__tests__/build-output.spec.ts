@@ -4,6 +4,7 @@ import type {
   AssetData,
   IResourceSet,
   PageType,
+  PreloadAssetData,
   ScriptAssetData,
   StyleAssetData,
 } from '@blog/types';
@@ -82,10 +83,13 @@ describe('博客构建 e2e', () => {
     preScript: ScriptAssetData;
     script: ScriptAssetData;
     style: StyleAssetData;
+    preload: PreloadAssetData;
   }>();
   const sharedPreScripts: ScriptAssetData[] = [];
   const sharedScripts: ScriptAssetData[] = [];
   const sharedStyles: StyleAssetData[] = [];
+  const configuredPreloads: PreloadAssetData[] = [];
+  let sharedPreloads: PreloadAssetData[] = [];
 
   before(async function () {
     this.timeout(120_000);
@@ -101,6 +105,26 @@ describe('博客构建 e2e', () => {
           apply(builder) {
             builder.hooks.runner.tap('test-resource-config', (runner) => {
               runner.registerHook(({ hooks }) => {
+                hooks.beforePageRender.tap('test-resource-config', ({ page, site }) => {
+                  const resources = resourcePages.get(page.outputPath);
+
+                  if (resources) {
+                    // 在正式渲染前才追加，覆盖预渲染后发生的资源变化。
+                    page.addPreScript(resources.preScript);
+                    page.addScript(resources.script);
+                    page.addStyle(resources.style);
+                    page.addPreload(resources.preload);
+                    // 同一引用同时来自 Site 和 Page，最终只输出一次。
+                    page.addPreScript({ ...sharedPreScripts[0] });
+                    page.addScript({ ...sharedScripts[0] });
+                    page.addStyle({ ...sharedStyles[0] });
+                    configuredPreloads.forEach((preload) => page.addPreload({ ...preload }));
+                  }
+
+                  if (page.type === 'not-found') {
+                    sharedPreloads = site.getPreloads();
+                  }
+                });
                 hooks.afterReady.tap('test-resource-config', ({ site, pages, rename }) => {
                   const addAsset = (resources: IResourceSet, name: string) => {
                     const content = Buffer.from(name.endsWith('.css')
@@ -142,6 +166,23 @@ describe('博客构建 e2e', () => {
                   sharedPreScripts.forEach((script) => site.addPreScript(script));
                   sharedScripts.forEach((script) => site.addScript(script));
                   sharedStyles.forEach((style) => site.addStyle(style));
+                  configuredPreloads.push(
+                    {
+                      href: sharedStyles[0].href,
+                      as: 'style',
+                      type: 'text/css',
+                      crossOrigin: 'anonymous',
+                      media: 'print',
+                    },
+                    {
+                      href: sharedStyles[0].href,
+                      as: 'style',
+                      type: 'text/css',
+                      crossOrigin: 'anonymous',
+                      media: 'screen',
+                    },
+                  );
+                  configuredPreloads.forEach((preload) => site.addPreload(preload));
                   site.addPreScript({ ...sharedPreScripts[0] });
                   site.addScript({ ...sharedScripts[0] });
                   site.addStyle({ ...sharedStyles[0] });
@@ -181,10 +222,14 @@ describe('博客构建 e2e', () => {
                       preScript,
                       script,
                       style,
+                      preload: {
+                        href: style.href,
+                        as: 'style',
+                        type: 'text/css',
+                        media: 'print',
+                        crossOrigin: 'use-credentials',
+                      },
                     });
-                    page.addPreScript(preScript);
-                    page.addScript(script);
-                    page.addStyle(style);
                   }
                 });
               });
@@ -277,6 +322,43 @@ describe('博客构建 e2e', () => {
   it('首页 index.html 存在', () => {
     const indexPath = assetMap.get('/index.html');
     expect(indexPath, '首页不存在').not.undefined;
+  });
+
+  it('404 单独加载页面资源，复用 layout 资源并保留站点字体预加载', () => {
+    const html = assetMap.get('/404.html')?.toString();
+    expect(html, '缺少根目录的 404.html').not.undefined;
+    expect(assetMap.has('/404.html/index.html')).false;
+    expect(assets.some(({ path }) => path.startsWith('/404.html/'))).false;
+    expect(extractMetaContent(html!, 'robots')).eq('noindex');
+    expect(html).not.include('rel="canonical"');
+    expect(html).not.include('property="og:url"');
+    expect(html).include('这一页，好像溜走了。');
+    expect(html).include('可以回到首页，或者翻翻以前的文章。');
+    expect(html).include('aria-label="继续浏览"');
+    expect(html).not.include('aria-label="主导航"');
+    expect(html).not.include('<footer');
+    expect(html).include('<svg');
+    const fontPreloadPattern = /<link\b[^>]*rel="preload"[^>]*href="([^"]+)"[^>]*as="font"/g;
+    const fontPreloads = [...html!.matchAll(fontPreloadPattern)]
+      .map(([, href]) => href);
+    const sharedFontPreloads = sharedPreloads.filter(({ as }) => as === 'font').map(({ href }) => href);
+    expect(sharedFontPreloads).not.empty;
+    expect(fontPreloads).deep.eq(sharedFontPreloads);
+    const links = extractLinks(html!);
+    expect(links.some((href) => /\/layout\.[^/]+\.js$/.test(href))).true;
+    const layoutCssPath = links.find((href) => /\/layout\.[^/]+\.css$/.test(href));
+    expect(layoutCssPath).not.undefined;
+    const cssPath = links.find((href) => /\/not-found\.[^/]+\.css$/.test(href));
+    expect(cssPath).not.undefined;
+    const css = assetMap.get(cssPath!)!.toString();
+    expect(css).include('@keyframes not-found-tail-peek');
+    expect(css).include('prefers-reduced-motion');
+    expect(assetMap.get(layoutCssPath!)!.toString()).not.include('not-found-tail-peek');
+    for (const { path, content } of htmlAssets) {
+      if (path !== '/404.html') {
+        expect(extractLinks(content.toString()), path).not.include(cssPath);
+      }
+    }
   });
 
   it('首页内容非空', () => {
@@ -499,10 +581,10 @@ describe('博客构建 e2e', () => {
     expect(missingTitle).to.be.empty;
   });
 
-  it('所有 HTML 文件包含完整的分享元数据', () => {
+  it('可索引页面包含完整的分享元数据', () => {
     const invalidMeta: string[] = [];
 
-    for (const { path, content } of htmlAssets) {
+    for (const { path, content } of htmlAssets.filter(({ path }) => path !== '/404.html')) {
       const html = content.toString('utf-8');
       const canonical = /<link[^>]+rel="canonical"[^>]+href="([^"]+)"/i.exec(html)?.[1] ?? '';
       const ogUrl = extractMetaContent(html, 'og:url');
@@ -636,7 +718,8 @@ describe('博客构建 e2e', () => {
       const script = html.indexOf(tag);
       const stylesheet = html.indexOf('rel="stylesheet"');
       expect(stylesheet, path).greaterThan(script);
-      expect(extractLinks(head).filter((href) => href === layoutStyles[0].path), path).length(1);
+      const linkedStyles = extractLinks(head);
+      expect(linkedStyles.filter((href) => href === layoutStyles[0].path), path).length(1);
       // 与运行时 [data-theme-toggle] 一致，只检查属性存在；React 会把 JSX 简写输出为 "true"。
       const buttons = [...html.matchAll(/<button\b[^>]*\sdata-theme-toggle(?=[\s=>])[^>]*>/g)];
       expect(buttons, path).length(1);
@@ -652,6 +735,7 @@ describe('博客构建 e2e', () => {
   it('所有页面类型通过 head 引用普通脚本产物，保留配置和顺序且不泄漏页面专属引用', () => {
     expect([...resourcePages.values()].map(({ type }) => type).sort()).deep.eq([
       'index',
+      'not-found',
       'post',
       'tag-list',
       'tag-post-list',
@@ -689,7 +773,7 @@ describe('博客构建 e2e', () => {
   it('所有页面类型的 body 脚本保留标签配置、去重和页面隔离', () => {
     for (const { path, content } of htmlAssets) {
       const html = content.toString();
-      const body = /<body>([\s\S]*?)<\/body>/.exec(html)![1];
+      const body = /<body\b[^>]*>([\s\S]*?)<\/body>/.exec(html)![1];
       const scripts = [...body.matchAll(/<script\b[^>]*\bsrc="([^"]+)"[^>]*><\/script>/g)]
         .filter(([, src]) => /\/test-script-[^/]+\.js$/.test(src));
       const pageScript = resourcePages.get(path)?.script;
@@ -728,5 +812,23 @@ describe('博客构建 e2e', () => {
   it('产物中没有 esbuild 虚拟路径', () => {
     const virtualPaths = assets.filter((a) => a.path.includes('virtual'));
     expect(virtualPaths).to.be.empty;
+  });
+
+  it('预加载跨 Site 和 Page 去重，保留同一文件的不同媒体条件和页面隔离', () => {
+    const pattern = /<link\b[^>]*\brel="preload"[^>]*\bhref="([^"]+)"[^>]*>/g;
+    for (const { path, content } of htmlAssets) {
+      const preloads = [...content.toString().matchAll(pattern)]
+        .filter(([, href]) => /\/test-style-[^/]+\.css$/.test(href));
+      const pagePreload = resourcePages.get(path)?.preload;
+      const expected = pagePreload ? [...configuredPreloads, pagePreload] : configuredPreloads;
+      expect(preloads.map(([, href]) => href), path).deep.eq(expected.map(({ href }) => href));
+      preloads.forEach(([tag], index) => {
+        const config = expected[index];
+        expect(/\bas="([^"]+)"/.exec(tag)?.[1], path).eq(config.as);
+        expect(/\btype="([^"]+)"/.exec(tag)?.[1], path).eq(config.type);
+        expect(/\bmedia="([^"]+)"/.exec(tag)?.[1], path).eq(config.media);
+        expect(/\bcrossorigin="([^"]+)"/i.exec(tag)?.[1], path).eq(config.crossOrigin);
+      });
+    }
   });
 });

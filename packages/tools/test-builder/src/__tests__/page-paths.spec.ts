@@ -103,5 +103,18 @@ describe('页面路径冲突', function () {
     assert.ok(result.paths.includes('/posts/first/index.html'));
     assert.ok(result.paths.includes('/posts/second/index.html'));
     assert.ok(result.renderedPages > 0);
+    assert.ok(result.paths.includes('/404.html'));
+    assert.ok(!result.paths.includes('/404.html/index.html'));
+  });
+
+  it('文章目录不能占用 404.html 文件或它的子目录', async () => {
+    for (const pathname of ['/404.html', '/404.html/nested/']) {
+      const result = await buildPages([pathname]);
+      assert.ok(result.errors.includes('文件与目录冲突'), result.errors);
+      assert.ok(result.errors.includes('/404.html'), result.errors);
+      assert.ok(result.errors.includes('/articles/post-1.md'), result.errors);
+      assert.ok(result.errors.includes('（not-found）'), result.errors);
+      assert.equal(result.renderedPages, 0);
+    }
   });
 });

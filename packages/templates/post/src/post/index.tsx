@@ -25,7 +25,14 @@ export function Post(props: PostProps) {
   const title = createHeadComponents();
 
   return (
-    <Layout {...props}>
+    <Layout
+      {...props}
+      assets={post.utils.getAssetReferences()}
+      description={post.data.description}
+      keywords={post.data.tags.map(({ name }) => name)}
+      publishedTime={post.data.create}
+      modifiedTime={post.data.update}
+    >
       <article
         className={stringifyClass(styles.classes.postDefault, {
           [styles.classes.postNoToc]: !post.data.toc,

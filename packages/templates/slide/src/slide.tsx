@@ -12,7 +12,15 @@ export function SlidePage(props: SlidePageProps) {
   const { post } = props;
 
   return (
-    <Layout {...props} bodyClassName={styles.classes.page}>
+    <Layout
+      {...props}
+      assets={post.utils.getAssetReferences()}
+      description={post.data.description}
+      keywords={post.data.tags.map(({ name }) => name)}
+      publishedTime={post.data.create}
+      modifiedTime={post.data.update}
+      bodyClassName={styles.classes.page}
+    >
       <Presentation title={post.data.title}>
         <post.Component post={post.data} />
       </Presentation>
