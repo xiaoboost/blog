@@ -12,7 +12,7 @@
   "scripts": {
     "build": "blog build --outDir=dist --mode=production",
     "build:debug": "pnpm run build --debug",
-    "serve": "sirv --host -p 9999 -G dist",
+    "serve": "node scripts/serve.mjs",
     "static:serve": "pnpm run build && pnpm run serve",
     "watch": "blog watch --hmr --mode=development --port=5173",
     "watch:debug": "pnpm run watch --debug",
@@ -27,6 +27,6 @@
   },
   "devDependencies": {
     "@blog/cli": "workspace:*",
-    "sirv-cli": "3.0.1"
+    "sirv": "3.0.2"
   }
 }

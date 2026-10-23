@@ -11,6 +11,9 @@ export const ListItemTitleFontWeight = 600;
 /** 归档年份数字，对应 Lora-Regular.ttf */
 export const ArchiveYearFontFamily = 'archive-year';
 export const ArchiveYearFontWeight = 400;
+/** 404 提示语，对应 KNMaiyuan-Regular.ttf */
+export const NotFoundTitleFontFamily = 'not-found-title';
+export const NotFoundTitleFontWeight = 400;
 /** 获取字体路径 */
 export const getFontPath = (name: string, subName?: string) => {
   return subName ? `../assets/fonts/${name}/${name}-${subName}` : `../assets/fonts/${name}/${name}`;
