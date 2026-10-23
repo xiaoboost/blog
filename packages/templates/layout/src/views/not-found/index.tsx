@@ -9,7 +9,7 @@ import styles from './index.jss';
 import assets from './not-found.script';
 
 export function NotFound() {
-  const { site, page, isPreBuild } = useRenderContext();
+  const { site, isPreBuild } = useRenderContext();
   const { classes } = styles;
   const home = normalizeUrl(site.publicPath);
 
@@ -20,7 +20,6 @@ export function NotFound() {
   return (
     <Document
       assets={assets}
-      pageTitle={`${page.title} · ${site.title}`}
       noIndex
       className={classes.page}
     >

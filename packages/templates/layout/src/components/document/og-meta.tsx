@@ -22,7 +22,6 @@ const defaultImageType = defaultImageFormat === 'jpg'
   : `image/${defaultImageFormat}`;
 
 export function OgMeta({
-  pageTitle,
   description,
   keywords,
   publishedTime,
@@ -37,7 +36,7 @@ export function OgMeta({
 
   return (
     <>
-      <meta property="og:title" content={pageTitle ?? page.title} />
+      <meta property="og:title" content={page.title} />
       <meta property="og:description" content={metaDescription} />
       <meta property="og:type" content={isArticle ? 'article' : 'website'} />
       <meta property="og:url" content={url} />
