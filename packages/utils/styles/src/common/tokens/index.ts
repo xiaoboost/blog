@@ -7,3 +7,4 @@ export * from './font';
 export * from './font-size';
 export * from './radius-size';
 export * from './duration';
+export * from './paragraph';
