@@ -4,11 +4,14 @@ import {
   createToken,
   FontSizeRegular,
   Gray,
+  ParagraphIndentToken,
+  ParagraphIndent,
 } from '@blog/styles/compile';
 
 const [CommentCornerColorToken, CommentCornerColor] = createToken('comment-corner-color');
 
 export default createStyles({
+  indent: {},
   comment: {
     ...createThemeStyles({
       light: {
@@ -26,13 +29,16 @@ export default createStyles({
     padding: '9px 14px',
     fontSize: FontSizeRegular,
     lineHeight: 1.85,
-    textIndent: 0,
+    [ParagraphIndentToken]: '0em',
+    textIndent: ParagraphIndent,
     overflowWrap: 'anywhere',
 
-    // 压过文章默认段落样式，保留旁注自己的行高、段距和无缩进排版。
+    '&$indent': {
+      [ParagraphIndentToken]: '2em',
+    },
     '&&& > p': {
       margin: 0,
-      textIndent: 0,
+      textIndent: ParagraphIndent,
       lineHeight: 'inherit',
     },
     '&&& > p + p': {

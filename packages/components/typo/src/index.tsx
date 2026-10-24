@@ -2,7 +2,6 @@ import { defineUtils } from '@blog/context/runtime';
 import assets from './typo.script';
 
 export { TextGloss, type TextGlossProps } from './text-gloss';
-export { Subtitle, type SubtitleProps } from './subtitle';
 export { Comment, type CommentProps } from './comment';
 export { BlurReveal, type BlurRevealProps } from './blur-reveal';
 export {

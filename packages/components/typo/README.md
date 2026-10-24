@@ -91,7 +91,7 @@ import { ArticleIntro, BookInfo } from '@blog/mdx-typo';
 
 ### Comment（旁注）
 
-用于作者暂时离开正文话题时的简短补充、联想或设想。采用 14px 淡色文字，左右收窄，左上和右下各有一条开放角线；不显示标题或背景色，自动适配深浅色主题。
+用于作者的补充、联想或读后评论。采用 14px 淡色文字，左右收窄，左上和右下各有一条开放角线；不显示标题或背景色，自动适配深浅色主题。
 
 ```mdx
 import { Comment } from '@blog/mdx-typo';
@@ -99,9 +99,20 @@ import { Comment } from '@blog/mdx-typo';
 <Comment>
   说到这里，我倒有个演出上的设想……
 </Comment>
+
+<Comment indent>
+  较长的评论可以开启首行两格缩进。
+
+  第二段也使用两格缩进，多段之间保留小段距。
+</Comment>
 ```
 
-`children` 接收 MDX 段落、强调和链接等内容。段落不使用首行缩进，多段之间保留小段距。作品原文引用继续使用引用块，正文的主要论述也无需放进旁注。
+`children` 接收 MDX 段落、强调和链接等内容。`indent` 默认为 `false`；开启后通过内部 class 将段落首行缩进 `2em`，不向文本插入空格。段内换行沿用文章的排版。在书摘文章里，出处、背景和感想可以合并在一块 `Comment` 中；普通文章中的主要论述仍写在正文中。
+
+| 参数 | 类型 | 默认值 | 说明 |
+|---|---|---|---|
+| `children` | `React.ReactNode` | — | 作者的补充或评论 |
+| `indent` | `boolean` | `false` | 段落首行是否缩进两格 |
 
 ### BlurReveal（模糊遮盖）
 
@@ -167,23 +178,6 @@ import { DefinitionList, Definition } from '@blog/mdx-typo';
 | `children` | `React.ReactNode` | 必填，解释内容；支持 MDX 段落、链接、行内代码等 |
 
 组件只负责布局和样式，不重新解析字符串。解释段落不使用正文的首行缩进，多段解释之间保留小段距。
-
-### Subtitle（副标题）
-
-独立成行的块级元素，用于标题下方的出处、说明等辅助信息。前置一条 CSS 绘制的细线作为视觉引导。默认使用正文字体、辅助色、14px 字号，视觉层级介于标题与正文之间。
-
-```tsx
-import { Subtitle } from '@blog/mdx-typo';
-
-<Subtitle>出自《xxx》第 x 章</Subtitle>
-```
-
-**Props**
-
-| 参数 | 类型 | 默认值 | 说明 |
-|---|---|---|---|
-| `children` | `React.ReactNode` | — | 副标题内容 |
-| `showDash` | `boolean` | `true` | 是否显示前置装饰线 |
 
 ### TextGloss（文字夹注）
 

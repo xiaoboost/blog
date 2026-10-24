@@ -9,11 +9,11 @@ draft: true
 toc: true
 ---
 
-import { ArticleIntro, BookInfo, Comment, DefinitionList, Definition, Subtitle, TextGloss, BlurReveal } from '@blog/mdx-typo';
+import { ArticleIntro, BookInfo, Comment, DefinitionList, Definition, TextGloss, BlurReveal } from '@blog/mdx-typo';
 import { FontBlock } from '@blog/mdx-font-block';
 import { CodeBlockWrapper } from '../../../components/code-block-normal/src/index';
 
-<Subtitle>内部样张 · 在同一页里看看文字的各种样子</Subtitle>
+内部样张 · 在同一页里看看文字的各种样子
 
 长段落和短句，小说里的对话与代码里的括号，都放到这里。它们使用博客现有的排版。可以点右上角切换深浅主题，也可以缩窄窗口，看看一句话怎样换行、一张图怎样落在文字之间。
 
@@ -31,7 +31,7 @@ import { CodeBlockWrapper } from '../../../components/code-block-normal/src/inde
 
 # 文章导读
 
-<Subtitle>纯导读、书籍与游戏介绍，以及资料缺省时的布局</Subtitle>
+纯导读、书籍与游戏介绍，以及资料缺省时的布局
 
 以下示例使用正式文章中的 `ArticleIntro` 和 `BookInfo`。观察标题组与资料的距离、资料各行的紧凑程度，以及左右内容长度不同时的布局；缩窄到手机宽度后，作品信息与导读改为上下排列。
 
@@ -136,7 +136,7 @@ import { CodeBlockWrapper } from '../../../components/code-block-normal/src/inde
 
 # 正文与强调
 
-<Subtitle>段落、软换行、中英混排，以及几种强调</Subtitle>
+段落、软换行、中英混排，以及几种强调
 
 雨停的时候，书店门口的灯刚刚亮起来。有人把湿伞收好，靠在门边，翻开一本还没读完的书。街上的车声隔着玻璃变得很轻，纸页却很清楚：上一页留下的折角，一行读到一半的话，还有那些当时觉得平常、后来才慢慢想明白的句子。长段落适合看行长，也适合看视线从行末回到下一行时，是否还找得到自己的位置。
 
@@ -155,7 +155,7 @@ import { CodeBlockWrapper } from '../../../components/code-block-normal/src/inde
 
 # 标题层级
 
-<Subtitle>连续标题、标题里的强调，以及长标题换行</Subtitle>
+连续标题、标题里的强调，以及长标题换行
 
 ## 二级标题：一段文字从这里开始
 
@@ -177,7 +177,7 @@ import { CodeBlockWrapper } from '../../../components/code-block-normal/src/inde
 
 # 引用与旁注
 
-<Subtitle>短引文、多段长引文、嵌套引用，以及作者的插话</Subtitle>
+短引文、多段长引文、嵌套引用，以及作者的插话
 
 > 窗外的雨小了，屋里的人却还没有把书合上。
 
@@ -207,9 +207,20 @@ import { CodeBlockWrapper } from '../../../components/code-block-normal/src/inde
 
 正文在这里继续，确认引用和旁注结束之后，后面的段落恢复到通常的节奏。
 
+## 旁注的首行缩进
+
+<Comment indent>
+  较长的评论可以开启首行两格缩进，段落间距沿用旁注的排版。
+
+  第二段也缩进两格，**强调**和[链接](/)照常使用。
+  这一行检查段内换行，缩进应与上一行一致。
+
+  **以强调开头的段落**也应当缩进两格。
+</Comment>
+
 # 术语与夹注
 
-<Subtitle>解释放在需要它的地方</Subtitle>
+解释放在需要它的地方
 
 读到<TextGloss description="版心指页面里主要内容所占的区域。这里的夹注用来观察展开后，长句的换行和行距怎样变化。">版心</TextGloss>时，可以点开看看。后面紧接一句正文，用来判断补充说明是否打断了阅读。另一个<TextGloss description="一条简短的解释。" showSeparator={false}>短夹注</TextGloss>关闭了分隔短线。
 
@@ -239,7 +250,7 @@ import { CodeBlockWrapper } from '../../../components/code-block-normal/src/inde
 
 # 列表与表格
 
-<Subtitle>短条目、多段条目、嵌套列表，以及宽表格</Subtitle>
+短条目、多段条目、嵌套列表，以及宽表格
 
 - 一个很短的条目。
 - 一个包含**强调**、`inline code` 和中文标点的条目。
@@ -274,7 +285,7 @@ import { CodeBlockWrapper } from '../../../components/code-block-normal/src/inde
 
 # 代码与公式
 
-<Subtitle>语法高亮、重点行、类型提示，以及公式的基线</Subtitle>
+语法高亮、重点行、类型提示，以及公式的基线
 
 ## 代码块
 
@@ -584,7 +595,7 @@ $$
 
 # 图片与字体
 
-<Subtitle>真实配图、长图注、自定义字体与竖排文字</Subtitle>
+真实配图、长图注、自定义字体与竖排文字
 
 图片放在两个自然段之间，点击可以放大。这里复用博客已有的配图。
 
@@ -608,7 +619,7 @@ $$
 
 # 组合边界
 
-<Subtitle>单独成立的样式，放在一起再看看</Subtitle>
+单独成立的样式，放在一起再看看
 
 ## 引用中的夹注
 

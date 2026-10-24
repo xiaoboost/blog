@@ -17,6 +17,8 @@ import {
   FontSizeRegular,
   FontSizeMd,
   FontSizeLg,
+  ParagraphIndentToken,
+  ParagraphIndent,
   createHeadStyles,
   getHeadSelector,
   createMediaStylesByTemplate,
@@ -102,6 +104,7 @@ export default createStyles({
       fontFamily: FontBody,
     },
     '& $postArticle': {
+      [ParagraphIndentToken]: '2em',
       fontSize: FontSizeMd,
       ...createMediaStylesByTemplate(
         (width) => ({ padding: `16px ${width}px` }),
@@ -165,14 +168,14 @@ export default createStyles({
       },
       '& span$postSoftBreak': {
         display: 'inline-block',
-        width: '2em',
+        width: ParagraphIndent,
       },
       '& > *:first-child': {
         marginTop: '0 !important',
       },
       '& p': {
         lineHeight: 1.75,
-        textIndent: '2em',
+        textIndent: ParagraphIndent,
         margin: '0 0 1em 0',
 
         '&:last-child': {
