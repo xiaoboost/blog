@@ -20,8 +20,13 @@ const baseOptions: Record<string, yargs.Options> = {
   },
   debug: {
     type: 'boolean',
-    describe: '开启调试器',
+    describe: '收集并打印构建与插件耗时',
     default: false,
+  },
+  reportFile: {
+    type: 'string',
+    describe: '调试报告的 Markdown 输出路径（仅 --debug 时生效）',
+    requiresArg: true,
   },
 };
 

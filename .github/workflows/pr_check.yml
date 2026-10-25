@@ -162,15 +162,11 @@ jobs:
       - name: Set LFS Cache
         uses: './.github/actions/lfs-cache'
 
-      - name: Update Env File
-        run: |
-          echo 'ENV_OUTPUT=${{ env.interceptor_outFile }}' >> .env
-
       - name: Setup Environment
         uses: './.github/actions/setup-env'
 
-      - name: Build Blog with debug
-        run: pnpm run build:debug
+      - name: Build Blog with performance report
+        run: pnpm run build --debug --reportFile="$interceptor_outFile"
 
       - name: PR comment with file
         uses: thollander/actions-comment-pull-request@v3

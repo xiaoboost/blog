@@ -69,6 +69,8 @@ export interface CommandOptions {
    * @default false
    */
   debug?: boolean;
+  /** 调试报告的 Markdown 输出路径，仅 debug 为 true 时生效；相对路径以 root 为基准 */
+  reportFile?: string;
   /**
    * 命令行输出带颜色
    *
@@ -93,6 +95,16 @@ export interface CommandOptions {
    * @default '.cache'
    */
   cache?: string;
+}
+
+/** 构建阶段耗时数据 */
+export interface BuildTiming {
+  /** 阶段标识 */
+  name: string;
+  /** 单调时钟的开始时间（毫秒，performance.now()） */
+  startTime: number;
+  /** 持续时间（毫秒） */
+  duration: number;
 }
 
 /** 构建器实例 */
@@ -153,6 +165,10 @@ export interface BuilderInstance {
   getErrors(): ErrorData[];
   /** 获取产物数据 */
   getAssets(): AssetData[];
+  /** 开始阶段计时；调用返回的结束函数后提交记录，重复结束无效，未结束不记录，不依赖 debug */
+  startMeasure(name: string): () => void;
+  /** 获取当前构建器本次构建的计时快照，不包含子构建器的记录 */
+  getTimings(): BuildTiming[];
 }
 
 /** 代码打包结果 */

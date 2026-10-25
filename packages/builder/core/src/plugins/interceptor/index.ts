@@ -1,34 +1,40 @@
-import { join } from 'path';
+import { resolve } from 'path';
 import { writeFile } from '@blog/node';
 import type { BuilderPlugin } from '@blog/types';
-import * as Hook from './hooks';
+import { getHookData, intercept, print } from './hooks';
+import type { AllPluginData } from './hooks/types';
+import { getBuildReport, printTimings } from './report';
 import type { DebuggerOptions } from './types';
 
 const pluginName = 'interceptor';
 
-export const Interceptor = (opt?: DebuggerOptions): BuilderPlugin => {
-  return {
-    name: pluginName,
-    apply(builder) {
-      if (builder.isChild()) {
-        return;
+/** 调试模式下收集、打印统计，并按需导出报告文件。 */
+export const Interceptor = (opt?: DebuggerOptions): BuilderPlugin => ({
+  name: pluginName,
+  apply(builder) {
+    if (builder.isChild() || !builder.options.debug) {
+      return;
+    }
+
+    const data: AllPluginData = new Map();
+    intercept(pluginName, builder, data, {
+      excludes: [pluginName].concat(opt?.excludes ?? []),
+    });
+
+    builder.hooks.buildEnd.tapPromise(pluginName, async () => {
+      const timings = builder.getTimings();
+      const hooks = getHookData(data);
+      const failed = builder.getErrors().length > 0;
+
+      printTimings(builder.logger, timings, failed);
+      print(builder.logger, hooks);
+
+      if (builder.options.reportFile) {
+        await writeFile(
+          resolve(builder.root, builder.options.reportFile),
+          getBuildReport(timings, { failed, hooks }),
+        );
       }
-
-      const { logger, options } = builder;
-      const pluginOptions: DebuggerOptions = {
-        excludes: [pluginName].concat(opt?.excludes ?? []),
-        outFile: opt?.outFile ? join(options.root, opt?.outFile) : undefined,
-      };
-
-      Hook.intercept(pluginName, builder, pluginOptions);
-
-      builder.hooks.success.tapPromise(pluginName, async () => {
-        Hook.print(logger);
-
-        if (pluginOptions.outFile) {
-          await writeFile(pluginOptions.outFile, Hook.getMdString());
-        }
-      });
-    },
-  };
-};
+    });
+  },
+});
