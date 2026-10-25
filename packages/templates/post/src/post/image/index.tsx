@@ -7,9 +7,10 @@ import styles from './index.jss';
 export interface Props {
   alt?: string;
   src: string;
+  loading?: 'eager' | 'lazy';
 }
 
-export function img({ src, alt }: Props) {
+export function img({ src, alt, loading = 'lazy' }: Props) {
   const finalPath = usePageAsset(src);
 
   // 预构建阶段不渲染
@@ -21,7 +22,12 @@ export function img({ src, alt }: Props) {
   if (isUrl(src)) {
     return (
       <figure className={styles.classes.postImageBox}>
-        <img className={styles.classes.postImageInner} src={src} alt={alt} />
+        <img
+          className={styles.classes.postImageInner}
+          src={src}
+          alt={alt}
+          loading={loading}
+        />
         {alt && <figcaption className={styles.classes.postImageAlt}>{alt}</figcaption>}
       </figure>
     );
@@ -29,7 +35,12 @@ export function img({ src, alt }: Props) {
 
   return (
     <figure className={styles.classes.postImageBox}>
-      <img className={styles.classes.postImageInner} src={finalPath} alt={alt} />
+      <img
+        className={styles.classes.postImageInner}
+        src={finalPath}
+        alt={alt}
+        loading={loading}
+      />
       {alt && <figcaption className={styles.classes.postImageAlt}>{alt}</figcaption>}
     </figure>
   );
