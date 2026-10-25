@@ -1,19 +1,31 @@
+import { performance } from 'node:perf_hooks';
 import type { FullTap } from 'tapable';
 import type { DebuggerOptions } from '../types';
-import type { AllPluginData, AnyHookMap, HookDataWithName } from './types';
+import type {
+  AllPluginData,
+  AnyHookMap,
+  HookDataWithName,
+  HookSummary,
+} from './types';
 
 /** 数据储存 */
 export const hookData: AllPluginData = new Map();
 
 /** 添加钩子数据 */
-function addHookData(plugin: string, hookMap: string, hook: string, startAt: bigint) {
-  const endAt = process.hrtime.bigint();
+function addHookData(
+  data: AllPluginData,
+  plugin: string,
+  hookMap: string,
+  hook: string,
+  startAt: number,
+) {
+  const endAt = performance.now();
 
-  if (!hookData.has(plugin)) {
-    hookData.set(plugin, new Map());
+  if (!data.has(plugin)) {
+    data.set(plugin, new Map());
   }
 
-  const pluginData = hookData.get(plugin)!;
+  const pluginData = data.get(plugin)!;
 
   if (!pluginData.has(hookMap)) {
     pluginData.set(hookMap, new Map());
@@ -36,11 +48,12 @@ export function interceptHookMap(
   hookMapName: string,
   hookMapData: AnyHookMap,
   options: DebuggerOptions,
+  data: AllPluginData = hookData,
 ) {
   for (const tapName of Object.keys(hookMapData)) {
     const hook = hookMapData[tapName];
 
-    if (!hook?.isUsed?.()) {
+    if (!hook?.intercept) {
       continue;
     }
 
@@ -55,29 +68,34 @@ export function interceptHookMap(
 
         if (type === 'sync') {
           tap.fn = function (...args: any[]) {
-            const startAt = process.hrtime.bigint();
-            const result = cb.apply(this, args);
-            addHookData(pluginName, hookMapName, tapName, startAt);
-            return result;
+            const startAt = performance.now();
+            try {
+              return cb.apply(this, args);
+            }
+            finally {
+              addHookData(data, pluginName, hookMapName, tapName, startAt);
+            }
           };
         }
         else if (type === 'async') {
           tap.fn = function (...args: any[]) {
-            const startAt = process.hrtime.bigint();
+            const startAt = performance.now();
             const callback = args.pop();
             return cb.call(this, ...args, (...result: any[]) => {
-              addHookData(pluginName, hookMapName, tapName, startAt);
+              addHookData(data, pluginName, hookMapName, tapName, startAt);
               callback(...result);
             });
           };
         }
         else if (type === 'promise') {
-          tap.fn = function (...args: any[]) {
-            const startAt = process.hrtime.bigint();
-            return cb.apply(this, args).then((result: unknown) => {
-              addHookData(pluginName, hookMapName, tapName, startAt);
-              return result;
-            });
+          tap.fn = async function (...args: any[]) {
+            const startAt = performance.now();
+            try {
+              return await cb.apply(this, args);
+            }
+            finally {
+              addHookData(data, pluginName, hookMapName, tapName, startAt);
+            }
           };
         }
 
@@ -90,18 +108,18 @@ export function interceptHookMap(
 /**
  * 合并重叠的时间区间，返回合并后的总时长
  *   - 将所有 [startAt, endAt] 在时间轴上合并重叠部分，消除并发导致的时间重复计算
- *   - 入参/出参单位均为`纳秒`
+ *   - 入参/出参单位均为毫秒，保留小数精度
  */
-function mergeIntervals(intervals: Array<{ startAt: bigint; endAt: bigint }>): bigint {
+function mergeIntervals(intervals: Array<{ startAt: number; endAt: number }>): number {
   if (intervals.length === 0) {
-    return 0n;
+    return 0;
   }
 
   const sorted = intervals.slice().sort((a, b) =>
     a.startAt < b.startAt ? -1 : a.startAt > b.startAt ? 1 : 0,
   );
 
-  let total = 0n;
+  let total = 0;
   let curStart = sorted[0].startAt;
   let curEnd = sorted[0].endAt;
 
@@ -126,17 +144,17 @@ function mergeIntervals(intervals: Array<{ startAt: bigint; endAt: bigint }>): b
 }
 
 /** 获取所有数据 */
-export function getHookData(): { items: HookDataWithName[]; globalTotalCost: bigint } {
+export function getHookData(data: AllPluginData = hookData): HookSummary {
   const result: HookDataWithName[] = [];
-  const allIntervals: Array<{ startAt: bigint; endAt: bigint }> = [];
+  const allIntervals: Array<{ startAt: number; endAt: number }> = [];
 
-  for (const [pluginName, pluginData] of hookData.entries()) {
+  for (const [pluginName, pluginData] of data.entries()) {
     for (const [mapName, mapData] of pluginData.entries()) {
       for (const [tapName, intervals] of mapData.entries()) {
         const count = intervals.length;
         const sumCost = intervals.reduce(
           (ans, item) => ans + (item.endAt - item.startAt),
-          0n,
+          0,
         );
         const totalCost = mergeIntervals(intervals);
 
@@ -148,16 +166,16 @@ export function getHookData(): { items: HookDataWithName[]; globalTotalCost: big
           mapName,
           tapName,
           count,
-          // 平均耗时 = 累加总时间 / 调用次数，转为微秒
-          avgCost: sumCost / BigInt(count) / 1000n,
-          // 总耗时 = 区间合并后的墙钟时间，转为微秒
-          totalCost: totalCost / 1000n,
+          // 平均耗时 = 累加总时间 / 调用次数，不在统计时舍入
+          avgCost: sumCost / count,
+          // 总耗时 = 区间合并后的墙钟时间
+          totalCost,
         });
       }
     }
   }
 
-  const globalTotalCost = mergeIntervals(allIntervals) / 1000n;
+  const globalTotalCost = mergeIntervals(allIntervals);
 
   return { items: result, globalTotalCost };
 }

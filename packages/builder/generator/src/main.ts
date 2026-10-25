@@ -17,6 +17,7 @@ import { createPages } from './pages';
 import { renderPages } from './render';
 
 const main: RunnerCb = async (assets) => {
+  const endPrepare = Builder.startMeasure('generator.prepare');
   await waitReady;
   await callHook('beforeStart');
 
@@ -46,13 +47,21 @@ const main: RunnerCb = async (assets) => {
   };
 
   await callHook('afterReady', ctx);
+  endPrepare();
 
   // 预渲染收集字体字符，beforeBuild 构建字体，再使用同一批实例正式渲染。
+  const endPreRender = Builder.startMeasure('generator.preRender');
   const preAssets = await renderPages(ctx, {
     isPreBuild: true,
     dev: Builder.options.hmr,
   });
+  endPreRender();
+
+  const endBeforeBuild = Builder.startMeasure('generator.beforeBuild');
   await callHook('beforeBuild', ctx);
+  endBeforeBuild();
+
+  const endRender = Builder.startMeasure('generator.render');
   const htmlAssets = await renderPages(ctx, {
     isPreBuild: false,
     dev: Builder.options.hmr,
@@ -61,6 +70,7 @@ const main: RunnerCb = async (assets) => {
   const staticAssets = assets.concat(preAssets).concat(htmlAssets);
   const allProcessed = await callHook('processAssets', staticAssets);
   await callHook('afterBuild', allProcessed.slice());
+  endRender();
 
   return allProcessed;
 };

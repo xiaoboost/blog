@@ -91,6 +91,13 @@ export interface BuilderHooks {
    */
   failed: AsyncSeriesHook<[ErrorData[]]>;
   /**
+   * 构建结束
+   *
+   *  - 成功/失败处理返回且计时结算后，关闭构建器之前
+   *  - 每轮实际构建触发一次，等待者重放结束回调时不触发
+   */
+  buildEnd: AsyncSeriesHook<[BuilderHookContext]>;
+  /**
    * 处理资源
    *   - 返回资源列表数组
    */

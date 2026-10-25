@@ -4,14 +4,14 @@ import type { Hook } from 'tapable';
 export interface HookData {
   /**
    * 钩子运行起始时间
-   *   - 单位`纳秒`
+   *   - 单位毫秒，performance.now() 的单调时钟读数
    */
-  startAt: bigint;
+  startAt: number;
   /**
    * 钩子运行结束时间
-   *   - 单位`微秒`
+   *   - 单位毫秒，performance.now() 的单调时钟读数
    */
-  endAt: bigint;
+  endAt: number;
 }
 
 /** 完整数据 */
@@ -26,14 +26,20 @@ export interface HookDataWithName {
   count: number;
   /**
    * 平均耗时（单次调用）
-   *   - 单位`微秒`
+   *   - 单位毫秒，保留小数精度
    */
-  avgCost: bigint;
+  avgCost: number;
   /**
    * 总耗时（区间合并后，消除并发重叠）
-   *   - 单位`微秒`
+   *   - 单位毫秒，保留小数精度
    */
-  totalCost: bigint;
+  totalCost: number;
+}
+
+/** 一次构建的插件统计快照，耗时单位为毫秒。 */
+export interface HookSummary {
+  items: HookDataWithName[];
+  globalTotalCost: number;
 }
 
 /**

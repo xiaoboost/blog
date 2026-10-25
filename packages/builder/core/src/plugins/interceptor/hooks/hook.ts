@@ -2,27 +2,27 @@ import { toRound } from '@blog/shared';
 import type { LoggerInstance, BuilderInstance } from '@blog/types';
 import { table, type SpanningCellConfig, type ColumnUserConfig } from 'table';
 import type { DebuggerOptions } from '../types';
-import type { HookDataWithName } from './types';
-import { hookData, interceptHookMap, getHookData } from './utils';
+import type { AllPluginData, HookDataWithName, HookSummary } from './types';
+import { interceptHookMap, getHookData } from './utils';
 
-/** 格式化耗时字符串，入参单位为微秒 */
-function toTimeString(input: bigint) {
+/** 格式化耗时字符串，入参单位为毫秒；只在展示时舍入。 */
+function toTimeString(input: number) {
   // 小于 1 ms 显示为 < 1 ms
-  if (input < 1000n) {
+  if (input < 1) {
     return '< 1 ms';
   }
 
   const unit = ['ms', 's'];
 
-  let target = toRound(Number(input) / 1000, 3);
+  let target = input;
   let index = 0;
 
-  while (target > 1000n && index < 2) {
-    target = toRound(target / 1000, 3);
+  while (target >= 1000 && index < unit.length - 1) {
+    target /= 1000;
     index++;
   }
 
-  return `${target} ${unit[index]}`;
+  return `${toRound(target, 3)} ${unit[index]}`;
 }
 
 function getTableData(data: HookDataWithName[]) {
@@ -69,7 +69,7 @@ function getTableData(data: HookDataWithName[]) {
 /** 打印到命令行 */
 function printHookData(
   data: HookDataWithName[],
-  globalTotalCost: bigint,
+  globalTotalCost: number,
   logger: LoggerInstance,
 ) {
   const cells: SpanningCellConfig[] = [];
@@ -167,12 +167,12 @@ function printHookData(
 }
 
 /** 生成记录数据报告 */
-export function getMdString() {
-  const { items, globalTotalCost } = getHookData();
+export function getMdString(data: HookSummary = getHookData()) {
+  const { items, globalTotalCost } = data;
   const { tableData, totalSortedTableData, avgSortedTableData } = getTableData(items);
   const tableHeader = '|插件名称|构建阶段|钩子函数|调用次数|平均耗时|总耗时|\n|:--|:--|:--|:--:|:--|:--|\n';
 
-  let content = `# 插件数据\n\n## 全局汇总\n\n- 插件活跃总时间: ${toTimeString(globalTotalCost)}\n\n## 总耗时最多\n\n${tableHeader}`;
+  let content = `## 全局汇总\n\n- 插件活跃总时间: ${toTimeString(globalTotalCost)}\n\n## 总耗时最多\n\n${tableHeader}`;
 
   totalSortedTableData.slice(1, 4).forEach((item) => (content += `|${item.join('|')}|\n`));
   content += `\n\n## 平均耗时最多\n\n${tableHeader}`;
@@ -184,22 +184,27 @@ export function getMdString() {
 }
 
 /** 输出数据 */
-export function print(logger: LoggerInstance) {
-  const { items, globalTotalCost } = getHookData();
+export function print(logger: LoggerInstance, data: HookSummary = getHookData()) {
+  const { items, globalTotalCost } = data;
   printHookData(items, globalTotalCost, logger);
 }
 
 /** 拦截钩子 */
-export function intercept(name: string, builder: BuilderInstance, options: DebuggerOptions) {
-  builder.hooks.start.tap(name, () => {
-    hookData.clear();
+export function intercept(
+  name: string,
+  builder: BuilderInstance,
+  data: AllPluginData,
+  options: DebuggerOptions,
+) {
+  builder.hooks.start.tap({ name, stage: -Infinity }, () => {
+    data.clear();
   });
 
   builder.hooks.afterInitialized.tap(name, (builder) => {
-    interceptHookMap('Builder', builder.hooks as any, options);
+    interceptHookMap('Builder', builder.hooks as any, options, data);
 
     builder.hooks.bundler.tap(name, (bundler) => {
-      interceptHookMap('Bundler', bundler.hooks as any, options);
+      interceptHookMap('Bundler', bundler.hooks as any, options, data);
     });
   });
 }

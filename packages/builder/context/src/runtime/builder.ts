@@ -6,7 +6,14 @@ const builderOutside = getGlobalContext()[GlobalKey.Builder];
 export type Builder = Readonly<
   Pick<
     BuilderInstance,
-    'options' | 'resolve' | 'renameAsset' | 'emitAsset' | 'logger' | 'getCacheAccessor' | 'addWatchFiles'
+    | 'options'
+    | 'resolve'
+    | 'renameAsset'
+    | 'emitAsset'
+    | 'logger'
+    | 'getCacheAccessor'
+    | 'addWatchFiles'
+    | 'startMeasure'
   >
 >;
 
@@ -41,5 +48,8 @@ export const Builder: Builder =
       },
       addWatchFiles(...files) {
         return builderOutside.addWatchFiles(...files);
+      },
+      startMeasure(name) {
+        return builderOutside.startMeasure(name);
       },
     };

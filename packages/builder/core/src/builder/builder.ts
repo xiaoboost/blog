@@ -1,8 +1,10 @@
+import { performance } from 'node:perf_hooks';
 import { normalize } from '@blog/node';
 import type {
   BuilderHooks,
   BuilderInstance,
   BuilderOptions,
+  BuildTiming,
   AssetData,
   BuilderHookContext,
   ResolveOptions,
@@ -43,6 +45,8 @@ export class Builder implements BuilderInstance {
 
   private assets: AssetData[] = [];
 
+  private timings: BuildTiming[] = [];
+
   private children: Builder[] = [];
 
   private buildStatus = new Watcher(false);
@@ -68,6 +72,7 @@ export class Builder implements BuilderInstance {
       success: new AsyncSeriesHook<[AssetData[], BuilderHookContext]>(['Assets', 'Context']),
       done: new AsyncSeriesHook<[BuilderHookContext]>(['Context']),
       failed: new AsyncSeriesHook<[BuilderError[]]>(['Errors']),
+      buildEnd: new AsyncSeriesHook<[BuilderHookContext]>(['Context']),
       filesChange: new AsyncParallelHook<[string[]]>(['Files']),
       watcher: new AsyncSeriesHook<[FSWatcher]>(['Watcher']),
       bundler: new SyncHook<[Bundler]>(['Bundler']),
@@ -131,6 +136,7 @@ export class Builder implements BuilderInstance {
         ...opt,
         hmr: false,
         write: false,
+        reportFile: '',
       },
       this,
     );
@@ -270,6 +276,25 @@ export class Builder implements BuilderInstance {
     return this.assets.slice();
   }
 
+  startMeasure(name: string): () => void {
+    const startTime = performance.now();
+    const timings = this.timings;
+    let ended = false;
+
+    return () => {
+      if (ended) {
+        return;
+      }
+
+      ended = true;
+      timings.push({ name, startTime, duration: performance.now() - startTime });
+    };
+  }
+
+  getTimings(): BuildTiming[] {
+    return this.timings.map((timing) => ({ ...timing }));
+  }
+
   async stop() {
     await Promise.all(this.children.map((child) => child.stop()));
     await this.bundler.dispose();
@@ -300,16 +325,27 @@ export class Builder implements BuilderInstance {
 
     this.errors = [];
     this.changedFiles.clear();
+    this.timings = [];
     this.buildStatus.setData(true);
 
+    const endBuild = this.startMeasure('builder.total');
+    let endOutput: (() => void) | undefined;
+
     try {
+      const endBundle = this.startMeasure('builder.bundle');
       await this.hooks.start.promise();
       await this.hooks.beforeBundler.promise(this._getHookContext());
       await this.bundler.bundle();
       await this.hooks.afterBundler.promise(this._getHookContext());
+      endBundle();
+
+      const endGenerate = this.startMeasure('builder.generate');
       this.hooks.runner.call(this.runner);
       await this.runner.run(this.bundler.getBundledCode());
       await this.hooks.afterRunner.promise(this._getHookContext());
+      endGenerate();
+
+      endOutput = this.startMeasure('builder.output');
       this.assets = await this.hooks.processAssets.promise(this.getAssets());
     }
     catch (e: any) {
@@ -318,10 +354,22 @@ export class Builder implements BuilderInstance {
 
     await endCompile();
 
-    this.buildStatus.setData(false);
+    if (this.getErrors().length === 0) {
+      endOutput?.();
+    }
 
-    if (!this.options.watch) {
-      await this.stop();
+    endBuild();
+
+    try {
+      await this.hooks.buildEnd.promise(this._getHookContext());
+    }
+    finally {
+      // 报告写入失败也不能阻止原有的构建结束和关闭流程。
+      this.buildStatus.setData(false);
+
+      if (!this.options.watch) {
+        await this.stop();
+      }
     }
   }
 }

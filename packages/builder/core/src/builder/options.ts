@@ -109,7 +109,6 @@ export async function applyPlugin(builder: Builder) {
           'type-checker',
           'development',
         ],
-        outFile: process.env.ENV === 'GITHUB_CI' ? process.env.ENV_OUTPUT : undefined,
       }).apply(builder);
     }
 
@@ -146,6 +145,7 @@ export function normalizeOptions(opt: BuilderOptions): Required<BuilderOptions> 
     plugins: opt.plugins ?? [],
     logLevel: opt.logLevel ?? 'Info',
     debug: opt.debug ?? false,
+    reportFile: opt.reportFile ?? '',
     typeCheck: opt.typeCheck ?? true,
     cache: opt.cache ?? '.cache',
     defined: {
