@@ -1,4 +1,3 @@
-import { stat } from 'fs/promises';
 import { join } from 'path';
 import { toPinyin, normalize } from '@blog/node';
 import type { PostMeta, PostData } from '@blog/types';
@@ -41,9 +40,33 @@ export function getPostMetaData(content: string, fileName: string) {
   return meta;
 }
 
-function getDateByDay(input: string) {
-  const date = new Date(input);
-  date.setUTCHours(8, 0, 0, 0);
+/** 只解析日期部分，统一按 UTC 零点保存，避免构建机时区影响日期和年份。 */
+function getDateByDay(input: string, fileName: string) {
+  const matched = /^(\d{4})[-/](\d{1,2})[-/](\d{1,2})$/.exec(input.trim());
+
+  if (!matched) {
+    throw new Error(`文章日期格式错误：${input}（${fileName}）`);
+  }
+
+  const [
+    ,
+    yearStr,
+    monthStr,
+    dayStr,
+  ] = matched;
+  const year = Number(yearStr);
+  const month = Number(monthStr);
+  const day = Number(dayStr);
+  const date = new Date(Date.UTC(year, month - 1, day));
+
+  if (
+    date.getUTCFullYear() !== year
+    || date.getUTCMonth() !== month - 1
+    || date.getUTCDate() !== day
+  ) {
+    throw new Error(`文章日期无效：${input}（${fileName}）`);
+  }
+
   return date.getTime();
 }
 
@@ -51,16 +74,19 @@ function getDateByDay(input: string) {
 export async function getPostData(content: string, fileName: string) {
   const meta = getPostMetaData(content, fileName);
   const postContent = (meta.content ?? '').trim();
-  const createAt = new Date(meta.create).getFullYear().toString();
+  const create = getDateByDay(meta.create, fileName);
+  const update = meta.update ? getDateByDay(meta.update, fileName) : create;
+  const createAt = new Date(create).getUTCFullYear().toString();
   const decodeTitle = toPinyin(meta.title).toLowerCase();
   const data: Omit<PostData, 'ast'> = {
     title: meta.title,
-    create: getDateByDay(meta.create),
-    update: meta.update ? getDateByDay(meta.update) : (await stat(fileName)).mtimeMs,
-    tags: (meta.tags ? (Array.isArray(meta.tags) ? meta.tags : [meta.tags]) : []).map((name) => ({
-      name,
-      url: '',
-    })),
+    create,
+    update,
+    tags: (
+      meta.tags
+        ? (Array.isArray(meta.tags) ? meta.tags : [meta.tags])
+        : []
+    ).map((name) => ({ name, url: '' })),
     public: meta.public ?? true,
     content: postContent,
     filePath: normalize(fileName),

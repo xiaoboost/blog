@@ -10,6 +10,7 @@ import { pageConfig } from '../constant';
 import { Page } from '../model/page';
 import { paginate } from '../utils/pagination';
 import { createHtml } from '../utils/react';
+import { isListedPost } from '../utils/visibility';
 
 const createYearList = createHtml(ArchiveList);
 const createYearPostList = createHtml(PostList);
@@ -23,11 +24,11 @@ export function getYearData(posts: PostExportData[]) {
   const years: YearData[] = [];
 
   for (const post of posts) {
-    if (!post.data.public) {
+    if (!isListedPost(post)) {
       continue;
     }
 
-    const year = String(new Date(post.data.create).getFullYear());
+    const year = String(new Date(post.data.create).getUTCFullYear());
     const data = years.find((item) => item.name === year);
 
     if (data) {
@@ -63,7 +64,7 @@ export function getArchiveGroups(
   previousPost?: PostExportData,
 ): ArchiveYearGroup[] {
   const previousYear = previousPost
-    ? String(new Date(previousPost.data.create).getFullYear())
+    ? String(new Date(previousPost.data.create).getUTCFullYear())
     : undefined;
   return getYearData(posts).map(({ name, posts: yearPosts }, index) => ({
     year: name,

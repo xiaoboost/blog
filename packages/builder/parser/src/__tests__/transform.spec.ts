@@ -51,8 +51,8 @@ describe('post compile pipeline', () => {
     const { ast, ...data } = post.data;
     expect(data).deep.eq({
       title: '测试',
-      create: Date.UTC(2026, 0, 1, 8),
-      update: Date.UTC(2026, 0, 2, 8),
+      create: Date.UTC(2026, 0, 1),
+      update: Date.UTC(2026, 0, 2),
       tags: [{ name: '标签甲', url: '' }, { name: '标签乙', url: '' }],
       public: false,
       filePath: '/test/post.mdx',
