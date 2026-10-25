@@ -13,6 +13,8 @@ export interface PostMeta {
   content: string;
   /** 文章简介 */
   description?: string;
+  /** 文章封面图，相对于文章目录的本地图片路径 */
+  coverImage?: string;
   /** 文章链接 */
   pathname?: string;
   /** 是否启用目录 */
@@ -51,6 +53,8 @@ export interface PostBasicData {
   public: boolean;
   /** 文章简介 */
   description: string;
+  /** 文章封面图，相对于文章目录的本地图片路径 */
+  coverImage?: string;
   /** 网页链接 */
   pathname: string;
   /** 文件路径 */

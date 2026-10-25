@@ -240,6 +240,9 @@ importers:
 
   packages/builder/context:
     dependencies:
+      '@blog/node':
+        specifier: workspace:*
+        version: link:../../utils/node
       '@blog/types':
         specifier: workspace:*
         version: link:../types
@@ -1067,9 +1070,6 @@ importers:
       '@xiao-ai/utils':
         specifier: 1.6.7
         version: 1.6.7
-      image-meta:
-        specifier: 0.2.2
-        version: 0.2.2
       moment:
         specifier: 2.30.1
         version: 2.30.1
@@ -1186,6 +1186,9 @@ importers:
       '@blog/mdx-slide':
         specifier: workspace:*
         version: link:../../components/slide
+      '@blog/node':
+        specifier: workspace:*
+        version: link:../../utils/node
       '@blog/styles':
         specifier: workspace:*
         version: link:../../utils/styles
@@ -1359,6 +1362,9 @@ importers:
       '@xiao-ai/utils':
         specifier: 1.6.7
         version: 1.6.7
+      image-meta:
+        specifier: 0.2.2
+        version: 0.2.2
       pinyin-pro:
         specifier: 3.27.0
         version: 3.27.0

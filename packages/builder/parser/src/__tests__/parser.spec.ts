@@ -6,7 +6,7 @@ import { compilePost, postSource } from './helpers';
 
 describe('parser stages', () => {
   it('内置插件接收完整的文章配置，保留其中的 filePath', async () => {
-    const meta = 'lsp: true\ntemplate: custom\n';
+    const meta = 'lsp: true\ntemplate: custom\ncoverImage: ./images/cover.jpg\n';
     const { content, ...data } = await getPostData(
       postSource('$x$', meta), '/test/post.mdx',
     );

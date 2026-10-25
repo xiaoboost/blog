@@ -1,6 +1,7 @@
+import { dirname, resolve } from 'path';
+import { usePageAsset, useRenderContext } from '@blog/context/runtime';
 import { isUrl } from '@blog/shared';
 import React from 'react';
-import { usePageAsset } from '../../utils/asset';
 
 import styles from './index.jss';
 
@@ -11,7 +12,12 @@ export interface Props {
 }
 
 export function img({ src, alt, loading = 'lazy' }: Props) {
-  const finalPath = usePageAsset(src);
+  const { page, isPreBuild } = useRenderContext();
+  const absolutePath = !isPreBuild && !isUrl(src) && page.type === 'post'
+    ? resolve(dirname(page.data.post.data.filePath), decodeURIComponent(src))
+    : undefined;
+  const asset = usePageAsset(absolutePath);
+  const finalPath = asset?.path;
 
   // 预构建阶段不渲染
   if (!finalPath) {

@@ -1,3 +1,4 @@
+import { usePostCoverImage } from '@blog/context/runtime';
 import { Layout, type LayoutProps } from '@blog/template-layout';
 import type { PostExportDataWithComponent } from '@blog/types';
 import React from 'react';
@@ -9,20 +10,22 @@ interface SlidePageProps extends LayoutProps {
 }
 
 export function SlidePage(props: SlidePageProps) {
-  const { post } = props;
+  const { post: { utils, data, Component } } = props;
+  const coverImage = usePostCoverImage(data, props.coverImage);
 
   return (
     <Layout
       {...props}
-      assets={post.utils.getAssetReferences()}
-      description={post.data.description}
-      keywords={post.data.tags.map(({ name }) => name)}
-      publishedTime={post.data.create}
-      modifiedTime={post.data.update}
+      coverImage={coverImage}
+      assets={utils.getAssetReferences()}
+      description={data.description}
+      keywords={data.tags.map(({ name }) => name)}
+      publishedTime={data.create}
+      modifiedTime={data.update}
       bodyClassName={styles.classes.page}
     >
-      <Presentation title={post.data.title}>
-        <post.Component post={post.data} />
+      <Presentation title={data.title}>
+        <Component post={data} />
       </Presentation>
     </Layout>
   );

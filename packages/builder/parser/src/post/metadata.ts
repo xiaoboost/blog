@@ -37,6 +37,14 @@ export function getPostMetaData(content: string, fileName: string) {
     throw new Error(`文章 lsp 配置必须是布尔值：${fileName}`);
   }
 
+  if (meta.coverImage !== undefined && (
+    typeof meta.coverImage !== 'string'
+    || !meta.coverImage.trim()
+    || /^(?:[a-z][a-z\d+.-]*:|[\\/])/i.test(meta.coverImage)
+  )) {
+    throw new Error(`文章 coverImage 配置必须是非空的本地相对路径：${fileName}`);
+  }
+
   return meta;
 }
 
@@ -97,6 +105,7 @@ export async function getPostData(content: string, fileName: string) {
     lsp: meta.lsp ?? false,
     template: meta.template ?? 'post',
     draft: meta.draft ?? false,
+    coverImage: meta.coverImage,
     description:
       meta.description
       ?? meta.content

@@ -4,6 +4,22 @@ export interface AssetData {
   content: Buffer;
 }
 
+/** 图片元数据 */
+export interface ImageMetadata {
+  /** 图片宽 */
+  width: number;
+  /** 图片高 */
+  height: number;
+  /** 图片类别 */
+  mimeType: string;
+}
+
+/** 图片资源数据 */
+export interface ImageResource extends ImageMetadata {
+  /** 图片资源路径 */
+  src: string;
+}
+
 /** 脚本资源引用及标签配置；文件内容通过普通 AssetData 输出 */
 export interface ScriptAssetData {
   /** 脚本资源路径 */

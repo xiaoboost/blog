@@ -26,6 +26,7 @@
     "url": "https://github.com/xiaoboost/blog"
   },
   "dependencies": {
+    "@blog/node": "workspace:*",
     "@blog/types": "workspace:*",
     "@xiao-ai/utils": "1.6.7",
     "react": "18.3.1",

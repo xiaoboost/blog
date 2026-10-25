@@ -20,6 +20,7 @@
   "dependencies": {
     "@blog/context": "workspace:*",
     "@blog/mdx-slide": "workspace:*",
+    "@blog/node": "workspace:*",
     "@blog/styles": "workspace:*",
     "@blog/template-layout": "workspace:*",
     "@blog/web": "workspace:*",

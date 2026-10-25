@@ -15,6 +15,7 @@
   "dependencies": {
     "@blog/types": "workspace:*",
     "@xiao-ai/utils": "1.6.7",
+    "image-meta": "0.2.2",
     "pinyin-pro": "3.27.0",
     "subset-font": "2.4.0",
     "tslib": "2.8.1"
