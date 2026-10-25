@@ -51,17 +51,10 @@ export const RawLoader = ({ test }: RawLoaderOption): BuilderPlugin => ({
         }
 
         const file = args.path;
-        // 使用文件路径作为缓存 key 的一部分，确保唯一性
-        const cacheKey = `raw-loader::${file}`;
         const code = `
-import { readFileSync } from "fs";
-import { getAccessor } from "@blog/context/runtime";
+import { readAssetCached } from "@blog/context/runtime";
 
-const cacheKey = ${JSON.stringify(cacheKey)};
-const filePath = ${JSON.stringify(file)};
-const accessor = getAccessor(cacheKey, () => readFileSync(filePath));
-
-export default accessor.get() ?? readFileSync(filePath);
+export default readAssetCached(${JSON.stringify(file)});
         `.trim();
 
         return {

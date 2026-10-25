@@ -431,6 +431,17 @@ describe('博客构建 e2e', () => {
     expect(extractMetaContent(postPage!.content.toString('utf-8'), 'og:type')).eq('article');
   });
 
+  it('玄方封面复用正文首图的 hash 地址，同一图片只输出一次', () => {
+    const html = assetMap.get('/posts/wuwa-xuanfang/index.html')!.toString();
+    const bodyImage = /<img[^>]+src="([^"]+\/20260912151300\.[a-f\d]{32}\.jpg)"/.exec(html)![1];
+    const cover = extractMetaContent(html, 'og:image');
+    expect(new URL(cover).pathname).eq(bodyImage);
+    expect(extractMetaContent(html, 'og:image:secure_url')).eq(cover);
+    expect(extractMetaContent(html, 'og:image:type')).eq('image/jpeg');
+    expect(extractMetaContent(html, 'og:image:alt')).eq('玄方两百年');
+    expect(assets.filter(({ path }) => path === bodyImage)).length(1);
+  });
+
   it('页面允许用户缩放', () => {
     const invalidViewport = htmlAssets
       .filter(({ content }) => {

@@ -1,8 +1,8 @@
 import { useRenderContext } from '@blog/context/runtime';
 import { normalizeUrl } from '@blog/node';
 import { HMRClientScriptPath } from '@blog/shared';
-import type { ScriptAssetData, TemplateAsset } from '@blog/types';
-import { default as React, type PropsWithChildren } from 'react';
+import type { ImageResource, ScriptAssetData, TemplateAsset } from '@blog/types';
+import React, { type PropsWithChildren } from 'react';
 
 import favicon from '../../assets/images/favicon.ico';
 import { OgMeta } from './og-meta';
@@ -18,6 +18,8 @@ export interface DocumentProps {
   author?: string;
   /** 网页描述 */
   description?: string;
+  /** 已解析的封面图，未提供时使用布局默认图。 */
+  coverImage?: ImageResource;
   /** 网页内容关键字 */
   keywords?: string[];
   /** 文章发布时间 */

@@ -15,7 +15,7 @@ export abstract class ResourceSet implements IResourceSet {
   #scripts: ScriptAssetData[] = [];
   #preScripts: ScriptAssetData[] = [];
   #preloads: PreloadAssetData[] = [];
-  #assets: AssetData[] = [];
+  #assets = new Map<string, AssetData>();
   #fontBuckets = new Map<string, FontBucket>();
 
   addStyle(style: StyleAssetData): void {
@@ -82,11 +82,12 @@ export abstract class ResourceSet implements IResourceSet {
   }
 
   addAsset(asset: AssetData): void {
-    this.#assets.push(asset);
+    const path = normalize(asset.path);
+    this.#assets.set(path, { ...asset, path });
   }
 
   getAssets(): AssetData[] {
-    return this.#assets.slice();
+    return [...this.#assets.values()];
   }
 
   async buildFonts({

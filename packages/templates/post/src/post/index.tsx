@@ -1,11 +1,10 @@
+import { usePostCoverImage } from '@blog/context/runtime';
 import { type LayoutProps, Layout } from '@blog/template-layout';
 import type { PostExportDataWithComponent } from '@blog/types';
 import { stringifyClass } from '@xiao-ai/utils';
 import Moment from 'moment';
 import React from 'react';
-
 import { ToContent } from '../to-content';
-
 import * as blockquote from './blockquote';
 import { Pre } from './code';
 import * as hr from './hr';
@@ -21,36 +20,38 @@ export interface PostProps extends LayoutProps {
 }
 
 export function Post(props: PostProps) {
-  const { post } = props;
+  const { post: { utils, data, Component } } = props;
+  const coverImage = usePostCoverImage(data, props.coverImage);
   const title = createHeadComponents();
 
   return (
     <Layout
       {...props}
-      assets={post.utils.getAssetReferences()}
-      description={post.data.description}
-      keywords={post.data.tags.map(({ name }) => name)}
-      publishedTime={post.data.create}
-      modifiedTime={post.data.update}
+      coverImage={coverImage}
+      assets={utils.getAssetReferences()}
+      description={data.description}
+      keywords={data.tags.map(({ name }) => name)}
+      publishedTime={data.create}
+      modifiedTime={data.update}
     >
       <article
         className={stringifyClass(styles.classes.postDefault, {
-          [styles.classes.postNoToc]: !post.data.toc,
+          [styles.classes.postNoToc]: !data.toc,
         })}
         style={props ? undefined : { width: '100%' }}
       >
         <header className={styles.classes.postHeader}>
-          <h1 className={styles.classes.postHeaderTitle}>{post.data.title}</h1>
+          <h1 className={styles.classes.postHeaderTitle}>{data.title}</h1>
           <time
             className={styles.classes.postHeaderCreate}
-            dateTime={new Date(post.data.create).toISOString()}
+            dateTime={new Date(data.create).toISOString()}
           >
-            {Moment.utc(post.data.create).format('yyyy-MM-DD')}
+            {Moment.utc(data.create).format('yyyy-MM-DD')}
           </time>
         </header>
         <div className={styles.classes.postArticle}>
-          <post.Component
-            post={post.data}
+          <Component
+            post={data}
             components={{
               a: Link,
               pre: Pre,
@@ -63,7 +64,7 @@ export function Post(props: PostProps) {
           />
         </div>
       </article>
-      {post.data.toc && <ToContent data={post.data.ast} />}
+      {data.toc && <ToContent data={data.ast} />}
     </Layout>
   );
 }
