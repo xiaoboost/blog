@@ -5,6 +5,7 @@ import { pageConfig } from '../constant';
 import { Page } from '../model/page';
 import { paginate } from '../utils/pagination';
 import { createHtml } from '../utils/react';
+import { isListedPost } from '../utils/visibility';
 
 const createTagList = createHtml(ItemList);
 const createPostList = createHtml(PostList);
@@ -18,7 +19,7 @@ export function getTagData(posts: PostExportData[]) {
   const tags: TagData[] = [];
 
   for (const post of posts) {
-    if (!post.data.public) {
+    if (!isListedPost(post)) {
       continue;
     }
 

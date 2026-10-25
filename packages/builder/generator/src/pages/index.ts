@@ -1,5 +1,6 @@
 import type { IPage, ISite, PostsExportType } from '@blog/types';
 import { assertUniquePagePaths } from '../utils/page-paths';
+import { shouldRenderPost } from '../utils/visibility';
 import { createIndexPages } from './list';
 import { createNotFoundPage } from './not-found';
 import { createPostPages, filterSortPosts, getPostUrlPath } from './post';
@@ -15,13 +16,16 @@ function preparePostLinks(site: ISite, posts: PostsExportType) {
 }
 
 export function createPages(site: ISite, posts: PostsExportType): IPage[] {
+  // 生成文章链接
   preparePostLinks(site, posts);
-  const sortedPosts = filterSortPosts(posts);
+
+  const renderedPosts = posts.filter(shouldRenderPost);
+  const sortedPosts = filterSortPosts(renderedPosts);
   const pages = [
-    ...createPostPages(posts),
+    ...createPostPages(renderedPosts),
     ...createIndexPages(site, sortedPosts),
-    ...createTagPages(site, posts),
-    ...createYearPages(site, posts, sortedPosts),
+    ...createTagPages(site, renderedPosts),
+    ...createYearPages(site, renderedPosts, sortedPosts),
     createNotFoundPage(site),
   ];
 

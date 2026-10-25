@@ -4,22 +4,23 @@ import { SlidePage } from '@blog/template-slide';
 import type {
   IRenderContext,
   ISite,
+  PostExportData,
   PostExportDataWithComponent,
   PostsExportType,
 } from '@blog/types';
 import React from 'react';
 import { Page } from '../model/page';
 import { createHtml } from '../utils/react';
+import { isListedPost } from '../utils/visibility';
 
 const templates = new Map([
   ['post', createHtml(PostRender)],
   ['slide', createHtml(SlidePage)],
 ]);
 
-export function filterSortPosts(posts: PostsExportType) {
+export function filterSortPosts(posts: PostExportData[]) {
   return posts
-    .filter(({ data }) => data.public)
-    .filter(({ data }) => process.env.NODE_ENV !== 'production' || !data.draft)
+    .filter(isListedPost)
     .sort((pre, next) => (pre.data.create > next.data.create ? -1 : 1));
 }
 

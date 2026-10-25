@@ -45,7 +45,7 @@ export function Post(props: PostProps) {
             className={styles.classes.postHeaderCreate}
             dateTime={new Date(post.data.create).toISOString()}
           >
-            {Moment(post.data.create).format('yyyy-MM-DD')}
+            {Moment.utc(post.data.create).format('yyyy-MM-DD')}
           </time>
         </header>
         <div className={styles.classes.postArticle}>

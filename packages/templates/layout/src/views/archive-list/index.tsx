@@ -48,7 +48,7 @@ export function ArchiveList(props: ArchiveListProps) {
             </div>
             <ul className={classes.entries}>
               {group.posts.map(({ data: post }) => {
-                const date = Moment(post.create);
+                const date = Moment.utc(post.create);
                 return (
                   <li key={post.pathname} className={classes.row}>
                     <a href={normalizeUrl(post.pathname)}>{post.title}</a>

@@ -15,7 +15,7 @@ export function PostList(props: PostListProps) {
     ...props,
     data: props.posts.map(({ data: post }) => ({
       title: post.title,
-      subTitle: Moment(post.create).format('yyyy-MM-DD'),
+      subTitle: Moment.utc(post.create).format('yyyy-MM-DD'),
       url: post.pathname,
     })),
   };

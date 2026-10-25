@@ -17,7 +17,7 @@ function Post({ data: post }: PostExportData) {
         <span>
           <a href={normalizeUrl(post.pathname)}>{post.title}</a>
         </span>
-        <time dateTime={new Date(post.create).toISOString()}>{Moment(post.create).format('yyyy-MM-DD')}</time>
+        <time dateTime={new Date(post.create).toISOString()}>{Moment.utc(post.create).format('yyyy-MM-DD')}</time>
       </header>
       <div className={styles.classes.postsListItemDescription}>{post.description}</div>
       {post.tags.length !== 0 && (
