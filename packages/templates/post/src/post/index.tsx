@@ -1,4 +1,4 @@
-import { usePostCoverImage } from '@blog/context/runtime';
+import { dirname, resolve } from 'path';
 import { type LayoutProps, Layout } from '@blog/template-layout';
 import type { PostExportDataWithComponent } from '@blog/types';
 import { stringifyClass } from '@xiao-ai/utils';
@@ -21,7 +21,9 @@ export interface PostProps extends LayoutProps {
 
 export function Post(props: PostProps) {
   const { post: { utils, data, Component } } = props;
-  const coverImage = usePostCoverImage(data, props.coverImage);
+  const coverImage = props.coverImage ?? (data.coverImage
+    ? resolve(dirname(data.filePath), data.coverImage)
+    : undefined);
   const title = createHeadComponents();
 
   return (
