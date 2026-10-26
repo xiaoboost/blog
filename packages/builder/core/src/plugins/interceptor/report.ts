@@ -67,15 +67,11 @@ export function getBuildReport(timings: BuildTiming[], { failed, hooks }: Report
   for (const group of getGroups(timings)) {
     content += `\n## ${group.title}\n\n|阶段|耗时|\n|:--|--:|\n`;
     content += getRows(group.timings).map((row) => `|${row.map(escapeCell).join('|')}|\n`).join('');
-
-    if (group.title === '页面生成内部步骤') {
-      content += '\n上述步骤已包含在“页面生成”中，不再与外层阶段相加；构建前处理包含字体构建及其他 beforeBuild 任务。\n';
-    }
   }
 
   if (hooks) {
-    content += '\n详细插件统计只覆盖已拦截的钩子区间，与上述阶段存在包含或重叠关系，不能相加。\n\n';
     content += getMdString(hooks);
+    content += '\n详细插件统计只覆盖已拦截的钩子区间，与上述阶段存在包含或重叠关系，不能相加。\n\n';
   }
 
   return content;
