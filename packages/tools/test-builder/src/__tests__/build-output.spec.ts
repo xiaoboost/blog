@@ -1,6 +1,4 @@
 import { createHash } from 'crypto';
-import { readFile } from 'fs/promises';
-import { resolve } from 'path';
 import { Builder } from '@blog/core';
 import { readImageMetadata } from '@blog/node';
 import { expect, describe, it } from '@blog/test-toolkit';
