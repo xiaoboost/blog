@@ -1,4 +1,4 @@
-import { usePostCoverImage } from '@blog/context/runtime';
+import { dirname, resolve } from 'path';
 import { Layout, type LayoutProps } from '@blog/template-layout';
 import type { PostExportDataWithComponent } from '@blog/types';
 import React from 'react';
@@ -11,7 +11,9 @@ interface SlidePageProps extends LayoutProps {
 
 export function SlidePage(props: SlidePageProps) {
   const { post: { utils, data, Component } } = props;
-  const coverImage = usePostCoverImage(data, props.coverImage);
+  const coverImage = props.coverImage ?? (data.coverImage
+    ? resolve(dirname(data.filePath), data.coverImage)
+    : undefined);
 
   return (
     <Layout

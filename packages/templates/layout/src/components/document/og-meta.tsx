@@ -1,15 +1,8 @@
 import { useRenderContext } from '@blog/context/runtime';
-import { readImageMetadata } from '@blog/node';
 import { toAbsoluteUrl } from '@blog/shared';
 import React from 'react';
-import defaultImagePath from '../../assets/images/og-default.jpg';
-import defaultImageSource from '../../assets/images/og-default.jpg?raw';
+import { ogImageMetadata, useOgImage } from './og-image';
 import type { DocumentProps } from '.';
-
-const defaultCoverImage = {
-  src: defaultImagePath,
-  ...readImageMetadata(defaultImageSource),
-};
 
 export function OgMeta({
   description,
@@ -19,9 +12,14 @@ export function OgMeta({
   modifiedTime,
 }: DocumentProps) {
   const { page, site } = useRenderContext();
+  const imagePath = useOgImage(coverImage);
   const url = toAbsoluteUrl(site.origin, page.pathname);
-  const imageData = coverImage ?? defaultCoverImage;
-  const image = toAbsoluteUrl(site.origin, imageData.src);
+
+  if (!imagePath) {
+    return null;
+  }
+
+  const image = toAbsoluteUrl(site.origin, imagePath);
   const imageAlt = page.title ?? site.title;
   const metaDescription = description ?? site.description ?? site.title;
   const isArticle = page.type === 'post';
@@ -36,9 +34,9 @@ export function OgMeta({
       <meta property="og:locale" content="zh_CN" />
       <meta property="og:image" content={image} />
       <meta property="og:image:secure_url" content={image} />
-      <meta property="og:image:type" content={imageData.mimeType} />
-      <meta property="og:image:width" content={String(imageData.width)} />
-      <meta property="og:image:height" content={String(imageData.height)} />
+      <meta property="og:image:type" content={ogImageMetadata.mimeType} />
+      <meta property="og:image:width" content={String(ogImageMetadata.width)} />
+      <meta property="og:image:height" content={String(ogImageMetadata.height)} />
       <meta property="og:image:alt" content={imageAlt} />
       {isArticle && site.authorUrl && (
         <meta property="article:author" content={site.authorUrl} />

@@ -118,7 +118,6 @@ async function createHarness(): Promise<Harness> {
               export function setPosts(posts) { afterPostDataReady(posts); }
               export function setCurrentPost(post) { currentPost = post; }
               export function useRenderContext() { return { page: { data: { post: currentPost } } }; }
-              export function usePostCoverImage(post, coverImage) { return coverImage; }
             `,
               };
             }

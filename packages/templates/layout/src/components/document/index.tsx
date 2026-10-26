@@ -1,7 +1,7 @@
 import { useRenderContext } from '@blog/context/runtime';
 import { normalizeUrl } from '@blog/node';
 import { HMRClientScriptPath } from '@blog/shared';
-import type { ImageResource, ScriptAssetData, TemplateAsset } from '@blog/types';
+import type { ScriptAssetData, TemplateAsset } from '@blog/types';
 import React, { type PropsWithChildren } from 'react';
 
 import favicon from '../../assets/images/favicon.ico';
@@ -12,21 +12,21 @@ import { SeoMeta } from './seo-meta';
 export interface DocumentProps {
   /** body 的页面级样式 */
   className?: string;
-  /** 错误页不参与索引，也不声明 canonical 和分享地址 */
+  /** 错误页不参与索引 */
   noIndex?: boolean;
   /** 网页作者 */
   author?: string;
   /** 网页描述 */
   description?: string;
-  /** 已解析的封面图，未提供时使用布局默认图。 */
-  coverImage?: ImageResource;
+  /** OG 原图的本地绝对路径 */
+  coverImage?: string;
   /** 网页内容关键字 */
   keywords?: string[];
   /** 文章发布时间 */
   publishedTime?: number;
   /** 文章最后修改时间 */
   modifiedTime?: number;
-  /** 当前模板或文章额外需要的资源，公共资源由文档统一接入。 */
+  /** 当前模板或文章额外需要的资源 */
   assets?: readonly TemplateAsset[];
 }
 

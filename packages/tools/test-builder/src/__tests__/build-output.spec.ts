@@ -1,4 +1,8 @@
+import { createHash } from 'crypto';
+import { readFile } from 'fs/promises';
+import { resolve } from 'path';
 import { Builder } from '@blog/core';
+import { readImageMetadata } from '@blog/node';
 import { expect, describe, it } from '@blog/test-toolkit';
 import type {
   AssetData,
@@ -431,15 +435,31 @@ describe('博客构建 e2e', () => {
     expect(extractMetaContent(postPage!.content.toString('utf-8'), 'og:type')).eq('article');
   });
 
-  it('玄方封面复用正文首图的 hash 地址，同一图片只输出一次', () => {
-    const html = assetMap.get('/posts/wuwa-xuanfang/index.html')!.toString();
-    const bodyImage = /<img[^>]+src="([^"]+\/20260912151300\.[a-f\d]{32}\.jpg)"/.exec(html)![1];
-    const cover = extractMetaContent(html, 'og:image');
-    expect(new URL(cover).pathname).eq(bodyImage);
-    expect(extractMetaContent(html, 'og:image:secure_url')).eq(cover);
-    expect(extractMetaContent(html, 'og:image:type')).eq('image/jpeg');
-    expect(extractMetaContent(html, 'og:image:alt')).eq('玄方两百年');
-    expect(assets.filter(({ path }) => path === bodyImage)).length(1);
+  it('所有 OG 图片使用专用命名、真实输出信息和受控体积，默认图共享一份', () => {
+    const imagePaths = new Set<string>();
+    for (const { content } of htmlAssets) {
+      const html = content.toString();
+      const imageUrl = extractMetaContent(html, 'og:image');
+
+      if (!imageUrl) {
+        continue;
+      }
+
+      const path = new URL(imageUrl).pathname;
+      const image = assetMap.get(path)!;
+      const metadata = readImageMetadata(image);
+      expect(path).match(/\.og\.[a-f\d]{32}\.jpg$/);
+      expect(path).include(`.og.${createHash('md5').update(image).digest('hex')}.jpg`);
+      expect(metadata).deep.eq({ width: 1200, height: 630, mimeType: 'image/jpeg' });
+      expect(extractMetaContent(html, 'og:image:width')).eq(String(metadata.width));
+      expect(extractMetaContent(html, 'og:image:height')).eq(String(metadata.height));
+      expect(extractMetaContent(html, 'og:image:type')).eq(metadata.mimeType);
+      expect(image.length).at.most(300 * 1024);
+      imagePaths.add(path);
+    }
+    const defaults = [...imagePaths].filter((path) => path.includes('/og-default.og.'));
+    expect(defaults).length(1);
+    expect(assets.filter(({ path }) => path === defaults[0])).length(1);
   });
 
   it('页面允许用户缩放', () => {
