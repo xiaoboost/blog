@@ -2,6 +2,7 @@ import { AxisBottom, AxisLeft, AxisTop, Bar, Chart, GridColumns, Group, HeatmapR
 import { Box, Flex, Section } from '@blog/mdx-slide';
 import React from 'react';
 import { accentColor, contentGap, pagePadding } from '../constants';
+import { PageTitle } from '../../components/page-title';
 import { formatNumber, games, uniqueAccounts } from '../data';
 import sharedStyles from '../shared.jss';
 import { formatPercent, heatmapMaximum, multiThreadAccounts, overlapColumns, participation } from './data';
@@ -97,7 +98,7 @@ export function Overlap() {
       <Flex direction="column" height="100%" padding={pagePadding} gap={0}>
         <Box flex="fixed">
           <p className={s.eyebrow}>再看发言者</p>
-          <h2>这些发言者，还会去哪些专楼？</h2>
+          <PageTitle>这些发言者，还会去哪些专楼？</PageTitle>
         </Box>
         <Flex justify="space-between" gap={0} flex="fill" margin={`${contentGap}px 0 0`}>
           <Flex direction="column" justify="space-between" gap={0} width={1000} minWidth={0}>

@@ -1,6 +1,7 @@
 import { Box, Flex, Grid, Section } from '@blog/mdx-slide';
 import React from 'react';
 import { contentGap, pagePadding } from '../constants';
+import { PageTitle } from '../../components/page-title';
 import sharedStyles from '../shared.jss';
 import { threads, observation, formatDate } from './data';
 import styles from './style.jss';
@@ -13,7 +14,7 @@ export function Scope() {
       <Flex direction="column" height="100%" padding={pagePadding} gap={0}>
         <Box flex="fixed">
           <p className={s.eyebrow}>阅读说明</p>
-          <h2>采集了什么，怎么统计？</h2>
+          <PageTitle>采集了什么，怎么统计？</PageTitle>
         </Box>
         <Grid columns={3} gap={60} height="auto" flex="fixed" margin={`${contentGap}px 0 0`}>
           <Flex direction="column" gap={28}>

@@ -1,5 +1,5 @@
 import { onBuild } from '@blog/context/runtime';
-import { PrimaryTitleFont } from '@blog/styles';
+import { FontHeading, PrimaryTitleFont } from '@blog/styles';
 import PrimaryTitleFontFile from '@blog/styles/fonts/SourceHanSerif/SourceHanSerifSC-Bold.otf?raw';
 
 const SlideTemplate = 'Slide:Template';
@@ -14,7 +14,7 @@ onBuild((runtime) => {
       page.ensureFontBucket(
         PrimaryTitleFont.fontFamily,
         PrimaryTitleFontFile,
-        { fontWeight: PrimaryTitleFont.fontWeight },
+        { fontWeight: PrimaryTitleFont.fontWeight, fallbackFont: FontHeading },
       );
     }
   });
@@ -29,11 +29,11 @@ onBuild((runtime) => {
             .getFontBucket(PrimaryTitleFont.fontFamily)
             .addText(page.data.post.data.title);
 
-          page.buildFonts({
+          return page.buildFonts({
             families: [PrimaryTitleFont.fontFamily],
             scope: page.pathname,
             cssFileName: 'slide-fonts',
-            cssMode: 'font-face',
+            cssMode: 'full',
             format: rename,
           });
         }),
