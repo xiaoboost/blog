@@ -4,5 +4,6 @@ export * from '@visx/shape';
 export * from '@visx/axis';
 export * from '@visx/scale';
 export * from '@visx/group';
+export * from '@visx/heatmap';
 export * from '@visx/grid';
 export * from '@visx/curve';

@@ -4,14 +4,55 @@ import { renderToStaticMarkup, renderToString } from 'react-dom/server';
 import {
   AxisBottom,
   AxisLeft,
+  Bar,
   Chart,
   GridRows,
   Group,
+  HeatmapRect,
   LinePath,
   scaleLinear,
 } from '..';
 
 describe('静态 SVG 图表', () => {
+  it('热力图支持静态输出，并把行列、颜色和尺寸交给自定义标签图层', () => {
+    const data = [
+      { bins: [{ count: 100 }, { count: 25 }] },
+      { bins: [{ count: 50 }, { count: 200 }] },
+    ];
+    const props = {
+      data,
+      bins: (column: typeof data[number]) => column.bins,
+      count: (bin: typeof data[number]['bins'][number]) => bin.count,
+      xScale: (column: number) => column * 60,
+      yScale: (row: number) => row * 40,
+      binWidth: 60,
+      binHeight: 40,
+      gap: 4,
+      colorScale: () => 'teal',
+    };
+    for (const render of [renderToStaticMarkup, renderToString]) {
+      const plain = render(<Chart width={120} height={80}><HeatmapRect {...props} /></Chart>);
+      expect(plain.match(/class="visx-heatmap-rect"/g)).length(4);
+      expect(plain).include('width="56"').include('height="36"').include('fill="teal"');
+
+      const labelled = render(
+        <Chart width={120} height={80}>
+          <HeatmapRect {...props}>
+            {(columns) => columns.map((column) => column.map((cell) => (
+              <Group key={`${cell.column}-${cell.row}`} left={cell.x} top={cell.y}>
+                <Bar width={cell.width} height={cell.height} fill={cell.color} />
+                <text>{`${cell.row},${cell.column}: ${cell.bin.count}`}</text>
+              </Group>
+            )))}
+          </HeatmapRect>
+        </Chart>,
+      );
+      expect(labelled.match(/class="visx-bar"/g)).length(4);
+      expect(labelled).include('translate(60, 4)').include('0,1: 50').include('1,0: 25');
+      expect(labelled).not.match(/<script\b|NaN|Infinity/);
+    }
+  });
+
   it('原生 visx 折线、网格和坐标轴在服务端直接生成完整 SVG', () => {
     const data = [{ x: 0, y: 0 }, { x: 1, y: 10 }, { x: 2, y: 5 }];
     const x = scaleLinear({ domain: [0, 2], range: [0, 200] });
