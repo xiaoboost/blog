@@ -3,6 +3,7 @@ import { SlideWidth } from '@blog/mdx-slide/shared';
 import { getCurrentScriptSrc } from '@blog/web';
 import loadingStyles from './loading/index.jss';
 import styles from './presentation/index.jss';
+import { bindSwipe } from './swipe';
 import toolbarStyles from './toolbar/index.jss';
 import { waitForSlideConfig } from './wait-for-slide-config';
 
@@ -62,6 +63,9 @@ function active() {
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   let pending: AbortController | undefined;
   let revealAnimations: Animation[] = [];
+  let pageAnimations: Animation[] = [];
+  let outgoing: { section: HTMLElement; inert: boolean; ariaHidden: string | null } | undefined;
+  let displayedPage = 0;
   let page = 0;
   let loadingTimer = 0;
   let ready = false;
@@ -95,37 +99,83 @@ function active() {
     canvas.style.transform = `scale(${card.clientWidth / SlideWidth})`;
   }
 
+  function finishPageTransition() {
+    pageAnimations.forEach((animation) => {
+      animation.onfinish = null;
+      animation.cancel();
+    });
+    pageAnimations = [];
+
+    if (outgoing) {
+      const { section, inert, ariaHidden } = outgoing;
+      section.hidden = true;
+      section.style.display = 'none';
+      section.inert = inert;
+
+      if (ariaHidden === null) {
+        section.removeAttribute('aria-hidden');
+      }
+      else {
+        section.setAttribute('aria-hidden', ariaHidden);
+      }
+
+      outgoing = undefined;
+    }
+  }
+
+  function transition(previous: HTMLElement, next: HTMLElement, direction: number) {
+    outgoing = {
+      section: previous,
+      inert: previous.inert,
+      ariaHidden: previous.getAttribute('aria-hidden'),
+    };
+    previous.hidden = false;
+    previous.style.display = 'block';
+    previous.inert = true;
+    previous.setAttribute('aria-hidden', 'true');
+    const timing: KeyframeAnimationOptions = {
+      duration: 200,
+      easing: 'cubic-bezier(0.2, 0, 0.2, 1)',
+      fill: 'both',
+    };
+    const exit = previous.animate(
+      [{ translate: '0 0' }, { translate: `${-direction * 100}% 0` }],
+      timing,
+    );
+    const enter = next.animate(
+      [{ translate: `${direction * 100}% 0` }, { translate: '0 0' }],
+      timing,
+    );
+    pageAnimations = [exit, enter];
+    enter.onfinish = finishPageTransition;
+  }
+
   async function show(index: number) {
-    if (index < 0 || index >= sections.length) {
+    if (index < 0 || index >= sections.length || (ready && index === page)) {
       return;
     }
 
     pending?.abort();
+    finishPageTransition();
     finishReveal();
     const request = new AbortController();
     let loadingShown = false;
     pending = request;
     page = index;
 
-    if (currentPage) {
-      currentPage.textContent = String(page + 1).padStart(2, '0');
-    }
-
     card.setAttribute('aria-busy', 'true');
-    canvas.style.visibility = 'hidden';
+    // 下一页就绪前保留当前内容，缓存命中时避免空白闪烁。
+    canvas.style.visibility = ready ? 'visible' : 'hidden';
     window.clearTimeout(loadingTimer);
     loadingTimer = window.setTimeout(() => {
       loadingShown = true;
+      canvas.style.visibility = 'hidden';
       loading.style.visibility = 'visible';
     }, 200);
 
-    sections.forEach((section, i) => {
-      section.hidden = i !== page;
-      section.style.display = i === page ? 'block' : 'none';
-    });
     await Promise.all([
       configReady,
-      waitForPage(sections[page], request.signal),
+      waitForPage(sections[index], request.signal),
     ]);
 
     if (request.signal.aborted || events.signal.aborted) {
@@ -133,10 +183,26 @@ function active() {
     }
 
     window.clearTimeout(loadingTimer);
+    const previous = sections[displayedPage];
+    const direction = Math.sign(index - displayedPage);
+    sections.forEach((section, i) => {
+      section.hidden = i !== index;
+      section.style.display = i === index ? 'block' : 'none';
+    });
+    displayedPage = index;
+
+    if (currentPage) {
+      currentPage.textContent = String(index + 1).padStart(2, '0');
+    }
+
     loadingError.hidden = !configFailed;
     canvas.style.visibility = 'visible';
 
-    if (loadingShown && !reducedMotion.matches) {
+    if (ready && direction && !loadingShown && !reducedMotion.matches) {
+      finishReveal();
+      transition(previous, sections[index], direction);
+    }
+    else if (loadingShown && !reducedMotion.matches) {
       const fadeOut = loading.animate(
         [{ opacity: 1 }, { opacity: 0 }],
         { duration: 120, easing: 'ease-out', fill: 'forwards' },
@@ -179,6 +245,7 @@ function active() {
   const updateSpinnerMotion = () => {
     if (reducedMotion.matches) {
       spinnerAnimation.pause();
+      finishPageTransition();
 
       if (revealAnimations.length) {
         finishReveal();
@@ -193,6 +260,19 @@ function active() {
 
   const interactive = (target: EventTarget | null) => target instanceof Element
     && !!target.closest('a, button, input, textarea, select, [contenteditable="true"]');
+
+  bindSwipe(presentation, {
+    signal: events.signal,
+    canStart: (target) => ready
+      && !interactive(target)
+      && !toolbar.contains(target as Node)
+      && !loadingError.contains(target as Node)
+      && !window.getSelection()?.toString(),
+    onSwipe: (direction) => {
+      card.focus({ preventScroll: true });
+      void show(page + direction);
+    },
+  });
 
   card.addEventListener('click', (event) => {
     if (
@@ -252,6 +332,7 @@ function active() {
     events.abort();
     pending?.abort();
     finishReveal();
+    finishPageTransition();
     spinnerAnimation.cancel();
     observer.disconnect();
     window.clearTimeout(loadingTimer);
