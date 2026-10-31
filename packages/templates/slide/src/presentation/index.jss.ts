@@ -14,6 +14,7 @@ export default createStyles({
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
+    touchAction: 'pan-y pinch-zoom',
     '&:fullscreen': {
       background: BgSecondary,
       '& $card': {
@@ -45,7 +46,12 @@ export default createStyles({
     height: SlideHeight,
     transformOrigin: 'top left',
     visibility: 'hidden',
-    '& [data-slide-section]': { display: 'none' },
+    '& [data-slide-section]': {
+      display: 'none',
+      position: 'absolute',
+      left: 0,
+      top: 0,
+    },
     '& [data-slide-section]:not([hidden]):first-of-type': { display: 'block' },
   },
 });
