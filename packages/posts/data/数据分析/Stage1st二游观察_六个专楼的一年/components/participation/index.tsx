@@ -1,6 +1,5 @@
 import { AxisBottom, AxisLeft, Bar, BarStackHorizontal, Chart, GridColumns, Group, Line, scaleBand, scaleLinear } from '@blog/mdx-chart';
-import { Box, Flex, Section } from '@blog/mdx-slide';
-import React from 'react';
+import { Box, TitleLabel, Flex, Section } from '@blog/mdx-slide';
 import { contentGap, pagePadding } from '../../pages/constants';
 import { PageTitle } from '../page-title';
 import { formatNumber, games, type GameId } from '../../pages/data';
@@ -110,7 +109,7 @@ export function ParticipationPage({ mode, panels }: { mode: ParticipationMode; p
   const title = mode === 'composition' ? '每个版本，谁来聊？' : '版本过后，谁还在聊？';
   return <Section title={`${title} · ${panels.map(panel => games.find(game => game.id === panel.gameId)!.name).join(' / ')}`} className={sharedStyles.classes.page}>
     <Flex direction="column" height="100%" padding={pagePadding} gap={0}>
-      <Box flex="fixed"><p className={sharedStyles.classes.eyebrow}>玩家的流向</p><PageTitle>{title}</PageTitle></Box>
+      <Box flex="fixed"><TitleLabel>玩家的流向</TitleLabel><PageTitle>{title}</PageTitle></Box>
       <Flex direction="column" flex="fill" margin={`${contentGap}px 0 0`} gap={0}>
         <Legend mode={mode} />
         <Flex flex="fill" justify="space-between" margin="18px 0 0" gap={0}>

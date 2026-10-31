@@ -1,5 +1,4 @@
-import { Box, Center, Section } from '@blog/mdx-slide';
-import React from 'react';
+import { Box, Center, TitleLabel, Section } from '@blog/mdx-slide';
 import { pagePadding } from '../constants';
 import { PageTitle } from '../../components/page-title';
 import sharedStyles from '../shared.jss';
@@ -12,7 +11,7 @@ export function Introduction() {
     <Section title="Stage1st：六个专楼的一年" className={s.page}>
       <Center padding={pagePadding}>
         <Box width="100%" padding="0 0 25px" className={c.introCopy}>
-          <p className={`${s.eyebrow} ${c.eyebrow}`}>Stage1st 二游观察</p>
+          <TitleLabel marginBottom={36}>Stage1st 二游观察</TitleLabel>
           <PageTitle as="h1">六个专楼的<span className={c.accent}>一年</span></PageTitle>
           <p className={c.lead}>更新时的热闹，平日里的闲聊<br />十万条回复里，这里的玩家都在聊些什么？</p>
         </Box>

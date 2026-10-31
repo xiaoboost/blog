@@ -1,4 +1,4 @@
-import { createStyles, FontBody, TextPrimary, TextSecondary } from '@blog/styles/compile';
+import { createStyles, FontBody, TextPrimary } from '@blog/styles/compile';
 
 export default createStyles({
   '@global': {
@@ -12,5 +12,4 @@ export default createStyles({
     '& h3': { fontSize: 32 },
     '& a': { color: 'inherit', textDecoration: 'none', '&:hover': { textDecoration: 'none' } },
   },
-  eyebrow: { fontSize: 24, letterSpacing: '.12em', color: TextSecondary, marginBottom: '20px !important' },
 });

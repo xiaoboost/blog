@@ -3,344 +3,229 @@ import type { TrendSeries } from '../../components/yearly-trends/data';
 // Archived daily replies, version summaries and event calendar.
 // Prepared and verified by tmp/prepare-slide-version-trends.cjs.
 export const series = {
-  "gameId": "wutheringWaves",
-  "stageKind": "version",
-  "daily": [36, 24, 57, 49, 39, 26, 20, 17, 3, 5, 2, 11, 6, 6, 17, 17, 3, 63, 41, 10, 2, 46, 22, 116, 66, 76, 71, 84, 72, 235, 56, 79, 74, 52, 73, 17, 47, 136, 236, 145, 141, 59, 42, 38, 103, 266, 56, 47, 120, 74, 23, 72, 36, 18, 47, 44, 113, 57, 263, 272, 160, 125, 199, 189, 161, 121, 82, 91, 92, 35, 84, 52, 55, 187, 57, 61, 41, 141, 110, 176, 249, 209, 323, 103, 127, 80, 112, 277, 48, 60, 100, 46, 66, 90, 138, 68, 82, 35, 69, 32, 257, 246, 236, 190, 165, 139, 164, 168, 68, 112, 81, 66, 58, 44, 68, 61, 56, 31, 40, 48, 60, 171, 107, 84, 80, 91, 48, 62, 62, 122, 68, 20, 14, 18, 35, 57, 171, 103, 40, 35, 136, 51, 129, 193, 95, 127, 58, 24, 84, 70, 65, 26, 54, 26, 91, 26, 33, 65, 73, 48, 66, 55, 42, 52, 31, 55, 41, 36, 23, 21, 45, 225, 74, 57, 92, 29, 57, 26, 64, 41, 16, 42, 111, 76, 302, 155, 146, 130, 103, 56, 128, 137, 66, 77, 60, 72, 161, 119, 107, 126, 66, 140, 64, 100, 80, 214, 136, 120, 71, 115, 88, 125, 71, 231, 215, 50, 29, 116, 40, 24, 102, 53, 40, 199, 182, 123, 86, 64, 161, 71, 316, 92, 112, 63, 48, 65, 39, 57, 87, 64, 54, 193, 81, 74, 89, 51, 17, 29, 39, 11, 22, 47, 75, 95, 54, 136, 139, 119, 195, 35, 65, 76, 72, 45, 46, 23, 35, 46, 45, 59, 107, 43, 34, 27, 54, 115, 83, 55, 51, 55, 27, 31, 35, 90, 53, 18, 23, 12, 22, 27, 25, 9, 32, 74, 52, 26, 101, 79, 79, 97, 32, 48, 57, 66, 35, 49, 47, 22, 46, 12, 119, 37, 24, 115, 16, 0, 0, 7, 24, 25, 19, 12, 58, 44, 33, 3, 86, 88, 34, 14, 22, 10, 6, 17, 13, 62, 59, 143, 136, 80, 47, 42, 79, 248, 115, 57, 50, 45, 18, 44, 49, 31, 24, 43, 8, 32, 35, 20, 26, 35, 48, 15, 62, 33, 10],
+  "gameId": "arknights",
+  "stageKind": "story_phase",
+  "daily": [126, 61, 101, 19, 168, 37, 65, 44, 59, 11, 12, 53, 29, 28, 39, 31, 8, 56, 76, 62, 46, 114, 50, 16, 24, 15, 17, 38, 62, 29, 12, 14, 10, 41, 16, 10, 52, 27, 76, 39, 5, 8, 9, 4, 8, 25, 20, 3, 12, 9, 4, 0, 17, 15, 21, 26, 83, 46, 37, 21, 9, 6, 5, 5, 11, 22, 7, 59, 20, 16, 45, 13, 15, 96, 27, 15, 13, 10, 13, 44, 23, 13, 8, 11, 17, 6, 9, 57, 26, 5, 12, 6, 1, 3, 20, 4, 1, 8, 3, 14, 25, 136, 59, 62, 51, 160, 97, 47, 35, 8, 16, 11, 10, 23, 3, 14, 7, 7, 5, 21, 30, 9, 6, 21, 7, 6, 17, 17, 73, 25, 8, 20, 16, 81, 17, 40, 31, 29, 17, 32, 8, 18, 16, 8, 10, 8, 9, 36, 6, 4, 34, 23, 9, 32, 20, 67, 67, 25, 37, 1, 6, 63, 22, 19, 30, 10, 8, 1, 23, 23, 18, 8, 14, 4, 10, 33, 6, 8, 19, 253, 38, 40, 51, 22, 15, 127, 32, 25, 26, 7, 19, 19, 25, 14, 21, 28, 7, 9, 20, 26, 27, 6, 70, 94, 19, 6, 14, 17, 10, 32, 58, 11, 17, 42, 3, 5, 68, 12, 5, 7, 2, 12, 5, 37, 12, 6, 13, 11, 1, 1, 24, 14, 2, 13, 14, 6, 11, 14, 13, 13, 3, 27, 8, 14, 9, 20, 5, 5, 21, 45, 36, 7, 5, 20, 13, 58, 15, 13, 15, 5, 28, 3, 17, 22, 10, 26, 17, 19, 20, 4, 203, 31, 24, 5, 4, 27, 16, 114, 39, 20, 13, 14, 21, 15, 30, 30, 21, 19, 11, 11, 10, 8, 9, 17, 22, 7, 4, 11, 19, 6, 5, 7, 8, 15, 25, 35, 5, 9, 22, 35, 9, 72, 34, 10, 4, 0, 1, 3, 15, 6, 9, 6, 5, 2, 2, 0, 2, 11, 6, 3, 1, 2, 9, 6, 6, 6, 2, 6, 4, 2, 27, 5, 10, 29, 1, 22, 56, 14, 12, 7, 1, 11, 22, 6, 12, 7, 10, 6, 2, 4, 19, 123, 29, 27, 26],
   "stages": [
     {
-      "label": "2.7",
-      "shortLabel": "2.7",
+      "label": "反常光谱",
+      "shortLabel": "EP16",
       "start": "2025-10-28",
-      "endExclusive": "2025-11-20",
+      "endExclusive": "2025-11-01",
       "partial": true,
       "prerelease": false,
-      "days": 23,
-      "replies": 522,
-      "dailyMean": 22.695652173913043,
-      "accounts": 92
+      "days": 4,
+      "replies": 307,
+      "dailyMean": 76.75,
+      "accounts": 65
     },
     {
-      "label": "2.8",
-      "shortLabel": "2.8",
-      "start": "2025-11-20",
-      "endExclusive": "2025-12-25",
+      "label": "雪山降临1101",
+      "shortLabel": "雪山",
+      "start": "2025-11-01",
+      "endExclusive": "2025-12-05",
+      "partial": false,
+      "prerelease": false,
+      "days": 34,
+      "replies": 1371,
+      "dailyMean": 40.3235294117647,
+      "accounts": 159
+    },
+    {
+      "label": "未许之地",
+      "shortLabel": "未许",
+      "start": "2025-12-05",
+      "endExclusive": "2026-01-09",
       "partial": false,
       "prerelease": false,
       "days": 35,
-      "replies": 2991,
-      "dailyMean": 85.45714285714286,
-      "accounts": 204
+      "replies": 721,
+      "dailyMean": 20.6,
+      "accounts": 121
     },
     {
-      "label": "3.0",
-      "shortLabel": "3.0",
-      "start": "2025-12-25",
-      "endExclusive": "2026-02-05",
-      "partial": false,
-      "prerelease": false,
-      "days": 42,
-      "replies": 5068,
-      "dailyMean": 120.66666666666667,
-      "accounts": 269
-    },
-    {
-      "label": "3.1",
-      "shortLabel": "3.1",
-      "start": "2026-02-05",
-      "endExclusive": "2026-03-19",
-      "partial": false,
-      "prerelease": false,
-      "days": 42,
-      "replies": 3933,
-      "dailyMean": 93.64285714285714,
-      "accounts": 320
-    },
-    {
-      "label": "3.2",
-      "shortLabel": "3.2",
-      "start": "2026-03-19",
-      "endExclusive": "2026-04-30",
-      "partial": false,
-      "prerelease": false,
-      "days": 42,
-      "replies": 2664,
-      "dailyMean": 63.42857142857143,
-      "accounts": 222
-    },
-    {
-      "label": "3.3",
-      "shortLabel": "3.3",
-      "start": "2026-04-30",
-      "endExclusive": "2026-06-08",
-      "partial": false,
-      "prerelease": false,
-      "days": 39,
-      "replies": 4235,
-      "dailyMean": 108.58974358974359,
-      "accounts": 245
-    },
-    {
-      "label": "3.4",
-      "shortLabel": "3.4",
-      "start": "2026-06-08",
-      "endExclusive": "2026-07-10",
+      "label": "雅赛努斯复仇记",
+      "shortLabel": "复仇记",
+      "start": "2026-01-09",
+      "endExclusive": "2026-02-10",
       "partial": false,
       "prerelease": false,
       "days": 32,
-      "replies": 2760,
-      "dailyMean": 86.25,
-      "accounts": 222
+      "replies": 798,
+      "dailyMean": 24.9375,
+      "accounts": 114
     },
     {
-      "label": "3.5",
-      "shortLabel": "3.5",
+      "label": "辞岁行",
+      "shortLabel": "辞岁",
+      "start": "2026-02-10",
+      "endExclusive": "2026-03-10",
+      "partial": false,
+      "prerelease": false,
+      "days": 28,
+      "replies": 719,
+      "dailyMean": 25.678571428571427,
+      "accounts": 133
+    },
+    {
+      "label": "十字路口",
+      "shortLabel": "十字",
+      "start": "2026-03-10",
+      "endExclusive": "2026-04-07",
+      "partial": false,
+      "prerelease": false,
+      "days": 28,
+      "replies": 691,
+      "dailyMean": 24.678571428571427,
+      "accounts": 124
+    },
+    {
+      "label": "人们，我们",
+      "shortLabel": "人们",
+      "start": "2026-04-07",
+      "endExclusive": "2026-05-01",
+      "partial": false,
+      "prerelease": false,
+      "days": 24,
+      "replies": 738,
+      "dailyMean": 30.75,
+      "accounts": 115
+    },
+    {
+      "label": "相变临界",
+      "shortLabel": "EP17",
+      "start": "2026-05-01",
+      "endExclusive": "2026-06-01",
+      "partial": false,
+      "prerelease": false,
+      "days": 31,
+      "replies": 836,
+      "dailyMean": 26.967741935483872,
+      "accounts": 134
+    },
+    {
+      "label": "泡影苍霆",
+      "shortLabel": "泡影",
+      "start": "2026-06-01",
+      "endExclusive": "2026-07-10",
+      "partial": false,
+      "prerelease": false,
+      "days": 39,
+      "replies": 554,
+      "dailyMean": 14.205128205128204,
+      "accounts": 96
+    },
+    {
+      "label": "丛林症结",
+      "shortLabel": "丛林",
       "start": "2026-07-10",
-      "endExclusive": "2026-08-20",
+      "endExclusive": "2026-08-01",
       "partial": false,
       "prerelease": false,
-      "days": 41,
-      "replies": 2316,
-      "dailyMean": 56.48780487804878,
-      "accounts": 204
+      "days": 22,
+      "replies": 582,
+      "dailyMean": 26.454545454545453,
+      "accounts": 113
     },
     {
-      "label": "3.6",
-      "shortLabel": "3.6",
-      "start": "2026-08-20",
-      "endExclusive": "2026-09-30",
+      "label": "直到大地变成一颗酸橙",
+      "shortLabel": "酸橙",
+      "start": "2026-08-01",
+      "endExclusive": "2026-09-04",
       "partial": false,
       "prerelease": false,
-      "days": 41,
-      "replies": 1717,
-      "dailyMean": 41.8780487804878,
-      "accounts": 184
+      "days": 34,
+      "replies": 646,
+      "dailyMean": 19,
+      "accounts": 108
     },
     {
-      "label": "3.7",
-      "shortLabel": "3.7",
-      "start": "2026-09-30",
+      "label": "月行水上",
+      "shortLabel": "月行",
+      "start": "2026-09-04",
+      "endExclusive": "2026-10-09",
+      "partial": false,
+      "prerelease": false,
+      "days": 35,
+      "replies": 329,
+      "dailyMean": 9.4,
+      "accounts": 72
+    },
+    {
+      "label": "昨日海",
+      "shortLabel": "昨日",
+      "start": "2026-10-09",
       "endExclusive": "2026-10-28",
       "partial": true,
       "prerelease": false,
-      "days": 28,
-      "replies": 1575,
-      "dailyMean": 56.25,
-      "accounts": 175
+      "days": 19,
+      "replies": 394,
+      "dailyMean": 20.736842105263158,
+      "accounts": 78
     }
   ],
   "events": [
     {
-      "date": "2025-11-14",
-      "title": "2.8 前瞻",
-      "id": "preview-supplement-20261031-30",
+      "date": "2026-02-06",
+      "title": "新春前瞻",
+      "id": "preview-supplement-20261031-20",
       "kind": "preview",
       "sources": [
-        "https://www.weibo.com/7730797357/QcL1fvGmc"
+        "https://ak.hypergryph.com/news/3055"
       ]
     },
     {
-      "date": "2025-12-12",
-      "title": "3.0前瞻",
-      "id": "wuwa-2025-12-12-preview-db1ac0152a",
+      "date": "2026-04-25",
+      "title": "七周年庆典特别直播",
+      "id": "arknights-2026-04-25-preview-dd01606fc5",
       "kind": "preview",
       "sources": [
-        "https://www.weibo.com/7730797357/5240449319045806"
+        "https://ak.hypergryph.com/news/7370"
       ]
     },
     {
-      "date": "2026-01-15",
-      "title": "致第二次日出",
-      "id": "wuwa-2026-01-15-story_release-dbf95bd6db",
-      "kind": "story_release",
-      "sources": [
-        "https://www.taptap.cn/moment/752979031825058423"
-      ]
-    },
-    {
-      "date": "2026-01-23",
-      "title": "3.1 前瞻",
-      "id": "preview-supplement-20261031-31",
+      "date": "2026-07-25",
+      "title": "2026夏日嘉年华特别通讯",
+      "id": "arknights-2026-07-25-preview-3a0eac9c54",
       "kind": "preview",
       "sources": [
-        "https://www.bilibili.com/video/BV1RkzNBiEq8/"
+        "https://ak.hypergryph.com/news/9684"
       ]
     },
     {
-      "date": "2026-02-26",
-      "title": "日光落处",
-      "id": "wuwa-2026-02-26-story_release-2d3750a763",
-      "kind": "story_release",
-      "sources": [
-        "https://mc.kurogames.com/main/news/detail/4211"
-      ]
-    },
-    {
-      "date": "2026-03-13",
-      "title": "3.2 前瞻",
-      "id": "preview-supplement-20261031-32",
+      "date": "2026-10-24",
+      "title": "感谢庆典前瞻",
+      "id": "preview-supplement-20261031-21",
       "kind": "preview",
       "sources": [
-        "https://www.bilibili.com/video/BV1wxcDzaEuc/"
-      ]
-    },
-    {
-      "date": "2026-04-09",
-      "title": "影面颠倒的兔影",
-      "id": "wuwa-2026-04-09-story_release-551ac989bf",
-      "kind": "story_release",
-      "sources": [
-        "https://www.taptap.cn/moment/783639393251361596"
-      ]
-    },
-    {
-      "date": "2026-04-17",
-      "title": "3.3 前瞻",
-      "id": "preview-supplement-20261031-33",
-      "kind": "preview",
-      "sources": [
-        "https://www.bilibili.com/video/BV1Hqd5BSErq/"
-      ]
-    },
-    {
-      "date": "2026-05-21",
-      "title": "在熔解的夜空下",
-      "id": "wuwa-2026-05-21-story_release-880411fb0d",
-      "kind": "story_release",
-      "sources": [
-        "https://www.taptap.cn/moment/798617402794315766"
-      ]
-    },
-    {
-      "date": "2026-05-29",
-      "title": "3.4 前瞻",
-      "id": "wuwa-2026-05-29-preview-d91fe1c6ef",
-      "kind": "preview",
-      "sources": [
-        "https://wutheringwaves.kurogames.com/main/news",
-        "https://www.bilibili.com/video/BV1DiV86TEtB/"
-      ]
-    },
-    {
-      "date": "2026-06-13",
-      "title": "我们选择天空",
-      "id": "wuwa-2026-06-13-story_release-c0c4852977",
-      "kind": "story_release",
-      "sources": [
-        "https://www.taptap.cn/moment/812806954857530196"
-      ]
-    },
-    {
-      "date": "2026-06-26",
-      "title": "3.5 前瞻",
-      "id": "preview-supplement-20261031-35",
-      "kind": "preview",
-      "sources": [
-        "https://www.bilibili.com/video/BV1bs756NEAT/"
-      ]
-    },
-    {
-      "date": "2026-08-07",
-      "title": "3.6 前瞻",
-      "id": "preview-supplement-20261031-36",
-      "kind": "preview",
-      "sources": [
-        "https://www.sina.cn/news/detail/5329366290797229.html"
-      ]
-    },
-    {
-      "date": "2026-09-19",
-      "title": "3.7 前瞻",
-      "id": "preview-supplement-20261031-37",
-      "kind": "preview",
-      "sources": [
-        "https://www.bilibili.com/video/BV1Xoeb6xE8y/"
+        "https://ak.hypergryph.com/news/0799"
       ]
     }
   ],
   "annotations": [
     {
-      "date": "2025-11-14",
-      "label": "2.8 前瞻",
+      "date": "2026-02-06",
+      "label": "新春前瞻",
       "dx": 0,
-      "dy": -150
-    },
-    {
-      "date": "2025-12-12",
-      "label": "3.0 前瞻",
-      "dx": -35,
       "dy": -140
     },
     {
-      "date": "2026-01-15",
-      "label": "致第二次日出",
-      "dx": 0,
+      "date": "2026-04-25",
+      "label": "七周年前瞻",
+      "dx": -30,
       "dy": -105
     },
     {
-      "date": "2026-01-23",
-      "label": "3.1 前瞻",
-      "dx": 50,
-      "dy": -180
-    },
-    {
-      "date": "2026-02-26",
-      "label": "日光落处",
-      "dx": -40,
-      "dy": -135
-    },
-    {
-      "date": "2026-03-13",
-      "label": "3.2 前瞻",
-      "dx": 5,
-      "dy": -245
-    },
-    {
-      "date": "2026-04-09",
-      "label": "影面颠倒的兔影",
-      "dx": -40,
-      "dy": -100
-    },
-    {
-      "date": "2026-04-17",
-      "label": "3.3 前瞻",
-      "dx": -10,
-      "dy": -95
-    },
-    {
-      "date": "2026-05-21",
-      "label": "在熔解的夜空下",
-      "dx": -70,
-      "dy": -180
-    },
-    {
-      "date": "2026-05-29",
-      "label": "3.4 前瞻",
-      "dx": 0,
-      "dy": -310
-    },
-    {
-      "date": "2026-06-13",
-      "label": "我们选择天空",
+      "date": "2026-07-25",
+      "label": "夏日前瞻",
       "dx": 55,
       "dy": -100
     },
     {
-      "date": "2026-06-26",
-      "label": "3.5 前瞻",
-      "dx": 20,
-      "dy": -220
-    },
-    {
-      "date": "2026-08-07",
-      "label": "3.6 前瞻",
-      "dx": 0,
-      "dy": -160
-    },
-    {
-      "date": "2026-09-19",
-      "label": "3.7 前瞻",
-      "dx": 0,
-      "dy": -160
+      "date": "2026-10-24",
+      "label": "感谢庆典前瞻",
+      "dx": -80,
+      "dy": -140
     }
   ]
 } satisfies TrendSeries;

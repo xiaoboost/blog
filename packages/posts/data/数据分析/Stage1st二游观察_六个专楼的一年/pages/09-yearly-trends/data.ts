@@ -3,228 +3,253 @@ import type { TrendSeries } from '../../components/yearly-trends/data';
 // Archived daily replies, version summaries and event calendar.
 // Prepared and verified by tmp/prepare-slide-version-trends.cjs.
 export const series = {
-  "gameId": "arknights",
-  "stageKind": "story_phase",
-  "daily": [126, 61, 101, 19, 168, 37, 65, 44, 59, 11, 12, 53, 29, 28, 39, 31, 8, 56, 76, 62, 46, 114, 50, 16, 24, 15, 17, 38, 62, 29, 12, 14, 10, 41, 16, 10, 52, 27, 76, 39, 5, 8, 9, 4, 8, 25, 20, 3, 12, 9, 4, 0, 17, 15, 21, 26, 83, 46, 37, 21, 9, 6, 5, 5, 11, 22, 7, 59, 20, 16, 45, 13, 15, 96, 27, 15, 13, 10, 13, 44, 23, 13, 8, 11, 17, 6, 9, 57, 26, 5, 12, 6, 1, 3, 20, 4, 1, 8, 3, 14, 25, 136, 59, 62, 51, 160, 97, 47, 35, 8, 16, 11, 10, 23, 3, 14, 7, 7, 5, 21, 30, 9, 6, 21, 7, 6, 17, 17, 73, 25, 8, 20, 16, 81, 17, 40, 31, 29, 17, 32, 8, 18, 16, 8, 10, 8, 9, 36, 6, 4, 34, 23, 9, 32, 20, 67, 67, 25, 37, 1, 6, 63, 22, 19, 30, 10, 8, 1, 23, 23, 18, 8, 14, 4, 10, 33, 6, 8, 19, 253, 38, 40, 51, 22, 15, 127, 32, 25, 26, 7, 19, 19, 25, 14, 21, 28, 7, 9, 20, 26, 27, 6, 70, 94, 19, 6, 14, 17, 10, 32, 58, 11, 17, 42, 3, 5, 68, 12, 5, 7, 2, 12, 5, 37, 12, 6, 13, 11, 1, 1, 24, 14, 2, 13, 14, 6, 11, 14, 13, 13, 3, 27, 8, 14, 9, 20, 5, 5, 21, 45, 36, 7, 5, 20, 13, 58, 15, 13, 15, 5, 28, 3, 17, 22, 10, 26, 17, 19, 20, 4, 203, 31, 24, 5, 4, 27, 16, 114, 39, 20, 13, 14, 21, 15, 30, 30, 21, 19, 11, 11, 10, 8, 9, 17, 22, 7, 4, 11, 19, 6, 5, 7, 8, 15, 25, 35, 5, 9, 22, 35, 9, 72, 34, 10, 4, 0, 1, 3, 15, 6, 9, 6, 5, 2, 2, 0, 2, 11, 6, 3, 1, 2, 9, 6, 6, 6, 2, 6, 4, 2, 27, 5, 10, 29, 1, 22, 56, 14, 12, 7, 1, 11, 22, 6, 12, 7, 10, 6, 2, 4, 19, 123, 29, 27, 26],
+  "gameId": "starRail",
+  "stageKind": "version",
+  "daily": [95, 80, 35, 60, 51, 56, 71, 168, 353, 265, 101, 82, 84, 96, 70, 91, 71, 23, 30, 15, 36, 35, 47, 23, 30, 34, 38, 76, 33, 26, 17, 76, 29, 11, 38, 34, 17, 17, 130, 35, 7, 94, 27, 25, 39, 21, 17, 20, 58, 47, 189, 139, 43, 31, 17, 35, 12, 10, 25, 21, 6, 28, 26, 25, 10, 79, 85, 14, 36, 59, 101, 27, 65, 24, 31, 13, 15, 4, 8, 8, 47, 14, 6, 17, 6, 6, 7, 7, 10, 6, 4, 6, 4, 14, 14, 18, 28, 21, 29, 16, 21, 77, 49, 36, 39, 28, 38, 39, 162, 61, 52, 33, 32, 15, 20, 20, 11, 14, 5, 6, 62, 11, 26, 18, 7, 46, 56, 20, 17, 14, 8, 6, 7, 41, 70, 113, 78, 31, 10, 17, 158, 48, 41, 24, 24, 33, 40, 29, 97, 71, 27, 17, 20, 39, 79, 24, 8, 38, 15, 9, 12, 58, 28, 60, 129, 50, 22, 77, 34, 111, 31, 44, 21, 20, 38, 63, 240, 88, 89, 57, 41, 53, 43, 38, 16, 17, 10, 25, 9, 5, 24, 14, 13, 25, 17, 48, 53, 95, 49, 38, 28, 14, 12, 96, 36, 16, 79, 27, 16, 38, 4, 18, 11, 32, 8, 17, 149, 228, 71, 69, 28, 12, 22, 76, 51, 61, 34, 12, 5, 23, 30, 20, 16, 8, 4, 9, 19, 57, 14, 23, 24, 25, 5, 9, 4, 98, 22, 15, 44, 10, 7, 39, 32, 52, 25, 22, 1, 11, 27, 23, 126, 106, 82, 28, 10, 47, 26, 14, 42, 67, 21, 11, 5, 12, 14, 5, 19, 2, 4, 57, 11, 7, 4, 8, 30, 23, 16, 21, 14, 14, 39, 36, 14, 69, 32, 24, 16, 15, 5, 7, 11, 13, 154, 61, 46, 29, 7, 108, 65, 50, 31, 23, 5, 24, 7, 0, 1, 2, 9, 42, 33, 64, 75, 18, 9, 3, 1, 61, 27, 18, 14, 46, 12, 12, 13, 130, 67, 23, 22, 4, 1, 4, 31, 9, 4, 20, 8, 7, 7, 13, 9, 7, 8, 37, 26, 16, 27, 9, 18, 3, 9, 22, 10, 16, 22],
   "stages": [
     {
-      "label": "反常光谱",
-      "shortLabel": "EP16",
+      "label": "3.6",
+      "shortLabel": "3.6",
       "start": "2025-10-28",
-      "endExclusive": "2025-11-01",
+      "endExclusive": "2025-11-05",
       "partial": true,
       "prerelease": false,
-      "days": 4,
-      "replies": 307,
-      "dailyMean": 76.75,
-      "accounts": 65
+      "days": 8,
+      "replies": 616,
+      "dailyMean": 77,
+      "accounts": 117
     },
     {
-      "label": "雪山降临1101",
-      "shortLabel": "雪山",
-      "start": "2025-11-01",
-      "endExclusive": "2025-12-05",
+      "label": "3.7",
+      "shortLabel": "3.7",
+      "start": "2025-11-05",
+      "endExclusive": "2025-12-17",
       "partial": false,
       "prerelease": false,
-      "days": 34,
-      "replies": 1371,
-      "dailyMean": 40.3235294117647,
-      "accounts": 159
+      "days": 42,
+      "replies": 2418,
+      "dailyMean": 57.57142857142857,
+      "accounts": 189
     },
     {
-      "label": "未许之地",
-      "shortLabel": "未许",
-      "start": "2025-12-05",
-      "endExclusive": "2026-01-09",
+      "label": "3.8",
+      "shortLabel": "3.8",
+      "start": "2025-12-17",
+      "endExclusive": "2026-02-13",
       "partial": false,
       "prerelease": false,
-      "days": 35,
-      "replies": 721,
-      "dailyMean": 20.6,
-      "accounts": 121
+      "days": 58,
+      "replies": 1793,
+      "dailyMean": 30.913793103448278,
+      "accounts": 175
     },
     {
-      "label": "雅赛努斯复仇记",
-      "shortLabel": "复仇记",
-      "start": "2026-01-09",
-      "endExclusive": "2026-02-10",
+      "label": "4.0",
+      "shortLabel": "4.0",
+      "start": "2026-02-13",
+      "endExclusive": "2026-03-25",
       "partial": false,
       "prerelease": false,
-      "days": 32,
-      "replies": 798,
-      "dailyMean": 24.9375,
-      "accounts": 114
+      "days": 40,
+      "replies": 1486,
+      "dailyMean": 37.15,
+      "accounts": 164
     },
     {
-      "label": "辞岁行",
-      "shortLabel": "辞岁",
-      "start": "2026-02-10",
-      "endExclusive": "2026-03-10",
-      "partial": false,
-      "prerelease": false,
-      "days": 28,
-      "replies": 719,
-      "dailyMean": 25.678571428571427,
-      "accounts": 133
-    },
-    {
-      "label": "十字路口",
-      "shortLabel": "十字",
-      "start": "2026-03-10",
-      "endExclusive": "2026-04-07",
+      "label": "4.1",
+      "shortLabel": "4.1",
+      "start": "2026-03-25",
+      "endExclusive": "2026-04-22",
       "partial": false,
       "prerelease": false,
       "days": 28,
-      "replies": 691,
-      "dailyMean": 24.678571428571427,
-      "accounts": 124
+      "replies": 1242,
+      "dailyMean": 44.357142857142854,
+      "accounts": 130
     },
     {
-      "label": "人们，我们",
-      "shortLabel": "人们",
-      "start": "2026-04-07",
-      "endExclusive": "2026-05-01",
-      "partial": false,
-      "prerelease": false,
-      "days": 24,
-      "replies": 738,
-      "dailyMean": 30.75,
-      "accounts": 115
-    },
-    {
-      "label": "相变临界",
-      "shortLabel": "EP17",
-      "start": "2026-05-01",
+      "label": "4.2",
+      "shortLabel": "4.2",
+      "start": "2026-04-22",
       "endExclusive": "2026-06-01",
       "partial": false,
       "prerelease": false,
-      "days": 31,
-      "replies": 836,
-      "dailyMean": 26.967741935483872,
-      "accounts": 134
+      "days": 40,
+      "replies": 1559,
+      "dailyMean": 38.975,
+      "accounts": 162
     },
     {
-      "label": "泡影苍霆",
-      "shortLabel": "泡影",
+      "label": "4.3",
+      "shortLabel": "4.3",
       "start": "2026-06-01",
-      "endExclusive": "2026-07-10",
+      "endExclusive": "2026-07-15",
       "partial": false,
       "prerelease": false,
-      "days": 39,
-      "replies": 554,
-      "dailyMean": 14.205128205128204,
-      "accounts": 96
+      "days": 44,
+      "replies": 1536,
+      "dailyMean": 34.90909090909091,
+      "accounts": 141
     },
     {
-      "label": "丛林症结",
-      "shortLabel": "丛林",
-      "start": "2026-07-10",
-      "endExclusive": "2026-08-01",
+      "label": "4.4",
+      "shortLabel": "4.4",
+      "start": "2026-07-15",
+      "endExclusive": "2026-08-26",
       "partial": false,
       "prerelease": false,
-      "days": 22,
-      "replies": 582,
-      "dailyMean": 26.454545454545453,
-      "accounts": 113
+      "days": 42,
+      "replies": 1127,
+      "dailyMean": 26.833333333333332,
+      "accounts": 117
     },
     {
-      "label": "直到大地变成一颗酸橙",
-      "shortLabel": "酸橙",
-      "start": "2026-08-01",
-      "endExclusive": "2026-09-04",
+      "label": "4.5",
+      "shortLabel": "4.5",
+      "start": "2026-08-26",
+      "endExclusive": "2026-09-28",
       "partial": false,
       "prerelease": false,
-      "days": 34,
-      "replies": 646,
-      "dailyMean": 19,
-      "accounts": 108
+      "days": 33,
+      "replies": 1070,
+      "dailyMean": 32.42424242424242,
+      "accounts": 115
     },
     {
-      "label": "月行水上",
-      "shortLabel": "月行",
-      "start": "2026-09-04",
-      "endExclusive": "2026-10-09",
-      "partial": false,
-      "prerelease": false,
-      "days": 35,
-      "replies": 329,
-      "dailyMean": 9.4,
-      "accounts": 72
-    },
-    {
-      "label": "昨日海",
-      "shortLabel": "昨日",
-      "start": "2026-10-09",
+      "label": "4.6",
+      "shortLabel": "4.6",
+      "start": "2026-09-28",
       "endExclusive": "2026-10-28",
       "partial": true,
       "prerelease": false,
-      "days": 19,
-      "replies": 394,
-      "dailyMean": 20.736842105263158,
-      "accounts": 78
+      "days": 30,
+      "replies": 589,
+      "dailyMean": 19.633333333333333,
+      "accounts": 79
     }
   ],
   "events": [
     {
+      "date": "2025-12-05",
+      "title": "3.8前瞻",
+      "id": "star-rail-2025-12-05-preview-523f4660f1",
+      "kind": "preview",
+      "sources": [
+        "https://www.taptap.cn/moment/744567024839033560"
+      ]
+    },
+    {
       "date": "2026-02-06",
-      "title": "新春前瞻",
-      "id": "preview-supplement-20261031-20",
+      "title": "4.0 前瞻",
+      "id": "preview-supplement-20261031-08",
       "kind": "preview",
       "sources": [
-        "https://ak.hypergryph.com/news/3055"
+        "https://www.youtube.com/watch?v=THZ8wYeIqv0"
       ]
     },
     {
-      "date": "2026-04-25",
-      "title": "七周年庆典特别直播",
-      "id": "arknights-2026-04-25-preview-dd01606fc5",
+      "date": "2026-03-13",
+      "title": "4.1 前瞻",
+      "id": "preview-supplement-20261031-09",
       "kind": "preview",
       "sources": [
-        "https://ak.hypergryph.com/news/7370"
+        "https://www.youtube.com/watch?v=TgGPAPo02pM"
       ]
     },
     {
-      "date": "2026-07-25",
-      "title": "2026夏日嘉年华特别通讯",
-      "id": "arknights-2026-07-25-preview-3a0eac9c54",
+      "date": "2026-04-10",
+      "title": "4.2前瞻",
+      "id": "star-rail-2026-04-10-preview-377174492b",
       "kind": "preview",
       "sources": [
-        "https://ak.hypergryph.com/news/9684"
+        "https://www.taptap.cn/moment/791724902888508342",
+        "https://www.bilibili.com/video/BV1hwQwBnEAQ/"
       ]
     },
     {
-      "date": "2026-10-24",
-      "title": "感谢庆典前瞻",
-      "id": "preview-supplement-20261031-21",
+      "date": "2026-05-22",
+      "title": "4.3 前瞻",
+      "id": "preview-supplement-20261031-10",
       "kind": "preview",
       "sources": [
-        "https://ak.hypergryph.com/news/0799"
+        "https://www.taptap.cn/moment/805465345526595606"
+      ]
+    },
+    {
+      "date": "2026-07-03",
+      "title": "4.4 前瞻",
+      "id": "preview-supplement-20261031-11",
+      "kind": "preview",
+      "sources": [
+        "https://www.youtube.com/watch?v=FxO3eKc1z4U"
+      ]
+    },
+    {
+      "date": "2026-08-14",
+      "title": "4.5 前瞻",
+      "id": "preview-supplement-20261031-12",
+      "kind": "preview",
+      "sources": [
+        "https://www.taptap.cn/moment/835896738802828383"
+      ]
+    },
+    {
+      "date": "2026-09-20",
+      "title": "4.6 前瞻",
+      "id": "preview-supplement-20261031-13",
+      "kind": "preview",
+      "sources": [
+        "https://www.taptap.cn/moment/848576715130145834"
       ]
     }
   ],
   "annotations": [
     {
+      "date": "2025-12-05",
+      "label": "3.8 前瞻",
+      "dx": 20,
+      "dy": -100
+    },
+    {
       "date": "2026-02-06",
-      "label": "新春前瞻",
+      "label": "4.0 前瞻",
       "dx": 0,
       "dy": -140
     },
     {
-      "date": "2026-04-25",
-      "label": "七周年前瞻",
-      "dx": -30,
-      "dy": -105
+      "date": "2026-03-13",
+      "label": "4.1 前瞻",
+      "dx": 0,
+      "dy": -160
     },
     {
-      "date": "2026-07-25",
-      "label": "夏日前瞻",
-      "dx": 55,
-      "dy": -100
+      "date": "2026-04-10",
+      "label": "4.2 前瞻",
+      "dx": 0,
+      "dy": -110
     },
     {
-      "date": "2026-10-24",
-      "label": "感谢庆典前瞻",
-      "dx": -80,
+      "date": "2026-05-22",
+      "label": "4.3 前瞻",
+      "dx": 0,
+      "dy": -140
+    },
+    {
+      "date": "2026-07-03",
+      "label": "4.4 前瞻",
+      "dx": 0,
+      "dy": -140
+    },
+    {
+      "date": "2026-08-14",
+      "label": "4.5 前瞻",
+      "dx": 0,
+      "dy": -140
+    },
+    {
+      "date": "2026-09-20",
+      "label": "4.6 前瞻",
+      "dx": 0,
       "dy": -140
     }
   ]

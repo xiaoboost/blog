@@ -1,5 +1,4 @@
 import { Box, Flex, Section } from '@blog/mdx-slide';
-import React from 'react';
 import { pagePadding } from '../../pages/constants';
 import { PageTitle } from '../page-title';
 import { games } from '../../pages/data';

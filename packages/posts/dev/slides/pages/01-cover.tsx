@@ -1,5 +1,5 @@
 import { useFontText } from '@blog/context/runtime';
-import { Box, Center, Section } from '@blog/mdx-slide';
+import { Box, Center, TitleLabel, Section } from '@blog/mdx-slide';
 import { PrimaryTitleFont } from '@blog/styles';
 import React from 'react';
 import styles from '../deck.jss';
@@ -12,7 +12,7 @@ export function Cover() {
     <Section className={styles.classes.page}>
       <Center padding={120}>
         <Box style={{ textAlign: 'center' }}>
-          <p className={styles.classes.eyebrow}>LAYOUT STUDIES / 01</p>
+          <TitleLabel className={styles.classes.titleLabel} marginBottom={27}>LAYOUT STUDIES / 01</TitleLabel>
           <h1>{title}</h1>
           <p className={styles.classes.subtitle}>让内容，找到自己的位置。</p>
           <div className={styles.classes.rule} />

@@ -1,6 +1,5 @@
 import { AxisLeft, Bar, BarStackHorizontal, Chart, GridColumns, Group, Line, scaleBand, scaleLinear } from '@blog/mdx-chart';
-import { Box, Flex, Section } from '@blog/mdx-slide';
-import React from 'react';
+import { Box, TitleLabel, Flex, Section } from '@blog/mdx-slide';
 import { contentGap, pagePadding } from '../../pages/constants';
 import { PageTitle } from '../page-title';
 import { formatPercent, sentimentColors, sentimentKeys, sentimentLabels, shortTopic } from '../content-analysis/constants';
@@ -64,7 +63,7 @@ function ReviewChart({ gameId }: { gameId: GameId }) {
 export function AspectReviewsPage({ gameIds }: { gameIds: readonly GameId[] }) {
   return <Section title={`各方面评价 · ${gameIds.map(id => games.find(game => game.id === id)!.name).join(' / ')}`} className={sharedStyles.classes.page}>
     <Flex direction="column" height="100%" padding={pagePadding} gap={0}>
-      <Box flex="fixed"><p className={sharedStyles.classes.eyebrow}>大家在聊什么</p><PageTitle>大家在称赞什么，又在抱怨什么？</PageTitle></Box>
+      <Box flex="fixed"><TitleLabel>大家在聊什么</TitleLabel><PageTitle>大家在称赞什么，又在抱怨什么？</PageTitle></Box>
       <Flex direction="column" flex="fill" margin={`${contentGap}px 0 0`} gap={0}>
         <Flex justify="space-between" align="center" flex="fixed" className={styles.classes.legend}>
           <Flex align="center" gap={32}>
