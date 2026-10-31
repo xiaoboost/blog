@@ -1,20 +1,29 @@
-import React from 'react';
+import { useRenderContext } from '@blog/context/runtime';
+import { PrimaryTitleFont } from '@blog/styles';
 import styles from './index.jss';
 
 interface ToolbarProps {
   title: string;
+  showPageNumber: boolean;
 }
 
-export function Toolbar({ title }: ToolbarProps) {
+export function Toolbar({ title, showPageNumber }: ToolbarProps) {
+  const { page } = useRenderContext();
+  const titleFont = page.getFontBucket(PrimaryTitleFont.fontFamily);
+
   return (
     <div className={styles.classes.toolbar}>
-      <span className={styles.classes.title} title={title}>{title}</span>
-      <span className={styles.classes.counter} aria-live="polite" aria-atomic="true">
-        <span className={styles.classes.currentPage}>—</span>
-        <span> / </span>
-        <span className={styles.classes.totalPages}>—</span>
-      </span>
-      <span className={styles.classes.divider} aria-hidden="true" />
+      <span className={`${styles.classes.title} ${titleFont.getClassName()}`} title={title}>{title}</span>
+      {showPageNumber && (
+        <>
+          <span className={styles.classes.counter} aria-live="polite" aria-atomic="true">
+            <span className={styles.classes.currentPage}>—</span>
+            <span> / </span>
+            <span className={styles.classes.totalPages}>—</span>
+          </span>
+          <span className={styles.classes.divider} aria-hidden="true" />
+        </>
+      )}
       <button
         className={styles.classes.play}
         type="button"

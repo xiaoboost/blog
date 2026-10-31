@@ -19,6 +19,8 @@ export interface PostMeta {
   pathname?: string;
   /** 是否启用目录 */
   toc?: boolean;
+  /** Slide 是否显示页码 */
+  showPageNumberInSlide?: boolean;
   /** 文章代码块是否默认启用类型提示与诊断 */
   lsp?: boolean;
   /** 是否可以被列表检索 */
@@ -54,7 +56,7 @@ export interface PostBasicData {
   /** 文章简介 */
   description: string;
   /** 文章封面图，相对于文章目录的本地图片路径 */
-  coverImage?: string;
+  coverImage: string | null;
   /** 网页链接 */
   pathname: string;
   /** 文件路径 */
@@ -63,6 +65,8 @@ export interface PostBasicData {
   ast: Root;
   /** 是否启用目录 */
   toc: boolean;
+  /** Slide 是否显示页码 */
+  showPageNumberInSlide: boolean;
   /** 文章代码块是否默认启用类型提示与诊断 */
   lsp: boolean;
   /** 文章模板 */

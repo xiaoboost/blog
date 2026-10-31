@@ -6,7 +6,7 @@ import md5 from 'md5';
 
 export const postAssetsNamespace = 'post-assets';
 
-/** PostLoader 内部的 MDX 资源入口处理，将 assets: glob 展开为内存脚本。 */
+/** assets:<glob>[?outDir=<编码后的输出目录>]，未指定目录时沿用公共资源路径。 */
 export function applyPostAssets(builder: BuilderInstance) {
   builder.hooks.bundler.tap(postAssetsNamespace, (bundler) => {
     bundler.hooks.resolve.tap({ name: postAssetsNamespace, stage: -100 }, (args) => {
@@ -14,10 +14,21 @@ export function applyPostAssets(builder: BuilderInstance) {
         return;
       }
 
-      const pattern = normalize(resolve(args.resolveDir, args.path.slice('assets:'.length)));
+      // 只将明确的 ?outDir= 识别为参数，保留 glob 本身的 ? 通配符。
+      const queryIndex = args.path.lastIndexOf('?outDir=');
+      const glob = args.path.slice('assets:'.length, queryIndex < 0 ? undefined : queryIndex);
+      const outDir = queryIndex < 0 ? '' : decodeURIComponent(args.path.slice(queryIndex + 8));
+
+      if (/(^|[\\/])\.\.([\\/]|$)/.test(outDir) || /^[a-z][a-z\d+.-]*:/i.test(outDir)) {
+        throw new Error('assets: outDir 必须是站点内的目录，不能包含 .. 或协议/盘符');
+      }
+
+      const pattern = normalize(resolve(args.resolveDir, glob));
+      const suffix = outDir ? `?outDir=${encodeURIComponent(outDir)}` : '';
       return {
         namespace: postAssetsNamespace,
-        path: normalize(join(args.resolveDir, `assets-${md5(pattern)}.script.ts`)),
+        path: normalize(join(args.resolveDir, `assets-${md5(pattern + suffix)}.script.ts`)),
+        suffix,
         pluginData: pattern,
       };
     });

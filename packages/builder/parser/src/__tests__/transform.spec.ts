@@ -5,6 +5,18 @@ import { transform } from '../post';
 import { compilePost, postSource } from './helpers';
 
 describe('post compile pipeline', () => {
+  it('Slide 资源入口携带解析后的文章目录，资源引用正常合并', async () => {
+    const pathname = '/posts/example/';
+    const request = `assets:./**/*.{script,jss}.ts?outDir=${encodeURIComponent(pathname)}`;
+    const post = await compilePost('# 正文', `template: slide\npathname: ${pathname}\n`, false, {
+      '@blog/template-slide': ['/styles/slide.css'],
+      [request]: ['/posts/example/styles/article.css'],
+    });
+    expect(post.utils.getAssetNames()).deep.eq(['/styles/slide.css', '/posts/example/styles/article.css']);
+    expect(post.data.description).eq('# 正文');
+    expect(post.code.match(/^import .+ from ["']assets:/gm)).length(1);
+  });
+
   it('通过公共 assets: 导入合并资源，保留原有绑定且不重复生成 import', async () => {
     for (const format of [false, true]) {
       const post = await compilePost(
@@ -58,10 +70,12 @@ describe('post compile pipeline', () => {
       filePath: '/test/post.mdx',
       pathname: 'custom/path',
       toc: false,
+      showPageNumberInSlide: true,
       lsp: false,
       template: 'post',
       draft: true,
       description: '中文简介',
+      coverImage: null,
     });
     expect(ast.type).eq('root');
     expect(post.default({ post: data })).deep.eq({

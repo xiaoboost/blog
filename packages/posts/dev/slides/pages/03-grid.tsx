@@ -1,4 +1,4 @@
-import { Box, Flex, Grid, Section } from '@blog/mdx-slide';
+import { Box, TitleLabel, Flex, Grid, Section } from '@blog/mdx-slide';
 import React from 'react';
 import styles from '../deck.jss';
 
@@ -15,7 +15,7 @@ export function Gallery() {
     <Section className={styles.classes.page}>
       <Flex direction="column" height="100%" padding={120} gap={72}>
         <Box>
-          <p className={styles.classes.eyebrow}>LAYOUT STUDIES / 03</p>
+          <TitleLabel className={styles.classes.titleLabel} marginBottom={27}>LAYOUT STUDIES / 03</TitleLabel>
           <h2>{heading}</h2>
         </Box>
         <Grid columns={3} rows={1} gap={36} flex="fill">

@@ -5,15 +5,13 @@ import {
   TextPrimary,
   TextSecondary,
   FontBody,
-  FontHeading,
-  PrimaryTitleFont,
 } from '@blog/styles/compile';
 
 export default createStyles({
   toolbar: {
     position: 'absolute',
     right: 16,
-    bottom: 16,
+    top: 16,
     display: 'flex',
     alignItems: 'center',
     gap: 10,
@@ -35,8 +33,6 @@ export default createStyles({
     ':fullscreen &': { display: 'none' },
   },
   title: {
-    fontFamily: `${PrimaryTitleFont.fontFamily},${FontHeading}`,
-    fontWeight: PrimaryTitleFont.fontWeight,
     fontSize: 14,
     lineHeight: '20px',
     overflow: 'hidden',

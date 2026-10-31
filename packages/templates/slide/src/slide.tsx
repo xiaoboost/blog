@@ -26,7 +26,7 @@ export function SlidePage(props: SlidePageProps) {
       modifiedTime={data.update}
       bodyClassName={styles.classes.page}
     >
-      <Presentation title={data.title}>
+      <Presentation title={data.title} showPageNumber={data.showPageNumberInSlide}>
         <Component post={data} />
       </Presentation>
     </Layout>
