@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict';
 import { Builder } from '@blog/core';
 import { describe, it } from '@blog/test-toolkit';
+import type { PostBasicData } from '@blog/types';
+import { before } from 'mocha';
 
 const create = Date.UTC(2026, 0, 1);
 
@@ -11,18 +13,22 @@ function createPost(options: {
   public?: boolean;
   draft?: boolean;
   tags: string[];
-}) {
+  year?: number;
+}): PostBasicData {
+  const date = options.year ? Date.UTC(options.year, 0, 1) : create;
   return {
     title: options.title,
     pathname: options.pathname,
     filePath: options.filePath,
-    create,
-    update: create,
+    create: date,
+    update: date,
     tags: options.tags.map((name) => ({ name, url: '' })),
     public: options.public ?? true,
     draft: options.draft ?? false,
     toc: false,
     lsp: false,
+    showPageNumberInSlide: true,
+    coverImage: null,
     template: 'post',
     description: `${options.title} 的简介`,
     ast: { type: 'root', children: [] },
@@ -87,11 +93,12 @@ function pageHtml(result: Awaited<ReturnType<typeof buildPosts>>, path: string) 
   return html;
 }
 
-describe('文章可见性', function () {
+describe('生产文章页面（共用一次构建）', function () {
   this.timeout(120_000);
+  let result: Awaited<ReturnType<typeof buildPosts>>;
 
-  it('生产构建不生成草稿页面，标记隐藏的文章仍会生成但不进入列表', async () => {
-    const result = await buildPosts([
+  before(async () => {
+    result = await buildPosts([
       createPost({
         title: 'Published Post',
         pathname: 'posts/published',
@@ -112,9 +119,20 @@ describe('文章可见性', function () {
         public: false,
         tags: ['Unlisted Tag'],
       }),
+      // 独立年份的 41 篇同名文章，同时覆盖三页分页与同名文章的独立输出。
+      ...Array.from({ length: 41 }, (_, index) => createPost({
+        title: '同名文章',
+        pathname: `posts/year-${index}`,
+        filePath: `/articles/year-${index}.md`,
+        tags: [],
+        year: 2025,
+      })),
     ]);
 
     assert.equal(result.errors, '');
+  });
+
+  it('生产构建不生成草稿页面，标记隐藏的文章仍会生成但不进入列表', () => {
     assert.ok(result.paths.includes('/posts/published/index.html'));
     assert.ok(result.paths.includes('/posts/unlisted/index.html'));
     assert.ok(!result.paths.includes('/posts/draft/index.html'), '草稿页面不应生成');
@@ -140,6 +158,21 @@ describe('文章可见性', function () {
 
     for (const [path, html] of result.html) {
       assert.ok(!html.includes('Draft Post'), `草稿内容出现在 ${path}`);
+    }
+  });
+
+  it('年份归档的数字分页使用原始年份，同名文章各自生成', () => {
+    const urls = ['/archive/2025/', '/archive/2025/1/', '/archive/2025/2/'];
+    urls.forEach((url, index) => {
+      const html = pageHtml(result, `${url}index.html`);
+      const nav = /<nav[^>]+aria-label="文章分页"[^>]*>([\s\S]*?)<\/nav>/.exec(html)?.[1];
+      assert.ok(nav, `缺少分页导航 ${url}`);
+      const links = [...nav.matchAll(/href="([^"]+)" aria-label="第 \d+ 页"/g)]
+        .map(([, href]) => href);
+      assert.deepEqual(links, urls.filter((_, i) => i !== index));
+    });
+    for (let index = 0; index < 41; index++) {
+      assert.ok(result.html.has(`/posts/year-${index}/index.html`));
     }
   });
 });

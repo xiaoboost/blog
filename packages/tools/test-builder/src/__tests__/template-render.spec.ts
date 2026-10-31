@@ -1,5 +1,7 @@
+import { resolve } from 'node:path';
 import { Builder } from '@blog/core';
 import { builderCache as jssCache, cssCodeCache } from '@blog/core/src/plugins/jss-loader/store';
+import { getPostsInputCode } from '@blog/core/src/plugins/post-loader/utils';
 import { builderCache as scriptCache } from '@blog/core/src/plugins/script-loader/utils';
 import { HMRClientScriptPath } from '@blog/shared';
 import { describe, expect, it } from '@blog/test-toolkit';
@@ -25,9 +27,9 @@ describe('模板内部装配资源', () => {
 
   before(async function () {
     this.timeout(120_000);
-    // 子构建缓存不区分 mode 和 publicPath，隔离同一进程中的生产构建测试。
+    // 开发与生产使用不同资源配置，隔离进程内的子构建缓存。
     clearBuildCaches();
-    // 开发文章包含 Slide，验证两种文章模板以及 HMR 的上下文传递。
+    // 只编译两个最小 MDX 样例，保留真实解析、模板资源和 HMR 管线。
     const builder = new Builder({
       mode: 'development',
       publicPath: '/preview/',
@@ -39,6 +41,19 @@ describe('模板内部装配资源', () => {
         {
           name: 'test-template-render',
           apply(builder) {
+            builder.hooks.bundler.tap('test-template-render', (bundler) => {
+              bundler.hooks.load.tap({ name: 'test-template-render', stage: -100 }, (args) => {
+                if (args.namespace !== 'posts-loader') {
+                  return;
+                }
+
+                return {
+                  contents: getPostsInputCode(['post', 'slide'].map((name) =>
+                    resolve(args.pluginData, 'fixtures/templates', `${name}.mdx`).replaceAll('\\', '/'))),
+                  resolveDir: args.pluginData,
+                };
+              });
+            });
             builder.hooks.runner.tap('test-template-render', (runner) => {
               runner.registerHook(({ hooks }) => {
                 hooks.beforePageRender.tap('test-template-render', ({ page }) => {
