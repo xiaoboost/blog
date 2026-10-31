@@ -1,9 +1,6 @@
 import { createStyles, FontBody, TextPrimary } from '@blog/styles/compile';
 
 export default createStyles({
-  '@global': {
-    'article[aria-label="Stage1st 二游观察：六个专楼的一年"] [aria-live="polite"], article[aria-label="Stage1st 二游观察：六个专楼的一年"] [aria-live="polite"] + span[aria-hidden="true"]': { display: 'none' },
-  },
   page: {
     fontFamily: FontBody, color: TextPrimary, lineHeight: 1.6,
     '& h1, & h2, & h3, & p': { margin: 0 },
