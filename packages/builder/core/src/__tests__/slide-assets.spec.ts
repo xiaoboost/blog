@@ -33,9 +33,9 @@ describe('Slide 自动资源入口', () => {
     await rm(root, { recursive: true, force: true });
   });
 
-  async function compile(template: string, body = '# 正文') {
+  async function compile(template: string, body = '# 正文', meta = '') {
     const path = normalize(join(root, 'index.mdx'));
-    await writeFile(path, `---\ntitle: 样例\ncreate: 2026-01-01\nupdate: 2026-01-02\ntemplate: ${template}\n---\n\n${body}`);
+    await writeFile(path, `---\ntitle: 样例\ncreate: 2026-01-01\nupdate: 2026-01-02\ntemplate: ${template}\n${meta}---\n\n${body}`);
     const result = await loadAndTransform(builder, bundler.hooks, {
       path,
       namespace: 'mdx-loader',
@@ -47,13 +47,23 @@ describe('Slide 自动资源入口', () => {
     return result!.contents as string;
   }
 
-  it('在 MDX 编译前注入公共 glob 导入，并合并进 utils', async () => {
+  it('文章解析后注入带输出目录的 glob 导入，并合并进 utils', async () => {
     const code = await compile('slide');
-    assert.match(code, /import __slideAssets from ["']assets:\.\/\*\*\/\*\.\{script,jss\}\.ts["']/);
+    const request = code.match(/import __slideAssets from ["']([^"']+)["']/)?.[1];
+    assert.ok(request?.startsWith('assets:./**/*.{script,jss}.ts?outDir=posts%2F2026%2F'));
     assert.match(code, /defineUtils\(__slideAssets\)/);
     assert.match(code, /样例/);
     assert.match(code, /正文/);
     assert.equal(await compile('slide'), code, '缓存命中时不重复注入');
+  });
+
+  it('自定义 pathname 经编码写入 import，修改 pathname 后输出新入口', async () => {
+    const pathname = '/posts/中文 空格+&/';
+    const first = await compile('slide', '# 正文', `pathname: ${pathname}\n`);
+    assert.ok(first.includes(`?outDir=${encodeURIComponent(pathname)}`));
+    const second = await compile('slide', '# 正文', 'pathname: /posts/renamed/\n');
+    assert.ok(second.includes('?outDir=%2Fposts%2Frenamed%2F'));
+    assert.ok(!second.includes(encodeURIComponent(pathname)));
   });
 
   it('普通文章不自动扫描，但可以手写公共 assets: 导入', async () => {
