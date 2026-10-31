@@ -8,7 +8,7 @@ const pluginName = 'asset-extractor';
 /** 全局 script 入口引用记录 */
 const scriptIsInside = new Map<string, boolean>();
 
-export const AssetExtractor = (): BuilderPlugin => ({
+export const AssetExtractor = (cssName?: string): BuilderPlugin => ({
   name: pluginName,
   apply(builder) {
     const {
@@ -75,8 +75,9 @@ export const AssetExtractor = (): BuilderPlugin => ({
         }
 
         const { path: oldPath, content } = asset;
-        const nameWithChunk = oldPath.replace(BundleFileName, chunkName);
-        const newPath = builder.parent?.renameAsset({ path: nameWithChunk, content });
+        const name = oldPath.endsWith('.css') ? cssName ?? chunkName : chunkName;
+        const nameWithChunk = oldPath.replace(BundleFileName, name);
+        const newPath = builder.renameAsset({ path: nameWithChunk, content });
 
         if (!newPath) {
           return;

@@ -1,3 +1,4 @@
+import { normalize } from '@blog/node';
 import type { BuilderPlugin } from '@blog/types';
 import { postAssetsNamespace } from '../post-loader/assets';
 import { getScriptBuilder } from './builder';
@@ -22,7 +23,11 @@ export const ScriptLoader = (): BuilderPlugin => ({
           return input;
         }
 
-        const scriptBuilder = await getScriptBuilder(path, builder, input);
+        const outDir = input.module.id.namespace === postAssetsNamespace
+          ? new URLSearchParams(input.module.id.suffix.slice(1)).get('outDir')
+          : null;
+        const publicPath = outDir ? normalize(builder.options.publicPath, outDir) : undefined;
+        const scriptBuilder = await getScriptBuilder(path, builder, input, publicPath);
         const assets = scriptBuilder.getAssets();
 
         return ctx.update(input, {
