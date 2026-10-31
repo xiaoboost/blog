@@ -70,10 +70,12 @@ describe('post compile pipeline', () => {
       filePath: '/test/post.mdx',
       pathname: 'custom/path',
       toc: false,
+      showPageNumberInSlide: true,
       lsp: false,
       template: 'post',
       draft: true,
       description: '中文简介',
+      coverImage: null,
     });
     expect(ast.type).eq('root');
     expect(post.default({ post: data })).deep.eq({

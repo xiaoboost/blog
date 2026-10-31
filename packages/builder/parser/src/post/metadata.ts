@@ -37,6 +37,10 @@ export function getPostMetaData(content: string, fileName: string) {
     throw new Error(`文章 lsp 配置必须是布尔值：${fileName}`);
   }
 
+  if (meta.showPageNumberInSlide !== undefined && typeof meta.showPageNumberInSlide !== 'boolean') {
+    throw new Error(`文章 showPageNumberInSlide 配置必须是布尔值：${fileName}`);
+  }
+
   if (meta.coverImage !== undefined && (
     typeof meta.coverImage !== 'string'
     || !meta.coverImage.trim()
@@ -102,10 +106,11 @@ export async function getPostData(content: string, fileName: string) {
       ? normalize(meta.pathname)
       : normalize(join('posts', createAt, decodeTitle)),
     toc: meta.toc ?? true,
+    showPageNumberInSlide: meta.showPageNumberInSlide ?? true,
     lsp: meta.lsp ?? false,
     template: meta.template ?? 'post',
     draft: meta.draft ?? false,
-    coverImage: meta.coverImage,
+    coverImage: meta.coverImage ?? null,
     description:
       meta.description
       ?? meta.content

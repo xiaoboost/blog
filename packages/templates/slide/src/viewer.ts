@@ -53,7 +53,11 @@ function active() {
   const loadingError = find<HTMLElement>(loadingStyles.classes.error);
   const retry = find<HTMLButtonElement>(loadingStyles.classes.retry);
   const sections = Array.from(canvas.querySelectorAll<HTMLElement>('[data-slide-section]'));
-  totalPages.textContent = String(sections.length).padStart(2, '0');
+
+  if (totalPages) {
+    totalPages.textContent = String(sections.length).padStart(2, '0');
+  }
+
   const events = new AbortController();
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   let pending: AbortController | undefined;
@@ -102,7 +106,11 @@ function active() {
     let loadingShown = false;
     pending = request;
     page = index;
-    currentPage.textContent = String(page + 1).padStart(2, '0');
+
+    if (currentPage) {
+      currentPage.textContent = String(page + 1).padStart(2, '0');
+    }
+
     card.setAttribute('aria-busy', 'true');
     canvas.style.visibility = 'hidden';
     window.clearTimeout(loadingTimer);

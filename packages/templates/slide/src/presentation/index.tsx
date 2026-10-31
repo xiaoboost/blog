@@ -1,14 +1,15 @@
-import React, { type ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { Loading, LoadingError } from '../loading';
 import { Toolbar } from '../toolbar';
 import styles from './index.jss';
 
 interface PresentationProps {
   title: string;
+  showPageNumber: boolean;
   children: ReactNode;
 }
 
-export function Presentation({ title, children }: PresentationProps) {
+export function Presentation({ title, children, showPageNumber }: PresentationProps) {
   return (
     <div className={styles.classes.presentation}>
       <article
@@ -19,7 +20,7 @@ export function Presentation({ title, children }: PresentationProps) {
       >
         <div className={styles.classes.canvas}>{children}</div>
         <Loading />
-        <Toolbar title={title} />
+        <Toolbar title={title} showPageNumber={showPageNumber} />
         <noscript>请启用 JavaScript 查看幻灯片。</noscript>
       </article>
       <LoadingError />
