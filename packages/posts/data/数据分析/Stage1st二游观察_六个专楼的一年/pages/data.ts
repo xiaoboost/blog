@@ -9,3 +9,15 @@ export const games = [
 ] as const;
 
 export type GameId = typeof games[number]['id'];
+
+export const accountCounts = {
+  genshin: 272,
+  starRail: 346,
+  zenless: 278,
+  arknights: 361,
+  endfield: 812,
+  wutheringWaves: 607,
+} satisfies Record<GameId, number>;
+
+export const uniqueAccounts = 1729;
+export const formatNumber = (n: number) => n.toLocaleString('zh-CN');
