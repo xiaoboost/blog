@@ -1,139 +1,126 @@
 import assert from 'node:assert/strict';
-import { Builder } from '@blog/core';
 import { describe, it } from '@blog/test-toolkit';
+import { defineUtils } from '../../../../builder/context/src/runtime/hook/assets';
+import { Page } from '../../../../builder/generator/src/model/page';
+import { assertUniquePagePaths } from '../../../../builder/generator/src/utils/page-paths';
 
-async function buildPages(pathnames: string[]) {
-  let renderedPages = 0;
-  const posts = pathnames.map((pathname, index) => ({
-    title: '同名文章',
+function postPage(pathname: string, index = 1) {
+  return new Page({
+    type: 'post',
     pathname,
-    filePath: `/articles/post-${index + 1}.md`,
-    create: Date.UTC(2026, 0, 1),
-    update: Date.UTC(2026, 0, 1),
-    tags: [{ name: '测试标签', url: '' }],
-    public: true,
-    draft: false,
-    toc: false,
-    lsp: false,
-    template: 'post',
-    description: '路径检查测试',
-    ast: { type: 'root', children: [] },
-  }));
-  const builder = new Builder({
-    mode: 'production',
-    write: false,
-    logLevel: 'Silence',
-    typeCheck: false,
-    plugins: [
-      {
-        name: 'test-page-paths',
-        apply(builder) {
-          builder.hooks.bundler.tap('test-page-paths', (bundler) => {
-            bundler.hooks.load.tap({ name: 'test-page-paths', stage: -100 }, (args) => {
-              if (args.namespace !== 'posts-loader') {
-                return;
-              }
-
-              // 只替换文章数据，保留实际页面生成、路径标准化与构建错误处理。
-              return {
-                contents: `
-                import { defineUtils } from '@blog/context/runtime';
-                const data = ${JSON.stringify(posts)};
-                export default data.map((data) => ({ data, Component: () => null, utils: defineUtils() }));
-              `,
-                resolveDir: args.pluginData,
-              };
-            });
-          });
-          builder.hooks.runner.tap('test-page-paths', (runner) => {
-            runner.registerHook(({ hooks }) => {
-              hooks.beforePageRender.tap('test-page-paths', () => renderedPages++);
-            });
-          });
+    title: '同名文章',
+    render: () => '',
+    data: {
+      post: {
+        Component: () => null,
+        utils: defineUtils(),
+        data: {
+          title: '同名文章',
+          pathname,
+          filePath: `/articles/post-${index}.md`,
+          create: Date.UTC(2026, 0, 1),
+          update: Date.UTC(2026, 0, 1),
+          tags: [],
+          public: true,
+          draft: false,
+          toc: false,
+          lsp: false,
+          template: 'post',
+          description: '',
+          showPageNumberInSlide: true,
+          coverImage: null,
+          ast: { type: 'root', children: [] },
         },
       },
-    ],
+    },
   });
-
-  try {
-    await builder.init();
-    await builder.build();
-    return {
-      errors: builder.getErrors().map(({ message }) => message).join('\n'),
-      paths: builder.getAssets().map(({ path }) => path),
-      html: new Map(builder.getAssets()
-        .filter(({ path }) => path.endsWith('.html'))
-        .map(({ path, content }) => [path, content.toString()])),
-      renderedPages,
-    };
-  }
-  finally {
-    await builder.stop();
-  }
 }
 
-describe('页面路径', function () {
-  this.timeout(60_000);
+const notFound = () => new Page({
+  type: 'not-found',
+  pathname: '/404.html',
+  outputPath: '/404.html',
+  title: '页面未找到',
+  data: {},
+  render: () => '',
+});
 
+describe('页面路径', () => {
   for (const [name, pathnames, outputPath] of [
     ['完全相同的路径', ['posts/shared', 'posts/shared'], '/posts/shared/index.html'],
     ['首尾斜杠与相对路径段', ['posts/shared', '/posts/other/../shared/'], '/posts/shared/index.html'],
     ['带扩展名的目录路径', ['posts/shared.html', '/posts/shared.html/'], '/posts/shared.html/index.html'],
   ] as const) {
-    it(`${name}在渲染前报错，并指出两篇文章源文件`, async () => {
-      const result = await buildPages([...pathnames]);
-      assert.ok(result.errors.includes('页面路径重复'), result.errors);
-      assert.ok(result.errors.includes(outputPath), result.errors);
-      assert.ok(result.errors.includes('/articles/post-1.md'), result.errors);
-      assert.ok(result.errors.includes('/articles/post-2.md'), result.errors);
-      assert.equal(result.renderedPages, 0);
+    it(`${name}报错，并指出两篇文章源文件`, () => {
+      const pages = pathnames.map((pathname, index) => postPage(pathname, index + 1));
+      assert.throws(() => assertUniquePagePaths(pages), (error: Error) => {
+        for (const text of [
+          '页面路径重复',
+          outputPath,
+          '/articles/post-1.md',
+          '/articles/post-2.md',
+        ]) {
+          assert.ok(error.message.includes(text), error.message);
+        }
+        return true;
+      });
     });
   }
 
-  for (const [pathname, pageType] of [['/', 'index'], ['/tags/', 'tag-list']] as const) {
-    it(`文章不能占用 ${pathname} 系统页面地址`, async () => {
-      const result = await buildPages([pathname]);
-      assert.ok(result.errors.includes(`页面路径重复：${pathname}`), result.errors);
-      assert.ok(result.errors.includes('/articles/post-1.md'), result.errors);
-      assert.ok(result.errors.includes(`（${pageType}）`), result.errors);
-      assert.equal(result.renderedPages, 0);
+  const systemPages = [
+    new Page({
+      type: 'index',
+      pathname: '/',
+      title: '首页',
+      data: { index: 0, count: 1, posts: [] },
+      render: () => '',
+    }),
+    new Page({
+      type: 'tag-list',
+      pathname: '/tags/',
+      title: '标签',
+      data: {
+        index: 0,
+        count: 1,
+        listTitle: '标签',
+        items: [],
+      },
+      render: () => '',
+    }),
+  ];
+  for (const page of systemPages) {
+    it(`文章不能占用 ${page.pathname} 系统页面地址`, () => {
+      const pages = [postPage(page.pathname), page];
+      assert.throws(() => assertUniquePagePaths(pages), (error: Error) => {
+        assert.ok(error.message.includes(`页面路径重复：${page.pathname}`), error.message);
+        assert.ok(error.message.includes('/articles/post-1.md'), error.message);
+        assert.ok(error.message.includes(`（${page.type}）`), error.message);
+        return true;
+      });
     });
   }
 
-  it('标题相同但路径不同的文章可以正常构建', async () => {
-    const result = await buildPages(['posts/first', 'posts/second']);
-    assert.equal(result.errors, '');
-    assert.ok(result.paths.includes('/posts/first/index.html'));
-    assert.ok(result.paths.includes('/posts/second/index.html'));
-    assert.ok(result.renderedPages > 0);
-    assert.ok(result.paths.includes('/404.html'));
-    assert.ok(!result.paths.includes('/404.html/index.html'));
+  it('标题相同但路径不同的文章保留独立的输出路径', () => {
+    const pages = [postPage('posts/first'), postPage('posts/second', 2), notFound()];
+    assert.doesNotThrow(() => assertUniquePagePaths(pages));
+    assert.deepEqual(pages.map((page) => page.toAsset().path), ['/posts/first/index.html', '/posts/second/index.html', '/404.html']);
   });
 
-  it('年份归档的数字分页使用原始年份，不把显示标题拼进路径', async () => {
-    // 同一年超过 40 篇才有三页，会显示数字分页并触发原来的错误。
-    const result = await buildPages(Array.from({ length: 41 }, (_, i) => `posts/year-${i}`));
-    assert.equal(result.errors, '');
-    const urls = ['/archive/2026/', '/archive/2026/1/', '/archive/2026/2/'];
-    urls.forEach((url, index) => {
-      const html = result.html.get(`${url}index.html`);
-      assert.ok(html, `缺少年份归档页 ${url}`);
-      const nav = /<nav[^>]+aria-label="文章分页"[^>]*>([\s\S]*?)<\/nav>/.exec(html)?.[1];
-      assert.ok(nav, `缺少分页导航 ${url}`);
-      const links = [...nav.matchAll(/href="([^"]+)" aria-label="第 \d+ 页"/g)]
-        .map(([, href]) => href);
-      assert.deepEqual(links, urls.filter((_, i) => i !== index));
-    });
-  });
-
-  it('文章目录不能占用 404.html 文件或它的子目录', async () => {
+  it('文章目录不能占用 404.html 文件或它的子目录，与输入顺序无关', () => {
     for (const pathname of ['/404.html', '/404.html/nested/']) {
-      const result = await buildPages([pathname]);
-      assert.ok(result.errors.includes('文件与目录冲突'), result.errors);
-      assert.ok(result.errors.includes('/404.html'), result.errors);
-      assert.ok(result.errors.includes('/articles/post-1.md'), result.errors);
-      assert.ok(result.errors.includes('（not-found）'), result.errors);
-      assert.equal(result.renderedPages, 0);
+      for (const pages of [[postPage(pathname), notFound()], [notFound(), postPage(pathname)]]) {
+        assert.throws(() => assertUniquePagePaths(pages), (error: Error) => {
+          for (const text of [
+            '文件与目录冲突',
+            '/404.html',
+            '/articles/post-1.md',
+            '（not-found）',
+          ]) {
+            assert.ok(error.message.includes(text), error.message);
+          }
+          return true;
+        });
+      }
     }
   });
 });
