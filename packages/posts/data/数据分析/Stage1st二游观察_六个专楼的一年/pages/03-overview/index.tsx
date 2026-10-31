@@ -2,6 +2,7 @@ import { AxisBottom, AxisLeft, Bar, Chart, Circle, GridColumns, Group, Pie, scal
 import { Box, Flex, Grid, Section } from '@blog/mdx-slide';
 import React from 'react';
 import { contentGap, pagePadding } from '../constants';
+import { PageTitle } from '../../components/page-title';
 import sharedStyles from '../shared.jss';
 import { gameStatistics, totalReplies, uniqueAccounts, formatNumber } from './data';
 import styles from './style.jss';
@@ -17,7 +18,7 @@ export function Overview() {
       <Flex direction="column" height="100%" padding={pagePadding} gap={0}>
         <Box flex="fixed">
           <p className={s.eyebrow}>先看规模</p>
-          <h2>聊了多少条，又有多少人在聊？</h2>
+          <PageTitle>聊了多少条，又有多少人在聊？</PageTitle>
         </Box>
         <Grid columns={2} gap={60} height="auto" flex="fixed" margin={`${contentGap}px 0 0`}>
           <Box minWidth={0}>

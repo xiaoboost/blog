@@ -19,5 +19,14 @@ export const accountCounts = {
   wutheringWaves: 607,
 } satisfies Record<GameId, number>;
 
+export const replyCounts = {
+  genshin: 21121,
+  starRail: 13436,
+  zenless: 8154,
+  arknights: 8686,
+  endfield: 22851,
+  wutheringWaves: 27781,
+} satisfies Record<GameId, number>;
+
 export const uniqueAccounts = 1729;
 export const formatNumber = (n: number) => n.toLocaleString('zh-CN');

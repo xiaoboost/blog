@@ -5,8 +5,6 @@ import {
   TextPrimary,
   TextSecondary,
   FontBody,
-  FontHeading,
-  PrimaryTitleFont,
 } from '@blog/styles/compile';
 
 export default createStyles({
@@ -35,8 +33,6 @@ export default createStyles({
     ':fullscreen &': { display: 'none' },
   },
   title: {
-    fontFamily: `${PrimaryTitleFont.fontFamily},${FontHeading}`,
-    fontWeight: PrimaryTitleFont.fontWeight,
     fontSize: 14,
     lineHeight: '20px',
     overflow: 'hidden',

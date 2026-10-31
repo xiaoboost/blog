@@ -1,3 +1,5 @@
+import { useRenderContext } from '@blog/context/runtime';
+import { PrimaryTitleFont } from '@blog/styles';
 import React from 'react';
 import styles from './index.jss';
 
@@ -6,9 +8,12 @@ interface ToolbarProps {
 }
 
 export function Toolbar({ title }: ToolbarProps) {
+  const { page } = useRenderContext();
+  const titleFont = page.getFontBucket(PrimaryTitleFont.fontFamily);
+
   return (
     <div className={styles.classes.toolbar}>
-      <span className={styles.classes.title} title={title}>{title}</span>
+      <span className={`${styles.classes.title} ${titleFont.getClassName()}`} title={title}>{title}</span>
       <span className={styles.classes.counter} aria-live="polite" aria-atomic="true">
         <span className={styles.classes.currentPage}>—</span>
         <span> / </span>
