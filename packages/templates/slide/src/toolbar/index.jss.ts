@@ -11,7 +11,7 @@ export default createStyles({
   toolbar: {
     position: 'absolute',
     right: 16,
-    bottom: 16,
+    top: 16,
     display: 'flex',
     alignItems: 'center',
     gap: 10,
