@@ -1,0 +1,41 @@
+{
+  "name": "@blog/mdx-chart",
+  "description": "blog's SVG chart canvas and visx components",
+  "version": "1.0.0",
+  "author": "xiaoboost",
+  "license": "MIT",
+  "source": "src/index.ts",
+  "types": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "test": "mocha",
+    "lint": "eslint --no-error-on-unmatched-pattern --no-quiet --max-warnings=0 src/**/*.{ts,tsx,js,jsx}",
+    "lint:fix": "eslint --fix --no-error-on-unmatched-pattern --no-quiet --max-warnings=0 src/**/*.{ts,tsx,js,jsx}",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@visx/axis": "4.0.0",
+    "@visx/curve": "4.0.0",
+    "@visx/grid": "4.0.0",
+    "@visx/group": "4.0.0",
+    "@visx/scale": "4.0.0",
+    "@visx/shape": "4.0.0",
+    "react": "18.3.1"
+  },
+  "devDependencies": {
+    "@blog/eslint-config": "workspace:*",
+    "@blog/test-toolkit": "workspace:*",
+    "@blog/tsconfig": "workspace:*",
+    "@types/blog": "workspace:*",
+    "@types/node": "24.12.2",
+    "@types/react": "18.3.27",
+    "@types/react-dom": "18.3.0",
+    "eslint": "10.2.1",
+    "mocha": "10.8.2",
+    "react-dom": "18.3.1",
+    "tslib": "2.8.1",
+    "typescript": "6.0.3"
+  }
+}

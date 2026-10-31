@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@blog/context": "workspace:*",
+    "@blog/mdx-chart": "workspace:*",
     "@blog/mdx-code-block-typescript": "workspace:*",
     "@blog/mdx-font-block": "workspace:*",
     "@blog/mdx-katex": "workspace:*",
