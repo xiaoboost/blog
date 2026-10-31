@@ -2,6 +2,6 @@ import React from 'react';
 import { YearlyTrends } from '../../components/yearly-trends';
 import { series } from './data';
 
-export function EndfieldTrends() {
+export function ZenlessTrends() {
   return <YearlyTrends series={series} />;
 }

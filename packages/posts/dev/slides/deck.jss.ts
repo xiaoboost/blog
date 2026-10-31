@@ -11,7 +11,7 @@ export default createStyles({
     '& h2': { fontSize: 66, fontWeight: 500, lineHeight: 1.3 },
     '& h3': { fontSize: 36, fontWeight: 500 },
   },
-  eyebrow: { fontSize: 21, letterSpacing: '.18em', color: TextTertiary, marginBottom: '27px !important' },
+  titleLabel: { fontSize: 21, letterSpacing: '.18em', color: TextTertiary },
   subtitle: { color: TextSecondary, fontSize: 33, marginTop: '36px !important' },
   note: { color: TextSecondary, fontSize: 25.5 },
   panel: { background: BgPrimary, border: `1.5px solid ${BorderPrimary}`, borderRadius: 18, padding: 39 },

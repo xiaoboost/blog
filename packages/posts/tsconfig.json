@@ -1,0 +1,9 @@
+{
+  "extends": "../tools/tsconfig/tsconfig.json",
+  "include": ["data", "dev", "types", "../tools/typings"],
+  "exclude": ["node_modules", "dist"],
+  "compilerOptions": {
+    "lib": ["DOM", "ESNext"],
+    "types": ["react"]
+  }
+}

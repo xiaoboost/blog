@@ -71,6 +71,7 @@ export class Bundler implements BundlerInstance {
         bundle: true,
         format: 'cjs',
         target: 'esnext',
+        jsx: 'automatic',
         write: false,
         logLevel: 'silent',
         sourcemap: 'external',

@@ -2,6 +2,24 @@
 
 博客 PPT 的布局、动画声明与预构建数据收集组件。动画编排在构建时解析；当前尚未接入播放执行。
 
+## 标题前的短标签
+
+`TitleLabel` 用于大标题上方的章节名或提示文字，输出普通段落，不占用标题层级。
+默认使用正文黑体、24px 字号、`.12em` 字距和次级文字颜色，下方间距为 20px。
+
+```tsx
+import { TitleLabel } from '@blog/mdx-slide';
+
+<TitleLabel>先看规模</TitleLabel>
+<h2>六个专楼的一年</h2>
+
+// 封面需要更宽的间距；0 表示不留间距。
+<TitleLabel marginBottom={36}>Stage1st 二游观察</TitleLabel>
+```
+
+支持 `className`、`style`、`id`、`data-*` 和 `aria-*`；`style` 可以覆盖默认间距。
+字体和颜色样式随 Slide 公共资源加载，无需在每篇文章的 JSS 中重复声明。
+
 ## 编排规则
 
 ```text

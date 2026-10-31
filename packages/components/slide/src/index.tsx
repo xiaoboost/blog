@@ -7,6 +7,7 @@ export { Slide } from './slide/slide';
 export { Section } from './slide/section';
 export type { SlideProps, SectionProps } from './slide/types';
 export type { VisualProps, Alignment } from './types';
+export { TitleLabel, type TitleLabelProps } from './title-label';
 export * from './layout';
 export * from './animation';
 

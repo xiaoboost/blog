@@ -3,270 +3,256 @@ import type { TrendSeries } from '../../components/yearly-trends/data';
 // Archived daily replies, version summaries and event calendar.
 // Prepared and verified by tmp/prepare-slide-version-trends.cjs.
 export const series = {
-  "gameId": "zenless",
+  "gameId": "genshin",
   "stageKind": "version",
-  "daily": [10, 14, 15, 27, 7, 10, 17, 19, 25, 22, 12, 15, 19, 37, 12, 20, 19, 55, 40, 21, 19, 19, 48, 25, 40, 7, 88, 33, 41, 94, 36, 29, 18, 21, 14, 20, 14, 43, 21, 8, 11, 21, 18, 16, 6, 44, 10, 34, 8, 14, 22, 4, 88, 45, 30, 19, 14, 33, 22, 19, 22, 44, 85, 279, 91, 72, 89, 44, 68, 29, 17, 29, 25, 24, 15, 9, 23, 2, 1, 4, 11, 13, 12, 13, 14, 11, 7, 11, 11, 3, 14, 7, 15, 4, 31, 10, 1, 16, 9, 15, 22, 66, 26, 15, 21, 4, 7, 8, 3, 8, 15, 10, 20, 4, 2, 10, 2, 9, 5, 1, 7, 13, 20, 7, 2, 14, 5, 27, 3, 10, 2, 4, 10, 7, 2, 2, 9, 23, 8, 9, 4, 5, 1, 15, 14, 20, 19, 50, 28, 8, 10, 23, 4, 6, 3, 7, 8, 10, 14, 5, 0, 5, 5, 3, 6, 2, 10, 13, 3, 26, 6, 25, 2, 2, 11, 31, 2, 0, 42, 17, 4, 15, 41, 15, 36, 37, 7, 4, 1, 8, 36, 19, 10, 9, 19, 23, 2, 4, 1, 7, 5, 6, 18, 5, 2, 1, 15, 4, 1, 8, 10, 5, 4, 17, 3, 0, 1, 3, 4, 11, 17, 75, 29, 28, 21, 20, 16, 30, 8, 10, 31, 16, 133, 28, 57, 67, 44, 70, 69, 24, 32, 19, 44, 19, 19, 20, 2, 5, 12, 14, 22, 32, 14, 23, 11, 15, 7, 9, 13, 27, 2, 3, 115, 19, 35, 34, 35, 31, 45, 66, 19, 55, 51, 45, 207, 93, 155, 55, 38, 53, 33, 44, 39, 45, 25, 36, 33, 12, 7, 19, 20, 8, 7, 16, 8, 41, 16, 33, 4, 2, 19, 22, 8, 16, 40, 24, 13, 14, 47, 37, 26, 51, 14, 25, 14, 0, 0, 6, 28, 21, 26, 10, 22, 19, 4, 2, 5, 20, 28, 18, 10, 4, 11, 11, 2, 12, 4, 56, 13, 21, 4, 5, 17, 16, 4, 12, 46, 25, 13, 20, 10, 6, 3, 20, 3, 9, 22, 32, 61, 19, 151, 76, 18, 4, 19],
+  "daily": [42, 122, 91, 86, 35, 66, 35, 18, 56, 27, 43, 28, 22, 67, 41, 85, 50, 14, 17, 26, 61, 76, 47, 53, 139, 54, 22, 54, 41, 19, 13, 47, 30, 16, 103, 125, 230, 131, 78, 64, 105, 60, 126, 135, 92, 16, 31, 26, 57, 99, 44, 52, 107, 34, 11, 58, 59, 88, 80, 35, 83, 30, 53, 52, 57, 54, 154, 45, 55, 60, 49, 71, 64, 96, 27, 33, 106, 161, 377, 255, 228, 127, 102, 77, 98, 87, 108, 100, 33, 20, 53, 49, 51, 78, 49, 58, 51, 56, 112, 102, 56, 44, 26, 20, 45, 18, 74, 41, 41, 65, 8, 56, 27, 9, 33, 21, 35, 20, 11, 103, 148, 71, 75, 66, 76, 59, 33, 81, 31, 54, 9, 18, 38, 30, 33, 29, 35, 28, 34, 39, 39, 75, 20, 48, 23, 36, 24, 18, 11, 14, 56, 37, 4, 11, 43, 35, 23, 29, 15, 20, 37, 128, 129, 105, 62, 23, 27, 38, 59, 78, 51, 48, 9, 19, 70, 49, 45, 52, 85, 30, 9, 29, 70, 33, 50, 39, 32, 38, 28, 27, 56, 26, 90, 63, 10, 43, 18, 28, 38, 41, 37, 49, 46, 119, 219, 222, 100, 54, 34, 196, 93, 100, 69, 52, 27, 35, 53, 36, 76, 59, 31, 15, 16, 31, 71, 77, 135, 38, 25, 42, 137, 109, 59, 185, 44, 34, 18, 30, 23, 14, 77, 176, 67, 42, 73, 86, 239, 103, 116, 80, 62, 44, 87, 95, 38, 38, 31, 22, 34, 36, 23, 58, 35, 7, 19, 63, 39, 67, 21, 20, 14, 10, 14, 33, 38, 39, 143, 70, 19, 28, 22, 62, 37, 41, 34, 32, 39, 51, 171, 144, 81, 53, 76, 79, 90, 80, 63, 43, 46, 41, 31, 46, 39, 81, 71, 45, 34, 53, 60, 49, 38, 29, 44, 31, 29, 1, 0, 8, 13, 146, 79, 41, 42, 113, 32, 10, 8, 55, 87, 57, 193, 137, 91, 81, 48, 89, 64, 92, 39, 46, 27, 48, 61, 24, 33, 49, 49, 39, 22, 43, 55, 94, 64, 44, 22, 17, 43, 49, 34, 16, 61, 51, 32, 25, 23],
   "stages": [
     {
-      "label": "2.3",
-      "shortLabel": "2.3",
+      "label": "月之二",
+      "shortLabel": "月之二",
       "start": "2025-10-28",
-      "endExclusive": "2025-11-26",
+      "endExclusive": "2025-12-03",
       "partial": true,
       "prerelease": false,
-      "days": 29,
-      "replies": 736,
-      "dailyMean": 25.379310344827587,
-      "accounts": 89
+      "days": 36,
+      "replies": 1871,
+      "dailyMean": 51.97222222222222,
+      "accounts": 106
     },
     {
-      "label": "2.4",
-      "shortLabel": "2.4",
-      "start": "2025-11-26",
-      "endExclusive": "2025-12-30",
-      "partial": false,
-      "prerelease": false,
-      "days": 34,
-      "replies": 947,
-      "dailyMean": 27.852941176470587,
-      "accounts": 117
-    },
-    {
-      "label": "2.5",
-      "shortLabel": "2.5",
-      "start": "2025-12-30",
-      "endExclusive": "2026-02-06",
-      "partial": false,
-      "prerelease": false,
-      "days": 38,
-      "replies": 1071,
-      "dailyMean": 28.18421052631579,
-      "accounts": 138
-    },
-    {
-      "label": "2.6",
-      "shortLabel": "2.6",
-      "start": "2026-02-06",
-      "endExclusive": "2026-03-24",
-      "partial": false,
-      "prerelease": false,
-      "days": 46,
-      "replies": 498,
-      "dailyMean": 10.826086956521738,
-      "accounts": 98
-    },
-    {
-      "label": "2.7",
-      "shortLabel": "2.7",
-      "start": "2026-03-24",
-      "endExclusive": "2026-05-06",
-      "partial": false,
-      "prerelease": false,
-      "days": 43,
-      "replies": 555,
-      "dailyMean": 12.906976744186046,
-      "accounts": 96
-    },
-    {
-      "label": "2.8",
-      "shortLabel": "2.8",
-      "start": "2026-05-06",
-      "endExclusive": "2026-06-17",
+      "label": "月之三",
+      "shortLabel": "月之三",
+      "start": "2025-12-03",
+      "endExclusive": "2026-01-14",
       "partial": false,
       "prerelease": false,
       "days": 42,
-      "replies": 554,
-      "dailyMean": 13.19047619047619,
-      "accounts": 88
+      "replies": 3068,
+      "dailyMean": 73.04761904761905,
+      "accounts": 133
     },
     {
-      "label": "3.0",
-      "shortLabel": "3.0",
-      "start": "2026-06-17",
-      "endExclusive": "2026-07-29",
+      "label": "月之四",
+      "shortLabel": "月之四",
+      "start": "2026-01-14",
+      "endExclusive": "2026-02-25",
       "partial": false,
       "prerelease": false,
       "days": 42,
-      "replies": 1406,
-      "dailyMean": 33.476190476190474,
-      "accounts": 121
+      "replies": 3024,
+      "dailyMean": 72,
+      "accounts": 143
     },
     {
-      "label": "3.1",
-      "shortLabel": "3.1",
-      "start": "2026-07-29",
-      "endExclusive": "2026-09-09",
+      "label": "月之五",
+      "shortLabel": "月之五",
+      "start": "2026-02-25",
+      "endExclusive": "2026-04-08",
       "partial": false,
       "prerelease": false,
       "days": 42,
-      "replies": 1419,
-      "dailyMean": 33.785714285714285,
-      "accounts": 135
+      "replies": 1733,
+      "dailyMean": 41.26190476190476,
+      "accounts": 99
     },
     {
-      "label": "3.2",
-      "shortLabel": "3.2",
-      "start": "2026-09-09",
-      "endExclusive": "2026-10-21",
+      "label": "月之六",
+      "shortLabel": "月之六",
+      "start": "2026-04-08",
+      "endExclusive": "2026-05-20",
       "partial": false,
       "prerelease": false,
       "days": 42,
-      "replies": 620,
-      "dailyMean": 14.761904761904763,
-      "accounts": 84
+      "replies": 1998,
+      "dailyMean": 47.57142857142857,
+      "accounts": 123
     },
     {
-      "label": "3.3",
-      "shortLabel": "3.3",
-      "start": "2026-10-21",
+      "label": "月之七",
+      "shortLabel": "月之七",
+      "start": "2026-05-20",
+      "endExclusive": "2026-07-01",
+      "partial": false,
+      "prerelease": false,
+      "days": 42,
+      "replies": 3080,
+      "dailyMean": 73.33333333333333,
+      "accounts": 139
+    },
+    {
+      "label": "月之八",
+      "shortLabel": "月之八",
+      "start": "2026-07-01",
+      "endExclusive": "2026-08-12",
+      "partial": false,
+      "prerelease": false,
+      "days": 42,
+      "replies": 2103,
+      "dailyMean": 50.07142857142857,
+      "accounts": 124
+    },
+    {
+      "label": "7.0",
+      "shortLabel": "7.0",
+      "start": "2026-08-12",
+      "endExclusive": "2026-09-23",
+      "partial": false,
+      "prerelease": false,
+      "days": 42,
+      "replies": 2339,
+      "dailyMean": 55.69047619047619,
+      "accounts": 136
+    },
+    {
+      "label": "7.1",
+      "shortLabel": "7.1",
+      "start": "2026-09-23",
       "endExclusive": "2026-10-28",
       "partial": true,
       "prerelease": false,
-      "days": 7,
-      "replies": 348,
-      "dailyMean": 49.714285714285715,
-      "accounts": 72
+      "days": 35,
+      "replies": 1905,
+      "dailyMean": 54.42857142857143,
+      "accounts": 131
     }
   ],
   "events": [
     {
-      "date": "2025-11-14",
-      "title": "2.4 前瞻",
-      "id": "preview-supplement-20261031-14",
+      "date": "2025-11-21",
+      "title": "月之三前瞻",
+      "id": "preview-supplement-20261031-01",
       "kind": "preview",
       "sources": [
-        "https://www.weibo.com/7632078520/QdtOacOBK"
+        "https://www.bilibili.com/video/BV1FAU5BtEqR/"
       ]
     },
     {
-      "date": "2025-12-19",
-      "title": "2.5 前瞻",
-      "id": "preview-supplement-20261031-15",
+      "date": "2026-01-02",
+      "title": "月之四前瞻",
+      "id": "genshin-2026-01-02-preview-22602afa80",
       "kind": "preview",
       "sources": [
-        "https://www.bilibili.com/video/BV1m9qoBAECS/"
+        "https://genshin.hoyoverse.com/ja/news/detail/161801"
       ]
     },
     {
-      "date": "2026-01-30",
-      "title": "2.6 前瞻",
-      "id": "preview-supplement-20261031-16",
+      "date": "2026-02-13",
+      "title": "月之五前瞻",
+      "id": "preview-supplement-20261031-02",
       "kind": "preview",
       "sources": [
-        "https://zenless.hoyoverse.com/en-us/news/162441"
+        "https://genshin.hoyoverse.com/ja/news/detail/162644"
       ]
     },
     {
-      "date": "2026-03-14",
-      "title": "2.7 前瞻",
-      "id": "preview-supplement-20261031-17",
+      "date": "2026-03-27",
+      "title": "月之六前瞻",
+      "id": "preview-supplement-20261031-03",
       "kind": "preview",
       "sources": [
-        "https://zenless.hoyoverse.com/zh-cn/news/163136"
+        "https://genshin.hoyoverse.com/zh-tw/news/detail/163259"
       ]
     },
     {
-      "date": "2026-04-24",
-      "title": "2.8 前瞻",
-      "id": "preview-supplement-20261031-18",
+      "date": "2026-05-08",
+      "title": "月之七前瞻",
+      "id": "preview-supplement-20261031-04",
       "kind": "preview",
       "sources": [
-        "https://www.bilibili.com/list/1636034895?bvid=BV1RyojB1Eeq&oid=116459514631225"
+        "https://www.bilibili.com/list/ml3922435504?bvid=BV1pbdgBzELK&oid=116538266949807"
       ]
     },
     {
-      "date": "2026-06-06",
-      "title": "3.0前瞻",
-      "id": "zenless-2026-06-06-preview-db1ac0152a",
+      "date": "2026-06-18",
+      "title": "月之八前瞻",
+      "id": "genshin-2026-06-18-preview-5eb99783cb",
       "kind": "preview",
       "sources": [
-        "https://zenless.hoyoverse.com/en-us/news/164633?catchSpider=1",
-        "https://www.bilibili.com/video/BV1HqEn6VE6e/"
+        "https://www.bilibili.com/opus/1214376417851080706"
       ]
     },
     {
-      "date": "2026-07-17",
-      "title": "3.1前瞻",
-      "id": "zenless-2026-07-17-preview-ddaa8e496b",
+      "date": "2026-07-31",
+      "title": "7.0 前瞻",
+      "id": "preview-supplement-20261031-05",
       "kind": "preview",
       "sources": [
-        "https://zenless.hoyoverse.com/zh-tw/news/165248?catchSpider=1",
-        "https://www.youtube.com/watch?v=rxAdX4RzxCU"
+        "https://genshin.hoyoverse.com/zh-tw/news/detail/165406"
       ]
     },
     {
-      "date": "2026-08-28",
-      "title": "3.2 前瞻",
-      "id": "preview-supplement-20261031-19",
+      "date": "2026-09-12",
+      "title": "7.1 前瞻",
+      "id": "preview-supplement-20261031-06",
       "kind": "preview",
       "sources": [
-        "https://zzz.mihoyo.com/news/165853"
+        "https://genshin.hoyoverse.com/m/en/news/detail/166004"
       ]
     },
     {
-      "date": "2026-10-09",
-      "title": "3.3前瞻",
-      "id": "zenless-2026-10-09-preview-58b27187ec",
+      "date": "2026-10-23",
+      "title": "7.2 前瞻",
+      "id": "preview-supplement-20261031-07",
       "kind": "preview",
       "sources": [
-        "https://zenless.hoyoverse.com/zh-cn/news/166552?page=world"
+        "https://genshin.hoyoverse.com/zh-tw/news/detail/166991"
       ]
     }
   ],
   "annotations": [
     {
-      "date": "2025-11-14",
-      "label": "2.4 前瞻",
+      "date": "2025-11-21",
+      "label": "月之三前瞻",
       "dx": 0,
       "dy": -140
     },
     {
-      "date": "2025-12-19",
-      "label": "2.5 前瞻",
+      "date": "2026-01-02",
+      "label": "月之四前瞻",
+      "dx": -70,
+      "dy": -75
+    },
+    {
+      "date": "2026-02-13",
+      "label": "月之五前瞻",
+      "dx": 0,
+      "dy": -145
+    },
+    {
+      "date": "2026-03-27",
+      "label": "月之六前瞻",
       "dx": 0,
       "dy": -140
     },
     {
-      "date": "2026-01-30",
-      "label": "2.6 前瞻",
+      "date": "2026-05-08",
+      "label": "月之七前瞻",
       "dx": 0,
       "dy": -140
     },
     {
-      "date": "2026-03-14",
-      "label": "2.7 前瞻",
+      "date": "2026-06-18",
+      "label": "月之八前瞻",
+      "dx": -50,
+      "dy": -140
+    },
+    {
+      "date": "2026-07-31",
+      "label": "7.0 前瞻",
       "dx": 0,
       "dy": -140
     },
     {
-      "date": "2026-04-24",
-      "label": "2.8 前瞻",
+      "date": "2026-09-12",
+      "label": "7.1 前瞻",
       "dx": 0,
       "dy": -140
     },
     {
-      "date": "2026-06-06",
-      "label": "3.0 前瞻",
-      "dx": -25,
-      "dy": -115
-    },
-    {
-      "date": "2026-07-17",
-      "label": "3.1 前瞻",
-      "dx": 30,
-      "dy": -95
-    },
-    {
-      "date": "2026-08-28",
-      "label": "3.2 前瞻",
-      "dx": 0,
+      "date": "2026-10-23",
+      "label": "7.2 前瞻",
+      "dx": -55,
       "dy": -140
-    },
-    {
-      "date": "2026-10-09",
-      "label": "3.3 前瞻",
-      "dx": -35,
-      "dy": -105
     }
   ]
 } satisfies TrendSeries;

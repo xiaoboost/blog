@@ -1,5 +1,5 @@
 import { useFontText } from '@blog/context/runtime';
-import { Background, Box, Place, Section } from '@blog/mdx-slide';
+import { Background, Box, TitleLabel, Place, Section } from '@blog/mdx-slide';
 import { PrimaryTitleFont } from '@blog/styles';
 import React from 'react';
 import landscape from '../landscape.svg';
@@ -14,7 +14,7 @@ export function Composition() {
     <Section className={`${common.classes.page} ${styles.classes.page}`}>
       <Background src={landscape} overlay="linear-gradient(90deg, rgba(12,29,34,.7), transparent)" />
       <Place x={120} y={120}>
-        <p className={common.classes.eyebrow}>LAYOUT STUDIES / 04</p>
+        <TitleLabel className={common.classes.titleLabel} marginBottom={27}>LAYOUT STUDIES / 04</TitleLabel>
       </Place>
       <Place x={120} y={337.5} width={1050}>
         <h1>{title[0]}<br />{title[1]}</h1>

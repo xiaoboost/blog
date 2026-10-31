@@ -1,4 +1,4 @@
-import { Box, Flex, Section } from '@blog/mdx-slide';
+import { Box, TitleLabel, Flex, Section } from '@blog/mdx-slide';
 import React from 'react';
 import styles from '../deck.jss';
 
@@ -12,7 +12,7 @@ export function Columns() {
     <Section className={styles.classes.page}>
       <Flex direction="column" height="100%" padding={120} gap={72}>
         <Box>
-          <p className={styles.classes.eyebrow}>LAYOUT STUDIES / 02</p>
+          <TitleLabel className={styles.classes.titleLabel} marginBottom={27}>LAYOUT STUDIES / 02</TitleLabel>
           <h2>{title}</h2>
         </Box>
         <Flex flex="fill" gap={72}>
@@ -23,12 +23,12 @@ export function Columns() {
           </Flex>
           <Flex flex={3} direction="column" gap={24}>
             <Box flex="fill" className={styles.classes.panel}>
-              <p className={styles.classes.eyebrow}>01 / SPACE</p>
+              <TitleLabel className={styles.classes.titleLabel} marginBottom={27}>01 / SPACE</TitleLabel>
               <h3>{spaceTitle}</h3>
               <p className={styles.classes.note}>相邻元素的节奏，由 gap 统一控制。</p>
             </Box>
             <Box flex="fill" padding={39} radius={18} border={{ thickness: 1.5, pattern: 'dashed' }}>
-              <p className={styles.classes.eyebrow}>02 / BALANCE</p>
+              <TitleLabel className={styles.classes.titleLabel} marginBottom={27}>02 / BALANCE</TitleLabel>
               <h3>{balanceTitle}</h3>
               <p className={styles.classes.note}>固定、填满、按比例，占据合适的空间。</p>
             </Box>

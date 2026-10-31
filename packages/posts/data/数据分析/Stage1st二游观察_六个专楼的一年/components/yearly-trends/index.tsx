@@ -1,6 +1,5 @@
 import { AxisBottom, AxisLeft, Bar, Chart, Circle, GridRows, Group, Line, LinePath, scaleLinear } from '@blog/mdx-chart';
-import { Box, Flex, Section } from '@blog/mdx-slide';
-import React from 'react';
+import { Box, TitleLabel, Flex, Section } from '@blog/mdx-slide';
 import { contentGap, pagePadding } from '../../pages/constants';
 import { PageTitle } from '../page-title';
 import { formatNumber } from '../../pages/data';
@@ -83,7 +82,7 @@ export function YearlyTrends({ series }: { series: TrendSeries }) {
   return (
     <Section title={title} className={s.page}>
       <Flex direction="column" height="100%" padding={pagePadding} gap={0}>
-        <Box flex="fixed"><p className={s.eyebrow}>讨论的时间线</p><PageTitle>{title}</PageTitle></Box>
+        <Box flex="fixed"><TitleLabel>讨论的时间线</TitleLabel><PageTitle>{title}</PageTitle></Box>
         <Flex direction="column" justify="space-between" gap={0} flex="fill" margin={`${contentGap}px 0 0`}>
           <Flex justify="space-between" align="center" gap={0} flex="fixed" className={c.caption}>
             <Flex gap={28} align="center" className={c.legend}>

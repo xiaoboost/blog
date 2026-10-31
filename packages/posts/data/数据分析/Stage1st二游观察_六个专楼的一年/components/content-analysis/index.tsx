@@ -1,5 +1,4 @@
 import { AxisLeft, Bar, Chart, Group, HeatmapRect, scaleBand, scaleLinear } from '@blog/mdx-chart';
-import React from 'react';
 import { formatNumber, games } from '../../pages/data';
 import { formatPercent } from './constants';
 import styles from './style.jss';
