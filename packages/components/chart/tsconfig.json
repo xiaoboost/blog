@@ -1,0 +1,12 @@
+{
+  "extends": "@blog/tsconfig",
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"],
+  "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "lib": ["DOM", "ESNext"],
+    "declaration": false,
+    "declarationMap": false
+  }
+}
