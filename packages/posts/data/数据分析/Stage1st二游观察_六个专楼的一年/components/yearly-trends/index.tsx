@@ -1,6 +1,6 @@
 import { AxisBottom, AxisLeft, Bar, Chart, Circle, GridRows, Group, Line, LinePath, scaleLinear } from '@blog/mdx-chart';
-import { Box, TitleLabel, Flex, Section } from '@blog/mdx-slide';
-import { contentGap, pagePadding } from '../../pages/constants';
+import { Box, Eyebrow, Flex, Section, PageLayout } from '@blog/mdx-slide';
+import { contentGap } from '../../pages/constants';
 import { PageTitle } from '../page-title';
 import { formatNumber } from '../../pages/data';
 import sharedStyles from '../../pages/shared.jss';
@@ -81,27 +81,29 @@ export function YearlyTrends({ series }: { series: TrendSeries }) {
   const title = game.name;
   return (
     <Section title={title} className={s.page}>
-      <Flex direction="column" height="100%" padding={pagePadding} gap={0}>
-        <Box flex="fixed"><TitleLabel>讨论的时间线</TitleLabel><PageTitle>{title}</PageTitle></Box>
-        <Flex direction="column" justify="space-between" gap={0} flex="fill" margin={`${contentGap}px 0 0`}>
-          <Flex justify="space-between" align="center" gap={0} flex="fixed" className={c.caption}>
-            <Flex gap={28} align="center" className={c.legend}>
-              {[
-                { label: '每日回复', color: game.color, opacity: 0.35, width: 1.8 },
-                { label: '7 日均线', color: game.color, opacity: 1, width: 4 },
-                { label: stageLabel, color: stageMeanColor, opacity: 1, width: 2.8, dash: '10 6' },
-              ].map(item => (
-                <Flex key={item.label} align="center" gap={12}>
-                  <Chart width={46} height={24} aria-hidden="true"><Line from={{ x: 0, y: 12 }} to={{ x: 46, y: 12 }} stroke={item.color} strokeWidth={item.width} strokeOpacity={item.opacity} strokeDasharray={item.dash} /></Chart>
-                  <span>{item.label}</span>
-                </Flex>
-              ))}
+      <PageLayout>
+        <Flex direction="column" height="100%" gap={0}>
+          <Box flex="fixed"><Eyebrow>讨论的时间线</Eyebrow><PageTitle>{title}</PageTitle></Box>
+          <Flex direction="column" justify="space-between" gap={0} flex="fill" margin={`${contentGap}px 0 0`}>
+            <Flex justify="space-between" align="center" gap={0} flex="fixed" className={c.caption}>
+              <Flex gap={28} align="center" className={c.legend}>
+                {[
+                  { label: '每日回复', color: game.color, opacity: 0.35, width: 1.8 },
+                  { label: '7 日均线', color: game.color, opacity: 1, width: 4 },
+                  { label: stageLabel, color: stageMeanColor, opacity: 1, width: 2.8, dash: '10 6' },
+                ].map(item => (
+                  <Flex key={item.label} align="center" gap={12}>
+                    <Chart width={46} height={24} aria-hidden="true"><Line from={{ x: 0, y: 12 }} to={{ x: 46, y: 12 }} stroke={item.color} strokeWidth={item.width} strokeOpacity={item.opacity} strokeDasharray={item.dash} /></Chart>
+                    <span>{item.label}</span>
+                  </Flex>
+                ))}
+              </Flex>
+              <p className={c.note}>* 表示只覆盖部分区间</p>
             </Flex>
-            <p className={c.note}>* 表示只覆盖部分区间</p>
+            <YearlyTrendChart series={series} />
           </Flex>
-          <YearlyTrendChart series={series} />
         </Flex>
-      </Flex>
+      </PageLayout>
     </Section>
   );
 }

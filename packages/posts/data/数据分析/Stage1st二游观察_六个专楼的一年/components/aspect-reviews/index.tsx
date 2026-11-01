@@ -1,6 +1,6 @@
 import { AxisLeft, Bar, BarStackHorizontal, Chart, GridColumns, Group, Line, scaleBand, scaleLinear } from '@blog/mdx-chart';
-import { Box, TitleLabel, Flex, Section } from '@blog/mdx-slide';
-import { contentGap, pagePadding } from '../../pages/constants';
+import { Box, Eyebrow, Flex, Section, PageLayout } from '@blog/mdx-slide';
+import { contentGap } from '../../pages/constants';
 import { PageTitle } from '../page-title';
 import { formatPercent, sentimentColors, sentimentKeys, sentimentLabels, shortTopic } from '../content-analysis/constants';
 import { formatNumber, games, type GameId } from '../../pages/data';
@@ -62,28 +62,30 @@ function ReviewChart({ gameId }: { gameId: GameId }) {
 
 export function AspectReviewsPage({ gameIds }: { gameIds: readonly GameId[] }) {
   return <Section title={`各方面评价 · ${gameIds.map(id => games.find(game => game.id === id)!.name).join(' / ')}`} className={sharedStyles.classes.page}>
-    <Flex direction="column" height="100%" padding={pagePadding} gap={0}>
-      <Box flex="fixed"><TitleLabel>大家在聊什么</TitleLabel><PageTitle>大家在称赞什么，又在抱怨什么？</PageTitle></Box>
-      <Flex direction="column" flex="fill" margin={`${contentGap}px 0 0`} gap={0}>
-        <Flex justify="space-between" align="center" flex="fixed" className={styles.classes.legend}>
-          <Flex align="center" gap={32}>
-            {sentimentKeys.map(key => <Flex key={key} align="center" gap={10}>
-              <Chart width={23} height={16} aria-hidden="true"><Bar width={23} height={16} fill={sentimentColors[key]} /></Chart>
-              <span>{sentimentLabels[key]}<span className={styles.classes.legendDescription}>{sentimentDescriptions[key]}</span></span>
-            </Flex>)}
+    <PageLayout>
+      <Flex direction="column" height="100%" gap={0}>
+        <Box flex="fixed"><Eyebrow>大家在聊什么</Eyebrow><PageTitle>大家在称赞什么，又在抱怨什么？</PageTitle></Box>
+        <Flex direction="column" flex="fill" margin={`${contentGap}px 0 0`} gap={0}>
+          <Flex justify="space-between" align="center" flex="fixed" className={styles.classes.legend}>
+            <Flex align="center" gap={32}>
+              {sentimentKeys.map(key => <Flex key={key} align="center" gap={10}>
+                <Chart width={23} height={16} aria-hidden="true"><Bar width={23} height={16} fill={sentimentColors[key]} /></Chart>
+                <span>{sentimentLabels[key]}<span className={styles.classes.legendDescription}>{sentimentDescriptions[key]}</span></span>
+              </Flex>)}
+            </Flex>
+            <p className={styles.classes.note}>按该方面的评价计算；未表达态度的帖子不计入</p>
           </Flex>
-          <p className={styles.classes.note}>按该方面的评价计算；未表达态度的帖子不计入</p>
-        </Flex>
-        <Flex flex="fill" justify="space-between" margin="18px 0 0" gap={0}>
-          {gameIds.map(gameId => {
-            const game = games.find(item => item.id === gameId)!;
-            return <Flex key={gameId} direction="column" justify="space-between" width={panelWidth} minWidth={0} gap={0}>
-              <h3 className={styles.classes.gameName} style={{ borderColor: game.color }}>{game.name}</h3>
-              <ReviewChart gameId={gameId} />
-            </Flex>;
-          })}
+          <Flex flex="fill" justify="space-between" margin="18px 0 0" gap={0}>
+            {gameIds.map(gameId => {
+              const game = games.find(item => item.id === gameId)!;
+              return <Flex key={gameId} direction="column" justify="space-between" width={panelWidth} minWidth={0} gap={0}>
+                <h3 className={styles.classes.gameName} style={{ borderColor: game.color }}>{game.name}</h3>
+                <ReviewChart gameId={gameId} />
+              </Flex>;
+            })}
+          </Flex>
         </Flex>
       </Flex>
-    </Flex>
+    </PageLayout>
   </Section>;
 }
