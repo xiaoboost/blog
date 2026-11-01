@@ -52,4 +52,10 @@ export default createStyles({
     position: 'absolute',
     inset: 0,
   },
+  pageLayout: {
+    boxSizing: 'border-box',
+    width: '100%',
+    height: '100%',
+    padding: '60px 100px',
+  },
 });

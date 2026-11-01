@@ -1,4 +1,5 @@
 export { Box } from './box';
+export { PageLayout, type PageLayoutProps } from './page-layout';
 export { Center, type CenterProps } from './center';
 export { Flex, type FlexProps } from './flex';
 export { Grid, type GridProps } from './grid';

@@ -2,19 +2,35 @@
 
 博客 PPT 的布局、动画声明与预构建数据收集组件。动画编排在构建时解析；当前尚未接入播放执行。
 
-## 标题前的短标签
+## 页面公共留白
 
-`TitleLabel` 用于大标题上方的章节名或提示文字，输出普通段落，不占用标题层级。
-默认使用正文黑体、24px 字号、`.12em` 字距和次级文字颜色，下方间距为 20px。
+`PageLayout` 放在 `Section` 内，提供上下 60px、左右 100px 的公共留白，宽高为 100%。它不规定内部的排列、间距或对齐，也不负责页码和切页。
 
 ```tsx
-import { TitleLabel } from '@blog/mdx-slide';
+<Section title="页面标题">
+  <PageLayout>
+    <Flex direction="column" height="100%" gap={0}>
+      {/* 当前页面的内容 */}
+    </Flex>
+  </PageLayout>
+</Section>
+```
 
-<TitleLabel>先看规模</TitleLabel>
+需要不同留白时可以写 `padding={0}`、`padding="80px 120px"` 或 `padding={{ horizontal: 120 }}`；只指定一个方向时，另一方向保留默认留白。也支持 `className`、`style`、`id`、`data-*` 和 `aria-*`，`style` 最后覆盖。
+
+## 标题前的短标签
+
+`Eyebrow` 用于大标题上方的章节名或提示文字，输出普通段落，不占用标题层级。
+默认使用正文黑体、24px 字号、`.12em` 字距和次级文字颜色，下方间距为 16px，默认间距统一定义在 CSS 中。
+
+```tsx
+import { Eyebrow } from '@blog/mdx-slide';
+
+<Eyebrow>先看规模</Eyebrow>
 <h2>六个专楼的一年</h2>
 
 // 封面需要更宽的间距；0 表示不留间距。
-<TitleLabel marginBottom={36}>Stage1st 二游观察</TitleLabel>
+<Eyebrow marginBottom={36}>Stage1st 二游观察</Eyebrow>
 ```
 
 支持 `className`、`style`、`id`、`data-*` 和 `aria-*`；`style` 可以覆盖默认间距。

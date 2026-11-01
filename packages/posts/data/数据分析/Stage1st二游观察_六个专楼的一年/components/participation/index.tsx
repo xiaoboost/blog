@@ -1,6 +1,6 @@
 import { AxisBottom, AxisLeft, Bar, BarStackHorizontal, Chart, GridColumns, Group, Line, scaleBand, scaleLinear } from '@blog/mdx-chart';
-import { Box, TitleLabel, Flex, Section } from '@blog/mdx-slide';
-import { contentGap, pagePadding } from '../../pages/constants';
+import { Box, Eyebrow, Flex, Section, PageLayout } from '@blog/mdx-slide';
+import { contentGap } from '../../pages/constants';
 import { PageTitle } from '../page-title';
 import { formatNumber, games, type GameId } from '../../pages/data';
 import sharedStyles from '../../pages/shared.jss';
@@ -108,23 +108,25 @@ function Legend({ mode }: { mode: ParticipationMode }) {
 export function ParticipationPage({ mode, panels }: { mode: ParticipationMode; panels: readonly ParticipationPanel[] }) {
   const title = mode === 'composition' ? '每个版本，谁来聊？' : '版本过后，谁还在聊？';
   return <Section title={`${title} · ${panels.map(panel => games.find(game => game.id === panel.gameId)!.name).join(' / ')}`} className={sharedStyles.classes.page}>
-    <Flex direction="column" height="100%" padding={pagePadding} gap={0}>
-      <Box flex="fixed"><TitleLabel>玩家的流向</TitleLabel><PageTitle>{title}</PageTitle></Box>
-      <Flex direction="column" flex="fill" margin={`${contentGap}px 0 0`} gap={0}>
-        <Legend mode={mode} />
-        <Flex flex="fill" justify="space-between" margin="18px 0 0" gap={0}>
-          {panels.map(panel => {
-            const game = games.find(item => item.id === panel.gameId)!;
-            return <Flex key={panel.gameId} direction="column" justify="space-between" width={panelWidth} minWidth={0} gap={0}>
-              <Flex align="center" justify="space-between" flex="fixed">
-                <h3 className={styles.classes.gameName} style={{ borderColor: game.color }}>{game.name}</h3>
-                <span className={styles.classes.stageNote}>{game.id === 'arknights' ? '新故事阶段' : `${participationStages[game.id].length} 个区间`}</span>
-              </Flex>
-              <ParticipationChart gameId={game.id} mode={mode} />
-            </Flex>;
-          })}
+    <PageLayout>
+      <Flex direction="column" height="100%" gap={0}>
+        <Box flex="fixed"><Eyebrow>玩家的流向</Eyebrow><PageTitle>{title}</PageTitle></Box>
+        <Flex direction="column" flex="fill" margin={`${contentGap}px 0 0`} gap={0}>
+          <Legend mode={mode} />
+          <Flex flex="fill" justify="space-between" margin="18px 0 0" gap={0}>
+            {panels.map(panel => {
+              const game = games.find(item => item.id === panel.gameId)!;
+              return <Flex key={panel.gameId} direction="column" justify="space-between" width={panelWidth} minWidth={0} gap={0}>
+                <Flex align="center" justify="space-between" flex="fixed">
+                  <h3 className={styles.classes.gameName} style={{ borderColor: game.color }}>{game.name}</h3>
+                  <span className={styles.classes.stageNote}>{game.id === 'arknights' ? '新故事阶段' : `${participationStages[game.id].length} 个区间`}</span>
+                </Flex>
+                <ParticipationChart gameId={game.id} mode={mode} />
+              </Flex>;
+            })}
+          </Flex>
         </Flex>
       </Flex>
-    </Flex>
+    </PageLayout>
   </Section>;
 }

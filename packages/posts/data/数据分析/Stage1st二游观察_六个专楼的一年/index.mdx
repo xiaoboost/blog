@@ -11,58 +11,118 @@ showPageNumberInSlide: true
 ---
 
 import { Slide } from '@blog/mdx-slide';
-import { Introduction } from './pages/01-introduction';
-import { Scope } from './pages/02-scope';
-import { OverviewChapter } from './pages/03-chapter-overview';
-import { Overview } from './pages/04-overview';
-import { Overlap } from './pages/05-overlap';
-import { Concentration } from './pages/06-concentration';
-import { TimelineChapter } from './pages/07-chapter-timeline';
-import { GenshinTrends } from './pages/08-yearly-trends';
-import { StarRailTrends } from './pages/09-yearly-trends';
-import { ZenlessTrends } from './pages/10-yearly-trends';
-import { ArknightsTrends } from './pages/11-yearly-trends';
-import { EndfieldTrends } from './pages/12-yearly-trends';
-import { WutheringWavesTrends } from './pages/13-yearly-trends';
-import { ParticipationChapter } from './pages/14-chapter-participation';
-import { ParticipantCompositionFirst } from './pages/15-participant-composition';
-import { ParticipantCompositionSecond } from './pages/16-participant-composition';
-import { ParticipantFollowupFirst } from './pages/17-participant-followup';
-import { ParticipantFollowupSecond } from './pages/18-participant-followup';
-import { TopicsChapter } from './pages/19-chapter-topics';
-import { TopicGuide } from './pages/20-topic-guide';
-import { TopicOverview } from './pages/21-topic-overview';
-import { AspectReviewsFirst } from './pages/22-aspect-reviews';
-import { AspectReviewsSecond } from './pages/23-aspect-reviews';
-import { GameplayComplaints } from './pages/24-gameplay-complaints';
-import { Summary } from './pages/25-summary';
-import { Afterword } from './pages/26-afterword';
+import { Introduction } from './pages/introduction';
+import { Scope } from './pages/scope';
+import { OverviewChapter } from './pages/chapter-overview';
+import { Overview } from './pages/overview';
+import { Overlap } from './pages/overlap';
+import { Concentration } from './pages/concentration';
+import { SingleThreadAccounts } from './pages/single-thread-accounts';
+import { SingleThreadActive } from './pages/single-thread-active';
+import { TimelineChapter } from './pages/chapter-timeline';
+import { GenshinTrends } from './pages/genshin-trends';
+import { StarRailTrends } from './pages/star-rail-trends';
+import { ZenlessTrends } from './pages/zenless-trends';
+import { ArknightsTrends } from './pages/arknights-trends';
+import { EndfieldTrends } from './pages/endfield-trends';
+import { WutheringWavesTrends } from './pages/wuthering-waves-trends';
+import { ParticipationChapter } from './pages/chapter-participation';
+import { ParticipantCompositionMihoyo } from './pages/participant-composition-mihoyo';
+import { ParticipantCompositionArknightsEndfieldWuwa } from './pages/participant-composition-arknights-endfield-wuwa';
+import { ParticipantFollowupMihoyo } from './pages/participant-followup-mihoyo';
+import { ParticipantFollowupArknightsEndfieldWuwa } from './pages/participant-followup-arknights-endfield-wuwa';
+import { TopicsChapter } from './pages/chapter-topics';
+import { TopicGuide } from './pages/topic-guide';
+import { TopicOverview } from './pages/topic-overview';
+import { AspectReviewsMihoyo } from './pages/aspect-reviews-mihoyo';
+import { AspectReviewsArknightsEndfieldWuwa } from './pages/aspect-reviews-arknights-endfield-wuwa';
+import { GameplayComplaints } from './pages/gameplay-complaints';
+import { Summary } from './pages/summary';
+import { Afterword } from './pages/afterword';
 
 <Slide>
+  {/* 封面：六个专楼的一年 */}
   <Introduction />
+
+  {/* 采集范围与统计口径 */}
   <Scope />
+
+  {/* 章节：六个专楼的样子 */}
   <OverviewChapter />
+
+  {/* 回复量与发言人数 */}
   <Overview />
+
+  {/* 跨楼重叠与参与范围 */}
   <Overlap />
+
+  {/* 前十账号的回复贡献 */}
   <Concentration />
+
+  {/* 单楼账号分布：全部发言账号 */}
+  <SingleThreadAccounts />
+
+  {/* 单楼账号分布：全年至少回复五条 */}
+  <SingleThreadActive />
+
+  {/* 章节：讨论的起伏 */}
   <TimelineChapter />
+
+  {/* 原神时间线 */}
   <GenshinTrends />
+
+  {/* 星穹铁道时间线 */}
   <StarRailTrends />
+
+  {/* 绝区零时间线 */}
   <ZenlessTrends />
+
+  {/* 明日方舟时间线 */}
   <ArknightsTrends />
+
+  {/* 终末地时间线 */}
   <EndfieldTrends />
+
+  {/* 鸣潮时间线 */}
   <WutheringWavesTrends />
+
+  {/* 章节：玩家的流向 */}
   <ParticipationChapter />
-  <ParticipantCompositionFirst />
-  <ParticipantCompositionSecond />
-  <ParticipantFollowupFirst />
-  <ParticipantFollowupSecond />
+
+  {/* 每版谁来聊：原神、星穹铁道、绝区零 */}
+  <ParticipantCompositionMihoyo />
+
+  {/* 每版谁来聊：明日方舟、终末地、鸣潮 */}
+  <ParticipantCompositionArknightsEndfieldWuwa />
+
+  {/* 版本过后谁还在聊：原神、星穹铁道、绝区零 */}
+  <ParticipantFollowupMihoyo />
+
+  {/* 版本过后谁还在聊：明日方舟、终末地、鸣潮 */}
+  <ParticipantFollowupArknightsEndfieldWuwa />
+
+  {/* 章节：大家在聊什么 */}
   <TopicsChapter />
+
+  {/* 话题分类说明 */}
   <TopicGuide />
+
+  {/* 六个楼的话题构成 */}
   <TopicOverview />
-  <AspectReviewsFirst />
-  <AspectReviewsSecond />
+
+  {/* 各方面评价：原神、星穹铁道、绝区零 */}
+  <AspectReviewsMihoyo />
+
+  {/* 各方面评价：明日方舟、终末地、鸣潮 */}
+  <AspectReviewsArknightsEndfieldWuwa />
+
+  {/* 玩法负面评价的具体诉求 */}
   <GameplayComplaints />
+
+  {/* 回看这一年 */}
   <Summary />
+
+  {/* 写在最后 */}
   <Afterword />
+
 </Slide>

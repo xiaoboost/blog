@@ -7,6 +7,7 @@ import {
   Grid,
   Center,
   Place,
+  PageLayout,
   Background,
 } from '../layout';
 import styles from '../layout/index.jss';
@@ -18,6 +19,8 @@ describe('布局的作者约定', () => {
       <Flex />,
       <Grid />,
       <Center />,
+      <Place />,
+      <PageLayout />,
       <Background src="/cover.svg" />,
     ]) {
       expect(renderToStaticMarkup(element)).not.include('style=');
