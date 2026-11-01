@@ -1,5 +1,8 @@
 /** 标题字体的公共约定；具体字体资源由模板负责注册。 */
 
+/** 站点标题与签名共用的手写字体。 */
+export const SiteTitleFontFamily = 'site-title';
+
 /** 主标题的字体约定，用于字体注册、文字收集和样式引用。 */
 export const PrimaryTitleFont = {
   fontFamily: 'primary-title',

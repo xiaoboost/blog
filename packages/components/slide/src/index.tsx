@@ -5,6 +5,7 @@ import assets from './index.script';
 
 export { Slide } from './slide/slide';
 export { Section } from './slide/section';
+export { Sign, type SignProps } from './sign';
 export type { SlideProps, SectionProps } from './slide/types';
 export type { VisualProps, Alignment } from './types';
 export * from './typo';
