@@ -1,5 +1,4 @@
 import { stringifyClass } from '@xiao-ai/utils';
-import React from 'react';
 import type { BoxProps } from '../types';
 import styles from './index.jss';
 import { extractBoxProps } from './style';
@@ -10,8 +9,8 @@ export interface CenterProps extends BoxProps {
 }
 
 export function Center({
-  horizontal = true,
-  vertical = true,
+  horizontal,
+  vertical,
   children,
   className,
   style,
@@ -24,8 +23,8 @@ export function Center({
       {...attributes}
       className={stringifyClass(styles.classes.box, styles.classes.center, className)}
       style={{
-        justifyContent: horizontal ? 'center' : 'flex-start',
-        alignItems: vertical ? 'center' : 'flex-start',
+        justifyContent: horizontal === undefined ? undefined : horizontal ? 'center' : 'flex-start',
+        alignItems: vertical === undefined ? undefined : vertical ? 'center' : 'flex-start',
         ...boxStyle,
         ...style,
       }}

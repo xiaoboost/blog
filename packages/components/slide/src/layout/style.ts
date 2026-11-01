@@ -26,7 +26,11 @@ function spacing(value: Spacing | undefined, prefix: 'margin' | 'padding'): CSSP
   return result;
 }
 
-function flexSize(value: FlexSize = 'content'): CSSProperties {
+function flexSize(value: FlexSize | undefined): CSSProperties {
+  if (value === undefined) {
+    return {};
+  }
+
   if (value === 'content') {
     return { flex: '0 1 auto' };
   }

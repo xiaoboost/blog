@@ -4,12 +4,58 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import {
   Box,
   Flex,
+  Grid,
+  Center,
   Place,
   Background,
 } from '../layout';
 import styles from '../layout/index.jss';
 
 describe('布局的作者约定', () => {
+  it('未传布局属性时使用 CSS 默认值，不重复生成内联样式', () => {
+    for (const element of [
+      <Box />,
+      <Flex />,
+      <Grid />,
+      <Center />,
+      <Background src="/cover.svg" />,
+    ]) {
+      expect(renderToStaticMarkup(element)).not.include('style=');
+    }
+  });
+
+  it('显式的 false、0 和布局属性仍然覆盖 CSS 默认值', () => {
+    const flex = renderToStaticMarkup(
+      <Flex
+        direction="column"
+        wrap={false}
+        gap={0}
+        align="start"
+        justify="end"
+        flex="content"
+      />,
+    );
+    expect(flex).include('flex-direction:column').include('flex-wrap:nowrap').include('gap:0');
+    expect(flex).include('align-items:flex-start').include('justify-content:flex-end').include('flex:0 1 auto');
+    expect(renderToStaticMarkup(<Flex wrap />)).include('flex-wrap:wrap');
+
+    const grid = renderToStaticMarkup(
+      <Grid
+        columns={1}
+        gap={24}
+        columnGap={0}
+        align="center"
+        justify="start"
+      />,
+    );
+    expect(grid).include('grid-template-columns:repeat(1, minmax(0, 1fr))');
+    expect(grid).include('column-gap:0').include('row-gap:24px').include('align-items:center').include('justify-items:start');
+
+    const center = renderToStaticMarkup(<Center horizontal={false} vertical={false} />);
+    expect(center).include('justify-content:flex-start').include('align-items:flex-start');
+    expect(renderToStaticMarkup(<Background src="/cover.svg" fit="contain" />)).include('object-fit:contain');
+  });
+
   it('保留 0，style 最后覆盖，盒子配置不泄漏到 DOM 属性', () => {
     const props = {
       className: 'custom-box',
@@ -47,6 +93,6 @@ describe('布局的作者约定', () => {
   it('装饰背景不承载替代文字、不接管鼠标，作者可独立配置正文图片', () => {
     const html = renderToStaticMarkup(<Background src="/cover.svg" overlay="rgba(0,0,0,.2)" />);
     expect(html).include('aria-hidden="true"').include('alt=""');
-    expect(html).include(styles.classes.background).include(styles.classes.backgroundImage).include('object-fit:cover');
+    expect(html).include(styles.classes.background).include(styles.classes.backgroundImage);
   });
 });
