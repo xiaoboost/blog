@@ -36,6 +36,7 @@ export default createStyles({
     color: TextPrimary,
     boxShadow: `0 0 0 1px ${BorderPrimary}, 0 8px 32px rgba(0,0,0,.04)`,
     outlineOffset: -3,
+    outline: 'none',
     '&:focus:not(:focus-visible)': { outline: 'none' },
   },
   canvas: {
