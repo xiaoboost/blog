@@ -26,6 +26,7 @@ export function active() {
   const loadingError = find<HTMLElement>(loadingStyles.classes.error);
   const retry = find<HTMLButtonElement>(loadingStyles.classes.retry);
   const sections = Array.from(canvas.querySelectorAll<HTMLElement>('[data-slide-section]'));
+  const pageStorageKey = `slide:page:${window.location.pathname}`;
 
   if (totalPages) {
     totalPages.textContent = String(sections.length).padStart(2, '0');
@@ -128,6 +129,15 @@ export function active() {
     card.setAttribute('aria-busy', 'false');
     ready = true;
 
+    if (process.env.NODE_ENV === 'development') {
+      try {
+        window.sessionStorage.setItem(pageStorageKey, String(index));
+      }
+      catch {
+        // 浏览器禁用存储时，仍然可以正常翻页。
+      }
+    }
+
     // 顺便解码下一页，切页时更容易命中缓存。
     sections[page + 1]?.querySelectorAll('img').forEach((image) => {
       image.loading = 'eager';
@@ -153,7 +163,22 @@ export function active() {
   const observer = new ResizeObserver(resize);
   observer.observe(card);
   resize();
-  void show(0);
+  let initialPage = 0;
+
+  if (process.env.NODE_ENV === 'development') {
+    try {
+      const savedPage = Number(window.sessionStorage.getItem(pageStorageKey));
+
+      if (Number.isSafeInteger(savedPage) && savedPage >= 0) {
+        initialPage = Math.min(savedPage, Math.max(0, sections.length - 1));
+      }
+    }
+    catch {
+      // 浏览器禁用存储时，从第一页开始播放。
+    }
+  }
+
+  void show(initialPage);
 
   return () => {
     events.abort();

@@ -394,3 +394,12 @@ export const reviewData: Record<GameId, readonly ReviewRow[]> = {
     }
   ]
 };
+
+// Derive the pooled page from the six published tables.
+export const overallReviewData: readonly ReviewRow[] = reviewData.genshin.map(row => ({
+  topic: row.topic,
+  positive: Object.values(reviewData).reduce((sum, rows) => sum + rows.find(item => item.topic === row.topic)!.positive, 0),
+  negative: Object.values(reviewData).reduce((sum, rows) => sum + rows.find(item => item.topic === row.topic)!.negative, 0),
+  mixed: Object.values(reviewData).reduce((sum, rows) => sum + rows.find(item => item.topic === row.topic)!.mixed, 0),
+  neutral: Object.values(reviewData).reduce((sum, rows) => sum + rows.find(item => item.topic === row.topic)!.neutral, 0),
+}));

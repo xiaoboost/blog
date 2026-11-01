@@ -1,4 +1,4 @@
-import { AxisBottom, AxisLeft, Bar, BarStackHorizontal, Chart, GridColumns, Group, scaleBand, scaleLinear } from '@blog/mdx-chart';
+import { AxisLeft, Bar, BarStackHorizontal, Chart, GridColumns, Group, scaleBand, scaleLinear } from '@blog/mdx-chart';
 import { Box, Eyebrow, Flex, Section, PageLayout } from '@blog/mdx-slide';
 import { contentGap } from '../constants';
 import { PageTitle } from '../../components/page-title';
@@ -8,20 +8,16 @@ import { contributionGroups, contributionKeys, contributions, formatShare } from
 import styles from './style.jss';
 
 function ContributionChart() {
+  const plotHeight = 580;
   const x = scaleLinear({ domain: [0, 1], range: [0, 1220] });
-  const y = scaleBand({ domain: contributions.map(game => game.name), range: [0, 480], paddingInner: 0.24 });
+  const y = scaleBand({ domain: contributions.map(game => game.name), range: [0, plotHeight], paddingInner: 0.24 });
   const ticks = [0, 0.25, 0.5, 0.75, 1];
   return (
-    <Chart width={1720} height={600} className={styles.classes.chart} role="img" aria-label="六楼回复贡献：回复最多的10个账号与其他账号的回复数及占比，右侧为各楼发言账号总数">
+    <Chart width={1720} height={plotHeight + 120} className={styles.classes.chart} role="img" aria-label="六楼回复贡献：回复最多的10个账号与其他账号的回复数及占比，右侧为各楼发言账号总数">
       <text x={180} y={30} fill="currentColor" opacity={0.65} fontSize={23}>回复数 · 占本楼比例</text>
       <text x={1640} y={30} textAnchor="middle" fill="currentColor" opacity={0.65} fontSize={23}>发言账号总数</text>
       <Group left={180} top={60}>
-        <GridColumns scale={x} tickValues={ticks} top={-8} height={496} stroke="currentColor" strokeOpacity={0.08} />
-        <AxisBottom
-          scale={x} top={506} tickValues={ticks} hideAxisLine hideTicks tickLength={0}
-          tickFormat={value => `${Number(value) * 100}%`}
-          tickLabelProps={{ fill: 'currentColor', opacity: 0.65, fontFamily: 'inherit', fontSize: 23, dy: 0 }}
-        />
+        <GridColumns scale={x} tickValues={ticks} top={-8} height={plotHeight + 16} stroke="currentColor" strokeOpacity={0.08} />
         <AxisLeft
           scale={y} left={-24} hideAxisLine hideTicks tickLength={0}
           tickLabelProps={{ fill: 'currentColor', fontFamily: 'inherit', fontSize: 29, dx: 0, dy: '0.333em' }}

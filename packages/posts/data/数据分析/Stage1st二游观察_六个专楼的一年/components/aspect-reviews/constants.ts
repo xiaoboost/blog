@@ -1,8 +1,8 @@
-export const panelWidth = 544;
-export const chartHeight = 694;
-export const chartLeft = 128;
-export const plotWidth = 338;
-export const plotHeight = 620;
+export const countPanelWidth = 920;
+export const sharePanelWidth = 760;
+export const chartHeight = 710;
+export const chartLeft = 144;
+export const plotHeight = 635;
 
 export const sentimentDescriptions = {
   positive: '肯定',

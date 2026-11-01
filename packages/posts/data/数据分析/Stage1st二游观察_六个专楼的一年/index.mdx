@@ -34,9 +34,18 @@ import { ParticipantFollowupArknightsEndfieldWuwa } from './pages/participant-fo
 import { TopicsChapter } from './pages/chapter-topics';
 import { TopicGuide } from './pages/topic-guide';
 import { TopicOverview } from './pages/topic-overview';
-import { AspectReviewsMihoyo } from './pages/aspect-reviews-mihoyo';
-import { AspectReviewsArknightsEndfieldWuwa } from './pages/aspect-reviews-arknights-endfield-wuwa';
+import { AspectReviewsOverall } from './pages/aspect-reviews-overall';
+import { AspectReviewsGenshin } from './pages/aspect-reviews-genshin';
+import { AspectReviewsStarRail } from './pages/aspect-reviews-star-rail';
+import { AspectReviewsZenless } from './pages/aspect-reviews-zenless';
+import { AspectReviewsArknights } from './pages/aspect-reviews-arknights';
+import { AspectReviewsEndfield } from './pages/aspect-reviews-endfield';
+import { AspectReviewsWutheringWaves } from './pages/aspect-reviews-wuthering-waves';
 import { GameplayComplaints } from './pages/gameplay-complaints';
+import { GameplayPraise } from './pages/gameplay-praise';
+import { StarRailStrengthValue } from './pages/star-rail-strength-value';
+import { WutheringVersionTopics } from './pages/wuthering-version-topics';
+import { EndfieldGachaComplaints } from './pages/endfield-gacha-complaints';
 import { Summary } from './pages/summary';
 import { Afterword } from './pages/afterword';
 
@@ -110,14 +119,29 @@ import { Afterword } from './pages/afterword';
   {/* 六个楼的话题构成 */}
   <TopicOverview />
 
-  {/* 各方面评价：原神、星穹铁道、绝区零 */}
-  <AspectReviewsMihoyo />
+  {/* 各方面评价：六楼合并与六个游戏，数量和比例并列 */}
+  <AspectReviewsOverall />
+  <AspectReviewsGenshin />
+  <AspectReviewsStarRail />
+  <AspectReviewsZenless />
+  <AspectReviewsArknights />
+  <AspectReviewsEndfield />
+  <AspectReviewsWutheringWaves />
 
-  {/* 各方面评价：明日方舟、终末地、鸣潮 */}
-  <AspectReviewsArknightsEndfieldWuwa />
+  {/* 玩法正面评价的具体理由 */}
+  <GameplayPraise />
 
   {/* 玩法负面评价的具体诉求 */}
   <GameplayComplaints />
+
+  {/* 铁道强度称赞与保值抱怨的版本变化 */}
+  <StarRailStrengthValue />
+
+  {/* 鸣潮各版本的话题重心 */}
+  <WutheringVersionTopics />
+
+  {/* 终末地抽卡负面评价的具体意见 */}
+  <EndfieldGachaComplaints />
 
   {/* 回看这一年 */}
   <Summary />
