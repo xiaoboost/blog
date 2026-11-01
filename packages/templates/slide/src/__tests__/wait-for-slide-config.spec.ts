@@ -7,7 +7,7 @@ import {
 } from '@blog/mdx-slide/shared';
 import { describe, it } from '@blog/test-toolkit';
 import { afterEach, beforeEach } from 'mocha';
-import { waitForSlideConfig } from '../wait-for-slide-config';
+import { waitForSlideConfig } from '../player/wait-for-slide-config';
 
 const browser = globalThis as typeof globalThis & { [SlideConfigGlobalKey]?: unknown };
 const keys = [SlideConfigGlobalKey, 'addEventListener', 'removeEventListener'] as const;
