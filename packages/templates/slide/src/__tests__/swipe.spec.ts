@@ -1,7 +1,7 @@
 import { deepStrictEqual, strictEqual } from 'node:assert/strict';
 import { getEventListeners } from 'node:events';
 import { describe, it } from '@blog/test-toolkit';
-import { bindSwipe } from '../swipe';
+import { bindSwipe } from '../player/swipe';
 
 function setup(allowed = true) {
   const element = new EventTarget();
