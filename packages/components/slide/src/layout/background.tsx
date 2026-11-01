@@ -1,5 +1,5 @@
 import { stringifyClass } from '@xiao-ai/utils';
-import React, { type CSSProperties } from 'react';
+import type { CSSProperties } from 'react';
 import type { VisualProps } from '../types';
 import styles from './index.jss';
 
@@ -15,7 +15,7 @@ export interface BackgroundProps extends Omit<VisualProps, 'children'> {
 export function Background({
   src,
   background,
-  fit = 'cover',
+  fit,
   position,
   overlay,
   zIndex,

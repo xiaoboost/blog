@@ -13,11 +13,11 @@ export interface FlexProps extends BoxProps {
 }
 
 export function Flex({
-  direction = 'row',
+  direction,
   gap,
-  align = 'stretch',
-  justify = 'start',
-  wrap = false,
+  align,
+  justify,
+  wrap,
   children,
   className,
   style,
@@ -34,7 +34,7 @@ export function Flex({
         gap,
         alignItems: align === 'start' || align === 'end' ? `flex-${align}` : align,
         justifyContent: justify === 'start' || justify === 'end' ? `flex-${justify}` : justify,
-        flexWrap: wrap ? 'wrap' : 'nowrap',
+        flexWrap: wrap === undefined ? undefined : wrap ? 'wrap' : 'nowrap',
         ...boxStyle,
         ...style,
       }}

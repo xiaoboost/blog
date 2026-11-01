@@ -1,5 +1,4 @@
 import { stringifyClass } from '@xiao-ai/utils';
-import React from 'react';
 import type { BoxProps, Length } from '../types';
 import styles from './index.jss';
 import { extractBoxProps } from './style';

@@ -1,10 +1,10 @@
 import { stringifyClass } from '@xiao-ai/utils';
-import React from 'react';
 import type { Alignment, BoxProps, Length } from '../types';
 import styles from './index.jss';
 import { extractBoxProps } from './style';
 
 export interface GridProps extends BoxProps {
+  /** 默认两列；数字表示等宽列数，字符串可指定各列宽度。 */
   columns?: number | string;
   rows?: number | string;
   gap?: Length;
@@ -24,8 +24,8 @@ export function Grid({
   gap,
   columnGap,
   rowGap,
-  align = 'stretch',
-  justify = 'stretch',
+  align,
+  justify,
   children,
   className,
   style,
