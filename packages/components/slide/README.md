@@ -1,5 +1,11 @@
 # @blog/mdx-slide
 
+## Sign 站点签名
+
+`import { Sign } from '@blog/mdx-slide'`，使用 `<Sign />` 显示手写体站点名并链接首页。
+不显示作者、分隔符或悬停下划线。默认字号 48px、黑色 `#000000`，支持 `className`、`style`，放置位置由外层布局决定。
+样式随 Slide 组件资源加载；字体复用整站 `site-title` 字体子集，公共字体名称由 `@blog/styles` 提供。
+
 博客 PPT 的布局、动画声明与预构建数据收集组件。动画编排在构建时解析；当前尚未接入播放执行。
 
 ## 页面公共留白

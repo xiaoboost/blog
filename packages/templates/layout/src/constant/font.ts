@@ -1,5 +1,4 @@
-/** 网站标题字体 */
-export const SiteTitleFontFamily = 'site-title';
+export { SiteTitleFontFamily } from '@blog/styles';
 /** 页面标题字体 */
 export const ListTitleFontFamily = 'list-title';
 /** 对应 SourceHanSerifSC-Bold.otf */

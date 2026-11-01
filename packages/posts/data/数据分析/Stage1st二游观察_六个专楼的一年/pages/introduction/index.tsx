@@ -1,4 +1,4 @@
-import { Box, Center, Eyebrow, Section, PageLayout } from '@blog/mdx-slide';
+import { Box, Center, Eyebrow, Section, PageLayout, Place, Sign } from '@blog/mdx-slide';
 import { PageTitle } from '../../components/page-title';
 import sharedStyles from '../shared.jss';
 import styles from './style.jss';
@@ -17,6 +17,9 @@ export function Introduction() {
           </Box>
         </Center>
       </PageLayout>
+      <Place x={0} y={812} width="100%" style={{ textAlign: 'center' }}>
+        <Sign />
+      </Place>
     </Section>
   );
 }
