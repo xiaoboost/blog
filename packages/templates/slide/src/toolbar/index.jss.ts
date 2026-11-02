@@ -31,6 +31,13 @@ export default createStyles({
     transition: 'opacity 200ms ease',
     '&:hover': { opacity: 1 },
     ':fullscreen &': { display: 'none' },
+    '@media (max-width: 640px)': {
+      right: 8,
+      top: 8,
+      gap: 6,
+      maxWidth: 'calc(100% - 16px)',
+      padding: 0,
+    },
   },
   title: {
     fontSize: 14,
@@ -40,6 +47,7 @@ export default createStyles({
     whiteSpace: 'nowrap',
     minWidth: 0,
     maxWidth: 240,
+    '@media (max-width: 640px)': { display: 'none' },
   },
   counter: {
     flex: '0 0 auto',
@@ -51,6 +59,7 @@ export default createStyles({
     fontSize: 12,
     lineHeight: 1,
     fontVariantNumeric: 'lining-nums tabular-nums',
+    '@media (max-width: 640px)': { marginLeft: 10 },
   },
   currentPage: { color: TextPrimary },
   totalPages: { color: TextSecondary },
@@ -72,5 +81,10 @@ export default createStyles({
     color: 'inherit',
     cursor: 'pointer',
     '&:disabled': { cursor: 'wait' },
+    '@media (max-width: 640px)': {
+      width: 32,
+      height: 32,
+      '& svg': { width: 18, height: 18 },
+    },
   },
 });
