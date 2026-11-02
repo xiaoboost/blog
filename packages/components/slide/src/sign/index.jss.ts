@@ -2,6 +2,7 @@ import {
   createStyles,
   FontHeading,
   SiteTitleFontFamily,
+  TextPrimary,
 } from '@blog/styles/compile';
 
 export default createStyles({
@@ -12,7 +13,7 @@ export default createStyles({
     fontSize: 48,
     fontWeight: 400,
     lineHeight: 1.5,
-    color: '#000000',
+    color: TextPrimary,
     whiteSpace: 'nowrap',
     '& a': { color: 'inherit', textDecoration: 'none' },
     '&& a:hover': { textDecoration: 'none' },
