@@ -17,7 +17,16 @@ export function Toolbar({ title, showPageNumber }: ToolbarProps) {
       {showPageNumber && (
         <>
           <span className={styles.classes.counter} aria-live="polite" aria-atomic="true">
-            <span className={styles.classes.currentPage}>—</span>
+            <input
+              className={styles.classes.currentPage}
+              type="text"
+              inputMode="numeric"
+              enterKeyHint="go"
+              aria-label="当前页码，输入后按回车跳转"
+              title="输入页码，按回车跳转"
+              defaultValue="—"
+              disabled
+            />
             <span> / </span>
             <span className={styles.classes.totalPages}>—</span>
           </span>
