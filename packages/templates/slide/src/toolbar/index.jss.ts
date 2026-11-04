@@ -27,9 +27,10 @@ export default createStyles({
     boxShadow: '0 3px 20px rgba(0,0,0,.07)',
     fontSize: 12,
     color: TextSecondary,
+    cursor: 'default',
     opacity: 0.5,
     transition: 'opacity 200ms ease',
-    '&:hover': { opacity: 1 },
+    '&:hover, &:focus-within': { opacity: 1 },
     ':fullscreen &': { display: 'none' },
     '@media (max-width: 640px)': {
       right: 8,
@@ -40,6 +41,7 @@ export default createStyles({
     },
   },
   title: {
+    userSelect: 'text',
     fontSize: 14,
     lineHeight: '20px',
     overflow: 'hidden',
@@ -61,7 +63,25 @@ export default createStyles({
     fontVariantNumeric: 'lining-nums tabular-nums',
     '@media (max-width: 640px)': { marginLeft: 10 },
   },
-  currentPage: { color: TextPrimary },
+  currentPage: {
+    width: '2ch',
+    padding: 0,
+    border: 0,
+    borderRadius: 0,
+    background: 'transparent',
+    color: TextPrimary,
+    font: 'inherit',
+    fontVariantNumeric: 'inherit',
+    textAlign: 'right',
+    '&:enabled': { cursor: 'text' },
+    '&:hover': {
+      boxShadow: `0 1px 0 ${BorderPrimary}`,
+    },
+    '&:focus': {
+      outline: 'none',
+      boxShadow: '0 1px 0 currentColor',
+    },
+  },
   totalPages: { color: TextSecondary },
   divider: {
     flex: '0 0 1px',

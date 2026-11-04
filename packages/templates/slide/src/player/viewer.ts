@@ -18,7 +18,7 @@ export function active() {
   const card = find<HTMLElement>(styles.classes.card);
   const canvas = find<HTMLElement>(styles.classes.canvas);
   const toolbar = find<HTMLElement>(toolbarStyles.classes.toolbar);
-  const currentPage = find<HTMLElement>(toolbarStyles.classes.currentPage);
+  const currentPage = find<HTMLInputElement>(toolbarStyles.classes.currentPage);
   const totalPages = find<HTMLElement>(toolbarStyles.classes.totalPages);
   const play = find<HTMLButtonElement>(toolbarStyles.classes.play);
   const loading = find<HTMLElement>(loadingStyles.classes.loading);
@@ -28,8 +28,9 @@ export function active() {
   const sections = Array.from(canvas.querySelectorAll<HTMLElement>('[data-slide-section]'));
   const pageStorageKey = `slide:page:${window.location.pathname}`;
 
-  if (totalPages) {
+  if (currentPage && totalPages) {
     totalPages.textContent = String(sections.length).padStart(2, '0');
+    currentPage.style.width = `${totalPages.textContent.length}ch`;
   }
 
   const events = new AbortController();
@@ -109,7 +110,11 @@ export function active() {
     displayedPage = index;
 
     if (currentPage) {
-      currentPage.textContent = String(index + 1).padStart(2, '0');
+      currentPage.disabled = false;
+
+      if (document.activeElement !== currentPage) {
+        currentPage.value = String(index + 1).padStart(2, '0');
+      }
     }
 
     loadingError.hidden = !configFailed;
@@ -143,6 +148,27 @@ export function active() {
       image.loading = 'eager';
       void image.decode().catch(() => {});
     });
+  }
+
+  if (currentPage) {
+    const options = { signal: events.signal };
+    currentPage.addEventListener('focus', () => currentPage.select(), options);
+    currentPage.addEventListener('blur', () => {
+      currentPage.value = String(displayedPage + 1).padStart(2, '0');
+    }, options);
+    currentPage.addEventListener('keydown', (event) => {
+      if (event.isComposing || (event.key !== 'Enter' && event.key !== 'Escape')) {
+        return;
+      }
+
+      event.preventDefault();
+      const value = currentPage.value.trim();
+      card.focus({ preventScroll: true });
+
+      if (event.key === 'Enter' && /^\d+$/.test(value)) {
+        void show(Number(value) - 1);
+      }
+    }, options);
   }
 
   bindPlayerControls({
