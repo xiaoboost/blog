@@ -35,12 +35,7 @@ import { TopicsChapter } from './pages/chapter-topics';
 import { TopicGuide } from './pages/topic-guide';
 import { TopicOverview } from './pages/topic-overview';
 import { AspectReviewsOverall } from './pages/aspect-reviews-overall';
-import { AspectReviewsGenshin } from './pages/aspect-reviews-genshin';
-import { AspectReviewsStarRail } from './pages/aspect-reviews-star-rail';
-import { AspectReviewsZenless } from './pages/aspect-reviews-zenless';
-import { AspectReviewsArknights } from './pages/aspect-reviews-arknights';
-import { AspectReviewsEndfield } from './pages/aspect-reviews-endfield';
-import { AspectReviewsWutheringWaves } from './pages/aspect-reviews-wuthering-waves';
+import { AspectReviewComparison } from './pages/aspect-review-comparison';
 import { GameplayComplaints } from './pages/gameplay-complaints';
 import { GameplayPraise } from './pages/gameplay-praise';
 import { StarRailStrengthValue } from './pages/star-rail-strength-value';
@@ -119,14 +114,10 @@ import { Afterword } from './pages/afterword';
   {/* 六个楼的话题构成 */}
   <TopicOverview />
 
-  {/* 各方面评价：六楼合并与六个游戏，数量和比例并列 */}
+  {/* 各方面评价：六楼总览、各楼正面评价、各楼负面评价 */}
   <AspectReviewsOverall />
-  <AspectReviewsGenshin />
-  <AspectReviewsStarRail />
-  <AspectReviewsZenless />
-  <AspectReviewsArknights />
-  <AspectReviewsEndfield />
-  <AspectReviewsWutheringWaves />
+  <AspectReviewComparison sentiment="positive" />
+  <AspectReviewComparison sentiment="negative" />
 
   {/* 玩法正面评价的具体理由 */}
   <GameplayPraise />
