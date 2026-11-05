@@ -3,8 +3,12 @@ import { getEventListeners } from 'node:events';
 import { describe, it } from '@blog/test-toolkit';
 import { bindSwipe } from '../player/swipe';
 
-function setup(allowed = true) {
+function setup(pointerType: string, allowed = true) {
   const element = new EventTarget();
+  const document = new EventTarget();
+  const window = new EventTarget();
+  Object.assign(element, { ownerDocument: document });
+  Object.assign(document, { defaultView: window });
   const controller = new AbortController();
   const directions: number[] = [];
   bindSwipe(element as HTMLElement, {
@@ -12,14 +16,23 @@ function setup(allowed = true) {
     canStart: () => allowed,
     onSwipe: (direction) => directions.push(direction),
   });
-  const point = (x: number, y = 100, id = 1) => ({ identifier: id, clientX: x, clientY: y });
-  const touch = (type: string, points: ReturnType<typeof point>[]) => {
+  const pointer = (type: string, x: number, y = 100, extra = {}) => {
     const event = new Event(type, { cancelable: true });
     Object.assign(event, {
-      touches: type === 'touchend' ? [] : points,
-      changedTouches: points,
-    });
-    element.dispatchEvent(event);
+      pointerType,
+      pointerId: 1,
+      isPrimary: true,
+      button: 0,
+      buttons: type === 'pointerup' ? 0 : 1,
+      clientX: x,
+      clientY: y,
+    }, extra);
+    document.dispatchEvent(event);
+
+    if (type === 'pointerdown') {
+      element.dispatchEvent(event);
+    }
+
     return event;
   };
   const click = (detail = 1) => {
@@ -30,124 +43,127 @@ function setup(allowed = true) {
   };
   return {
     element,
+    document,
+    window,
     controller,
     directions,
-    point,
-    touch,
+    pointer,
     click,
   };
 }
 
-describe('PPT 触摸翻页', () => {
-  it('一次左滑或右滑只翻一页，并拦截松手后的合成点击', () => {
-    const {
-      directions,
-      point,
-      touch,
-      click,
-    } = setup();
-    touch('touchstart', [point(200)]);
-    strictEqual(touch('touchmove', [point(140)]).defaultPrevented, true);
-    touch('touchmove', [point(100)]);
-    touch('touchend', [point(80)]);
-    strictEqual(click().defaultPrevented, true);
-    deepStrictEqual(directions, [1]);
+for (const pointerType of ['mouse', 'touch']) {
+  describe(`PPT ${pointerType} 翻页`, () => {
+    it('左右拖动各翻一次，松手点击被拦截，下一次轻点正常', () => {
+      const { pointer, click, directions } = setup(pointerType);
+      pointer('pointerdown', 200);
+      strictEqual(pointer('pointermove', 100).defaultPrevented, true);
+      pointer('pointerup', 80);
+      strictEqual(click().defaultPrevented, true);
+      strictEqual(click(0).defaultPrevented, false);
+      pointer('pointerdown', 80);
+      pointer('pointermove', 150);
+      pointer('pointerup', 200);
+      deepStrictEqual(directions, [1, -1]);
+      pointer('pointerdown', 100);
+      pointer('pointerup', 102);
+      strictEqual(click().defaultPrevented, false);
+    });
 
-    touch('touchstart', [point(80)]);
-    touch('touchmove', [point(140)]);
-    touch('touchend', [point(200)]);
-    deepStrictEqual(directions, [1, -1]);
+    it('短拖和滑回起点不翻页，也不误触点击', () => {
+      const { pointer, click, directions } = setup(pointerType);
+      for (const end of [180, 195]) {
+        pointer('pointerdown', 200);
+        pointer('pointermove', end === 180 ? 180 : 100);
+        pointer('pointerup', end);
+        strictEqual(click().defaultPrevented, true);
+      }
+      deepStrictEqual(directions, []);
+    });
+
+    it('纵向或斜向开始后不能转为翻页', () => {
+      const { pointer, click, directions } = setup(pointerType);
+      for (const x of [200, 170]) {
+        pointer('pointerdown', 200);
+        strictEqual(pointer('pointermove', x, 140).defaultPrevented, false);
+        pointer('pointermove', 50, 145);
+        pointer('pointerup', 50, 145);
+        strictEqual(click().defaultPrevented, true);
+      }
+      deepStrictEqual(directions, []);
+    });
+
+    it('系统取消、第二触点、窗口失焦均不翻页', () => {
+      const { pointer, window, directions } = setup(pointerType);
+      for (const reason of ['cancel', 'second', 'blur']) {
+        pointer('pointerdown', 200);
+        pointer('pointermove', 100);
+
+        if (reason === 'cancel') {
+          pointer('pointercancel', 100);
+        }
+        else if (reason === 'second') {
+          pointer('pointerdown', 250, 100, { pointerId: 2, isPrimary: false });
+        }
+        else {
+          window.dispatchEvent(new Event('blur'));
+        }
+
+        pointer('pointerup', 80);
+      }
+      deepStrictEqual(directions, []);
+    });
+
+    it('忽略其他指针，不接管禁止区域、右键和非主指针', () => {
+      const { pointer, directions } = setup(pointerType);
+      pointer('pointerdown', 200);
+      pointer('pointermove', 80, 100, { pointerId: 2 });
+      pointer('pointerup', 80, 100, { pointerId: 2 });
+      deepStrictEqual(directions, []);
+      pointer('pointercancel', 200);
+      for (const extra of [{ button: 2 }, { isPrimary: false }]) {
+        pointer('pointerdown', 200, 100, extra);
+        pointer('pointermove', 100);
+        pointer('pointerup', 80);
+      }
+      deepStrictEqual(directions, []);
+      const blocked = setup(pointerType, false);
+      blocked.pointer('pointerdown', 200);
+      strictEqual(blocked.pointer('pointermove', 100).defaultPrevented, false);
+      blocked.pointer('pointerup', 80);
+      strictEqual(blocked.click().defaultPrevented, false);
+      deepStrictEqual(blocked.directions, []);
+    });
+
+    it('空白拖动阻止原生选字和图片拖拽，卸载后清理所有监听', () => {
+      const {
+        pointer,
+        element,
+        document,
+        window,
+        controller,
+      } = setup(pointerType);
+      pointer('pointerdown', 200);
+      for (const type of ['selectstart', 'dragstart']) {
+        const event = new Event(type, { cancelable: true });
+        element.dispatchEvent(event);
+        strictEqual(event.defaultPrevented, true);
+      }
+      controller.abort();
+      for (const target of [element, document, window]) {
+        for (const type of [
+          'pointerdown',
+          'pointermove',
+          'pointerup',
+          'pointercancel',
+          'click',
+          'selectstart',
+          'dragstart',
+          'blur',
+        ]) {
+          strictEqual(getEventListeners(target, type).length, 0);
+        }
+      }
+    });
   });
-
-  it('轻点仍可点击，短横拖和滑回起点不翻页', () => {
-    const {
-      directions,
-      point,
-      touch,
-      click,
-    } = setup();
-    touch('touchstart', [point(200)]);
-    touch('touchmove', [point(180)]);
-    touch('touchend', [point(180)]);
-    strictEqual(click().defaultPrevented, true);
-
-    touch('touchstart', [point(200)]);
-    touch('touchmove', [point(100)]);
-    touch('touchend', [point(195)]);
-    strictEqual(click().defaultPrevented, true);
-
-    touch('touchstart', [point(200)]);
-    touch('touchend', [point(202)]);
-    strictEqual(click().defaultPrevented, false);
-    deepStrictEqual(directions, []);
-  });
-
-  it('纵向或斜向滚动不阻止默认行为，也不会中途变成翻页', () => {
-    const { directions, point, touch } = setup();
-    for (const x of [200, 170]) {
-      touch('touchstart', [point(200)]);
-      strictEqual(touch('touchmove', [point(x, 140)]).defaultPrevented, false);
-      touch('touchmove', [point(50, 145)]);
-      touch('touchend', [point(50, 145)]);
-    }
-    deepStrictEqual(directions, []);
-  });
-
-  it('双指手势、系统取消和触点变化都不翻页', () => {
-    const { directions, point, touch } = setup();
-    touch('touchstart', [point(200)]);
-    touch('touchmove', [point(150)]);
-    touch('touchstart', [point(150), point(250, 100, 2)]);
-    strictEqual(touch('touchmove', [point(80), point(300, 100, 2)]).defaultPrevented, false);
-    touch('touchend', [point(80)]);
-
-    touch('touchstart', [point(200)]);
-    touch('touchmove', [point(100)]);
-    touch('touchcancel', []);
-    touch('touchend', [point(80)]);
-
-    touch('touchstart', [point(200)]);
-    touch('touchmove', [point(100, 100, 2)]);
-    touch('touchend', [point(80, 100, 2)]);
-    deepStrictEqual(directions, []);
-  });
-
-  it('不接管不可翻页区域的触摸和点击', () => {
-    const {
-      directions,
-      point,
-      touch,
-      click,
-    } = setup(false);
-    touch('touchstart', [point(200)]);
-    strictEqual(touch('touchmove', [point(100)]).defaultPrevented, false);
-    touch('touchend', [point(80)]);
-    strictEqual(click().defaultPrevented, false);
-    deepStrictEqual(directions, []);
-  });
-
-  it('不拦截键盘点击，卸载播放器时移除所有手势监听', () => {
-    const {
-      element,
-      controller,
-      point,
-      touch,
-      click,
-    } = setup();
-    touch('touchstart', [point(200)]);
-    touch('touchmove', [point(100)]);
-    touch('touchend', [point(80)]);
-    strictEqual(click(0).defaultPrevented, false);
-    controller.abort();
-    for (const type of [
-      'touchstart',
-      'touchmove',
-      'touchend',
-      'touchcancel',
-      'click',
-    ]) {
-      strictEqual(getEventListeners(element, type).length, 0);
-    }
-    strictEqual(click().defaultPrevented, false);
-  });
-});
+}

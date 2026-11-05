@@ -1,97 +1,121 @@
 interface SwipeOptions {
   signal: AbortSignal;
-  canStart: (target: EventTarget | null) => boolean;
+  canStart: (event: PointerEvent) => boolean;
   onSwipe: (direction: -1 | 1) => void;
 }
 
-/** 在普通视图和全屏共用的容器上识别单指横滑，保留纵向滚动和双指缩放。 */
+/** 鼠标、触屏共用横滑识别；纵向滚动和缩放交给 touch-action。 */
 export function bindSwipe(element: HTMLElement, { signal, canStart, onSwipe }: SwipeOptions) {
-  let gesture: { id: number; x: number; y: number; horizontal: boolean } | undefined;
+  let gesture: {
+    id: number;
+    x: number;
+    y: number;
+    horizontal: boolean;
+    rejected: boolean;
+    moved: boolean;
+  } | undefined;
   let suppressClickUntil = 0;
-  const options = { signal, passive: true };
+  const options = { signal };
+  const document = element.ownerDocument;
+  const cancel = () => {
+    if (gesture?.moved) {
+      suppressClickUntil = Date.now() + 700;
+    }
 
-  element.addEventListener('touchstart', (event) => {
     gesture = undefined;
-    suppressClickUntil = 0;
+  };
 
-    if (event.touches.length !== 1 || !canStart(event.target)) {
+  element.addEventListener('pointerdown', (event) => {
+    if (gesture && gesture.id !== event.pointerId) {
+      cancel();
       return;
     }
 
-    const touch = event.touches[0];
+    if (!event.isPrimary || event.button !== 0) {
+      return;
+    }
+
+    suppressClickUntil = 0;
+
+    if (!canStart(event)) {
+      return;
+    }
+
     gesture = {
-      id: touch.identifier,
-      x: touch.clientX,
-      y: touch.clientY,
+      id: event.pointerId,
+      x: event.clientX,
+      y: event.clientY,
       horizontal: false,
+      rejected: false,
+      moved: false,
     };
   }, options);
 
-  element.addEventListener('touchmove', (event) => {
-    if (!gesture) {
+  // 第二根手指即使落在容器外也取消；拖出卡片后仍能收到松手事件。
+  document.addEventListener('pointerdown', (event) => {
+    if (gesture && gesture.id !== event.pointerId) {
+      cancel();
+    }
+  }, { signal, capture: true });
+  document.addEventListener('pointermove', (event) => {
+    if (!gesture || gesture.id !== event.pointerId) {
       return;
     }
 
-    const touch = event.touches[0];
-
-    if (event.touches.length !== 1 || touch.identifier !== gesture.id) {
-      gesture = undefined;
+    if (event.pointerType === 'mouse' && !(event.buttons & 1)) {
+      cancel();
       return;
     }
 
-    const dx = Math.abs(touch.clientX - gesture.x);
-    const dy = Math.abs(touch.clientY - gesture.y);
+    const dx = Math.abs(event.clientX - gesture.x);
+    const dy = Math.abs(event.clientY - gesture.y);
+    gesture.moved ||= Math.max(dx, dy) >= 12;
+
+    if (!gesture.moved || gesture.rejected) {
+      return;
+    }
 
     if (!gesture.horizontal) {
-      if (Math.max(dx, dy) < 12) {
-        return;
-      }
-
       if (dx < dy * 1.5) {
-        gesture = undefined;
+        gesture.rejected = true;
         return;
       }
 
       gesture.horizontal = true;
     }
 
-    // 仅横滑阻止浏览器默认行为，也避免松手后触发点击翻页。
     if (event.cancelable) {
       event.preventDefault();
     }
   }, { signal, passive: false });
+  document.addEventListener('pointerup', (event) => {
+    if (!gesture || gesture.id !== event.pointerId) {
+      return;
+    }
 
-  element.addEventListener('touchend', (event) => {
     const current = gesture;
-    gesture = undefined;
+    const dx = event.clientX - current.x;
+    const dy = event.clientY - current.y;
+    current.moved ||= Math.max(Math.abs(dx), Math.abs(dy)) >= 12;
+    cancel();
 
-    if (!current || event.touches.length) {
-      return;
-    }
-
-    const touch = Array.from(event.changedTouches)
-      .find(({ identifier }) => identifier === current.id);
-
-    if (!touch) {
-      return;
-    }
-
-    const dx = touch.clientX - current.x;
-    const dy = touch.clientY - current.y;
-
-    if (current.horizontal || Math.max(Math.abs(dx), Math.abs(dy)) >= 12) {
-      suppressClickUntil = Date.now() + 700;
-    }
-
-    if (Math.abs(dx) >= 40 && Math.abs(dx) >= Math.abs(dy) * 1.5) {
+    if (!current.rejected && Math.abs(dx) >= 40 && Math.abs(dx) >= Math.abs(dy) * 1.5) {
       onSwipe(dx < 0 ? 1 : -1);
     }
   }, options);
-
-  element.addEventListener('touchcancel', () => {
-    gesture = undefined;
+  document.addEventListener('pointercancel', (event) => {
+    if (gesture?.id === event.pointerId) {
+      cancel();
+    }
   }, options);
-
+  document.defaultView?.addEventListener('blur', cancel, options);
+  for (const type of ['dragstart', 'selectstart']) {
+    element.addEventListener(type, (event) => {
+      if (gesture) {
+        event.preventDefault();
+      }
+    }, options);
+  }
   element.addEventListener('click', (event) => {
     if (event.detail > 0 && Date.now() < suppressClickUntil) {
       event.preventDefault();
