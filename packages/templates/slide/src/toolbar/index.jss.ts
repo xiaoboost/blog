@@ -33,8 +33,8 @@ export default createStyles({
     '&:hover, &:focus-within': { opacity: 1 },
     ':fullscreen &': { display: 'none' },
     '@media (max-width: 640px)': {
-      right: 8,
-      top: 8,
+      right: 4,
+      top: 4,
       gap: 6,
       maxWidth: 'calc(100% - 16px)',
       padding: 0,

@@ -1,4 +1,5 @@
 import { bindSwipe } from './swipe';
+import { hitsText } from './text-hit';
 
 interface PlayerControlOptions {
   presentation: HTMLElement;
@@ -29,33 +30,28 @@ export function bindPlayerControls({
   const options = { signal };
   const interactive = (target: EventTarget | null) => target instanceof Element
     && !!target.closest('a, button, input, textarea, select, [contenteditable="true"]');
+  const canNavigate = (target: EventTarget | null) => isReady()
+    && !interactive(target)
+    && !toolbar.contains(target as Node)
+    && !loadingError.contains(target as Node)
+    && !window.getSelection()?.toString();
+  const navigateFromPointer = (direction: -1 | 1) => {
+    card.focus({ preventScroll: true });
+    navigate(direction);
+  };
 
   bindSwipe(presentation, {
     signal,
-    canStart: (target) => isReady()
-      && !interactive(target)
-      && !toolbar.contains(target as Node)
-      && !loadingError.contains(target as Node)
-      && !window.getSelection()?.toString(),
-    onSwipe: (direction) => {
-      card.focus({ preventScroll: true });
-      navigate(direction);
-    },
+    canStart: (event) => canNavigate(event.target) && !hitsText(event),
+    onSwipe: navigateFromPointer,
   });
 
   card.addEventListener('click', (event) => {
-    if (
-      !isReady()
-      || interactive(event.target)
-      || toolbar.contains(event.target as Node)
-      || loadingError.contains(event.target as Node)
-      || window.getSelection()?.toString()
-    ) {
+    if (!canNavigate(event.target)) {
       return;
     }
 
-    card.focus({ preventScroll: true });
-    navigate(1);
+    navigateFromPointer(1);
   }, options);
   document.addEventListener('keydown', (event) => {
     if (!isReady() || interactive(event.target) || event.altKey || event.ctrlKey || event.metaKey) {
