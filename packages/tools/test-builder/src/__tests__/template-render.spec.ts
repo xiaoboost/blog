@@ -79,7 +79,7 @@ describe('模板内部装配资源', () => {
                     && page.data.post.data.template === 'slide')!;
                   // 尚未预渲染，模板和组件的配置应已由生成器登记。
                   expect(page.getBrowserConfig().lazyScripts).deep.eq({
-                    [SlideExportScript]: ['/preview/scripts/export.js'],
+                    [SlideExportScript]: ['/preview/scripts/export-pdf.js'],
                     'component.editor': ['/preview/scripts/component.editor.js'],
                   });
                 });
@@ -188,7 +188,7 @@ describe('模板内部装配资源', () => {
       runInNewContext(config.content.toString(), browser);
       expect(browser.__BLOG_BROWSER_CONFIG__).not.have.property('slide');
       expect(browser.__BLOG_BROWSER_CONFIG__.lazyScripts).deep.eq({
-        [SlideExportScript]: ['/preview/scripts/export.js'],
+        [SlideExportScript]: ['/preview/scripts/export-pdf.js'],
         'component.editor': ['/preview/scripts/component.editor.js'],
         'page.tool': ['/preview/scripts/page-tool.js'],
       });
@@ -203,7 +203,7 @@ describe('模板内部装配资源', () => {
 
   it('公共模板的导出脚本独立产出，播放器包中没有导出代码', () => {
     const marker = '没有可以导出的幻灯片。';
-    const lazy = assets.find(({ path }) => path === '/preview/scripts/export.js')!;
+    const lazy = assets.find(({ path }) => path === '/preview/scripts/export-pdf.js')!;
     expect(lazy).not.eq(undefined);
     expect(lazy.content.toString()).include(marker);
     const player = assets.find(({ path }) => path === '/preview/scripts/slide.js')!;

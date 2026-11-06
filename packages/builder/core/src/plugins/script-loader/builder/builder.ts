@@ -4,6 +4,7 @@ import { JssLoader } from '../../jss-loader';
 import { postAssetsNamespace } from '../../post-loader/assets';
 import { builderCache } from '../utils';
 import { AssetExtractor } from './extractor';
+import { JsPdfExternals } from './jspdf-externals';
 import { Transformer } from './transformer';
 
 export async function getScriptBuilder(
@@ -29,6 +30,7 @@ export async function getScriptBuilder(
         EntrySource(),
         AssetExtractor(cssName),
         Transformer(),
+        JsPdfExternals(),
         JssLoader({ extractAsset: true }),
       ],
     });
