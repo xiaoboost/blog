@@ -1,4 +1,5 @@
 import { resolve } from 'node:path';
+import { runInNewContext } from 'node:vm';
 import { Builder } from '@blog/core';
 import { builderCache as jssCache, cssCodeCache } from '@blog/core/src/plugins/jss-loader/store';
 import { getPostsInputCode } from '@blog/core/src/plugins/post-loader/utils';
@@ -42,6 +43,22 @@ describe('模板内部装配资源', () => {
           name: 'test-template-render',
           apply(builder) {
             builder.hooks.bundler.tap('test-template-render', (bundler) => {
+              bundler.hooks.transform.tap('test-browser-config', (input, ctx) => {
+                const path = input.module.sourcePath?.replaceAll('\\', '/');
+                const name = path?.endsWith('/templates/slide/src/index.ts')
+                  ? 'template.export'
+                  : path?.endsWith('/components/slide/src/index.tsx') ? 'component.editor' : undefined;
+
+                if (!name) {
+                  return input;
+                }
+
+                return ctx.update(input, {
+                  code: input.code.replace('defineUtils(assets)',
+                    `defineUtils(assets, { browserConfig: { lazyScripts: { "${name}": ["/preview/scripts/${name}.js"] } } })`),
+                  map: null,
+                });
+              });
               bundler.hooks.load.tap({ name: 'test-template-render', stage: -100 }, (args) => {
                 if (args.namespace !== 'posts-loader') {
                   return;
@@ -56,12 +73,26 @@ describe('模板内部装配资源', () => {
             });
             builder.hooks.runner.tap('test-template-render', (runner) => {
               runner.registerHook(({ hooks }) => {
+                hooks.afterReady.tap('test-browser-config-before-render', ({ pages }) => {
+                  const page = pages.find((page) => page.type === 'post'
+                    && page.data.post.data.template === 'slide')!;
+                  // 尚未预渲染，模板和组件的配置应已由生成器登记。
+                  expect(page.getBrowserConfig().lazyScripts).deep.eq({
+                    'template.export': ['/preview/scripts/template.export.js'],
+                    'component.editor': ['/preview/scripts/component.editor.js'],
+                  });
+                });
                 hooks.beforePageRender.tap('test-template-render', ({ page }) => {
                   if (page.type !== 'post') {
                     return;
                   }
 
                   const { post } = page.data;
+
+                  if (post.data.template === 'slide') {
+                    page.addBrowserConfig({ lazyScripts: { 'page.tool': ['/preview/scripts/page-tool.js'] } });
+                  }
+
                   posts.set(page.outputPath, {
                     template: post.data.template,
                     pathname: page.pathname,
@@ -131,6 +162,38 @@ describe('模板内部装配资源', () => {
         expect(scripts, path).include('/preview/scripts/slide.js');
         expect(html, path).include(`name="description" content="${post.description}"`);
       }
+    }
+  });
+
+  it('模板、组件和页面配置合并成一份 head 脚本，普通页面不生成配置', () => {
+    for (const [path, post] of posts) {
+      const html = assets.find((asset) => asset.path === path)!.content.toString();
+      const configs = assets.filter((asset) => asset.path.startsWith(post.pathname)
+        && asset.path.endsWith('/browser-config.js'));
+
+      if (post.template !== 'slide') {
+        expect(configs).length(0);
+        expect(html).not.include('browser-config.js');
+        continue;
+      }
+
+      expect(configs).length(1);
+      const config = configs[0];
+      expect(html.split('</head>')[0]).include(`src="${config.path}" async=""`);
+      const browser: Record<string, any> = { Event, dispatchEvent: () => true };
+      runInNewContext(config.content.toString(), browser);
+      expect(browser.__BLOG_BROWSER_CONFIG__.slide.sections).length(1);
+      expect(browser.__BLOG_BROWSER_CONFIG__.lazyScripts).deep.eq({
+        'template.export': ['/preview/scripts/template.export.js'],
+        'component.editor': ['/preview/scripts/component.editor.js'],
+        'page.tool': ['/preview/scripts/page-tool.js'],
+      });
+      const lazyScripts = browser.__BLOG_BROWSER_CONFIG__.lazyScripts as Record<string, string[]>;
+      for (const paths of Object.values(lazyScripts)) {
+        expect(html).not.include(`src="${paths[0]}"`);
+      }
+      expect(browser.__BLOG_SLIDE_CONFIG__).eq(undefined);
+      expect(assets.some((asset) => asset.path.includes('slide-data'))).eq(false);
     }
   });
 

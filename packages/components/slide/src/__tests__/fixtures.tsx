@@ -1,5 +1,6 @@
-import { RenderContext } from '@blog/context/runtime';
+import { RenderContext, mergeBrowserConfig } from '@blog/context/runtime';
 import type {
+  BrowserConfig,
   AssetData,
   BuildContext,
   IRenderContext,
@@ -12,10 +13,13 @@ import { Section } from '../slide/section';
 import { Slide } from '../slide/slide';
 
 export function renderContext(): IRenderContext {
+  const configs: BrowserConfig[] = [];
   const assets: AssetData[] = [];
   const scripts: ScriptAssetData[] = [];
   return {
     page: {
+      addBrowserConfig: (config: BrowserConfig) => configs.push(config),
+      getBrowserConfig: () => mergeBrowserConfig(...configs),
       type: 'post',
       pathname: '/slides/example/',
       data: { post: { data: { template: 'slide' } } },

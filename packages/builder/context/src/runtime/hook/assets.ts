@@ -1,4 +1,5 @@
 import type {
+  DefineUtilsOptions,
   PreloadAssetData,
   ScriptAssetData,
   StyleAssetData,
@@ -6,6 +7,7 @@ import type {
   TemplateScriptAsset,
   TemplateUtils,
 } from '@blog/types';
+import { mergeBrowserConfig } from '../browser-config';
 
 const isScriptPath = (path: string) => path.split(/[?#]/)[0].endsWith('.js');
 const isStylePath = (path: string) => path.split(/[?#]/)[0].endsWith('.css');
@@ -41,10 +43,12 @@ function getKey(asset: TemplateAsset): string {
 }
 
 /**
- * 收集模板资源引用。显式配置优先于普通路径；同一路径的后一次显式声明覆盖前一次。
- * 保留首次出现的顺序，脚本在 head/body 之间只保留一个位置。
+ * 收集模板资源引用
  */
-export function defineUtils(assets: readonly TemplateAsset[] = []): TemplateUtils {
+export function defineUtils(
+  assets: readonly TemplateAsset[] = [],
+  { browserConfig = {} }: DefineUtilsOptions = {},
+): TemplateUtils {
   const references = assets.map(copyReference);
   const getAssetReferences = (): TemplateAsset[] => {
     const result = new Map<string, TemplateAsset>();
@@ -78,6 +82,7 @@ export function defineUtils(assets: readonly TemplateAsset[] = []): TemplateUtil
   );
 
   return {
+    getBrowserConfig: () => mergeBrowserConfig(browserConfig),
     getAssetReferences,
     getAssetNames: () => [...new Set(getAssetReferences().map(getPath))],
     getScripts: () => getScripts('body'),
@@ -115,12 +120,14 @@ export function defineUtils(assets: readonly TemplateAsset[] = []): TemplateUtil
   };
 }
 
-/** 合并完整引用，保留脚本位置、样式属性和预加载声明。 */
+/** 合并资源配置 */
 export function mergeUtils(...utils: TemplateUtils[]): TemplateUtils {
-  return defineUtils(utils.flatMap((item) => item.getAssetReferences()));
+  return defineUtils(utils.flatMap((item) => item.getAssetReferences()), {
+    browserConfig: mergeBrowserConfig(...utils.map((item) => item.getBrowserConfig())),
+  });
 }
 
-/** 配置一组产物中的 JS；CSS、字体、图片等仍保留为普通资源引用。 */
+/** 配置一组产物 */
 export function withScriptOptions(
   assets: readonly string[],
   options: Omit<TemplateScriptAsset, 'src'>,

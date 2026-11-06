@@ -5,6 +5,7 @@ import type {
   IRenderContext,
   PageType,
 } from '@blog/types';
+import { emitBrowserConfig } from './browser-config';
 
 interface RenderOptions {
   isPreBuild: boolean;
@@ -27,6 +28,7 @@ export async function renderPages(
   for (const page of pages) {
     if (!isPreBuild) {
       await callHook('beforePageRender', { ...ctx, page });
+      emitBrowserConfig(page, ctx);
     }
 
     page.html = renderPage({

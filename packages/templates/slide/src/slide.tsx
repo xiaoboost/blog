@@ -1,7 +1,6 @@
 import { dirname, resolve } from 'path';
 import { Layout, type LayoutProps } from '@blog/template-layout';
 import type { PostExportDataWithComponent } from '@blog/types';
-import React from 'react';
 import { Presentation } from './presentation';
 import styles from './style.jss';
 

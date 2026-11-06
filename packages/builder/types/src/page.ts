@@ -4,6 +4,7 @@ import type {
   ScriptAssetData,
   StyleAssetData,
 } from './asset';
+import type { BrowserConfig } from './browser-config';
 import type { IFontBucket, IFontBucketConfig, IBuildFontsOptions } from './font';
 import type { PostExportData, PostExportDataWithComponent } from './post';
 
@@ -132,10 +133,14 @@ export type IPage<T extends PageType = PageType> = {
     readonly outputPath: string;
     /** 页面标题 */
     readonly title: string;
-
+    /** 页面代码 */
     html: string;
 
-    /** 产出最终的 HTML AssetData */
+    /** 添加页面配置 */
+    addBrowserConfig(config: BrowserConfig): void;
+    /** 获取页面配置 */
+    getBrowserConfig(): BrowserConfig;
+    /** 产出最终的页面静态资源 */
     toAsset(): AssetData;
   };
 }[T];
@@ -157,7 +162,11 @@ export interface ISite extends IResourceSet {
 
 // ── Hook 上下文 ──
 
-/** 构建上下文 — 传入 hook 的统一参数 */
+/**
+ * 构建上下文
+ *
+ * @description 传入 hook 的统一参数
+ */
 export interface BuildContext {
   pages: IPage[];
   site: ISite;

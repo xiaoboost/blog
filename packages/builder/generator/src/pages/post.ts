@@ -33,13 +33,19 @@ export function getPostAssetPath(post: PostExportDataWithComponent) {
 }
 
 export function createPostPages(posts: PostsExportType) {
-  return posts.map((post) => new Page({
-    type: 'post',
-    pathname: post.data.pathname,
-    title: post.data.title,
-    data: { post },
-    render: renderPost,
-  }));
+  return posts.map((post) => {
+    const page = new Page({
+      type: 'post',
+      pathname: post.data.pathname,
+      title: post.data.title,
+      data: { post },
+      render: renderPost,
+    });
+
+    page.addBrowserConfig(post.utils.getBrowserConfig());
+
+    return page;
+  });
 }
 
 export function renderSpacePost(posts: PostsExportType) {
