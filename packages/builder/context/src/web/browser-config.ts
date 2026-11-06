@@ -6,6 +6,14 @@ export function waitForBrowserConfig(signal: AbortSignal, timeout = 8000): Promi
   const browser = globalThis as typeof globalThis & { [BrowserConfigGlobalKey]?: BrowserConfig };
   return new Promise((resolve, reject) => {
     signal.throwIfAborted();
+
+    // 配置脚本在 head 中；没有标签表示本页未生成配置，无需等待事件。
+    if (browser[BrowserConfigGlobalKey] === undefined
+      && !document.getElementById(BrowserConfigGlobalKey)) {
+      resolve({});
+      return;
+    }
+
     const timer = setTimeout(() => {
       cleanup();
       reject(new Error('浏览器配置加载超时。'));

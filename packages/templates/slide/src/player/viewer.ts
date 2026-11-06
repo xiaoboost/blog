@@ -51,7 +51,7 @@ export function active() {
   loadingError.hidden = true;
   const configReady = waitForSlideConfig(events.signal)
     .then((config) => {
-      if (config.sections.length !== sections.length) {
+      if (config && config.sections.length !== sections.length) {
         throw new Error('幻灯片动画配置与页面数量不一致。');
       }
 

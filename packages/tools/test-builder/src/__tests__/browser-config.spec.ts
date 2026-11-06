@@ -62,7 +62,13 @@ describe('页面浏览器配置', () => {
     const [asset] = current.getAssets();
     assert.equal(current.getAssets().length, 1);
     assert.equal(asset.path, '/example/scripts/browser-config.hash.js');
-    assert.deepEqual(current.getPreScripts(), [{ src: asset.path, async: true }]);
+    assert.deepEqual(current.getPreScripts(), [
+      {
+        id: BrowserConfigGlobalKey,
+        src: asset.path,
+        async: true,
+      },
+    ]);
     let notified = false;
     const browser: Record<string, any> = {
       Event,

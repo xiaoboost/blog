@@ -45,9 +45,9 @@ describe('模板内部装配资源', () => {
             builder.hooks.bundler.tap('test-template-render', (bundler) => {
               bundler.hooks.transform.tap('test-browser-config', (input, ctx) => {
                 const path = input.module.sourcePath?.replaceAll('\\', '/');
-                const name = path?.endsWith('/templates/slide/src/index.ts')
-                  ? 'template.export'
-                  : path?.endsWith('/components/slide/src/index.tsx') ? 'component.editor' : undefined;
+                const name = path?.endsWith('/components/slide/src/index.tsx')
+                  ? 'component.editor'
+                  : undefined;
 
                 if (!name) {
                   return input;
@@ -78,7 +78,7 @@ describe('模板内部装配资源', () => {
                     && page.data.post.data.template === 'slide')!;
                   // 尚未预渲染，模板和组件的配置应已由生成器登记。
                   expect(page.getBrowserConfig().lazyScripts).deep.eq({
-                    'template.export': ['/preview/scripts/template.export.js'],
+                    'slide.async-test': ['/preview/scripts/async-test.js'],
                     'component.editor': ['/preview/scripts/component.editor.js'],
                   });
                 });
@@ -180,11 +180,12 @@ describe('模板内部装配资源', () => {
       expect(configs).length(1);
       const config = configs[0];
       expect(html.split('</head>')[0]).include(`src="${config.path}" async=""`);
+      expect(html.split('</head>')[0]).include('id="__BLOG_BROWSER_CONFIG__"');
       const browser: Record<string, any> = { Event, dispatchEvent: () => true };
       runInNewContext(config.content.toString(), browser);
-      expect(browser.__BLOG_BROWSER_CONFIG__.slide.sections).length(1);
+      expect(browser.__BLOG_BROWSER_CONFIG__).not.have.property('slide');
       expect(browser.__BLOG_BROWSER_CONFIG__.lazyScripts).deep.eq({
-        'template.export': ['/preview/scripts/template.export.js'],
+        'slide.async-test': ['/preview/scripts/async-test.js'],
         'component.editor': ['/preview/scripts/component.editor.js'],
         'page.tool': ['/preview/scripts/page-tool.js'],
       });
@@ -195,6 +196,20 @@ describe('模板内部装配资源', () => {
       expect(browser.__BLOG_SLIDE_CONFIG__).eq(undefined);
       expect(assets.some((asset) => asset.path.includes('slide-data'))).eq(false);
     }
+  });
+
+  it('公共模板的异步测试脚本独立产出，播放器包中没有测试代码', () => {
+    const marker = '[slide] 异步测试脚本已加载';
+    const lazy = assets.find(({ path }) => path === '/preview/scripts/async-test.js')!;
+    expect(lazy).not.eq(undefined);
+    expect(lazy.content.toString()).include(marker);
+    const player = assets.find(({ path }) => path === '/preview/scripts/slide.js')!;
+    expect(player.content.toString()).not.include(marker);
+    const logs: unknown[][] = [];
+    runInNewContext(lazy.content.toString(), {
+      console: { log: (...args: unknown[]) => logs.push(args) },
+    });
+    expect(logs).deep.eq([[marker]]);
   });
 
   it('404 的独立样式保留资源前缀', () => {

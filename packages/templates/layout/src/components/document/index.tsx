@@ -33,6 +33,7 @@ export interface DocumentProps {
 function Script({ script, publicPath }: { script: ScriptAssetData; publicPath: string }) {
   return (
     <script
+      id={script.id}
       type={script.type ?? 'text/javascript'}
       src={normalizeUrl(publicPath, script.src)}
       defer={script.defer}

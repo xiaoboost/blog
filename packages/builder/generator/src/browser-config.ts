@@ -26,5 +26,5 @@ export function emitBrowserConfig(page: IPage, { rename, site }: Pick<BuildConte
   const asset = { path: 'browser-config.js', content };
   const src = normalize(page.pathname, rename(asset));
   page.addAsset({ path: src, content });
-  page.addPreScript({ src, async: true });
+  page.addPreScript({ id: BrowserConfigGlobalKey, src, async: true });
 }
