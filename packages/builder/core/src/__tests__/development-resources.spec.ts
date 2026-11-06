@@ -2,7 +2,7 @@ import { resolve } from 'path';
 import { createContext, runInContext } from 'vm';
 import { describe, expect, it } from '@blog/test-toolkit';
 import { buildSync } from 'esbuild';
-import { HMRUpdateKind } from '../plugins/development/types';
+import { HMRKind, HMRUpdateKind } from '../plugins/development/types';
 import { getHtmlDiff } from '../plugins/development/utils';
 
 const bundle = (file: string, globalName: string) => buildSync({
@@ -172,5 +172,111 @@ describe('按需资源热更新', () => {
       '/scripts/other.js',
       ...Array(6).fill('/scripts/post.js'),
     ]);
+  });
+
+  it('HTML 与 JS 同批更新时先卸载旧实例，全部更新后只启动一次，不受消息顺序影响', () => {
+    const runtime = bundle('../plugins/development/runtime/client.ts', 'client');
+    for (const htmlFirst of [false, true]) {
+      let receive: (event: { data: string }) => void;
+      class Socket {
+        addEventListener(_name: string, listener: typeof receive) {
+          receive = listener;
+        }
+      }
+      const state = { active: 0, starts: 0, stops: 0 };
+      let content = 'old';
+      const body = {
+        get innerHTML() {
+          return content;
+        },
+        set innerHTML(value: string) {
+          expect(state.active).eq(0);
+          content = value;
+        },
+      };
+      const location = { protocol: 'http:', host: 'localhost', pathname: '/posts/test/' };
+      const context = createContext({
+        window: { WebSocket: Socket, location },
+        WebSocket: Socket,
+        location,
+        state,
+        console: { log() {} },
+      });
+      context.document = {
+        body,
+        getElementById: () => null,
+        querySelector: () => body,
+        querySelectorAll: () => [{ getAttribute: () => '/scripts/slide.js' }],
+        createElement: () => ({ textContent: '', setAttribute() {}, remove() {} }),
+        head: {
+          contains: () => false,
+          appendChild: (script: { textContent: string }) => (
+            runInContext(script.textContent, context)
+          ),
+        },
+      };
+      runInContext(runtime, context);
+      const code = (version: string) => `window.__ModuleLoader.install({
+        currentScript: '/scripts/slide.js',
+        active() {
+          if (document.body.innerHTML !== '${version}') {
+            throw new Error('新脚本读取了旧 DOM');
+          }
+          state.active++; state.starts++;
+          return () => { state.active--; state.stops++; };
+        }
+      });`;
+      runInContext(code('old'), context);
+      for (let i = 1; i <= 3; i++) {
+        const updates = [
+          { kind: HMRUpdateKind.JS, path: '/scripts/slide.js', code: code(`v${i}`) },
+          {
+            kind: HMRUpdateKind.HTML,
+            path,
+            selector: 'body',
+            content: `v${i}`,
+          },
+        ];
+        receive!({
+          data: JSON.stringify({
+            kind: HMRKind.Update,
+            updates: htmlFirst ? updates.reverse() : updates,
+          }),
+        });
+        expect(state).deep.eq({ active: 1, starts: i + 1, stops: i });
+      }
+      receive!({
+        data: JSON.stringify({
+          kind: HMRKind.Update, updates: [
+            {
+              kind: HMRUpdateKind.HTML,
+              path,
+              selector: 'body',
+              content: 'v3',
+            },
+          ],
+        }),
+      });
+      expect(state).deep.eq({ active: 1, starts: 5, stops: 4 });
+      receive!({
+        data: JSON.stringify({
+          kind: HMRKind.Update, updates: [
+            {
+              kind: HMRUpdateKind.HTML,
+              path: '/other/index.html',
+              selector: 'body',
+              content: 'other',
+            },
+          ],
+        }),
+      });
+      expect(state).deep.eq({ active: 1, starts: 5, stops: 4 });
+      receive!({
+        data: JSON.stringify({
+          kind: HMRKind.Update, updates: [{ kind: HMRUpdateKind.JS, path: '/scripts/slide.js', code: code('v3') }],
+        }),
+      });
+      expect(state).deep.eq({ active: 1, starts: 6, stops: 5 });
+    }
   });
 });

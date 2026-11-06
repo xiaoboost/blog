@@ -4,6 +4,7 @@ import styles from '../presentation/index.jss';
 import toolbarStyles from '../toolbar/index.jss';
 import { createPlayerAnimations } from './animations';
 import { bindPlayerControls } from './controls';
+import { bindExport } from './export';
 import { waitForPage } from './wait-for-page';
 import { waitForSlideConfig } from './wait-for-slide-config';
 
@@ -25,6 +26,7 @@ export function active() {
   const spinner = find<HTMLElement>(loadingStyles.classes.spinner);
   const loadingError = find<HTMLElement>(loadingStyles.classes.error);
   const retry = find<HTMLButtonElement>(loadingStyles.classes.retry);
+  const exportBtn = find<HTMLButtonElement>(toolbarStyles.classes.export);
   const sections = Array.from(canvas.querySelectorAll<HTMLElement>('[data-slide-section]'));
   const pageStorageKey = `slide:page:${window.location.pathname}`;
 
@@ -205,6 +207,7 @@ export function active() {
   }
 
   void show(initialPage);
+  bindExport(exportBtn, canvas, events.signal);
 
   return () => {
     events.abort();

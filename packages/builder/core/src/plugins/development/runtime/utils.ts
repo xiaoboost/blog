@@ -31,16 +31,13 @@ export function reloadCSS(src: string) {
 }
 
 export function reloadHTML(selector: string, content: string) {
-  debounce(() => {
-    const element = document.querySelector(selector);
+  const element = document.querySelector(selector);
 
-    if (!element) {
-      return;
-    }
+  if (!element) {
+    return;
+  }
 
-    element.innerHTML = content;
-    module.reload();
-  })();
+  element.innerHTML = content;
 }
 
 export function reloadJS(file: string, code: string) {

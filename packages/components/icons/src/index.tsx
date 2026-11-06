@@ -9,3 +9,6 @@ export { Copy } from './copy';
 export { Check } from './check';
 export { Close } from './close';
 export { ArrowUpRight } from './arrow-up-right';
+export { Export } from './export';
+export { Play } from './play';
+export { ProgressRing } from './progress-ring';

@@ -8,6 +8,7 @@ import { HMRClientScriptPath } from '@blog/shared';
 import { describe, expect, it } from '@blog/test-toolkit';
 import type { AssetData } from '@blog/types';
 import { before } from 'mocha';
+import { SlideExportScript } from '../../../../templates/slide/src/export/constant';
 
 function clearBuildCaches() {
   jssCache.clear();
@@ -78,7 +79,7 @@ describe('模板内部装配资源', () => {
                     && page.data.post.data.template === 'slide')!;
                   // 尚未预渲染，模板和组件的配置应已由生成器登记。
                   expect(page.getBrowserConfig().lazyScripts).deep.eq({
-                    'slide.async-test': ['/preview/scripts/async-test.js'],
+                    [SlideExportScript]: ['/preview/scripts/export.js'],
                     'component.editor': ['/preview/scripts/component.editor.js'],
                   });
                 });
@@ -157,6 +158,8 @@ describe('模板内部装配资源', () => {
       expect(new URL(canonical).pathname, path).eq(post.pathname);
 
       if (post.template === 'slide') {
+        expect(html.indexOf('aria-label="导出"')).lessThan(html.indexOf('aria-label="播放（全屏）"'));
+        expect(html).include('aria-label="导出"');
         expect(html, path).include('data-slide-section');
         expect(styles, path).include('/preview/styles/slide.css');
         expect(scripts, path).include('/preview/scripts/slide.js');
@@ -185,7 +188,7 @@ describe('模板内部装配资源', () => {
       runInNewContext(config.content.toString(), browser);
       expect(browser.__BLOG_BROWSER_CONFIG__).not.have.property('slide');
       expect(browser.__BLOG_BROWSER_CONFIG__.lazyScripts).deep.eq({
-        'slide.async-test': ['/preview/scripts/async-test.js'],
+        [SlideExportScript]: ['/preview/scripts/export.js'],
         'component.editor': ['/preview/scripts/component.editor.js'],
         'page.tool': ['/preview/scripts/page-tool.js'],
       });
@@ -198,18 +201,15 @@ describe('模板内部装配资源', () => {
     }
   });
 
-  it('公共模板的异步测试脚本独立产出，播放器包中没有测试代码', () => {
-    const marker = '[slide] 异步测试脚本已加载';
-    const lazy = assets.find(({ path }) => path === '/preview/scripts/async-test.js')!;
+  it('公共模板的导出脚本独立产出，播放器包中没有导出代码', () => {
+    const marker = '没有可以导出的幻灯片。';
+    const lazy = assets.find(({ path }) => path === '/preview/scripts/export.js')!;
     expect(lazy).not.eq(undefined);
     expect(lazy.content.toString()).include(marker);
     const player = assets.find(({ path }) => path === '/preview/scripts/slide.js')!;
     expect(player.content.toString()).not.include(marker);
-    const logs: unknown[][] = [];
-    runInNewContext(lazy.content.toString(), {
-      console: { log: (...args: unknown[]) => logs.push(args) },
-    });
-    expect(logs).deep.eq([[marker]]);
+    expect(lazy.content.toString()).include('%PDF-');
+    expect(player.content.toString()).not.include('%PDF-');
   });
 
   it('404 的独立样式保留资源前缀', () => {

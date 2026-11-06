@@ -10,6 +10,7 @@ export interface ResolveResult {
 export interface ResolveCreatorOptions {
   root: string;
   mainFields?: string[];
+  conditionNames?: string[];
   mainFiles?: string[];
   extensions?: string[];
   external?: string[];

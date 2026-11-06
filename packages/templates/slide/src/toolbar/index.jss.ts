@@ -17,9 +17,9 @@ export default createStyles({
     gap: 10,
     maxWidth: 'calc(100% - 32px)',
     padding: [
-      10,
+      6,
       12,
-      10,
+      6,
       16,
     ],
     borderRadius: 999,
@@ -88,12 +88,29 @@ export default createStyles({
     height: 14,
     background: BorderPrimary,
   },
-  play: {
+  actions: {
+    display: 'flex',
+    alignItems: 'center',
+    flex: '0 0 auto',
+    gap: 4,
+  },
+  export: {
+    '&[aria-busy="true"]': {
+      '& $exportIcon': { display: 'none' },
+      '& $exportProgress': { display: 'inline-block' },
+    },
+  },
+  exportIcon: {},
+  exportProgress: {
+    display: 'none',
+  },
+  play: { '& svg': { color: TextPrimary } },
+  button: {
     flex: '0 0 auto',
     display: 'grid',
     placeItems: 'center',
-    width: 20,
-    height: 20,
+    width: 28,
+    height: 28,
     padding: 0,
     border: 0,
     borderRadius: '50%',

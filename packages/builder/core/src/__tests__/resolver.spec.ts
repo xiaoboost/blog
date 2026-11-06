@@ -1,4 +1,11 @@
-import { join } from 'path';
+import {
+  mkdtemp,
+  mkdir,
+  writeFile,
+  rm,
+} from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { basename, join } from 'path';
 import { expect, describe, it } from '@blog/test-toolkit';
 import { build } from 'esbuild';
 import { Builder } from '../builder';
@@ -27,6 +34,41 @@ async function bundleCss(contents: string) {
 }
 
 describe('Resolver 插件', () => {
+  it('浏览器构建选择 browser 条件，服务端保留 node 条件，并允许 cjs 入口', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'blog-resolver-conditions-'));
+    try {
+      const dependency = join(root, 'node_modules', 'conditional');
+      await mkdir(dependency, { recursive: true });
+      await writeFile(join(dependency, 'package.json'), JSON.stringify({
+        name: 'conditional',
+        exports: { node: './server.cjs', browser: './browser.cjs' },
+      }));
+      await writeFile(join(dependency, 'server.cjs'), 'module.exports = "server";');
+      await writeFile(join(dependency, 'browser.cjs'), 'module.exports = "browser";');
+
+      for (const platform of ['node', 'browser'] as const) {
+        const builder = new Builder({ root });
+        const bundler = new Bundler(builder);
+        Resolver().apply(builder);
+        builder.hooks.bundler.call(bundler);
+        bundler.hooks.initialization.call({ platform });
+        const result = await bundler.hooks.resolve.promise({
+          path: 'conditional',
+          importer: join(root, 'entry.ts'),
+          resolveDir: root,
+          namespace: 'file',
+          pluginData: undefined,
+          kind: 'import-statement',
+          with: {},
+        });
+        expect(basename(result!.path!)).eq(platform === 'node' ? 'server.cjs' : 'browser.cjs');
+      }
+    }
+    finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+
   it('CSS 中含小数坐标的 SVG data URL 保持内联，不检查文件后缀', async () => {
     const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="6" height="3">'
       + '<path d="M0 0.6L1 3"/></svg>';

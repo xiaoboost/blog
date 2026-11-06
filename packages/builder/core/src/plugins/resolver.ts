@@ -5,6 +5,7 @@ import { createResolver } from '../utils';
 const pluginName = 'resolver';
 const defaultExts = [
   '.mjs',
+  '.cjs',
   '.js',
   '.jsx',
   '.ts',
@@ -24,8 +25,21 @@ export const Resolver = (): BuilderPlugin => ({
     builder.resolve = resolve;
 
     builder.hooks.bundler.tap(pluginName, (bundler) => {
+      let bundleResolve = resolve;
+
+      bundler.hooks.initialization.tap({ name: pluginName, stage: 999 }, (options) => {
+        if (options.platform === 'browser') {
+          bundleResolve = createResolver({
+            root,
+            conditionNames: ['browser', 'import', 'require'],
+          });
+        }
+
+        return options;
+      });
+
       bundler.hooks.resolve.tap({ name: pluginName, stage: 999 }, (args) => {
-        const result = resolve(args.path, args);
+        const result = bundleResolve(args.path, args);
 
         if (result.external) {
           return result;
