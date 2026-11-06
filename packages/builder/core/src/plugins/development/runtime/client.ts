@@ -5,6 +5,7 @@ import {
   HMRUpdateKind,
 } from '../types';
 import { showError, closeError } from './error';
+import { module } from './module';
 
 import {
   getSocketUrl,
@@ -43,6 +44,17 @@ function updatePage(updates: HMRUpdate[]) {
     return;
   }
 
+  const apply = () => applyUpdates(updates);
+
+  if (updates.some((data) => data.kind === HMRUpdateKind.HTML && isHTMLFile(data.path))) {
+    module.update(apply);
+  }
+  else {
+    apply();
+  }
+}
+
+function applyUpdates(updates: HMRUpdate[]) {
   for (const data of updates) {
     switch (data.kind) {
       case HMRUpdateKind.HTML: {

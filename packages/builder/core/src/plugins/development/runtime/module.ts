@@ -9,12 +9,13 @@ interface ModuleData extends ScriptModule {
 
 class Module implements ModuleLoader {
   private _modules: ModuleData[] = [];
+  private _updating = false;
 
   /** 安装模块 */
   install(mod: ScriptModule) {
     this._modules.push({
       ...mod,
-      unActive: mod.active(),
+      unActive: this._updating ? () => {} : mod.active(),
     });
   }
 
@@ -32,10 +33,25 @@ class Module implements ModuleLoader {
 
   /** 重载模块 */
   reload() {
+    this.update(() => {});
+  }
+
+  /** DOM 和脚本更新完成后再启动模块，避免新代码读取旧 DOM。 */
+  update(apply: () => void) {
     this._modules.forEach((mod) => {
       mod.unActive();
-      mod.unActive = mod.active();
+      mod.unActive = () => {};
     });
+    this._updating = true;
+    try {
+      apply();
+    }
+    finally {
+      this._updating = false;
+      this._modules.forEach((mod) => {
+        mod.unActive = mod.active();
+      });
+    }
   }
 }
 
