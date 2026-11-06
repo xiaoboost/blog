@@ -1,4 +1,5 @@
 import type { PreloadAssetData, ScriptAssetData, StyleAssetData } from './asset';
+import type { BrowserConfig } from './browser-config';
 import type { RuntimeHooks } from './hooks';
 
 /** 运行时数据 */
@@ -20,8 +21,15 @@ export interface TemplateScriptAsset extends ScriptAssetData {
 /** 模板资源引用，不包含文件内容；字符串按后缀识别为普通脚本、样式或其他资源。 */
 export type TemplateAsset = string | PreloadAssetData | StyleAssetData | TemplateScriptAsset;
 
+/** 模板辅助函数的配置选项 */
+export interface DefineUtilsOptions {
+  browserConfig?: BrowserConfig;
+}
+
 /** 模板辅助函数 */
 export interface TemplateUtils {
+  /** 获取当前页面配置 */
+  getBrowserConfig(): BrowserConfig;
   /** 添加预加载资源 */
   addPreloadAssets(...assets: PreloadAssetData[]): void;
   /** 追加到后面 */

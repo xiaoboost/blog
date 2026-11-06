@@ -1,5 +1,6 @@
+import type { ActionConfig, StepConfig } from '@blog/types';
 import { assertTime, normalizeAction } from '../../animation/normalize';
-import type { ActionConfig, Position, StepConfig } from '../../animation/types';
+import type { Position } from '../../animation/types';
 import type { AnimationNode, GroupKind, StepScope } from './scope';
 
 interface Interval {

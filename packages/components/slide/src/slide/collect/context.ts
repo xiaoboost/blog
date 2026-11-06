@@ -1,3 +1,4 @@
+import type { SlideConfig } from '@blog/types';
 import { createContext, useContext } from 'react';
 import type {
   AnimateProps,
@@ -6,7 +7,6 @@ import type {
   StepProps,
   WaitProps,
 } from '../../animation/types';
-import type { SlideConfig } from '../../shared';
 import type { GroupKind, ScopeKind } from './scope';
 
 /** PPT 数据储存 */

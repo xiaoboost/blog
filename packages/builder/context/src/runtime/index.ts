@@ -5,3 +5,4 @@ export * from './constant';
 export * from './builder';
 export * from './render-context';
 export * from './font';
+export * from './browser-config';

@@ -1,17 +1,14 @@
-import type { ReactNode, CSSProperties } from 'react';
+import type { AnimationState, ResolvedTransition } from '@blog/types';
+import type { ReactNode } from 'react';
 
-export interface ResolvedTransition {
-  /** 动作的播放时长，单位毫秒。 */
-  duration: number;
-  /** 每个动作开始前的等待，单位毫秒；收集后合并到 ActionConfig.start。 */
-  delay: number;
-  easing: string;
-}
+export type {
+  AnimationState,
+  ResolvedTransition,
+  ActionConfig,
+  StepConfig,
+} from '@blog/types';
 
 export type Transition = Partial<ResolvedTransition>;
-
-/** 样式输入范围 */
-export type AnimationState = CSSProperties;
 
 export interface PlayerProps {
   children: ReactNode;
@@ -83,19 +80,4 @@ export type AnimateProps = AnimateFromToProps | AnimateKeyframesProps;
 export interface EffectProps {
   target: string;
   transition?: Transition;
-}
-
-/** 已展开编排关系的动作配置，时间单位均为毫秒。 */
-export interface ActionConfig extends Omit<AnimateKeyframesProps, 'transition'> {
-  /** 相对当前 Step 触发时刻的实际开始时间，已包含 delay。 */
-  start: number;
-  /** delay 已计入 start，消费配置时无需再次等待。 */
-  transition: Omit<ResolvedTransition, 'delay'>;
-}
-
-export interface StepConfig {
-  /** 最晚结束时间；包含 Wait、延后开始的空分组和末尾等待。 */
-  duration: number;
-  /** 保留声明顺序，不按 start 排序；同一时刻的动作顺序保持稳定。 */
-  actions: ActionConfig[];
 }

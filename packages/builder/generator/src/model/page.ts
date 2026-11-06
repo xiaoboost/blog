@@ -1,5 +1,7 @@
+import { mergeBrowserConfig } from '@blog/context/runtime';
 import { normalize } from '@blog/node';
 import type {
+  BrowserConfig,
   IRenderContext,
   PageDataMap,
   PageType,
@@ -24,6 +26,7 @@ export class Page<T extends PageType> extends ResourceSet {
   readonly render: (props: IRenderContext<T>) => string;
 
   #html = '';
+  #browserConfigs: BrowserConfig[] = [];
 
   constructor(options: PageOptions<T>) {
     super();
@@ -41,6 +44,14 @@ export class Page<T extends PageType> extends ResourceSet {
 
   set html(value: string) {
     this.#html = value;
+  }
+
+  addBrowserConfig(config: BrowserConfig): void {
+    this.#browserConfigs.push(config);
+  }
+
+  getBrowserConfig(): BrowserConfig {
+    return mergeBrowserConfig(...this.#browserConfigs);
   }
 
   toAsset(): { path: string; content: Buffer } {

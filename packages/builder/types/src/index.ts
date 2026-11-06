@@ -13,3 +13,5 @@ export * from './logger';
 export * from './nodes';
 export * from './font';
 export * from './page';
+export * from './browser-config';
+export * from './slide';
