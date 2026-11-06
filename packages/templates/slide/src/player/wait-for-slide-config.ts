@@ -17,10 +17,10 @@ function isSlideConfig(value: unknown): value is SlideConfig {
 export async function waitForSlideConfig(
   signal: AbortSignal,
   timeout = 8000,
-): Promise<SlideConfig> {
+): Promise<SlideConfig | undefined> {
   const { slide } = await waitForBrowserConfig(signal, timeout);
 
-  if (!isSlideConfig(slide)) {
+  if (slide !== undefined && !isSlideConfig(slide)) {
     throw new Error('幻灯片动画配置无效。');
   }
 

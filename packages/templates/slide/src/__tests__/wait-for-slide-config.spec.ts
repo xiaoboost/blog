@@ -7,20 +7,35 @@ import { afterEach, beforeEach } from 'mocha';
 import { waitForSlideConfig } from '../player/wait-for-slide-config';
 
 const browser = globalThis as typeof globalThis & { [BrowserConfigGlobalKey]?: unknown };
-const keys = [BrowserConfigGlobalKey, 'addEventListener', 'removeEventListener'] as const;
+const keys = [
+  BrowserConfigGlobalKey,
+  'addEventListener',
+  'removeEventListener',
+  'document',
+] as const;
 const original = keys.map((key) => Object.getOwnPropertyDescriptor(browser, key));
 const config: SlideConfig = {
   sections: [{ steps: [] }],
 };
 let events: EventTarget;
+let hasConfigScript: boolean;
 
 describe('等待 PPT 动画配置', () => {
   beforeEach(() => {
     events = new EventTarget();
+    hasConfigScript = true;
     Object.defineProperties(browser, {
       [BrowserConfigGlobalKey]: { value: undefined, configurable: true, writable: true },
       addEventListener: { value: events.addEventListener.bind(events), configurable: true },
       removeEventListener: { value: events.removeEventListener.bind(events), configurable: true },
+      document: {
+        value: {
+          getElementById: (id: string) => (
+            id === BrowserConfigGlobalKey && hasConfigScript ? {} : null
+          ),
+        },
+        configurable: true,
+      },
     });
   });
 
@@ -41,6 +56,29 @@ describe('等待 PPT 动画配置', () => {
     browser[BrowserConfigGlobalKey] = { slide: config };
     strictEqual(await waitForSlideConfig(new AbortController().signal), config);
     strictEqual(getEventListeners(events, BrowserConfigReadyEvent).length, 0);
+  });
+
+  it('整页没有配置脚本时直接返回，不注册等待监听', async () => {
+    hasConfigScript = false;
+    const controller = new AbortController();
+    strictEqual(await waitForSlideConfig(controller.signal, 5), undefined);
+    strictEqual(getEventListeners(events, BrowserConfigReadyEvent).length, 0);
+    strictEqual(getEventListeners(controller.signal, 'abort').length, 0);
+  });
+
+  it('配置已到但没有 slide 时按静态 PPT 处理', async () => {
+    browser[BrowserConfigGlobalKey] = { lazyScripts: { export: ['/export.js'] } };
+    strictEqual(await waitForSlideConfig(new AbortController().signal), undefined);
+  });
+
+  it('异步配置到达后没有 slide 也正常结束等待', async () => {
+    const controller = new AbortController();
+    const pending = waitForSlideConfig(controller.signal);
+    browser[BrowserConfigGlobalKey] = {};
+    events.dispatchEvent(new Event(BrowserConfigReadyEvent));
+    strictEqual(await pending, undefined);
+    strictEqual(getEventListeners(events, BrowserConfigReadyEvent).length, 0);
+    strictEqual(getEventListeners(controller.signal, 'abort').length, 0);
   });
 
   it('播放器先启动时等通知，完成后移除配置与取消监听', async () => {

@@ -23,7 +23,9 @@ onBuild((runtime) => {
         continue;
       }
 
-      page.addBrowserConfig({ slide: config });
+      if (config.sections.some(({ steps }) => steps.length > 0)) {
+        page.addBrowserConfig({ slide: config });
+      }
     }
   });
 });

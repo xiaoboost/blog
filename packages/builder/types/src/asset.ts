@@ -22,6 +22,8 @@ export interface ImageResource extends ImageMetadata {
 
 /** 脚本资源引用及标签配置；文件内容通过普通 AssetData 输出 */
 export interface ScriptAssetData {
+  /** 脚本标签标识 */
+  id?: string;
   /** 脚本资源路径 */
   src: string;
   /** 脚本类型，默认 text/javascript */

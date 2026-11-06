@@ -22,6 +22,32 @@ import {
 } from './fixtures';
 
 describe('动画资源构建插件', () => {
+  it('整份 PPT 都没有 Step 时不登记 slide 配置', async () => {
+    await waitReady;
+    const context = renderContext();
+    const build = buildContext(context);
+    await callHook('afterReady', build);
+    renderPage(
+      <Slide>
+        <Section>静态页</Section>
+        <Section>另一静态页</Section>
+      </Slide>, context);
+    await callHook('beforeBuild', build);
+    expect(context.page.getBrowserConfig()).deep.eq({});
+  });
+
+  it('空 Step 和纯等待 Step 仍保留配置', async () => {
+    await waitReady;
+    for (const step of [<Step key="empty" />, <Step key="wait"><Wait duration={100} /></Step>]) {
+      const context = renderContext();
+      const build = buildContext(context);
+      await callHook('afterReady', build);
+      renderPage(page(<Player>{step}</Player>), context);
+      await callHook('beforeBuild', build);
+      expect(context.page.getBrowserConfig().slide!.sections[0].steps).length(1);
+    }
+  });
+
   it('嵌套编排通过构建插件登记为时间表，保留触发边界与纯等待时长', async () => {
     await waitReady;
     const context = renderContext();
