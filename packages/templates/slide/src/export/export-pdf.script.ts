@@ -3,7 +3,7 @@ import { exportPdf } from './pdf';
 import type { SlideExportModule } from './types';
 
 setScriptExports<SlideExportModule>({
-  exportPpt: exportPdf,
+  exportPdf,
 });
 
 export default assets;

@@ -29,7 +29,7 @@
     "@blog/node": "workspace:*",
     "@blog/types": "workspace:*",
     "@xiao-ai/utils": "1.6.7",
-    "react": "18.3.1",
+    "react": "19.3.1",
     "tapable": "2.2.1",
     "tslib": "2.8.1"
   },
@@ -37,7 +37,7 @@
     "@blog/eslint-config": "workspace:*",
     "@blog/tsconfig": "workspace:*",
     "@types/node": "24.12.2",
-    "@types/react": "18.3.27",
+    "@types/react": "19.3.0",
     "eslint": "10.2.1",
     "typescript": "6.0.3"
   }

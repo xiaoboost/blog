@@ -23,7 +23,7 @@ export function bindExport(button: HTMLButtonElement, canvas: HTMLElement, signa
       const exporter = await loadResource<SlideExportModule>(SlideExportScript, signal);
       signal.throwIfAborted();
       button.title = '正在导出…';
-      await exporter.exportPpt({
+      await exporter.exportPdf({
         canvas,
         title: canvas.closest('article')?.getAttribute('aria-label') || document.title,
         signal,

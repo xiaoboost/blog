@@ -7,5 +7,5 @@ export interface SlideExportOptions {
 }
 
 export interface SlideExportModule {
-  exportPpt(options: SlideExportOptions): Promise<void>;
+  exportPdf(options: SlideExportOptions): Promise<void>;
 }
