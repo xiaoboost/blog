@@ -18,7 +18,7 @@
   "dependencies": {
     "@types/estree": "1.0.5",
     "@types/mdast": "4.0.3",
-    "@types/react": "18.3.27",
+    "@types/react": "19.3.0",
     "chokidar": "3.6.0",
     "mdast-util-mdx-expression": "2.0.1",
     "mdast-util-mdx-jsx": "3.2.0",

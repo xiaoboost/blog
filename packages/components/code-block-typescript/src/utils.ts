@@ -1,11 +1,18 @@
 import { spawn } from 'child_process';
-import { mkdir, writeFile, stat } from 'fs/promises';
+import { createHash } from 'crypto';
+import {
+  mkdir,
+  writeFile,
+  stat,
+  readFile,
+  rm,
+} from 'fs/promises';
 import { builtinModules } from 'module';
 import { join } from 'path';
 import type { PostExportData as PostData, Mdx } from '@blog/types';
 import { devDependencies as devPkg } from '../package.json';
 
-const DefaultLibs = ['@types/react', `@types/node@${devPkg['@types/node']}`];
+const DefaultLibs = [`@types/react@${devPkg['@types/react']}`, `@types/node@${devPkg['@types/node']}`];
 const importRegex = /^import([\s\S]*?from)? ?['"]([^'"]+)['"]/;
 const referenceRegex = /\/\/\/ <reference([\s\S]*?)import-type=['"]([^'"]+?)['"][^/]*?\/>/;
 
@@ -124,12 +131,54 @@ export function getImportedByPost(posts: PostData[]) {
   return result;
 }
 
+const installStamp = '.blog-install.json';
+
+async function getInstallFingerprint(cwd: string) {
+  const files = await Promise.all(['package.json', 'package-lock.json', 'node_modules/.package-lock.json'].map((file) => readFile(join(cwd, file))));
+  return createHash('sha256').update(Buffer.concat(files)).digest('hex');
+}
+
+/** 仅复用成功安装过的依赖集合，同时检查 lockfile 中的包是否仍在磁盘上。 */
+export async function isInstallCurrent(libs: string[], cwd: string): Promise<boolean> {
+  try {
+    const stamp = JSON.parse(await readFile(join(cwd, installStamp), 'utf8'));
+
+    if (stamp.fingerprint !== await getInstallFingerprint(cwd)
+      || !libs.every((lib) => stamp.libs.includes(lib))) {
+      return false;
+    }
+
+    // npm 的隐藏锁文件只记录实际安装的包，不包含其他操作系统的可选依赖。
+    const lock = JSON.parse(await readFile(join(cwd, 'node_modules/.package-lock.json'), 'utf8'));
+    const packages = Object.entries(lock.packages ?? {}).filter(([path]) => path.startsWith('node_modules/'));
+
+    if (packages.length === 0) {
+      return false;
+    }
+
+    return (await Promise.all(packages.map(async ([path, info]) => {
+      const installed = JSON.parse(await readFile(join(cwd, path, 'package.json'), 'utf8'));
+      return installed.version === (info as { version: string }).version;
+    }))).every(Boolean);
+  }
+  catch {
+    return false;
+  }
+}
+
 export async function npmInstall(libs: string[], cwd: string, log?: (msg: string) => void) {
   if (libs.length === 0) {
     return Promise.resolve();
   }
 
+  if (await isInstallCurrent(libs, cwd)) {
+    log?.('依赖缓存完整，跳过 npm install');
+    return;
+  }
+
   await mkdir(cwd, { recursive: true });
+  // 安装失败或被中断后，下一次必须重试。
+  await rm(join(cwd, installStamp), { force: true });
 
   const cachePackageJsonPath = join(cwd, 'package.json');
 
@@ -150,12 +199,15 @@ export async function npmInstall(libs: string[], cwd: string, log?: (msg: string
     );
   }
 
-  return new Promise<void>((resolve, reject) => {
+  await new Promise<void>((resolve, reject) => {
     const args = [
       'install',
       ...libs,
       '-D',
       '--ignore-scripts',
+      '--prefer-offline',
+      '--no-audit',
+      '--no-fund',
     ];
     // shell: true 必需（Windows 上 npm 是脚本），拼成完整命令字符串避免 DEP0190
     const childProcess = spawn(`npm ${args.join(' ')}`, {
@@ -191,4 +243,8 @@ export async function npmInstall(libs: string[], cwd: string, log?: (msg: string
       reject(error);
     });
   });
+  await writeFile(join(cwd, installStamp), JSON.stringify({
+    libs: [...new Set(libs)].sort(),
+    fingerprint: await getInstallFingerprint(cwd),
+  }));
 }

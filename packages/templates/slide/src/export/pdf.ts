@@ -48,7 +48,7 @@ export async function exportPdf({
         pdf.addPage([width, height], 'landscape');
       }
 
-      pdf.addImage(image.toDataURL('image/jpeg', 0.9), 'JPEG', 0, 0, width, height);
+      pdf.addImage(image.toDataURL('image/png'), 'PNG', 0, 0, width, height);
       onProgress?.(index + 1, sections.length);
     }
     catch (error) {

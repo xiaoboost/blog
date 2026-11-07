@@ -152,6 +152,7 @@ async function createHarness(): Promise<Harness> {
     exports: module.exports,
     require,
     TextEncoder,
+    queueMicrotask,
   });
   return module.exports as Harness;
 }

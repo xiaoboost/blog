@@ -22,10 +22,10 @@
     "@blog/styles": "workspace:*",
     "@blog/template-post": "workspace:*",
     "@blog/template-slide": "workspace:*",
-    "react": "18.3.1"
+    "react": "19.3.1"
   },
   "devDependencies": {
     "@blog/types": "workspace:*",
-    "@types/react": "18.3.27"
+    "@types/react": "19.3.0"
   }
 }

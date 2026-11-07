@@ -158,14 +158,9 @@ onBuild((runtime) => {
       return;
     }
 
-    const installedPkg = getReference<Set<string>>(`${ComponentName}-installed`, new Set());
-    const getAllCodeImport = getImportedByPost(posts);
-    const uninstalled = Array.from(getAllCodeImport).filter((key) => !installedPkg.has(key));
-    Builder.logger.debug(`${ComponentPkgName}: 开始执行 npm install...`);
-    await npmInstall(uninstalled, cacheTsServerDir, (msg: string) => {
+    const libs = Array.from(getImportedByPost(posts));
+    await npmInstall(libs, cacheTsServerDir, (msg: string) => {
       Builder.logger.debug(`${ComponentPkgName}: ${msg}`);
     });
-    Builder.logger.debug(`${ComponentPkgName}: npm install 执行完毕`);
-    uninstalled.forEach((key) => installedPkg.add(key));
   });
 });
