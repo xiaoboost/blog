@@ -4,6 +4,14 @@ export interface AssetData {
   content: Buffer;
 }
 
+/** 通用 link 声明 */
+export interface LinkAssetData {
+  rel: string;
+  href: string;
+  type?: string;
+  title?: string;
+}
+
 /** 图片元数据 */
 export interface ImageMetadata {
   /** 图片宽 */

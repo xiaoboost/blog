@@ -11,6 +11,7 @@ export function getDocumentResources(
   const resources = defineUtils([
     ...[site, page].flatMap((source): TemplateAsset[] => [
       ...source.getStyles(),
+      ...source.getLinks(),
       ...source.getScripts().map((script) => ({ ...script, position: 'body' as const })),
       ...source.getPreScripts().map((script) => ({ ...script, position: 'head' as const })),
       ...source.getPreloads(),
@@ -22,6 +23,7 @@ export function getDocumentResources(
 
   return {
     styles: resources.getStyles(),
+    links: resources.getLinks(),
     scripts: resources.getScripts(),
     preScripts: resources.getPreScripts(),
     preloadAssets: resources.getPreloadAssets(),

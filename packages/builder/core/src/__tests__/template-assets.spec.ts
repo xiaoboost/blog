@@ -3,6 +3,46 @@ import { describe, expect, it } from '@blog/test-toolkit';
 import type { TemplateAsset } from '@blog/types';
 
 describe('模板资源引用', () => {
+  it('通用 link 保留完整地址，按 rel、href、type 去重且不会被归为样式', () => {
+    const href = 'https://example.com/rss.xml?lang=zh&limit=20';
+    const site = defineUtils([
+      {
+        rel: 'alternate',
+        href,
+        type: 'application/rss+xml',
+        title: '全站',
+      },
+      { href, as: 'fetch' },
+      { href },
+    ]);
+    const page = defineUtils([
+      {
+        rel: 'alternate',
+        href,
+        type: 'application/rss+xml',
+        title: '页面',
+      },
+      { rel: 'alternate', href, type: 'application/atom+xml' },
+      { rel: 'help', href },
+    ]);
+    const merged = mergeUtils(site, page, page);
+    expect(merged.getLinks()).deep.eq([
+      {
+        rel: 'alternate',
+        href,
+        type: 'application/rss+xml',
+        title: '页面',
+      },
+      { rel: 'alternate', href, type: 'application/atom+xml' },
+      { rel: 'help', href },
+    ]);
+    expect(merged.getStyles()).deep.eq([{ href }]);
+    expect(merged.getPreloadAssets()).deep.eq([{ href, as: 'fetch' }]);
+    merged.getLinks()[0].title = '外部修改';
+    expect(merged.getLinks()[0].title).eq('页面');
+    expect(site.getLinks()[0].title).eq('全站');
+  });
+
   it('兼容混合路径数组，自动分类且不丢失图片和字体引用', () => {
     const paths = [
       '/layout.js',

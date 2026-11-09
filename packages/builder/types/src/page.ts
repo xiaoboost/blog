@@ -1,5 +1,6 @@
 import type {
   AssetData,
+  LinkAssetData,
   PreloadAssetData,
   ScriptAssetData,
   StyleAssetData,
@@ -76,6 +77,11 @@ export interface PageDataMap {
 
 /** 资源集接口 — Page 和 Site 共享的资源管理能力 */
 export interface IResourceSet {
+  /** 添加通用 link 声明 */
+  addLink(link: LinkAssetData): void;
+  /** 获取所有通用 link 声明 */
+  getLinks(): LinkAssetData[];
+
   /** 添加样式资源引用及标签配置，按 href 去重 */
   addStyle(style: StyleAssetData): void;
   /** 获取所有样式资源引用 */

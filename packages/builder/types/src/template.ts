@@ -1,4 +1,9 @@
-import type { PreloadAssetData, ScriptAssetData, StyleAssetData } from './asset';
+import type {
+  LinkAssetData,
+  PreloadAssetData,
+  ScriptAssetData,
+  StyleAssetData,
+} from './asset';
 import type { BrowserConfig } from './browser-config';
 import type { RuntimeHooks } from './hooks';
 
@@ -19,7 +24,12 @@ export interface TemplateScriptAsset extends ScriptAssetData {
 }
 
 /** 模板资源引用，不包含文件内容；字符串按后缀识别为普通脚本、样式或其他资源。 */
-export type TemplateAsset = string | PreloadAssetData | StyleAssetData | TemplateScriptAsset;
+export type TemplateAsset =
+  | string
+  | LinkAssetData
+  | PreloadAssetData
+  | StyleAssetData
+  | TemplateScriptAsset;
 
 /** 模板辅助函数的配置选项 */
 export interface DefineUtilsOptions {
@@ -48,6 +58,8 @@ export interface TemplateUtils {
   getScripts(): ScriptAssetData[];
   /** 获取 head 脚本引用及标签配置 */
   getPreScripts(): ScriptAssetData[];
+  /** 获取通用 link 声明 */
+  getLinks(): LinkAssetData[];
   /** 获取预加载资源 */
   getPreloadAssets(): PreloadAssetData[];
 }
