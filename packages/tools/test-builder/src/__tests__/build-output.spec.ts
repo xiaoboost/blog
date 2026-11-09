@@ -6,6 +6,7 @@ import type {
   AssetData,
   IResourceSet,
   PageType,
+  PostBasicData,
   PreloadAssetData,
   ScriptAssetData,
   StyleAssetData,
@@ -80,6 +81,14 @@ describe('博客构建 e2e', () => {
   let errors: string[] = [];
   const postAssetPaths = new Set<string>();
   const listedPostUrls = new Set<string>();
+  const sitemapUrls = new Set<string>();
+  const rssPosts: PostBasicData[] = [];
+  const sharedLink = {
+    rel: 'alternate',
+    href: 'https://example.com/feed.xml?lang=zh&limit=20',
+    type: 'application/test+xml',
+    title: '全站链接',
+  };
   const resourcePages = new Map<string, { type: PageType; script: ScriptAssetData }>();
   let sharedPreScript: ScriptAssetData;
   let sharedScript: ScriptAssetData;
@@ -111,6 +120,7 @@ describe('博客构建 e2e', () => {
                     page.addScript({ ...sharedScript });
                     page.addStyle({ ...sharedStyle });
                     page.addPreload({ ...sharedPreload });
+                    page.addLink({ ...sharedLink, title: '页面链接' });
                   }
 
                   if (page.type === 'not-found') {
@@ -139,14 +149,20 @@ describe('博客构建 e2e', () => {
                   site.addScript(sharedScript);
                   site.addStyle(sharedStyle);
                   site.addPreload(sharedPreload);
+                  site.addLink(sharedLink);
 
                   const selected = new Set<PageType>();
                   for (const page of pages) {
+                    if (page.type !== 'not-found') {
+                      sitemapUrls.add(new URL(page.pathname, site.origin).href);
+                    }
+
                     if (page.type === 'post') {
                       postAssetPaths.add(page.toAsset().path);
 
                       if (page.data.post.data.public && !page.data.post.data.draft) {
                         listedPostUrls.add(page.pathname);
+                        rssPosts.push(page.data.post.data);
                       }
                     }
 
@@ -378,6 +394,65 @@ describe('博客构建 e2e', () => {
   it('CNAME 文件存在', () => {
     const found = assetMap.has('/CNAME');
     expect(found, 'CNAME 文件不存在').true;
+  });
+
+  it('RSS 输出最新 20 篇公开文章，发布时间和 GUID 与文章数据一致', () => {
+    const rss = assetMap.get('/rss.xml')?.toString();
+    expect(rss, '缺少 rss.xml').not.undefined;
+    expect(rss).include('<rss version="2.0"');
+    expect(rss).include('href="https://www.dreamingcat.me/rss.xml" rel="self"');
+    const expected = [...rssPosts]
+      .sort((a, b) => b.create - a.create || a.pathname.localeCompare(b.pathname))
+      .slice(0, 20);
+    const urls = [...rss!.matchAll(/<guid isPermaLink="true">([^<]+)<\/guid>/g)]
+      .map(([, url]) => url);
+    expect(urls).deep.eq(expected.map((post) => (
+      new URL(post.pathname, 'https://www.dreamingcat.me').href
+    )));
+    expect(urls.length).greaterThan(0);
+    const dates = [...rss!.matchAll(/<pubDate>([^<]+)<\/pubDate>/g)]
+      .map(([, date]) => Date.parse(date));
+    expect(dates).deep.eq(expected.map((post) => post.create));
+    expect(rss!.match(/<item>/g)).length(Math.min(20, rssPosts.length));
+    expect(rss).not.include('https://www.dreamingcat.me/posts/about/');
+  });
+
+  it('sitemap 收录真实页面及分页、关于页，排除 404 和资源文件', () => {
+    const sitemap = assetMap.get('/sitemap.xml')?.toString();
+    expect(sitemap, '缺少 sitemap.xml').not.undefined;
+    expect(sitemap).include('xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"');
+    const urls = [...sitemap!.matchAll(/<loc>([^<]+)<\/loc>/g)]
+      .map(([, url]) => url);
+    expect(urls).have.members([...sitemapUrls]);
+    expect(new Set(urls).size).eq(urls.length);
+    expect(urls).include('https://www.dreamingcat.me/posts/about/');
+    expect(urls).include('https://www.dreamingcat.me/archive/1/');
+    for (const url of urls) {
+      const path = decodeURI(new URL(url).pathname);
+      expect(assetMap.has(`${path}index.html`), url).true;
+    }
+    expect(sitemap!.match(/<lastmod>/g)).length(postAssetPaths.size);
+  });
+
+  it('robots 指向 sitemap，各页面能发现 RSS，通用 link 合并后只渲染一次', () => {
+    expect(assetMap.get('/robots.txt')?.toString()).eq([
+      'User-agent: *',
+      'Allow: /',
+      '',
+      'Sitemap: https://www.dreamingcat.me/sitemap.xml',
+      '',
+    ].join('\n'));
+    for (const { path, content } of htmlAssets) {
+      const html = content.toString();
+      expect(html, path).match(
+        /<link[^>]*rel="alternate"[^>]*type="application\/rss\+xml"/,
+      );
+      expect(html, path).include('href="https://www.dreamingcat.me/rss.xml"');
+      expect(html.match(/type="application\/test\+xml"/g), path).length(1);
+      expect(html, path).include('href="https://example.com/feed.xml?lang=zh&amp;limit=20"');
+      const title = resourcePages.has(path) ? '页面链接' : '全站链接';
+      expect(html, path).include(`type="application/test+xml" title="${title}"`);
+    }
   });
 
   it('页面输出完整 HTML 文档与非空标题', () => {

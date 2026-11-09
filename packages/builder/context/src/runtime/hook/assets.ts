@@ -1,5 +1,6 @@
 import type {
   DefineUtilsOptions,
+  LinkAssetData,
   PreloadAssetData,
   ScriptAssetData,
   StyleAssetData,
@@ -26,6 +27,10 @@ function getKey(asset: TemplateAsset): string {
 
   if ('src' in asset) {
     return `script:${asset.src}`;
+  }
+
+  if ('rel' in asset) {
+    return `link:${JSON.stringify([asset.rel, asset.href, asset.type])}`;
   }
 
   if ('as' in asset) {
@@ -92,8 +97,11 @@ export function defineUtils(
         return isStylePath(asset) ? [{ href: asset }] : [];
       }
 
-      return 'href' in asset && !('as' in asset) ? [asset] : [];
+      return 'href' in asset && !('as' in asset) && !('rel' in asset) ? [asset] : [];
     }),
+    getLinks: () => getAssetReferences().filter(
+      (asset): asset is LinkAssetData => typeof asset !== 'string' && 'rel' in asset,
+    ),
     getPreloadAssets: () => getAssetReferences().filter(
       (asset): asset is PreloadAssetData => typeof asset !== 'string' && 'as' in asset,
     ),

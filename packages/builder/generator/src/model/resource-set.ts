@@ -1,6 +1,7 @@
 import { FontBucket, normalize } from '@blog/node';
 import type {
   AssetData,
+  LinkAssetData,
   IFontBucket,
   IFontBucketConfig,
   IResourceSet,
@@ -11,12 +12,22 @@ import type {
 } from '@blog/types';
 
 export abstract class ResourceSet implements IResourceSet {
+  #links = new Map<string, LinkAssetData>();
   #styles: StyleAssetData[] = [];
   #scripts: ScriptAssetData[] = [];
   #preScripts: ScriptAssetData[] = [];
   #preloads: PreloadAssetData[] = [];
   #assets = new Map<string, AssetData>();
   #fontBuckets = new Map<string, FontBucket>();
+
+  addLink(link: LinkAssetData): void {
+    const key = JSON.stringify([link.rel, link.href, link.type]);
+    this.#links.set(key, { ...link });
+  }
+
+  getLinks(): LinkAssetData[] {
+    return [...this.#links.values()].map((link) => ({ ...link }));
+  }
 
   addStyle(style: StyleAssetData): void {
     if (!this.#styles.some(({ href }) => href === style.href)) {

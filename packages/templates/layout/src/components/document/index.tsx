@@ -63,6 +63,9 @@ export function Document(props: PropsWithChildren<DocumentProps>) {
         {!props.noIndex && <OgMeta {...props} />}
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <link rel="icon" href={favicon} />
+        {resources.links.map((link, i) => (
+          <link key={`link-${i}`} {...link} />
+        ))}
         {resources.preloadAssets.map((asset, i) => (
           <link
             key={`preload-${i}`}

@@ -15,6 +15,7 @@ import { PostLoader } from '../plugins/post-loader';
 import { RawLoader } from '../plugins/raw-loader';
 import { Resolver } from '../plugins/resolver';
 import { ScriptLoader } from '../plugins/script-loader';
+import { SiteDiscovery } from '../plugins/site-discovery';
 import { SourceLocation } from '../plugins/source-location';
 import { getCoreRoot } from '../utils';
 import type { Builder } from './builder';
@@ -81,6 +82,7 @@ export async function applyPlugin(builder: Builder) {
   // 主构建器插件
   if (!builder.isChild()) {
     Cname().apply(builder);
+    SiteDiscovery().apply(builder);
     AssetExtractor().apply(builder);
     LocalPackageRequirer().apply(builder);
     PostLoader().apply(builder);
