@@ -547,6 +547,18 @@ describe('博客构建 e2e', () => {
     expect(invalidViewport).to.be.empty;
   });
 
+  it('KaTeX 仅输出完整的 WOFF2 字体集，CSS 引用的 WOFF2 文件均存在', () => {
+    const fonts = assets.filter(({ path }) => /\/KaTeX_[^/]+$/.test(path));
+    expect(fonts).length(20);
+    expect(fonts.every(({ path }) => path.endsWith('.woff2'))).true;
+    const css = assets.find(({ path }) => /\/katex\.[^/]+\.css$/.test(path));
+    expect(css, '缺少 KaTeX 样式').not.undefined;
+    const references = [...css!.content.toString().matchAll(/url\(([^)]+\.woff2)\)/g)]
+      .map(([, path]) => path);
+    expect(references).have.members(fonts.map(({ path }) => path));
+    expect(references.every((path) => assetMap.has(path))).true;
+  });
+
   it('类型提示脚本独立输出，普通文章不必加载，提示页面的 JS/CSS 不重复', () => {
     const tooltipScripts = assets.filter(({ path }) => /\/code-block-ts\.[^/]+\.js$/.test(path));
     expect(tooltipScripts).length(1);
