@@ -1,8 +1,8 @@
 import { useRenderContext } from '@blog/context/runtime';
 import { normalizeUrl } from '@blog/node';
 import { HMRClientScriptPath } from '@blog/shared';
-import type { ScriptAssetData, TemplateAsset } from '@blog/types';
-import React, { type PropsWithChildren } from 'react';
+import type { TemplateAsset } from '@blog/types';
+import { type PropsWithChildren } from 'react';
 
 import favicon from '../../assets/images/favicon.ico';
 import { OgMeta } from './og-meta';
@@ -30,19 +30,6 @@ export interface DocumentProps {
   assets?: readonly TemplateAsset[];
 }
 
-function Script({ script, publicPath }: { script: ScriptAssetData; publicPath: string }) {
-  return (
-    <script
-      id={script.id}
-      type={script.type ?? 'text/javascript'}
-      src={normalizeUrl(publicPath, script.src)}
-      defer={script.defer}
-      async={script.async}
-      crossOrigin={script.crossOrigin}
-    />
-  );
-}
-
 export function Document(props: PropsWithChildren<DocumentProps>) {
   const { site, page, dev } = useRenderContext();
   const publicPath = site.publicPath;
@@ -53,10 +40,14 @@ export function Document(props: PropsWithChildren<DocumentProps>) {
       <head>
         <meta charSet="utf-8" />
         {resources.preScripts.map((script, i) => (
-          <Script
+          <script
+            id={script.id}
             key={`pre-script-${i}`}
-            script={script}
-            publicPath={publicPath}
+            type={script.type ?? 'text/javascript'}
+            src={normalizeUrl(publicPath, script.src)}
+            defer={script.defer}
+            async={script.async}
+            crossOrigin={script.crossOrigin}
           />
         ))}
         <SeoMeta {...props} />
@@ -92,10 +83,14 @@ export function Document(props: PropsWithChildren<DocumentProps>) {
       <body className={props.className}>
         {props.children}
         {resources.scripts.map((script, i) => (
-          <Script
+          <script
+            id={script.id}
             key={`script-${i}`}
-            script={script}
-            publicPath={publicPath}
+            type={script.type ?? 'text/javascript'}
+            src={normalizeUrl(publicPath, script.src)}
+            defer={script.defer}
+            async={script.async}
+            crossOrigin={script.crossOrigin}
           />
         ))}
       </body>
