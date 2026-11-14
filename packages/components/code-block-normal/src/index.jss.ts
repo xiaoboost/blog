@@ -46,6 +46,7 @@ export default createStyles({
   codeBlockWrapper: {
     textShadow: 'none',
     position: 'relative',
+    isolation: 'isolate',
     fontSize: FontSizeRegular,
     margin: '.8em 0',
     backgroundColor: 'transparent',
