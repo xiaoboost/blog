@@ -2,13 +2,17 @@
 title: 博客架构介绍·其之二
 pathname: posts/blog-architecture-v2
 create: 2026/11/15
-description: 从上一版留下的图片处理和代码分割问题出发，梳理构建器、运行器与页面资源管理的设计、协作和取舍。
+description: 上一次梳理博客架构已经是四年前了，这几年博客经历了大量的更新，我感觉又可以阶段性的做个总结和梳理了。从上个版本留下的图片处理和代码分割问题出发，梳理构建器、运行器与页面资源管理的设计、协作和取舍。
 tags:
   - 前端技术
   - 架构设计
 ---
 
-import { DefinitionList, Definition } from '@blog/mdx-typo';
+import { ArticleIntro, DefinitionList, Definition } from '@blog/mdx-typo';
+
+<ArticleIntro label="开始之前">
+  {props.post.description}
+</ArticleIntro>
 
 # 上个版本留下的两个问题
 
