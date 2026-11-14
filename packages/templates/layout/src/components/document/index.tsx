@@ -3,7 +3,6 @@ import { normalizeUrl } from '@blog/node';
 import { HMRClientScriptPath } from '@blog/shared';
 import type { TemplateAsset } from '@blog/types';
 import { type PropsWithChildren } from 'react';
-
 import favicon from '../../assets/images/favicon.ico';
 import { OgMeta } from './og-meta';
 import { getDocumentResources } from './resources';

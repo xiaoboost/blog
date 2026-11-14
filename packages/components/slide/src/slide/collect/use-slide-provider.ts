@@ -29,6 +29,10 @@ export function useSlideValue(): ISlideStore {
   const renderContext = useRenderContext();
   const contextRef = useRef<ISlideStore | null>(null);
 
+  if (!renderContext) {
+    throw new Error('[mdx-slide] Slide 需要在 RenderContext 中渲染。');
+  }
+
   if (parent) {
     throw new Error('[mdx-slide] Slide 不能嵌套。');
   }
@@ -36,7 +40,6 @@ export function useSlideValue(): ISlideStore {
   if (!contextRef.current) {
     const sections: SectionScope[] = [];
     const stack: Scope[] = [];
-    const collecting = renderContext?.isPreBuild === true;
 
     function animationScope(component: string): StepScope {
       const current = stack.at(-1);
@@ -49,7 +52,6 @@ export function useSlideValue(): ISlideStore {
     }
 
     contextRef.current = {
-      collecting,
       beginSection() {
         if (stack.length) {
           throw new Error('[mdx-slide] Section 不能嵌套。');
@@ -141,7 +143,7 @@ export function useSlideValue(): ISlideStore {
           throw new Error(`[mdx-slide] ${kind} 范围没有按顺序结束。`);
         }
 
-        if (collecting && current.kind === 'player' && !current.value.steps.length) {
+        if (current.kind === 'player' && !current.value.steps.length) {
           throw new Error('[mdx-slide] Player 至少需要一个 Step。');
         }
 

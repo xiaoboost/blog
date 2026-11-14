@@ -9,10 +9,11 @@ import {
   resolve,
 } from 'node:path';
 import { runInNewContext } from 'node:vm';
+import { GlobalKey } from '@blog/context';
+import type * as Runtime from '@blog/context/runtime';
 import * as nodeUtils from '@blog/node';
 import type {
   AssetData,
-  BuildContext,
   IPage,
   IRenderContext,
   ISite,
@@ -24,7 +25,6 @@ import {
   describe,
   it,
 } from 'mocha';
-import { AsyncSeriesHook } from 'tapable';
 
 function resourceSet() {
   const assets = new Map<string, Buffer>();
@@ -51,17 +51,19 @@ describe('Layout OG 原图路径与构建阶段', () => {
   const layoutRoot = resolve(__dirname, '../../../../templates/layout/src');
   const ogImagePath = join(layoutRoot, 'components/document/og-image.ts');
   const layoutRequire = createRequire(ogImagePath);
+  const contextRequire = createRequire(resolve(__dirname, '../../../context/package.json'));
+  const serverRequire = createRequire(resolve(__dirname, '../../../generator/package.json'));
+  const { createElement } = contextRequire('react');
+  const { renderToStaticMarkup } = serverRequire('react-dom/server');
   const defaultPath = nodeUtils.normalize(join(layoutRoot, 'assets/images/og-default.png'));
   const sourcePath = nodeUtils.normalize(resolve(__dirname, 'fixtures/封面%20.v2.svg'));
   const source = (color: string) => Buffer.from(`<svg width="100" height="300"><rect width="100" height="300" fill="${color}"/></svg>`);
   let code: string;
+  let runtimeCode: string;
+  let runtime: typeof Runtime;
   let defaultSource: Buffer;
-  let context: IRenderContext;
   let site: ReturnType<typeof resourceSet>;
-  let hooks: {
-    beforeBuild: AsyncSeriesHook<[BuildContext]>;
-  };
-  let useOgImage: (path?: string) => string | undefined;
+  let useOgImage: (path: string | undefined) => string | undefined;
   let sources: Map<string, Buffer>;
   let watched: Set<string>;
   let conversions: number;
@@ -69,17 +71,28 @@ describe('Layout OG 原图路径与构建阶段', () => {
   let memory: Map<string, unknown>;
 
   function render(target: ReturnType<typeof page>, isPreBuild: boolean, path?: string) {
-    context = {
+    const context: IRenderContext = {
       page: target as unknown as IPage,
       site: site as unknown as ISite,
       isPreBuild,
       dev: false,
     };
-    return useOgImage(path);
+    let result: string | undefined;
+    function Probe() {
+      result = useOgImage(path);
+      return null;
+    }
+    renderToStaticMarkup(createElement(
+      runtime.RenderContext.Provider,
+      { value: context },
+      createElement(Probe),
+    ));
+    return result;
   }
 
   async function convert(pages: ReturnType<typeof page>[] = [], production = true) {
-    await hooks.beforeBuild.promise({
+    await runtime.waitReady;
+    await runtime.callHook('beforeBuild', {
       site: site as unknown as ISite,
       pages: pages as unknown as IPage[],
       logger: console,
@@ -100,13 +113,36 @@ describe('Layout OG 原图路径与构建阶段', () => {
       write: false,
     });
     code = result.outputFiles[0].text;
+    const contextResult = await build({
+      entryPoints: [resolve(__dirname, '../../../context/src/runtime/index.ts')],
+      bundle: true,
+      packages: 'external',
+      platform: 'node',
+      format: 'cjs',
+      write: false,
+      define: { 'process.env.NODE_ENV': '"production"' },
+    });
+    runtimeCode = contextResult.outputFiles[0].text;
   });
 
   function nextVm() {
     site = resourceSet();
-    hooks = {
-      beforeBuild: new AsyncSeriesHook<[BuildContext]>(['context']),
-    };
+    const runtimeModule = { exports: {} as typeof Runtime };
+    runInNewContext(runtimeCode, {
+      module: runtimeModule,
+      exports: runtimeModule.exports,
+      require: contextRequire,
+      process,
+      setTimeout,
+      [GlobalKey.Memory]: memory,
+      [GlobalKey.Builder]: {
+        options: { mode: 'production' },
+        logger: { debug() {}, info() {}, error() {} },
+        addWatchFiles: (path: string) => watched.add(path),
+      },
+      [GlobalKey.RuntimeCallbacks]: [],
+    });
+    runtime = runtimeModule.exports;
     const module = { exports: {} as { useOgImage: typeof useOgImage } };
     runInNewContext(code, {
       __dirname: dirname(ogImagePath),
@@ -114,18 +150,7 @@ describe('Layout OG 原图路径与构建阶段', () => {
       exports: module.exports,
       require(name: string) {
         if (name === '@blog/context/runtime') {
-          return {
-            getAccessor: (name: string, init: () => unknown) => {
-              if (!memory.has(name)) {
-                memory.set(name, init());
-              }
-
-              return { get: () => memory.get(name) };
-            },
-            Builder: { addWatchFiles: (path: string) => watched.add(path) },
-            onBuild: (setup: (runtime: { hooks: typeof hooks }) => void) => setup({ hooks }),
-            useRenderContext: () => context,
-          };
+          return runtime;
         }
 
         if (name === '@blog/node') {
@@ -159,13 +184,14 @@ describe('Layout OG 原图路径与构建阶段', () => {
     useOgImage = module.exports.useOgImage;
   }
 
-  beforeEach(() => {
+  beforeEach(async () => {
     sources = new Map([[sourcePath, source('red')], [defaultPath, defaultSource]]);
     watched = new Set();
     conversions = 0;
     reads = 0;
     memory = new Map();
     nextVm();
+    await runtime.waitReady;
   });
 
   it('直接扫描页面封面，无需预渲染即可生成固定规格的图片', async () => {

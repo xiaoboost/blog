@@ -1,6 +1,5 @@
 import { useRenderContext } from '@blog/context/runtime';
 import { toAbsoluteUrl } from '@blog/shared';
-import React from 'react';
 import type { DocumentProps } from '.';
 
 export function SeoMeta({

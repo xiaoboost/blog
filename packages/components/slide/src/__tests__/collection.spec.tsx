@@ -1,4 +1,5 @@
-import { useRenderOnce } from '@blog/context/runtime';
+import { rejects } from 'node:assert/strict';
+import { callHook, useRenderOnce } from '@blog/context/runtime';
 import { describe, expect, it } from '@blog/test-toolkit';
 import React, {
   createContext,
@@ -16,11 +17,11 @@ import {
 } from '../animation';
 import type { AnimationState } from '../animation/types';
 import { SlideStoreContext, type ISlideStore } from '../slide/collect/context';
-import { slideConfigs } from '../slide/collect/plugin';
 import { Section } from '../slide/section';
 import { Slide } from '../slide/slide';
 import {
   collect,
+  buildContext,
   page,
   renderContext,
   renderPage,
@@ -81,11 +82,23 @@ describe('SSR 动画收集', () => {
     expect(config.sections[0].steps[0].actions[0].target).eq(id);
   });
 
-  it('正式渲染不展开动画子树、不再次收集，也不输出资源标签', () => {
-    function MustNotRender(): never {
-      throw new Error('正式渲染不应执行动画子树');
+  it('缺少 RenderContext 时 Slide 报错，不渲染子组件', () => {
+    let renders = 0;
+    function Probe() {
+      renders++;
+      return null;
     }
-    const html = renderToStaticMarkup(page(<Player><MustNotRender /></Player>));
+    expect(() => renderToStaticMarkup(<Slide><Section><Probe /></Section></Slide>))
+      .throw(/Slide 需要在 RenderContext 中渲染/);
+    expect(renders).eq(0);
+  });
+
+  it('正式渲染不校验 Player 参数、不展开动画子树，也不输出资源标签', () => {
+    function MustNotRender(): never {
+      throw new Error('预渲染之外不应执行动画子树');
+    }
+    const tree = page(<Player transition={{ duration: -1 }}><MustNotRender /></Player>);
+    const html = renderPage(tree, { ...renderContext(), isPreBuild: false });
     expect(html).include('标题').not.include('<script');
   });
 
@@ -110,17 +123,19 @@ describe('SSR 动画收集', () => {
     expect(second.config).deep.eq(first.config);
   });
 
-  it('普通 SSR 即可登记配置，Slide 完成前不发布', () => {
+  it('预渲染收集配置，构建 hook 负责发布', async () => {
     const context = renderContext();
     let renders = 0;
     function Probe() {
       renders++;
-      expect(slideConfigs.has(context.page)).eq(false);
+      expect(context.page.getBrowserConfig().slide).eq(undefined);
       return <div id="title" />;
     }
     const html = renderPage(page(<Player><Step><FadeIn target="title" /></Step></Player>, <Probe />), context);
     expect(renders).eq(1);
-    expect(slideConfigs.get(context.page)!.sections[0].steps).length(1);
+    expect(context.page.getBrowserConfig().slide).eq(undefined);
+    await callHook('beforeBuild', buildContext(context));
+    expect(context.page.getBrowserConfig().slide!.sections[0].steps).length(1);
     expect(html).include('id="title"').not.include('<script');
     expect(() => collect(<Slide>{null}</Slide>)).throw(/至少一个 Section/);
   });
@@ -148,12 +163,27 @@ describe('SSR 动画收集', () => {
     expect(html).not.include('ScopeEnd').not.include('<script');
   });
 
-  it('不同页面的普通 SSR 配置互不影响', () => {
+  it('不同页面的预渲染配置互不影响', () => {
     const outer = renderContext();
     const inner = renderContext();
+    let outerStore: ISlideStore;
+    let innerStore: ISlideStore;
+    function Probe({ inner: isInner = false }) {
+      const store = useContext(SlideStoreContext)!;
+
+      if (isInner) {
+        innerStore = store;
+      }
+      else {
+        outerStore = store;
+      }
+
+      return null;
+    }
     function NestedRender() {
       renderPage(
         <Slide>
+          <Probe inner />
           <Section>内页</Section>
           <Section>内页第二页</Section>
         </Slide>, inner);
@@ -161,22 +191,24 @@ describe('SSR 动画收集', () => {
     }
     renderPage(
       <Slide>
+        <Probe />
         <Section>
           <NestedRender />
           外页
         </Section>
       </Slide>, outer);
-    expect(slideConfigs.get(outer.page)!.sections).length(1);
-    expect(slideConfigs.get(inner.page)!.sections).length(2);
+    expect(outerStore!.getConfig().sections).length(1);
+    expect(innerStore!.getConfig().sections).length(2);
   });
 
-  it('正式渲染不覆盖预渲染配置，也不要求外部收集入口', () => {
+  it('正式渲染不覆盖预渲染配置，也不要求外部收集入口', async () => {
     const context = renderContext();
     renderPage(page(<Player><Step><FadeIn target="title" /></Step></Player>), context);
-    const config = slideConfigs.get(context.page);
+    await callHook('beforeBuild', buildContext(context));
+    const config = context.page.getBrowserConfig().slide;
     context.isPreBuild = false;
     const html = renderPage(<Slide><Section>正式内容</Section></Slide>, context);
-    expect(slideConfigs.get(context.page)).eq(config);
+    expect(context.page.getBrowserConfig().slide).eq(config);
     expect(html).include('正式内容').not.include('<script');
   });
 
@@ -352,7 +384,7 @@ describe('SSR 动画收集', () => {
     expect(registrations).eq(1);
   });
 
-  it('部分动作已登记后渲染失败，同一页面的下一轮收集仍干净', () => {
+  it('部分动作已登记后渲染失败，同一页面的下一轮收集仍干净', async () => {
     const context = renderContext();
     function Broken(): never {
       throw new Error('动作之后失败');
@@ -366,19 +398,33 @@ describe('SSR 动画收集', () => {
       </Player>,
     ), context))
       .throw(/动作之后失败/);
-    expect(slideConfigs.has(context.page)).false;
+    await rejects(() => callHook('beforeBuild', buildContext(context)), /范围尚未结束/);
+    await callHook('afterReady', buildContext(context));
     const { config } = collect(<Slide><Section title="重试">成功</Section></Slide>, context);
     expect(config.sections).deep.eq([{ steps: [] }]);
   });
 
-  it('正式渲染也拒绝同页多个 Player', () => {
-    const tree = page(
-      <>
-        <Player>{null}</Player>
-        <Player>{null}</Player>
-      </>,
+  it('正式渲染不登记 Player，Section 页码保持连续', () => {
+    const tree = (
+      <Slide>
+        <Section>
+          第一页
+          <Player>{null}</Player>
+          <Player>{null}</Player>
+        </Section>
+        <Section>
+          第二页
+          <Player>{null}</Player>
+        </Section>
+      </Slide>
     );
-    expect(() => renderToStaticMarkup(tree)).throw(/多个 Player/);
+    const { html, config } = collect(tree, { ...renderContext(), isPreBuild: false });
+    expect(html).include('第一页').include('第二页');
+    expect(html.match(/data-slide-section="\d+"/g)).deep.eq([
+      'data-slide-section="0"',
+      'data-slide-section="1"',
+    ]);
+    expect(config.sections).deep.eq([{ steps: [] }, { steps: [] }]);
   });
 });
 

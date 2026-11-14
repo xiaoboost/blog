@@ -1,21 +1,22 @@
-import { onBuild } from '@blog/context/runtime';
-import type { IPage, SlideConfig } from '@blog/types';
+import { onBuildWithRender, useRenderOnce } from '@blog/context/runtime';
+import type { IPage } from '@blog/types';
+import type { ISlideStore } from './context';
 
-/** 预渲染收集的配置，按页面隔离；不保存 React store。 */
-export const slideConfigs = new WeakMap<IPage, SlideConfig>();
+/** 登记预渲染 store，并在构建阶段生成页面配置 */
+export const useRegisterSlide = onBuildWithRender<ISlideStore>(({ hooks }) => {
+  const slideStores = new WeakMap<IPage, ISlideStore>();
 
-onBuild((runtime) => {
-  runtime.hooks.afterReady.tap('slide:animation', ({ pages }) => {
+  hooks.afterReady.tap('slide:animation', ({ pages }) => {
     for (const page of pages) {
-      slideConfigs.delete(page);
+      slideStores.delete(page);
     }
   });
 
-  runtime.hooks.beforeBuild.tap('slide:animation', ({ pages }) => {
+  hooks.beforeBuild.tap('slide:animation', ({ pages }) => {
     for (const page of pages) {
-      const config = slideConfigs.get(page);
+      const store = slideStores.get(page);
 
-      if (!config) {
+      if (!store) {
         if (page.type === 'post' && page.data.post.data.template === 'slide') {
           throw new Error('[mdx-slide] PPT 必须包含一个 Slide 和至少一个 Section。');
         }
@@ -23,9 +24,25 @@ onBuild((runtime) => {
         continue;
       }
 
+      const config = store.getConfig();
+
       if (config.sections.some(({ steps }) => steps.length > 0)) {
         page.addBrowserConfig({ slide: config });
       }
     }
   });
+
+  return function useRegister(store, { page, isPreBuild }) {
+    useRenderOnce(() => {
+      if (!isPreBuild) {
+        return;
+      }
+
+      if (slideStores.has(page)) {
+        throw new Error('[mdx-slide] 每篇内容只能包含一个 Slide。');
+      }
+
+      slideStores.set(page, store);
+    });
+  };
 });

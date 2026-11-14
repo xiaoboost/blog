@@ -1,4 +1,5 @@
-import { useRenderOnce } from '@blog/context/runtime';
+import { rejects } from 'node:assert/strict';
+import { callHook, useRenderOnce } from '@blog/context/runtime';
 import { describe, expect, it } from '@blog/test-toolkit';
 import React, {
   createContext,
@@ -6,7 +7,6 @@ import React, {
   useState,
   type ReactNode,
 } from 'react';
-import { renderToStaticMarkup } from 'react-dom/server';
 import {
   Animate,
   FadeIn,
@@ -23,10 +23,15 @@ import {
 } from '../animation';
 import { SlideStoreContext } from '../slide/collect/context';
 import { ScopeEnd } from '../slide/collect/end';
-import { slideConfigs } from '../slide/collect/plugin';
 import { Section } from '../slide/section';
 import { Slide } from '../slide/slide';
-import { collect, page, renderContext } from './fixtures';
+import {
+  buildContext,
+  collect,
+  page,
+  renderContext,
+  renderPage,
+} from './fixtures';
 
 /** 比较作者可观察的时间，不依赖内部树的形状。 */
 function timing(step: StepConfig) {
@@ -381,7 +386,7 @@ describe('分组默认值与 SSR 收集', () => {
         ['two', 500, 100],
       ],
     });
-    expect(html).eq(renderToStaticMarkup(page(null)));
+    expect(html).eq(renderPage(page(null), { ...renderContext(), isPreBuild: false }));
   });
 
   it('分组名可以在独立的父容器、Step 和 Section 内重复', () => {
@@ -485,7 +490,7 @@ describe('分组默认值与 SSR 收集', () => {
     expect(registrations).eq(1);
   });
 
-  it('解析失败不发布半成品，修正同一页面后可以重新收集', () => {
+  it('解析失败不发布半成品，修正同一页面后可以重新收集', async () => {
     const context = renderContext();
     expect(() => collect(page(
       <Player>
@@ -495,7 +500,8 @@ describe('分组默认值与 SSR 收集', () => {
         </Step>
       </Player>,
     ), context)).throw(/引用.*无效/);
-    expect(slideConfigs.has(context.page)).eq(false);
+    await rejects(() => callHook('beforeBuild', buildContext(context)), /引用.*无效/);
+    await callHook('afterReady', buildContext(context));
     const { config } = collect(page(
       <Player><Step><Sequence at={200}><Wait duration={100} /></Sequence></Step></Player>,
     ), context);
