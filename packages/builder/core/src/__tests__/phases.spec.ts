@@ -151,14 +151,18 @@ describe('构建阶段计时与报告', () => {
       await runningFirst;
       const firstReport = await readFile(firstPath, 'utf8');
       const secondReport = await readFile(secondPath, 'utf8');
-      assert.match(firstReport, /\|only-first\|Builder\|beforeBundler\|1\|/);
+      assert.match(firstReport, /\|only-first\|Builder\|beforeBundler\|— \/ 1\|/);
       assert.doesNotMatch(firstReport, /\|only-second\|/);
-      assert.match(secondReport, /\|only-second\|Builder\|beforeBundler\|1\|/);
+      assert.match(secondReport, /\|only-second\|Builder\|beforeBundler\|— \/ 1\|/);
       assert.doesNotMatch(secondReport, /\|only-first\|/);
 
       await first.build();
       const rebuiltReport = await readFile(firstPath, 'utf8');
-      assert.match(rebuiltReport, /\|only-first\|Builder\|beforeBundler\|1\|/, '第二轮只统计本轮回调，不累加第一轮');
+      assert.match(
+        rebuiltReport,
+        /\|only-first\|Builder\|beforeBundler\|— \/ 1\|/,
+        '第二轮只统计本轮回调，不累加第一轮',
+      );
       assert.doesNotMatch(rebuiltReport, /\|only-second\|/);
       assert.equal(await readFile(secondPath, 'utf8'), secondReport, '重建不覆盖另一构建器的报告');
     }
