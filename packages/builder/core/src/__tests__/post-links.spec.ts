@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { resolve } from 'node:path';
 import { runInNewContext } from 'node:vm';
+import { GlobalKey } from '@blog/context';
 import { normalize } from '@blog/node';
 import { compile, parse } from '@blog/parser';
 import { build } from 'esbuild';
@@ -40,9 +41,10 @@ interface Heading {
 }
 
 interface Harness {
+  ready: Promise<void>;
   splitPostHref(href: string): { path: string; query: string; fragment: string };
   resolveHeadingFragment(fragment: string, headings: Heading[]): string;
-  render(name: keyof typeof fixtures, toc: boolean): string;
+  render(name: keyof typeof fixtures, toc: boolean, isPreBuild?: boolean): string;
   headings(name: keyof typeof fixtures): Heading[];
 }
 
@@ -67,7 +69,7 @@ async function createHarness(): Promise<Harness> {
         import React from 'react';
         import { renderToStaticMarkup } from 'react-dom/server';
         import { Post } from './post';
-        import { setCurrentPost, setPosts } from '@blog/context/runtime';
+        import { RenderContext, callHook, waitReady } from '@blog/context/runtime';
         import { getHeadingAnchors } from './to-content/utils';
         import source from 'fixture:source';
         import target from 'fixture:target';
@@ -75,16 +77,20 @@ async function createHarness(): Promise<Harness> {
         export { splitPostHref, resolveHeadingFragment } from './post/link-utils';
         const data = ${JSON.stringify(Object.fromEntries(fixtureData))};
         const components = { source, target, levels };
-        setPosts(Object.values(data));
+        export const ready = waitReady.then(() => callHook('afterPostDataReady', Object.values(data)));
         export function headings(name) { return getHeadingAnchors(data[name].ast); }
-        export function render(name, toc) {
+        export function render(name, toc, isPreBuild = false) {
           const post = {
             data: { ...data[name], toc },
             Component: components[name],
             utils: { getAssetReferences: () => [] },
           };
-          setCurrentPost(post);
-          return renderToStaticMarkup(<Post post={post} />);
+          const context = { page: { data: { post } }, site: {}, dev: false, isPreBuild };
+          return renderToStaticMarkup(
+            <RenderContext.Provider value={context}>
+              <Post post={post} />
+            </RenderContext.Provider>
+          );
         }
       `,
       loader: 'tsx',
@@ -104,24 +110,9 @@ async function createHarness(): Promise<Harness> {
           bundler.onResolve({ filter: /^@blog\/node$/ }, () => ({
             path: resolve(__dirname, '../../../../utils/node/src/path.ts'),
           }));
-          bundler.onResolve({ filter: /\.jss$|^@blog\/(context\/runtime|template-layout|icons)$/ }, ({ path }) => ({ path, namespace: 'stub' }));
+          bundler.onResolve({ filter: /\.jss$|^@blog\/(template-layout|icons)$/ }, ({ path }) => ({ path, namespace: 'stub' }));
           bundler.onResolve({ filter: /^\.\/(image|code)$/ }, ({ path }) => ({ path, namespace: 'stub' }));
           bundler.onLoad({ filter: /.*/, namespace: 'stub' }, ({ path }) => {
-            if (path === '@blog/context/runtime') {
-              return {
-                contents: `
-              let currentPost;
-              let afterPostDataReady;
-              export function onBuild(callback) {
-                callback({ hooks: { afterPostDataReady: { tap(_, fn) { afterPostDataReady = fn; } } } });
-              }
-              export function setPosts(posts) { afterPostDataReady(posts); }
-              export function setCurrentPost(post) { currentPost = post; }
-              export function useRenderContext() { return { page: { data: { post: currentPost } } }; }
-            `,
-              };
-            }
-
             if (path === '@blog/template-layout') {
               return { contents: 'export function Layout({ children }) { return children; }' };
             }
@@ -151,10 +142,19 @@ async function createHarness(): Promise<Harness> {
     module,
     exports: module.exports,
     require,
+    setTimeout,
     TextEncoder,
     queueMicrotask,
+    [GlobalKey.Memory]: new Map(),
+    [GlobalKey.Builder]: {
+      options: { mode: 'production' },
+      logger: { debug() {}, info() {}, error() {} },
+    },
+    [GlobalKey.RuntimeCallbacks]: [],
   });
-  return module.exports as Harness;
+  const harness = module.exports as Harness;
+  await harness.ready;
+  return harness;
 }
 
 function headingIds(html: string): string[] {
@@ -242,6 +242,11 @@ describe('文章章节链接', function () {
     assert.ok(nav.includes(`href="${summaryFragment}"`));
     assert.ok(nav.includes(`href="${summaryFragment}-1"`));
     assert.equal(harness.render('source', false), first);
+  });
+
+  it('预渲染与正式渲染使用同一套链接解析，输出保持一致', () => {
+    const preRender = harness.render('source', true, true);
+    assert.equal(harness.render('source', true, false), preRender);
   });
 
   it('目录省略的六级标题仍参与计数，带格式的标题与 AST 提取一致', () => {

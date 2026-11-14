@@ -5,7 +5,7 @@ import type { BuilderHooks, BundlerHooks } from './hooks';
 import type { LogLevel, LoggerInstance } from './logger';
 import type { BuilderPlugin } from './plugin';
 import type { Resolver } from './resolve';
-import type { BuildHook } from './template';
+import type { BuildHook } from './runtime';
 
 /** 构建器选项 */
 export type BuilderOptions = ExtendOptions & CommandOptions;
