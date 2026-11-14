@@ -100,6 +100,7 @@ export interface BuilderHooks {
   /**
    * 处理资源
    *   - 返回资源列表数组
+   *   - 提交处理结果时返回新数组，跳过时返回原数组
    */
   processAssets: AsyncSeriesWaterfallHook<[AssetData[]]>;
   /**

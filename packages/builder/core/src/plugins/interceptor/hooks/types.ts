@@ -12,6 +12,8 @@ export interface HookData {
    *   - 单位毫秒，performance.now() 的单调时钟读数
    */
   endAt: number;
+  /** 是否提供有效结果；未定义表示该钩子没有有效性判据。 */
+  effective?: boolean;
 }
 
 /** 完整数据 */
@@ -24,13 +26,17 @@ export interface HookDataWithName {
   tapName: string;
   /** 调用次数 */
   count: number;
+  /** 有效处理次数；未定义表示没有有效性统计。 */
+  effectiveCount?: number;
   /**
    * 平均耗时（单次调用）
    *   - 单位毫秒，保留小数精度
    */
   avgCost: number;
+  /** 有效调用的平均耗时，单位毫秒；没有有效调用时未定义。 */
+  effectiveAvgCost?: number;
   /**
-   * 总耗时（区间合并后，消除并发重叠）
+   * 活跃时间（全部调用的区间合并后，消除并发重叠）
    *   - 单位毫秒，保留小数精度
    */
   totalCost: number;
