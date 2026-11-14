@@ -485,7 +485,7 @@ setScriptExports({ exportPdf });
 
 以前要知道构建为什么慢，往往得在不同插件里分别埋计时。现在，插件都通过具名的生命周期钩子接入，[调试插件 Interceptor](https://github.com/xiaoboost/blog/blob/2c07064c/packages/builder/core/src/plugins/interceptor/index.ts) 就可以统一拦截 Builder 与 Bundler 的钩子注册，在回调外面补上计时，统计每个插件在哪个阶段调用了多少次、用了多久。
 它还读取 Builder 提供的阶段计时，包括代码打包、页面生成、资源输出，以及生成器内部的准备、预渲染、资源处理和正式渲染。这些阶段计时由相应流程显式登记，钩子统计则由拦截器收集，两者放在一起才能看清“时间主要花在哪一步”和“这一步有哪些插件参与”。
-我还把这个功能接入了 Github PR 中，比如这个 [#203](https://github.com/xiaoboost/blog/pull/203)，在 PR 的回复中可以看到机器人发的构建性能报告，这就式这个调试插件产出的内容。我可以很方便的观察构建性能的劣化情况。
+我还把这个功能接入了 Github PR 中，比如这个 [#207](https://github.com/xiaoboost/blog/pull/207)，在 PR 的回复中可以看到机器人发的构建性能报告，这就式这个调试插件产出的内容。我可以很方便的观察构建性能的劣化情况。
 
 ## RSS 的简易接入
 
