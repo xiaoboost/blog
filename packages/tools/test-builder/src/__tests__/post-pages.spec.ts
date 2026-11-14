@@ -248,14 +248,14 @@ describe('文章与标签的确定性排序', function () {
     assert.equal(reversed.errors, '');
   });
 
-  it('按已有标签 URL 排序，不依赖文章数量和输入顺序', () => {
+  it('标签按文章数量降序，同数量按 URL 升序，不受输入顺序影响', () => {
     assert.deepEqual(first.tags.map(({ title }) => title), [
+      '热门',
       '啊',
       '阿',
       'AI 编程',
       '动画',
       '架构设计',
-      '热门',
       '数据分析',
       '游戏',
     ]);

@@ -38,7 +38,12 @@ export function getTagData(posts: PostExportData[]) {
     }
   }
 
-  return tags.sort((a, b) => compareStrings(a.url, b.url));
+  return tags.sort((a, b) => {
+    return (
+      b.posts.length - a.posts.length
+      || compareStrings(a.url, b.url)
+    );
+  });
 }
 
 export function getTagListUrlPath(site: ISite, index: number) {
