@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="500" viewBox="0 0 1400 500" role="img" aria-labelledby="figureTitle figureDesc">
+  <title id="figureTitle">Markdown 图片在哪里变成资源</title>
+  <desc id="figureDesc">普通 Markdown 图片保留相对地址，编译为 React 图片组件；正式渲染时，组件从页面上下文读取文章路径，usePageAsset 读取本地文件并生成发布地址、登记文件，最后输出使用该地址的 HTML。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="9" markerHeight="9" refX="8.6" refY="4.5" orient="auto" viewBox="0 0 10 9"><path d="M0 .5L9 4.5L0 8.5Z" fill="#426382"/></marker>
+    <marker id="referenceArrow" markerWidth="9" markerHeight="9" refX="8.6" refY="4.5" orient="auto" viewBox="0 0 10 9"><path d="M0 .5L9 4.5L0 8.5Z" fill="#8b5b26"/></marker>
+    <style>
+      text { font-family: "Microsoft YaHei", "Microsoft YaHei UI", "Noto Sans CJK SC", "SimHei", sans-serif; fill: #172c3d; }
+      .title { font-size: 38px; font-weight: 700; }
+      .section { font-size: 25px; font-weight: 700; }
+      .label { font-size: 24px; font-weight: 700; }
+      .body { font-size: 21px; fill: #43586c; }
+      .detail { font-size: 19px; fill: #43586c; }
+      .note { font-size: 18px; fill: #375673; }
+      .reference-note { font-size: 18px; fill: #71471c; }
+      .arrow { fill: none; stroke: #426382; stroke-width: 2.5; stroke-linejoin: round; marker-end: url(#arrow); }
+      .reference { fill: none; stroke: #8b5b26; stroke-width: 2.5; stroke-dasharray: 7 6; stroke-linejoin: round; marker-end: url(#referenceArrow); }
+    </style>
+  </defs>
+  <rect width="1400" height="500" fill="#f8f9fb"/>
+  <text x="48" y="65" class="title" text-anchor="start">Markdown 图片在哪里变成资源</text>
+  <text x="48" y="108" class="body" text-anchor="start">编译器保留图片语义，正式渲染时再确定它属于哪一页、发布到哪里。</text>
+  <rect x="48" y="160" width="284" height="180" rx="16" fill="#edf3f9" stroke="#c0d0de" stroke-width="2"/><text x="72" y="198" class="label" text-anchor="start">Markdown</text><text x="72" y="236" class="body" text-anchor="start">保留相对地址</text><text x="72" y="267" class="body" text-anchor="start">./images/flow.jpg</text>
+  <rect x="388" y="160" width="284" height="180" rx="16" fill="#edf3f9" stroke="#c0d0de" stroke-width="2"/><text x="412" y="198" class="label" text-anchor="start">React 图片组件</text><text x="412" y="236" class="body" text-anchor="start">取得当前文章位置</text><text x="412" y="267" class="body" text-anchor="start">把相对路径转为本地路径</text>
+  <rect x="728" y="160" width="284" height="180" rx="16" fill="#fff7e9" stroke="#c0d0de" stroke-width="2"/><text x="752" y="198" class="label" text-anchor="start">usePageAsset</text><text x="752" y="236" class="body" text-anchor="start">读取文件 → 生成发布地址</text><text x="752" y="267" class="body" text-anchor="start">登记到当前页面</text>
+  <rect x="1068" y="160" width="284" height="180" rx="16" fill="#eaf3ee" stroke="#c0d0de" stroke-width="2"/><text x="1092" y="198" class="label" text-anchor="start">最终 HTML</text><text x="1092" y="236" class="body" text-anchor="start">&lt;img src=&quot;发布地址&quot;&gt;</text><text x="1092" y="267" class="body" text-anchor="start">页面文件与图片一起输出</text>
+  <path d="M334 250H386" class="arrow"/>
+  <path d="M674 250H726" class="arrow"/>
+  <path d="M1014 250H1066" class="arrow"/>
+  <text x="48" y="400" class="body" text-anchor="start">发布地址示例：/posts/blog-architecture/images/flow.&lt;hash&gt;.jpg</text>
+  <text x="48" y="448" class="detail" text-anchor="start">预渲染阶段跳过这一步；读取和登记本地正文图片发生在正式渲染阶段。</text>
+</svg>

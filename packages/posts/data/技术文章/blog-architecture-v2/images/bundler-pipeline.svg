@@ -1,0 +1,151 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1480" height="960" viewBox="0 0 1480 960" role="img" aria-labelledby="figureTitle figureDesc">
+  <title id="figureTitle">esbuild 与插件管线</title>
+  <desc id="figureDesc">从下往上依次为 esbuild、桥接层 BridgePlugin 和插件层 Bundler 钩子管线。左侧由 onResolve 进入统一解析流程，匹配专用插件或交由 Resolver 默认解析后返回 esbuild；esbuild 据此发起后续加载，右侧由 onLoad 进入 Load 读取初始内容，再经多个 Transformer 接力转换，期间通过转换上下文传递源文件位置与依赖信息，最终将代码、格式和监听依赖返回给 esbuild。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="9" markerHeight="9" refX="8.6" refY="4.5" orient="auto" viewBox="0 0 10 9">
+      <path d="M0 0.5L9 4.5L0 8.5Z" fill="#426382"/>
+    </marker>
+    <marker id="resourceArrow" markerWidth="9" markerHeight="9" refX="8.6" refY="4.5" orient="auto" viewBox="0 0 10 9">
+      <path d="M0 0.5L9 4.5L0 8.5Z" fill="#8b5b26"/>
+    </marker>
+    <marker id="phaseArrow" markerWidth="7" markerHeight="7" refX="8.6" refY="4.5" orient="auto" viewBox="0 0 10 9">
+      <path d="M0 0.5L9 4.5L0 8.5Z" fill="#6686a4"/>
+    </marker>
+    <style>
+      text { font-family: "Microsoft YaHei", "Microsoft YaHei UI", "Noto Sans CJK SC", "SimHei", sans-serif; fill: #172c3d; }
+      .title { font-size: 42px; font-weight: 700; }
+      .section { font-size: 26px; font-weight: 700; }
+      .layer-detail { font-size: 21px; fill: #43586c; }
+      .layer-divider { stroke: #c0d0de; stroke-width: 1.5; }
+      .label { font-size: 27px; font-weight: 700; }
+      .detail { font-size: 20px; fill: #43586c; }
+      .note { font-size: 19px; fill: #375673; }
+      .phase-label { font-size: 22px; font-weight: 700; fill: #244560; }
+      .context-title { font-size: 22px; font-weight: 700; fill: #71471c; }
+      .resource-note { font-size: 19px; fill: #71471c; }
+      .arrow { fill: none; stroke: #426382; stroke-width: 3; marker-end: url(#arrow); }
+      .resource { fill: none; stroke: #8b5b26; stroke-width: 2.5; marker-end: url(#resourceArrow); }
+      .resource-dashed { fill: none; stroke: #8b5b26; stroke-width: 2.5; stroke-dasharray: 6 5; marker-end: url(#resourceArrow); }
+      .phase-flow { fill: none; stroke: #6686a4; stroke-width: 2.5; marker-end: url(#phaseArrow); }
+    </style>
+  </defs>
+
+  <rect width="1480" height="960" fill="#f8f9fb"/>
+  <text x="64" y="64" class="title">esbuild 与插件管线</text>
+
+  <!-- 顶层：插件层 -->
+  <rect x="48" y="96" width="1384" height="424" rx="22" fill="#edf3f9" stroke="#c0d0de" stroke-width="2"/>
+  <text x="78" y="286" class="section">插件层</text>
+  <text x="78" y="320" class="layer-detail">Bundler</text>
+  <text x="78" y="350" class="layer-detail">钩子管线</text>
+  <path d="M246 120V496" class="layer-divider"/>
+
+  <!-- 左侧标题栏与右侧流程分开，纵向连线只经过流程区。 -->
+  <g transform="translate(200 0)">
+  <!-- 插件层左侧：统一解析 -->
+  <rect x="78" y="156" width="440" height="340" rx="16" fill="#ffffff" stroke="#afc3d8" stroke-width="2"/>
+  <text x="104" y="198" class="label">统一解析　hooks.resolve</text>
+
+  <rect x="104" y="220" width="388" height="92" rx="12" fill="#e8f0f8"/>
+  <text x="126" y="256" class="phase-label">专用插件先行匹配</text>
+  <text x="126" y="290" class="detail">虚拟模块、外部依赖、assets: 协议</text>
+
+  <path d="M298 313V348" class="phase-flow"/>
+  <text x="314" y="337" class="note">未接手时继续</text>
+
+  <rect x="104" y="352" width="388" height="120" rx="12" fill="#e8f0f8"/>
+  <text x="126" y="388" class="phase-label">Resolver 默认解析</text>
+  <text x="126" y="420" class="detail">基于 enhanced-resolve 定位真实文件</text>
+  <text x="126" y="450" class="detail">同时提供 builder.resolve() 供插件复用</text>
+
+  <!-- 插件层右侧：加载与转换 -->
+  <rect x="596" y="156" width="606" height="340" rx="16" fill="#ffffff" stroke="#afc3d8" stroke-width="2"/>
+  <text x="622" y="198" class="label">加载与转换　Load → Transform</text>
+
+  <rect x="622" y="220" width="340" height="78" rx="12" fill="#e8f0f8"/>
+  <text x="644" y="253" class="phase-label">Load 读取初始内容</text>
+  <text x="644" y="283" class="detail">专用插件加载或读取磁盘源码</text>
+
+  <path d="M792 299V327" class="phase-flow"/>
+
+  <rect x="622" y="331" width="340" height="141" rx="12" fill="#e8f0f8"/>
+  <text x="644" y="364" class="phase-label">Transform 多步转换接力</text>
+
+  <rect x="644" y="380" width="136" height="42" rx="8" fill="#ffffff" stroke="#afc3d8" stroke-width="1.5"/>
+  <text x="712" y="407" text-anchor="middle" class="note">Transformer 1</text>
+  <path d="M782 401H802" class="phase-flow"/>
+  <rect x="806" y="380" width="136" height="42" rx="8" fill="#ffffff" stroke="#afc3d8" stroke-width="1.5"/>
+  <text x="874" y="407" text-anchor="middle" class="note">Transformer 2</text>
+
+  <text x="644" y="452" class="detail">逐步更新代码、格式与 SourceMap</text>
+
+  <!-- 转换管线旁的上下文传递 -->
+  <rect x="988" y="220" width="190" height="252" rx="12" fill="#fff7e9" stroke="#d6b688" stroke-width="2"/>
+  <text x="1008" y="256" class="context-title">转换上下文</text>
+  <text x="1008" y="294" class="resource-note">• 源文件位置</text>
+  <text x="1024" y="320" class="detail">sourcePath</text>
+  <text x="1008" y="358" class="resource-note">• 代码与格式</text>
+  <text x="1024" y="384" class="detail">code / format</text>
+  <text x="1008" y="422" class="resource-note">• 依赖信息</text>
+  <text x="1024" y="448" class="detail">watchFiles</text>
+
+  <path d="M963 259H986" class="resource-dashed"/>
+  <path d="M986 380H963" class="resource-dashed"/>
+  <path d="M963 434H986" class="resource-dashed"/>
+  </g>
+
+  <!-- 中层：桥接层 -->
+  <rect x="48" y="582" width="1384" height="126" rx="20" fill="#edf3f9" stroke="#c0d0de" stroke-width="2"/>
+  <text x="78" y="638" class="section">桥接层</text>
+  <text x="78" y="672" class="layer-detail">BridgePlugin</text>
+  <path d="M246 598V692" class="layer-divider"/>
+
+  <g transform="translate(200 0)">
+  <rect x="78" y="634" width="440" height="56" rx="12" fill="#ffffff" stroke="#afc3d8" stroke-width="2"/>
+  <text x="298" y="670" text-anchor="middle" class="phase-label">onResolve 统一拦截转发</text>
+
+  <rect x="596" y="634" width="606" height="56" rx="12" fill="#ffffff" stroke="#afc3d8" stroke-width="2"/>
+  <text x="899" y="670" text-anchor="middle" class="phase-label">onLoad 统一拦截并驱动管线</text>
+  </g>
+
+  <!-- 底层：esbuild -->
+  <rect x="48" y="772" width="1384" height="144" rx="20" fill="#eaf3ee" stroke="#b5ccbf" stroke-width="2"/>
+  <text x="78" y="838" class="section">底层打包器</text>
+  <text x="78" y="872" class="layer-detail">esbuild</text>
+  <path d="M246 788V900" class="layer-divider"/>
+
+  <g transform="translate(200 0)">
+  <rect x="78" y="830" width="440" height="66" rx="12" fill="#ffffff" stroke="#b5ccbf" stroke-width="2"/>
+  <text x="298" y="871" text-anchor="middle" class="phase-label">遇到模块导入，发起路径解析</text>
+
+  <rect x="596" y="830" width="606" height="66" rx="12" fill="#ffffff" stroke="#b5ccbf" stroke-width="2"/>
+  <text x="899" y="871" text-anchor="middle" class="phase-label">按解析结果发起加载，取得代码后继续打包</text>
+
+  <!-- 两条路径在 esbuild 处的衔接 -->
+  <path d="M519 863H594" class="arrow"/>
+  <text x="556.5" y="812" text-anchor="middle" class="note">后续加载</text>
+
+  <!-- 左侧上下往返箭头 -->
+  <path d="M160 829V692" class="arrow"/>
+  <text x="174" y="752" class="note">onResolve 请求</text>
+  <path d="M160 633V498" class="arrow"/>
+  <text x="174" y="558" class="note">进入解析流程</text>
+
+  <path d="M356 497V632" class="arrow"/>
+  <text x="370" y="558" class="note">路径与 namespace</text>
+  <path d="M356 691V828" class="arrow"/>
+  <text x="370" y="752" class="note">返回解析结果</text>
+
+  <!-- 右侧上下往返箭头 -->
+  <path d="M700 829V692" class="arrow"/>
+  <text x="714" y="752" class="note">onLoad 请求</text>
+  <path d="M700 633V498" class="arrow"/>
+  <text x="714" y="558" class="note">进入加载管线</text>
+
+  <path d="M948 497V632" class="resource"/>
+  <text x="962" y="558" class="resource-note">代码、格式与依赖列表</text>
+  <path d="M948 691V828" class="resource"/>
+  <text x="962" y="738" class="resource-note">返回内容与 loader</text>
+  <text x="962" y="764" class="resource-note">watchFiles / watchDirs</text>
+  </g>
+</svg>

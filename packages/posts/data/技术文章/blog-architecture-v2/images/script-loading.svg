@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="740" viewBox="0 0 1400 740" role="img" aria-labelledby="figureTitle figureDesc">
+  <title id="figureTitle">两份脚本，两种加载时机</title>
+  <desc id="figureDesc">播放器与 PDF 导出脚本在构建时分别生成。播放器通过 HTML 中的 script 标签直接引用；导出脚本的地址只进入页面配置，用户点击导出按钮后，由 loadResource 查询配置并加载，再调用导出函数。体积来自已有生产产物，未经 HTTP 传输压缩。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="9" markerHeight="9" refX="8.6" refY="4.5" orient="auto" viewBox="0 0 10 9"><path d="M0 .5L9 4.5L0 8.5Z" fill="#426382"/></marker>
+    <marker id="referenceArrow" markerWidth="9" markerHeight="9" refX="8.6" refY="4.5" orient="auto" viewBox="0 0 10 9"><path d="M0 .5L9 4.5L0 8.5Z" fill="#8b5b26"/></marker>
+    <style>
+      text { font-family: "Microsoft YaHei", "Microsoft YaHei UI", "Noto Sans CJK SC", "SimHei", sans-serif; fill: #172c3d; }
+      .title { font-size: 38px; font-weight: 700; }
+      .section { font-size: 25px; font-weight: 700; }
+      .label { font-size: 24px; font-weight: 700; }
+      .body { font-size: 21px; fill: #43586c; }
+      .detail { font-size: 19px; fill: #43586c; }
+      .note { font-size: 18px; fill: #375673; }
+      .reference-note { font-size: 18px; fill: #71471c; }
+      .arrow { fill: none; stroke: #426382; stroke-width: 2.5; stroke-linejoin: round; marker-end: url(#arrow); }
+      .reference { fill: none; stroke: #8b5b26; stroke-width: 2.5; stroke-dasharray: 7 6; stroke-linejoin: round; marker-end: url(#referenceArrow); }
+    </style>
+  </defs>
+  <rect width="1400" height="740" fill="#f8f9fb"/>
+  <text x="48" y="65" class="title" text-anchor="start">两份脚本，两种加载时机</text>
+  <text x="48" y="108" class="body" text-anchor="start">构建期决定文件边界，页面引用与用户操作决定加载时机。</text>
+  <rect x="48" y="182" width="340" height="150" rx="16" fill="#eaf3ee" stroke="#c0d0de" stroke-width="2"/><text x="72" y="220" class="label" text-anchor="start">播放器脚本</text><text x="72" y="258" class="body" text-anchor="start">slide.…js</text><text x="72" y="289" class="body" text-anchor="start">约 10.9 kB</text>
+  <rect x="530" y="182" width="340" height="150" rx="16" fill="#edf3f9" stroke="#c0d0de" stroke-width="2"/><text x="554" y="220" class="label" text-anchor="start">HTML 直接引用</text><text x="554" y="258" class="body" text-anchor="start">&lt;script src=&quot;…&quot;&gt;</text><text x="554" y="289" class="body" text-anchor="start">打开页面时所需的脚本</text>
+  <rect x="1012" y="182" width="340" height="150" rx="16" fill="#edf3f9" stroke="#c0d0de" stroke-width="2"/><text x="1036" y="220" class="label" text-anchor="start">打开页面</text><text x="1036" y="258" class="body" text-anchor="start">加载播放器</text><text x="1036" y="289" class="body" text-anchor="start">准备页面与交互</text>
+  <path d="M390 257H528" class="arrow"/>
+  <path d="M872 257H1010" class="arrow"/>
+  <text x="460" y="240" class="note" text-anchor="middle">登记脚本</text>
+  <text x="940" y="240" class="note" text-anchor="middle">直接加载</text>
+  <rect x="48" y="398" width="340" height="150" rx="16" fill="#fff7e9" stroke="#c0d0de" stroke-width="2"/><text x="72" y="436" class="label" text-anchor="start">PDF 导出脚本</text><text x="72" y="474" class="body" text-anchor="start">export-pdf.…js</text><text x="72" y="505" class="body" text-anchor="start">约 724 kB</text>
+  <rect x="530" y="398" width="340" height="150" rx="16" fill="#fff7e9" stroke="#c0d0de" stroke-width="2"/><text x="554" y="436" class="label" text-anchor="start">页面配置记录地址</text><text x="554" y="474" class="body" text-anchor="start">lazyScripts[name]</text><text x="554" y="505" class="body" text-anchor="start">暂不生成加载标签</text>
+  <rect x="1012" y="398" width="340" height="150" rx="16" fill="#fff7e9" stroke="#c0d0de" stroke-width="2"/><text x="1036" y="436" class="label" text-anchor="start">点击导出按钮</text><text x="1036" y="474" class="body" text-anchor="start">loadResource(name)</text><text x="1036" y="505" class="body" text-anchor="start">加载后调用导出函数</text>
+  <path d="M390 473H528" class="reference"/>
+  <path d="M872 473H1010" class="reference"/>
+  <text x="460" y="456" class="reference-note" text-anchor="middle">保存地址</text>
+  <text x="940" y="456" class="reference-note" text-anchor="middle">点击时查询</text>
+  <path d="M1182 334V396" class="arrow"/>
+  <text x="1204" y="373" class="note" text-anchor="start">用户操作</text>
+  <rect x="48" y="600" width="1304" height="96" rx="16" fill="#fff" stroke="#d5dee7" stroke-width="2"/>
+  <text x="72" y="638" class="body" text-anchor="start">两份文件都在构建时生成，延后的是导出脚本的请求和执行。</text>
+  <text x="72" y="674" class="detail" text-anchor="start">体积取自现有生产产物，未经 gzip / Brotli 传输压缩；这里不包含页面的其他公共资源。</text>
+</svg>
