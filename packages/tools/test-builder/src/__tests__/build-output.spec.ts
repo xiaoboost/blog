@@ -52,26 +52,26 @@ function extractMetaContent(html: string, key: string): string {
 
 /**
  * 将 HTML 中的链接地址转换为可能的 asset path
- * 链接格式：/posts/slug/ 或 /styles/file.css
+ * 相对链接以当前 HTML 页面为基准
  * asset path：/posts/slug/index.html 或 /styles/file.css
  */
-function linkToAssetPaths(link: string): string[] {
-  const clean = link.split(/[?#]/)[0];
-  // 确保以 / 开头
-  const normalized = clean.startsWith('/') ? clean : `/${clean}`;
+function linkToAssetPaths(link: string, pagePath: string): string[] {
+  const pageUrl = new URL(pagePath, 'https://example.com');
+  // URL 会编码中文等字符，构建产物使用解码后的文件名。
+  const pathname = decodeURIComponent(new URL(link, pageUrl).pathname);
 
   // 目录型链接 → 补 index.html
-  if (normalized.endsWith('/')) {
-    return [`${normalized}index.html`];
+  if (pathname.endsWith('/')) {
+    return [`${pathname}index.html`];
   }
 
   // 有扩展名的文件链接 → 直接匹配
-  if (normalized.includes('.')) {
-    return [normalized];
+  if (pathname.includes('.')) {
+    return [pathname];
   }
 
   // 无扩展名无斜杠 → 既可能是文件也可能是目录
-  return [normalized, `${normalized}/index.html`, `${normalized}.html`];
+  return [pathname, `${pathname}/index.html`, `${pathname}.html`];
 }
 
 describe('博客构建 e2e', () => {
@@ -211,7 +211,7 @@ describe('博客构建 e2e', () => {
       const links = extractLinks(html);
 
       for (const link of links) {
-        const candidates = linkToAssetPaths(link);
+        const candidates = linkToAssetPaths(link, path);
         const found = candidates.some((c) => assetMap.has(c));
 
         if (!found) {
@@ -220,7 +220,7 @@ describe('博客构建 e2e', () => {
       }
     }
 
-    expect(brokenLinks).to.be.empty;
+    expect(brokenLinks, brokenLinks.join('\n')).to.be.empty;
   });
 
   it('404 单独加载页面资源和字体，同时复用 layout 的共享资源', () => {
