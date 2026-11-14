@@ -70,7 +70,7 @@ export function getBuildReport(timings: BuildTiming[], { failed, hooks }: Report
   }
 
   if (hooks) {
-    content += getMdString(hooks);
+    content += `\n${getMdString(hooks)}`;
     content += '\n详细插件统计只覆盖已拦截的钩子区间，与上述阶段存在包含或重叠关系，不能相加。\n\n';
   }
 

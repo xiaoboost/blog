@@ -18,6 +18,7 @@ function addHookData(
   hookMap: string,
   hook: string,
   startAt: number,
+  effective?: boolean,
 ) {
   const endAt = performance.now();
 
@@ -40,7 +41,20 @@ function addHookData(
   hookMapData.get(hook)!.push({
     startAt,
     endAt,
+    effective,
   });
+}
+
+/** 根据各钩子的返回约定判断有效处理，其他钩子只统计全部调用。 */
+function getEffectiveCheck(hookMap: string, hook: string) {
+  if (hookMap === 'Bundler' && (hook === 'resolve' || hook === 'load')) {
+    return (_input: unknown, result: unknown) => result != null;
+  }
+
+  if ((hookMap === 'Bundler' && hook === 'transform')
+    || (hookMap === 'Builder' && hook === 'processAssets')) {
+    return (input: unknown, result: unknown) => result != null && result !== input;
+  }
 }
 
 /** 设置钩子拦截器 */
@@ -57,6 +71,8 @@ export function interceptHookMap(
       continue;
     }
 
+    const isEffective = getEffectiveCheck(hookMapName, tapName);
+
     hook.intercept({
       register(tap: FullTap) {
         const { fn: cb, name: pluginName, type } = tap;
@@ -69,11 +85,14 @@ export function interceptHookMap(
         if (type === 'sync') {
           tap.fn = function (...args: any[]) {
             const startAt = performance.now();
+            let result;
             try {
-              return cb.apply(this, args);
+              result = cb.apply(this, args);
+              return result;
             }
             finally {
-              addHookData(data, pluginName, hookMapName, tapName, startAt);
+              const effective = isEffective?.(args[0], result);
+              addHookData(data, pluginName, hookMapName, tapName, startAt, effective);
             }
           };
         }
@@ -81,20 +100,40 @@ export function interceptHookMap(
           tap.fn = function (...args: any[]) {
             const startAt = performance.now();
             const callback = args.pop();
-            return cb.call(this, ...args, (...result: any[]) => {
-              addHookData(data, pluginName, hookMapName, tapName, startAt);
-              callback(...result);
-            });
+            let recorded = false;
+            const record = (result: unknown) => {
+              if (recorded) {
+                return;
+              }
+
+              recorded = true;
+              const effective = isEffective?.(args[0], result);
+              addHookData(data, pluginName, hookMapName, tapName, startAt, effective);
+            };
+
+            try {
+              return cb.call(this, ...args, (...result: any[]) => {
+                record(result[0] ? undefined : result[1]);
+                callback(...result);
+              });
+            }
+            catch (error) {
+              record(undefined);
+              throw error;
+            }
           };
         }
         else if (type === 'promise') {
           tap.fn = async function (...args: any[]) {
             const startAt = performance.now();
+            let result;
             try {
-              return await cb.apply(this, args);
+              result = await cb.apply(this, args);
+              return result;
             }
             finally {
-              addHookData(data, pluginName, hookMapName, tapName, startAt);
+              const effective = isEffective?.(args[0], result);
+              addHookData(data, pluginName, hookMapName, tapName, startAt, effective);
             }
           };
         }
@@ -157,6 +196,17 @@ export function getHookData(data: AllPluginData = hookData): HookSummary {
           0,
         );
         const totalCost = mergeIntervals(intervals);
+        const effectiveIntervals = intervals.filter((item) => item.effective === true);
+        const effectiveCount = intervals.some((item) => item.effective !== undefined)
+          ? effectiveIntervals.length
+          : undefined;
+        const effectiveSumCost = effectiveIntervals.reduce(
+          (ans, item) => ans + (item.endAt - item.startAt),
+          0,
+        );
+        const effectiveAvgCost = effectiveIntervals.length > 0
+          ? effectiveSumCost / effectiveIntervals.length
+          : undefined;
 
         // 汇总所有区间用于计算全局墙钟时间
         allIntervals.push(...intervals);
@@ -166,9 +216,11 @@ export function getHookData(data: AllPluginData = hookData): HookSummary {
           mapName,
           tapName,
           count,
+          effectiveCount,
           // 平均耗时 = 累加总时间 / 调用次数，不在统计时舍入
-          avgCost: sumCost / count,
-          // 总耗时 = 区间合并后的墙钟时间
+          avgCost: count > 0 ? sumCost / count : 0,
+          effectiveAvgCost,
+          // 活跃时间包含全部调用，保留未生效和失败调用的耗时。
           totalCost,
         });
       }

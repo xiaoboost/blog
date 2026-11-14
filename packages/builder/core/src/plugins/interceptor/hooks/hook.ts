@@ -25,45 +25,57 @@ function toTimeString(input: number) {
   return `${toRound(target, 3)} ${unit[index]}`;
 }
 
+const statisticsNote = '有效处理按各钩子的返回结果判定。调用平均覆盖全部调用，有效平均只覆盖有效调用。耗时包含异步等待，活跃时间对并发重叠区间去重。— 表示该指标不适用或没有可计算的样本。';
+
 function getTableData(data: HookDataWithName[]) {
-  function getTableRow(item: HookDataWithName) {
-    return [
-      item.pluginName,
-      item.mapName,
-      item.tapName,
-      String(item.count),
-      toTimeString(item.avgCost),
-      toTimeString(item.totalCost),
-    ];
-  }
+  const headers = ['插件名称', '构建阶段', '钩子函数'];
+  const identity = (item: HookDataWithName) => [item.pluginName, item.mapName, item.tapName];
+  const counts = (item: HookDataWithName) => `${item.effectiveCount ?? '—'} / ${item.count}`;
+  const totalSorted = data.slice().sort((a, b) => b.totalCost - a.totalCost).slice(0, 3);
+  const effectiveSorted = data
+    .filter((item) => (item.effectiveCount ?? 0) > 0 && item.effectiveAvgCost !== undefined)
+    .sort((a, b) => b.effectiveAvgCost! - a.effectiveAvgCost!)
+    .slice(0, 3);
 
-  const headers = [
-    '插件名称',
-    '构建阶段',
-    '钩子函数',
-    '调用次数',
-    '平均耗时',
-    '总耗时',
+  return [
+    {
+      title: '活跃时间最多',
+      rows: [
+        [...headers, '有效 / 全部', '活跃时间'],
+        ...totalSorted.map((item) =>
+          [...identity(item), counts(item), toTimeString(item.totalCost)],
+        ),
+      ],
+    },
+    {
+      title: '平均有效处理耗时最多',
+      rows: [
+        [...headers, '有效次数', '有效平均'],
+        ...effectiveSorted.map((item) =>
+          [...identity(item), String(item.effectiveCount), toTimeString(item.effectiveAvgCost!)],
+        ),
+      ],
+    },
+    {
+      title: '完整插件数据',
+      rows: [
+        [
+          ...headers,
+          '有效 / 全部',
+          '调用平均',
+          '有效平均',
+          '活跃时间',
+        ],
+        ...data.map((item) => [
+          ...identity(item),
+          counts(item),
+          toTimeString(item.avgCost),
+          item.effectiveAvgCost === undefined ? '—' : toTimeString(item.effectiveAvgCost),
+          toTimeString(item.totalCost),
+        ]),
+      ],
+    },
   ];
-  const tableData = data.map(getTableRow);
-  const totalSortedTableData = data
-    .slice()
-    .sort((pre, next) => (pre.totalCost > next.totalCost ? -1 : 1))
-    .map(getTableRow);
-  const avgSortedTableData = data
-    .slice()
-    .sort((pre, next) => (pre.avgCost > next.avgCost ? -1 : 1))
-    .map(getTableRow);
-
-  tableData.unshift(headers.slice());
-  totalSortedTableData.unshift(headers.slice());
-  avgSortedTableData.unshift(headers.slice());
-
-  return {
-    tableData,
-    totalSortedTableData,
-    avgSortedTableData,
-  };
 }
 
 /** 打印到命令行 */
@@ -73,7 +85,7 @@ function printHookData(
   logger: LoggerInstance,
 ) {
   const cells: SpanningCellConfig[] = [];
-  const { tableData, totalSortedTableData, avgSortedTableData } = getTableData(data);
+  const tables = getTableData(data);
 
   let col0Start = 0;
   let col1Start = 0;
@@ -131,56 +143,45 @@ function printHookData(
   }
 
   const columns: ColumnUserConfig[] = [
-    { width: 16 },
+    { width: 22 },
     { width: 8, alignment: 'center' },
     { width: 14 },
-    { width: 8, alignment: 'center' },
-    { width: 10 },
-    { width: 10 },
+    { width: 13, alignment: 'right' },
+    { width: 10, alignment: 'right' },
+    { width: 10, alignment: 'right' },
+    { width: 10, alignment: 'right' },
   ];
-  const tableString = table(tableData, {
+  const tableStrings = tables.map(({ title, rows }) => table(rows, {
     header: {
       alignment: 'center',
-      content: '完整插件数据',
+      content: title,
     },
-    columns,
-    spanningCells: cells,
-  });
-  const totalSortedTableString = table(totalSortedTableData.slice(0, 4), {
-    header: {
-      alignment: 'center',
-      content: '总耗时最多',
-    },
-    columns,
-  });
-  const avgSortedTableString = table(avgSortedTableData.slice(0, 4), {
-    header: {
-      alignment: 'center',
-      content: '平均耗时最多',
-    },
-    columns,
-  });
+    columns: columns.slice(0, rows[0].length),
+    spanningCells: title === '完整插件数据' ? cells : [],
+  }));
 
   logger.info(
-    `数据记录完成，如下所示——\n${tableString}\n${totalSortedTableString}\n${avgSortedTableString}`,
+    `插件活跃总时间 ${toTimeString(globalTotalCost)}\n\n${tableStrings.join('\n')}\n${statisticsNote}`,
   );
 }
 
 /** 生成记录数据报告 */
 export function getMdString(data: HookSummary = getHookData()) {
   const { items, globalTotalCost } = data;
-  const { tableData, totalSortedTableData, avgSortedTableData } = getTableData(items);
-  const tableHeader = '|插件名称|构建阶段|钩子函数|调用次数|平均耗时|总耗时|\n|:--|:--|:--|:--:|:--|:--|\n';
+  let content = `## 全局汇总\n\n- 插件活跃总时间 ${toTimeString(globalTotalCost)}\n`;
 
-  let content = `## 全局汇总\n\n- 插件活跃总时间: ${toTimeString(globalTotalCost)}\n\n## 总耗时最多\n\n${tableHeader}`;
+  for (const { title, rows } of getTableData(items)) {
+    const [headers, ...body] = rows;
+    const alignment = headers.map((_, index) => index < 3 ? ':--' : '--:');
+    content += `\n## ${title}\n\n|${headers.join('|')}|\n|${alignment.join('|')}|\n`;
+    const formattedRows = body.map((row) => {
+      const cells = row.map((cell) => cell.replaceAll('|', '\\|').replace(/\r?\n/g, ' '));
+      return `|${cells.join('|')}|\n`;
+    });
+    content += formattedRows.join('');
+  }
 
-  totalSortedTableData.slice(1, 4).forEach((item) => (content += `|${item.join('|')}|\n`));
-  content += `\n\n## 平均耗时最多\n\n${tableHeader}`;
-  avgSortedTableData.slice(1, 4).forEach((item) => (content += `|${item.join('|')}|\n`));
-  content += `\n\n## 完整插件数据\n\n${tableHeader}`;
-  tableData.slice(1).forEach((item) => (content += `|${item.join('|')}|\n`));
-
-  return content;
+  return `${content}\n> ${statisticsNote}\n`;
 }
 
 /** 输出数据 */
