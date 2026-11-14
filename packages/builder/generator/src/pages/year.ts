@@ -10,7 +10,6 @@ import { pageConfig } from '../constant';
 import { Page } from '../model/page';
 import { paginate } from '../utils/pagination';
 import { createHtml } from '../utils/react';
-import { isListedPost } from '../utils/visibility';
 
 const createYearList = createHtml(ArchiveList);
 const createYearPostList = createHtml(PostList);
@@ -24,10 +23,6 @@ export function getYearData(posts: PostExportData[]) {
   const years: YearData[] = [];
 
   for (const post of posts) {
-    if (!isListedPost(post)) {
-      continue;
-    }
-
     const year = String(new Date(post.data.create).getUTCFullYear());
     const data = years.find((item) => item.name === year);
 
@@ -39,17 +34,7 @@ export function getYearData(posts: PostExportData[]) {
     }
   }
 
-  years
-    .sort((pre, next) => (Number(pre.name) > Number(next.name) ? -1 : 1))
-    .forEach(({ posts }) => {
-      posts.sort((pre, next) => {
-        const preDate = new Date(pre.data.create).getTime();
-        const nextDate = new Date(next.data.create).getTime();
-        return preDate > nextDate ? -1 : 1;
-      });
-    });
-
-  return years;
+  return years.sort((a, b) => Number(b.name) - Number(a.name));
 }
 
 export function getYearListUrlPath(site: ISite, index: number) {
@@ -88,24 +73,20 @@ export function getYearPostListAssetPath(site: ISite, year: string, index: numbe
   return normalize(getYearPostListUrlPath(site, year, index), 'index.html');
 }
 
-export function createYearPages(
-  site: ISite,
-  posts: PostExportData[],
-  sortedPosts: PostExportData[],
-) {
+export function createYearPages(site: ISite, posts: PostExportData[]) {
   const years = getYearData(posts);
   const yearRange = years.length ? `${years.at(-1)!.name} — ${years[0].name}` : '';
 
   // 先按文章数量分页，再在各页内分年份。
   const pages = paginate(
-    sortedPosts,
+    posts,
     pageConfig.yearArchive,
     (i) => getYearListUrlPath(site, i),
     (chunk, nav) => {
       const groups = getArchiveGroups(
         chunk,
         years,
-        sortedPosts[nav.index * pageConfig.yearArchive - 1],
+        posts[nav.index * pageConfig.yearArchive - 1],
       );
 
       return new Page({
