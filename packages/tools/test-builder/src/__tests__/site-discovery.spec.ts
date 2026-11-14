@@ -68,6 +68,29 @@ describe('SiteDiscovery', () => {
     expect(updated).include('<lastBuildDate>Mon, 01 Jun 2026 00:00:00 GMT</lastBuildDate>');
   });
 
+  it('RSS 创建时间相同时按 pathname 字符顺序排列，不依赖输入顺序', () => {
+    const pages = [
+      'a',
+      'Z',
+      '2',
+      '10',
+    ].map((name) => post(0, {
+      pathname: `/blog/posts/${name}/`,
+    }));
+    pages.push(post(1, { pathname: '/blog/posts/new/' }));
+    const rssUrl = 'https://example.com/blog/rss.xml';
+    const rss = createRss(site, pages, rssUrl);
+    expect([...rss.matchAll(/<guid isPermaLink="true">([^<]+)<\/guid>/g)]
+      .map(([, guid]) => guid)).deep.eq([
+      'https://example.com/blog/posts/new/',
+      'https://example.com/blog/posts/10/',
+      'https://example.com/blog/posts/2/',
+      'https://example.com/blog/posts/Z/',
+      'https://example.com/blog/posts/a/',
+    ]);
+    expect(createRss(site, pages.toReversed(), rssUrl)).eq(rss);
+  });
+
   it('XML 转义标题、简介与属性，中文 URL 正确编码，空订阅也能生成', () => {
     const rss = createRss(site, [
       post(0, {
@@ -130,6 +153,27 @@ describe('SiteDiscovery', () => {
     }
     link.title = '修改输入';
     expect(page.getLinks()[0].title).eq('覆盖');
+  });
+
+  it('sitemap 按最终 URL 排序，输入顺序不影响内容且不修改页面数组', () => {
+    const pages = [
+      post(0, { pathname: '/blog/中文/' }),
+      post(1, { pathname: '/blog/a/' }),
+      post(2, { pathname: '/blog/Z/' }),
+      post(3, { pathname: '/blog/10/' }),
+      post(4, { pathname: '/blog/2/' }),
+    ];
+    const original = pages.slice();
+    const sitemap = createSitemap(site, pages);
+    expect([...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(([, url]) => url)).deep.eq([
+      'https://example.com/blog/%E4%B8%AD%E6%96%87/',
+      'https://example.com/blog/10/',
+      'https://example.com/blog/2/',
+      'https://example.com/blog/Z/',
+      'https://example.com/blog/a/',
+    ]);
+    expect(createSitemap(site, pages.toReversed())).eq(sitemap);
+    expect(pages).deep.eq(original);
   });
 
   it('robots 允许抓取并使用完整的 sitemap 地址', () => {

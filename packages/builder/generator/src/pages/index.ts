@@ -1,9 +1,10 @@
+import { compareStrings } from '@blog/node';
 import type { IPage, ISite, PostsExportType } from '@blog/types';
 import { assertUniquePagePaths } from '../utils/page-paths';
-import { shouldRenderPost } from '../utils/visibility';
+import { isListedPost, shouldRenderPost } from '../utils/visibility';
 import { createIndexPages } from './list';
 import { createNotFoundPage } from './not-found';
-import { createPostPages, filterSortPosts, getPostUrlPath } from './post';
+import { createPostPages, getPostUrlPath } from './post';
 import { createTagPages, getTagPostListUrlPath } from './tag';
 import { createYearPages } from './year';
 
@@ -19,13 +20,17 @@ export function createPages(site: ISite, posts: PostsExportType): IPage[] {
   // 生成文章链接
   preparePostLinks(site, posts);
 
-  const renderedPosts = posts.filter(shouldRenderPost);
-  const sortedPosts = filterSortPosts(renderedPosts);
+  const renderedPosts = posts.filter(shouldRenderPost)
+    .sort((a, b) => (
+      b.data.create - a.data.create
+      || compareStrings(a.data.pathname, b.data.pathname)
+    ));
+  const listedPosts = renderedPosts.filter(isListedPost);
   const pages = [
     ...createPostPages(renderedPosts),
-    ...createIndexPages(site, sortedPosts),
-    ...createTagPages(site, renderedPosts),
-    ...createYearPages(site, renderedPosts, sortedPosts),
+    ...createIndexPages(site, listedPosts),
+    ...createTagPages(site, listedPosts),
+    ...createYearPages(site, listedPosts),
     createNotFoundPage(site),
   ];
 

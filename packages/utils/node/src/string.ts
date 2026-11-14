@@ -3,6 +3,11 @@ import { pinyin } from 'pinyin-pro';
 
 export type Query = Record<string, string | boolean>;
 
+/** 按字符顺序比较字符串 */
+export function compareStrings(a: string, b: string): number {
+  return a === b ? 0 : a < b ? -1 : 1;
+}
+
 /** 汉字转换为拼音 */
 export function toPinyin(str: string) {
   const strings = pinyin(str.replace(/[\s]+/g, '-'), {

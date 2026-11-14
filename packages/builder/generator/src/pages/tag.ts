@@ -1,17 +1,22 @@
-import { normalize, normalizeUrl, toPinyin } from '@blog/node';
+import {
+  compareStrings,
+  normalize,
+  normalizeUrl,
+  toPinyin,
+} from '@blog/node';
 import { PostList, ItemList } from '@blog/template-layout';
 import type { IRenderContext, ISite, PostExportData } from '@blog/types';
 import { pageConfig } from '../constant';
 import { Page } from '../model/page';
 import { paginate } from '../utils/pagination';
 import { createHtml } from '../utils/react';
-import { isListedPost } from '../utils/visibility';
 
 const createTagList = createHtml(ItemList);
 const createPostList = createHtml(PostList);
 
 export interface TagData {
   name: string;
+  url: string;
   posts: PostExportData[];
 }
 
@@ -19,10 +24,6 @@ export function getTagData(posts: PostExportData[]) {
   const tags: TagData[] = [];
 
   for (const post of posts) {
-    if (!isListedPost(post)) {
-      continue;
-    }
-
     const postTags = post.data.tags ?? ['无标签'];
 
     for (const tag of postTags) {
@@ -32,22 +33,12 @@ export function getTagData(posts: PostExportData[]) {
         data.posts.push(post);
       }
       else {
-        tags.push({ name: tag.name, posts: [post] });
+        tags.push({ name: tag.name, url: tag.url, posts: [post] });
       }
     }
   }
 
-  tags
-    .sort((pre, next) => (pre.posts.length > next.posts.length ? -1 : 1))
-    .forEach(({ posts }) => {
-      posts.sort((pre, next) => {
-        const preDate = new Date(pre.data.create).getTime();
-        const nextDate = new Date(next.data.create).getTime();
-        return preDate > nextDate ? -1 : 1;
-      });
-    });
-
-  return tags;
+  return tags.sort((a, b) => compareStrings(a.url, b.url));
 }
 
 export function getTagListUrlPath(site: ISite, index: number) {
@@ -77,10 +68,10 @@ export function createTagPages(site: ISite, posts: PostExportData[]) {
     pageConfig.archive,
     (i) => getTagListUrlPath(site, i),
     (chunk, nav) => {
-      const items = chunk.map(({ name, posts }) => ({
+      const items = chunk.map(({ name, url, posts }) => ({
         title: name,
         subTitle: `共 ${posts.length} 篇`,
-        url: getTagPostListUrlPath(site, name, 0),
+        url,
       }));
 
       return new Page({

@@ -1,3 +1,4 @@
+import { compareStrings } from '@blog/node';
 import type { IPage, ISite } from '@blog/types';
 
 /** XML 1.0 不允许控制字符；文本和属性中的保留字符统一转义。 */
@@ -18,7 +19,7 @@ export function createRss(site: ISite, pages: IPage[], rssUrl: string): string {
     .filter((page) => page.type === 'post')
     .map((page) => page.data.post.data)
     .filter((post) => post.public && !post.draft)
-    .sort((a, b) => b.create - a.create || a.pathname.localeCompare(b.pathname))
+    .sort((a, b) => b.create - a.create || compareStrings(a.pathname, b.pathname))
     .slice(0, 20);
   const latestUpdate = posts.length > 0
     ? Math.max(...posts.map((post) => Math.max(post.create, post.update)))
@@ -57,16 +58,18 @@ export function createRss(site: ISite, pages: IPage[], rssUrl: string): string {
 export function createSitemap(site: ISite, pages: IPage[]): string {
   const publishedPages = pages.filter((page) => (
     page.type !== 'not-found' && (page.type !== 'post' || !page.data.post.data.draft)
-  ));
+  ))
+    .map((page) => ({ page, url: new URL(page.pathname, site.origin).href }))
+    .sort((a, b) => compareStrings(a.url, b.url));
 
   return [
     '<?xml version="1.0" encoding="UTF-8"?>',
     '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
-    ...publishedPages.flatMap((page) => {
+    ...publishedPages.flatMap(({ page, url }) => {
       const lastmod = page.type === 'post' ? page.data.post.data.update : undefined;
       return [
         '  <url>',
-        `    <loc>${escapeXml(new URL(page.pathname, site.origin).href)}</loc>`,
+        `    <loc>${escapeXml(url)}</loc>`,
         ...(lastmod === undefined
           ? []
           : [`    <lastmod>${new Date(lastmod).toISOString()}</lastmod>`]),
