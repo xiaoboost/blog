@@ -16,18 +16,16 @@ const enum Status {
 
 interface TitlePosition {
   title: string;
-  offsetTop: number;
+  top: number;
 }
 
 function active() {
   let menu = document.body.querySelector<HTMLElement>(`.${tocStyles.classes.toContent}`);
-  let mainBody = menu?.parentElement;
+  const mainBody = menu?.parentElement;
+  const article = document.querySelector<HTMLElement>(`.${postStyles.classes.postDefault}`);
 
-  if (!menu || !mainBody) {
-    return () => {
-      menu = null;
-      mainBody = null;
-    };
+  if (!menu || !mainBody || !article) {
+    return () => {};
   }
 
   const menuItems = Array.from(
@@ -38,7 +36,6 @@ function active() {
       `.${tocStyles.classes.menuList} .${tocStyles.classes.menuList}`,
     ),
   );
-  const bodyTop = mainBody.offsetTop - headerBodyMargin;
   const options: AddEventListenerOptions | boolean = !supportsPassive
     ? false
     : {
@@ -47,6 +44,7 @@ function active() {
     };
 
   let titlePosition: TitlePosition[] = [];
+  let bodyTop = 0;
   let status = Status.Init;
 
   const scrollEvent = () => {
@@ -69,7 +67,8 @@ function active() {
       menu.style.right = '';
     }
 
-    const first = titlePosition.find((item) => item.offsetTop < top);
+    // 锚点跳转可能把滚动位置取整，允许 1px 的误差。
+    const first = titlePosition.find((item) => item.top <= top + 1);
     const anchor = first && menu.querySelector<HTMLAnchorElement>(`[href="${getHeadHref(first.title)}"]`);
     const highLightItem = anchor?.parentElement;
     const highLightListItem = highLightItem?.parentElement;
@@ -92,45 +91,41 @@ function active() {
       }
     }
   };
-  const recordTitlePosition = () => {
-    const article = document.querySelector<HTMLElement>(`.${postStyles.classes.postDefault}`);
+  const updateLayout = () => {
+    const scrollY = window.scrollY;
+    bodyTop = mainBody.getBoundingClientRect().top + scrollY - headerBodyMargin;
 
-    titlePosition = Array.from(
-      article?.querySelectorAll<HTMLAreaElement>(`.${postStyles.classes.postAnchor}`) ?? [],
-    )
-      .map((el) => {
-        const parent = el.parentElement;
-        const tag = parent?.tagName.toLowerCase();
+    titlePosition = Array.from(article.querySelectorAll<HTMLAnchorElement>(`.${postStyles.classes.postAnchor}`))
+      .flatMap((anchor) => {
+        const heading = anchor.parentElement;
+        const level = Number(heading?.tagName.slice(1));
 
-        if (!tag || !parent) {
-          return;
+        if (heading?.id && level <= levelLimit) {
+          return [{ title: heading.id, top: heading.getBoundingClientRect().top + scrollY }];
         }
 
-        const level = Number(tag?.slice(1));
-        return level <= levelLimit ? parent : undefined;
+        return [];
       })
-      .map((el) => ({
-        title: el?.getAttribute('id'),
-        offsetTop: el?.offsetTop,
-      }))
-      .filter((item): item is TitlePosition => Boolean(item.title && item.offsetTop))
-      .sort((pre, next) => (pre.offsetTop > next.offsetTop ? -1 : 1));
+      .sort((pre, next) => next.top - pre.top);
+    scrollEvent();
   };
 
-  recordTitlePosition();
-  scrollEvent();
+  updateLayout();
 
+  // 图片和字体加载都可能在没有滚动事件时改变正文高度。
+  const articleObserver = new ResizeObserver(updateLayout);
+  articleObserver.observe(article);
   window.addEventListener('scroll', scrollEvent, options);
-  window.addEventListener('resize', recordTitlePosition, options);
+  window.addEventListener('resize', updateLayout, options);
 
   return () => {
     menu = null;
-    mainBody = null;
     menuItems.length = 0;
     menuLists.length = 0;
 
+    articleObserver.disconnect();
     window.removeEventListener('scroll', scrollEvent, options);
-    window.removeEventListener('resize', recordTitlePosition, options);
+    window.removeEventListener('resize', updateLayout, options);
   };
 }
 
