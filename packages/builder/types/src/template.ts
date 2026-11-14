@@ -5,18 +5,6 @@ import type {
   StyleAssetData,
 } from './asset';
 import type { BrowserConfig } from './browser-config';
-import type { RuntimeHooks } from './hooks';
-
-/** 运行时数据 */
-export interface RuntimeData {
-  hooks: RuntimeHooks;
-}
-
-/** 构建钩子回调 */
-export type BuildHook = (runtime: RuntimeData) => void;
-
-/** 初始化钩子回调 */
-export type InitHook = BuildHook;
 
 /** 模板脚本引用；position 只用于选择标签位置，不属于标签属性。 */
 export interface TemplateScriptAsset extends ScriptAssetData {

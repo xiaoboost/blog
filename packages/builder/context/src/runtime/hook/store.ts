@@ -5,12 +5,13 @@ import type {
   BuildHook,
   InitHook,
   PostBasicData,
-  RuntimeData,
+  RuntimeContext,
   RuntimeHooks,
 } from '@blog/types';
 import { AsyncSeriesHook, AsyncSeriesWaterfallHook } from 'tapable';
 import { GlobalKey } from '../../types';
-import { getAccessor } from '../accessor';
+import { getAccessor, getAccessorWithGetter, getReference } from '../accessor';
+import { Builder } from '../builder';
 import { getGlobalContext } from '../constant';
 
 export const hooks: RuntimeHooks = {
@@ -49,16 +50,20 @@ export const waitReady = new Promise<void>((resolve) => {
 // 延迟运行钩子
 setTimeout(() => {
   const builderHooks = getGlobalContext()[GlobalKey.RuntimeCallbacks] ?? [];
-  const runtimeData: RuntimeData = {
+  const runtime: RuntimeContext = {
+    ...Builder,
     hooks,
+    getAccessor,
+    getAccessorWithGetter,
+    getReference,
   };
 
   if (isFirstRun.get()) {
-    initStack.forEach((item) => item(runtimeData));
+    initStack.forEach((item) => item(runtime));
   }
 
-  buildStack.forEach((item) => item(runtimeData));
-  builderHooks.forEach((item) => item(runtimeData));
+  buildStack.forEach((item) => item(runtime));
+  builderHooks.forEach((item) => item(runtime));
 
   // 初始化完成
   readySwitch();
