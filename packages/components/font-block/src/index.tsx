@@ -1,16 +1,10 @@
-import { onBuild, defineUtils, useRenderContext } from '@blog/context/runtime';
+import { defineUtils } from '@blog/context/runtime';
 import { stringifyClass } from '@xiao-ai/utils';
 import React from 'react';
+import { useFontBlock } from './font';
 import script from './font-block.script';
 import styles from './index.jss';
-import {
-  getFontContentBySrc,
-  getFontData,
-  getFontText,
-  getPageFonts,
-} from './utils';
-
-const componentName = 'font-block';
+import { getFontText } from './utils';
 
 export interface FontBlockProps {
   /**
@@ -75,15 +69,8 @@ export interface FontBlockProps {
 
 /** 自定义字体块 */
 export function FontBlock(props: FontBlockProps) {
-  const { page, isPreBuild } = useRenderContext();
   const children = getFontText(props.children);
-  const data = getFontData(page, props.src, props.baseDir);
-
-  if (isPreBuild) {
-    data.text.push(children);
-  }
-
-  const className = isPreBuild ? '' : page.getFontBucket(data.family).getClassName();
+  const className = useFontBlock({ src: props.src, baseDir: props.baseDir, text: children });
 
   const {
     direction = 'horizontal',
@@ -131,39 +118,3 @@ export function FontBlock(props: FontBlockProps) {
 }
 
 export const utils = defineUtils(script);
-
-onBuild((runtime) => {
-  // 预渲染收集完成后构建；排在模板字体之前，保持旧页面 CSS / preload 的顺序。
-  runtime.hooks.beforeBuild.tapPromise({ name: componentName, stage: -100 }, async (ctx) => {
-    const { pages, rename } = ctx;
-
-    await Promise.all(
-      pages
-        .map(async (page) => {
-          const fontDataList = getPageFonts(page);
-
-          if (fontDataList.length === 0) {
-            return;
-          }
-
-          const families: string[] = [];
-
-          for (const data of fontDataList) {
-            const content = await getFontContentBySrc(data.src);
-            const bucket = page.ensureFontBucket(data.family, content);
-
-            bucket.addText(...data.text);
-            families.push(data.family);
-          }
-
-          await page.buildFonts({
-            families,
-            scope: page.pathname,
-            cssFileName: 'font-block',
-            cssMode: 'full',
-            format: rename,
-          });
-        }),
-    );
-  });
-});

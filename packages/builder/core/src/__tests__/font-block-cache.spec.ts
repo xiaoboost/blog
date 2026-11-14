@@ -24,17 +24,13 @@ describe('FontBlock 原始字体缓存', () => {
   let stats: number;
   let failRead: boolean;
 
-  // 每轮重新执行模块，共享 getAccessor 内存，模拟真实构建运行器的生命周期。
+  // 每轮重新创建请求表，共享字体内容缓存。
   function nextBuild(): (src: string) => Promise<Buffer> {
     const module = { exports: {} as any };
     runInNewContext(code, {
       module,
       exports: module.exports,
       require(name: string) {
-        if (name === '@blog/context/runtime') {
-          return { getAccessor: () => ({ get: () => cache }) };
-        }
-
         if (name === 'fs/promises') {
           return {
             stat(path: string) {
@@ -51,7 +47,8 @@ describe('FontBlock 原始字体缓存', () => {
         return fontRequire(name);
       },
     });
-    return module.exports.getFontContentBySrc;
+    const pendingFiles = new Map<string, Promise<Buffer>>();
+    return (src) => module.exports.getFontContentBySrc(src, cache, pendingFiles);
   }
 
   before(async () => {

@@ -6,31 +6,23 @@ import {
   basename,
   parse,
 } from 'path';
-import { Builder, getAccessor } from '@blog/context/runtime';
 import { normalize, isRootDirectory, toPinyin } from '@blog/node';
-import type { IPage } from '@blog/types';
+import type { RuntimeContext } from '@blog/types';
 import React from 'react';
 
-interface FontBlockData {
-  src: string;
-  family: string;
-  text: string[];
-}
-
-interface FontFileCache {
+export interface FontFileCache {
   version: string;
   content: Buffer;
 }
 
-/** 字体源文件跨构建缓存 */
-const fileCache = getAccessor('font-block:source', new Map<string, FontFileCache>()).get();
-/** 字体请求 */
-const pendingFiles = new Map<string, Promise<Buffer>>();
-/** 页面字体数据 */
-const pageFonts = new WeakMap<IPage, Map<string, FontBlockData>>();
-
 /** 获取字体路径 */
-export function resolveFontPath(src: string, postPath?: string, baseDir?: string) {
+export function resolveFontPath(src: string, options: {
+  postPath?: string;
+  baseDir?: string;
+  resolve: RuntimeContext['resolve'];
+}) {
+  const { postPath, baseDir, resolve: resolveModule } = options;
+
   if (baseDir !== undefined && !isAbsolute(baseDir)) {
     throw new Error('FontBlock 的 baseDir 必须是绝对目录，请使用 baseDir={__dirname}');
   }
@@ -42,7 +34,7 @@ export function resolveFontPath(src: string, postPath?: string, baseDir?: string
     fontPath = src;
   }
   else if (src.startsWith('@blog/')) {
-    fontPath = Builder.resolve(src, { importer: postPath, resolveDir: directory }).path;
+    fontPath = resolveModule(src, { importer: postPath, resolveDir: directory }).path;
   }
   else if (baseDir !== undefined || src.startsWith('.')) {
     if (!directory) {
@@ -65,10 +57,7 @@ export function resolveFontPath(src: string, postPath?: string, baseDir?: string
     fontPath = resolve(current, src);
   }
 
-  // 先登记再读取，字体被删除或暂时缺失时，重新创建文件也能触发重建。
-  fontPath = normalize(fontPath);
-  Builder.addWatchFiles(fontPath);
-  return fontPath;
+  return normalize(fontPath);
 }
 
 /** 获取字体块内文本 */
@@ -88,43 +77,25 @@ export function getFontText(children: React.ReactNode): string {
   return '';
 }
 
-/** 编译当前页面内自定义字体 */
-export function getFontData(page: IPage, src: string, baseDir?: string) {
-  const postPath = page.type === 'post'
-    ? page.data.post.data.filePath
-    : undefined;
-  const fontPath = resolveFontPath(src, postPath, baseDir);
-  let fonts = pageFonts.get(page);
+/** 根据文件名分配未被占用的字体名 */
+export function getFontFamily(fontPath: string, used: ReadonlySet<string>) {
+  const name = toPinyin(parse(fontPath).name);
+  let family = name;
+  let suffix = 2;
 
-  if (!fonts) {
-    fonts = new Map();
-    pageFonts.set(page, fonts);
+  while (used.has(family)) {
+    family = `${name}-${suffix++}`;
   }
 
-  let data = fonts.get(fontPath);
-
-  if (!data) {
-    const name = toPinyin(parse(fontPath).name);
-    const used = new Set([...fonts.values()].map((font) => font.family));
-    let family = name;
-    let suffix = 2;
-
-    while (used.has(family) || page.getFontBuckets().has(family)) {
-      family = `${name}-${suffix++}`;
-    }
-
-    data = { src: fontPath, family, text: [] };
-    fonts.set(fontPath, data);
-  }
-
-  return data;
+  return family;
 }
 
-export function getPageFonts(page: IPage) {
-  return [...pageFonts.get(page)?.values() ?? []];
-}
-
-export function getFontContentBySrc(src: string): Promise<Buffer> {
+/** 同轮合并读取请求，跨轮按文件版本复用内容 */
+export function getFontContentBySrc(
+  src: string,
+  fileCache: Map<string, FontFileCache>,
+  pendingFiles: Map<string, Promise<Buffer>>,
+): Promise<Buffer> {
   let content = pendingFiles.get(src);
 
   if (!content) {
