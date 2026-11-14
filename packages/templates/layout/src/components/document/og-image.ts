@@ -5,12 +5,7 @@ import {
   extname,
   resolve,
 } from 'path';
-import {
-  Builder,
-  getAccessor,
-  onBuild,
-  useRenderContext,
-} from '@blog/context/runtime';
+import { onBuildWithRender } from '@blog/context/runtime';
 import {
   normalize,
   convertImage,
@@ -47,8 +42,6 @@ const imageOptions: ConvertImageOptions = {
 const maxImageBytes = 300 * 1024;
 const qualities = [80, 70, 60];
 const defaultImagePath = normalize(resolve(__dirname, '../../assets/images/og-default.png'));
-/** 转换映射缓存 */
-const images = getAccessor('layout:og-image:images', () => new Map<string, CachedImage>()).get();
 
 async function createOgImage(source: Uint8Array) {
   for (const quality of qualities) {
@@ -73,8 +66,16 @@ function createOgAsset(
   return { ...asset, path };
 }
 
-onBuild(({ hooks }) => {
+/** 构建 OG 分享图，并读取当前页面的图片地址 */
+export const useOgImage = onBuildWithRender<string | undefined, string | undefined>(({
+  hooks,
+  getAccessor,
+  addWatchFiles,
+}) => {
+  const images = getAccessor('layout:og-image:images', () => new Map<string, CachedImage>()).get();
+
   hooks.beforeBuild.tapPromise('layout:og-images', async ({ site, pages, rename }) => {
+    // 这里不能改为并发，因为可能处理同一个图片
     for (const page of pages) {
       const post = page.type === 'post' ? page.data.post.data : undefined;
       const sourcePath = post?.coverImage
@@ -82,7 +83,7 @@ onBuild(({ hooks }) => {
         : defaultImagePath;
 
       try {
-        Builder.addWatchFiles(sourcePath);
+        addWatchFiles(sourcePath);
 
         const cached = images.get(sourcePath);
         const source = cached?.source ?? await readFile(sourcePath);
@@ -108,22 +109,19 @@ onBuild(({ hooks }) => {
       }
     }
   });
+
+  return (sourcePath, { page, isPreBuild }) => {
+    if (isPreBuild) {
+      return;
+    }
+
+    const path = sourcePath === undefined ? defaultImagePath : normalize(sourcePath);
+    const image = images.get(path);
+
+    if (!image) {
+      throw new Error(`OG 图片尚未生成：${sourcePath ?? '默认图'}（页面：${page.pathname}）`);
+    }
+
+    return normalize(path === defaultImagePath ? '/' : page.pathname, image.path);
+  };
 });
-
-/** 读取对应 OG 分享图地址 */
-export function useOgImage(sourcePath?: string): string | undefined {
-  const { page, isPreBuild } = useRenderContext();
-
-  if (isPreBuild) {
-    return;
-  }
-
-  const path = sourcePath === undefined ? defaultImagePath : normalize(sourcePath);
-  const image = images.get(path);
-
-  if (!image) {
-    throw new Error(`OG 图片尚未生成：${sourcePath ?? '默认图'}（页面：${page.pathname}）`);
-  }
-
-  return normalize(path === defaultImagePath ? '/' : page.pathname, image.path);
-}

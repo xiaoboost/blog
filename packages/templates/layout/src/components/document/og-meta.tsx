@@ -1,6 +1,5 @@
 import { useRenderContext } from '@blog/context/runtime';
 import { toAbsoluteUrl } from '@blog/shared';
-import React from 'react';
 import { ogImageMetadata, useOgImage } from './og-image';
 import type { DocumentProps } from '.';
 

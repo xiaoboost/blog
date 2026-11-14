@@ -11,7 +11,7 @@ import {
   Step,
   Wait,
 } from '../animation';
-import { slideConfigs } from '../slide/collect/plugin';
+import { useSlideStore } from '../slide/collect/context';
 import { Section } from '../slide/section';
 import { Slide } from '../slide/slide';
 import {
@@ -22,6 +22,86 @@ import {
 } from './fixtures';
 
 describe('动画资源构建插件', () => {
+  it('预渲染只登记 store，beforeBuild 才读取子组件收集的完整配置', async () => {
+    await waitReady;
+    const context = renderContext();
+    const build = buildContext(context);
+    let reads = 0;
+    function Probe() {
+      const store = useSlideStore();
+      const getConfig = store.getConfig.bind(store);
+      store.getConfig = () => {
+        reads++;
+        return getConfig();
+      };
+      return null;
+    }
+
+    await callHook('afterReady', build);
+    renderPage(
+      <Slide>
+        <Probe />
+        <Section>静态页</Section>
+        <Section><Player><Step><FadeIn target="last" /></Step></Player></Section>
+      </Slide>, context);
+    expect(reads).eq(0);
+    expect(context.page.getBrowserConfig()).deep.eq({});
+
+    await callHook('beforeBuild', build);
+    expect(reads).eq(1);
+    const config = context.page.getBrowserConfig().slide!;
+    expect(config.sections).length(2);
+    expect(config.sections[0].steps).length(0);
+    expect(config.sections[1].steps[0].actions[0].target).eq('last');
+  });
+
+  it('同页第二个 Slide 在渲染子组件前被拒绝', async () => {
+    await waitReady;
+    const context = renderContext();
+    let renders = 0;
+    function Probe() {
+      renders++;
+      return null;
+    }
+
+    expect(() => renderPage(
+      <>
+        <Slide><Section>第一页</Section></Slide>
+        <Slide>
+          <Probe />
+          <Section>重复的 Slide</Section>
+        </Slide>
+      </>, context)).throw(/只能包含一个 Slide/);
+    expect(renders).eq(0);
+  });
+
+  it('空 Slide 的完整性校验在 beforeBuild 执行', async () => {
+    await waitReady;
+    const context = renderContext();
+    const build = buildContext(context);
+    await callHook('afterReady', build);
+    expect(() => renderPage(<Slide>{null}</Slide>, context)).not.throw();
+    await rejects(() => callHook('beforeBuild', build), /至少一个 Section/);
+    expect(context.page.getBrowserConfig()).deep.eq({});
+  });
+
+  it('编排错误在 beforeBuild 报错，下一轮清理旧 store 后可正常构建', async () => {
+    await waitReady;
+    const context = renderContext();
+    const build = buildContext(context);
+    await callHook('afterReady', build);
+    expect(() => renderPage(page(
+      <Player><Step><Sequence at={{ ref: 'missing', edge: 'end' }} /></Step></Player>,
+    ), context)).not.throw();
+    await rejects(() => callHook('beforeBuild', build), /引用.*无效/);
+    expect(context.page.getBrowserConfig()).deep.eq({});
+
+    await callHook('afterReady', build);
+    renderPage(page(<Player><Step><FadeIn target="fixed" /></Step></Player>), context);
+    await callHook('beforeBuild', build);
+    expect(context.page.getBrowserConfig().slide!.sections[0].steps[0].actions[0].target).eq('fixed');
+  });
+
   it('整份 PPT 都没有 Step 时不登记 slide 配置', async () => {
     await waitReady;
     const context = renderContext();
@@ -106,12 +186,13 @@ describe('动画资源构建插件', () => {
     await callHook('afterReady', build);
     renderPage(page(<Player><Step><FadeIn target="title" /></Step></Player>), context);
     await callHook('beforeBuild', build);
-    expect(context.page.getBrowserConfig().slide).eq(slideConfigs.get(context.page));
+    const config = context.page.getBrowserConfig().slide;
+    expect(config!.sections[0].steps[0].actions[0].target).eq('title');
     expect(context.page.getAssets()).length(0);
     expect(context.page.getPreScripts()).length(0);
     context.isPreBuild = false;
     renderPage(page(<Player><Step><FadeIn target="title" /></Step></Player>), context);
-    expect(context.page.getBrowserConfig().slide).eq(slideConfigs.get(context.page));
+    expect(context.page.getBrowserConfig().slide).eq(config);
   });
 
   it('未包含 Slide 的 slide 模板在构建钩子里报错', async () => {
@@ -166,15 +247,15 @@ describe('动画资源构建插件', () => {
     const build = buildContext(context);
     await callHook('afterReady', build);
     renderPage(page(<Player><Step><FadeIn target="old" /></Step></Player>), context);
-    expect(slideConfigs.has(context.page)).eq(true);
+    await callHook('beforeBuild', build);
+    expect(context.page.getBrowserConfig().slide!.sections[0].steps[0].actions[0].target).eq('old');
     await callHook('afterReady', build);
-    expect(slideConfigs.has(context.page)).eq(false);
     renderPage(<div>已删除 Slide</div>, context);
     await rejects(async () => callHook('beforeBuild', build), /必须包含一个 Slide/);
     await callHook('afterReady', build);
     renderPage(page(<Player><Step><FadeIn target="new" /></Step></Player>), context);
     await callHook('beforeBuild', build);
-    expect(slideConfigs.get(context.page)!.sections[0].steps[0].actions[0].target).eq('new');
+    expect(context.page.getBrowserConfig().slide!.sections[0].steps[0].actions[0].target).eq('new');
   });
 
   it('配置中的引号、换行和脚本文本保持原值', async () => {

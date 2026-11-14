@@ -11,7 +11,6 @@ import type { GroupKind, ScopeKind } from './scope';
 
 /** PPT 数据储存 */
 export interface ISlideStore {
-  collecting: boolean;
   beginSection(): number;
   beginPlayer(props: Omit<PlayerProps, 'children'>): void;
   beginStep(props: Omit<StepProps, 'children'>): void;

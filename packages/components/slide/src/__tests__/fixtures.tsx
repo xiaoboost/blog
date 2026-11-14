@@ -1,4 +1,4 @@
-import { RenderContext, mergeBrowserConfig } from '@blog/context/runtime';
+import { RenderContext, mergeBrowserConfig, waitReady } from '@blog/context/runtime';
 import type {
   BrowserConfig,
   AssetData,
@@ -6,11 +6,15 @@ import type {
   IRenderContext,
   ScriptAssetData,
 } from '@blog/types';
+import { before } from 'mocha';
 import React, { type ReactNode } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { slideConfigs } from '../slide/collect/plugin';
+import { useSlideStore, type ISlideStore } from '../slide/collect/context';
 import { Section } from '../slide/section';
 import { Slide } from '../slide/slide';
+import type { SlideProps } from '../slide/types';
+
+before(() => waitReady);
 
 export function renderContext(): IRenderContext {
   const configs: BrowserConfig[] = [];
@@ -41,16 +45,22 @@ export function renderPage(children: ReactNode, context: IRenderContext): string
 }
 
 export function collect(children: ReactNode, context = renderContext()) {
-  // 测试辅助：模拟新一轮构建，并读取组件登记的结果。
-  slideConfigs.delete(context.page);
-  const html = renderPage(children, context);
-  const config = slideConfigs.get(context.page);
-
-  if (!config) {
-    throw new Error('测试未取得预渲染配置');
+  let store: ISlideStore | undefined;
+  function CaptureStore() {
+    store = useSlideStore();
+    return null;
   }
 
-  return { html, config };
+  const tree = React.isValidElement<SlideProps>(children) && children.type === Slide
+    ? React.cloneElement(children, undefined, <CaptureStore />, children.props.children)
+    : children;
+  const html = renderPage(tree, context);
+
+  if (!store) {
+    throw new Error('测试未取得 Slide store');
+  }
+
+  return { html, config: store.getConfig() };
 }
 
 export function buildContext(...contexts: IRenderContext[]): BuildContext {

@@ -208,12 +208,30 @@ describe('onBuildWithRender', () => {
     }
   });
 
-  it('初始化前或缺少渲染上下文时给出明确错误', async () => {
+  it('有渲染上下文但尚未初始化时给出明确错误', async () => {
     const runtime = nextBuild();
     const useText = runtime.onBuildWithRender<string, string>(() => (input) => input);
     assert.throws(() => runtime.render(useText, 'text', context()), /构建初始化完成后/);
 
     await runtime.waitReady;
-    assert.throws(() => runtime.render(useText, 'text'), /RenderContext/);
+    assert.equal(runtime.render(useText, 'text', context()), '<span>text</span>');
+  });
+
+  it('缺少渲染上下文时报错，不执行渲染回调', async () => {
+    const runtime = nextBuild();
+    const events: string[] = [];
+    const useText: (input: string) => string = runtime.onBuildWithRender<string, string>(() => {
+      events.push('setup');
+      return (input) => {
+        events.push(input);
+        return input;
+      };
+    });
+    await runtime.waitReady;
+    assert.throws(() => runtime.render(useText, 'missing'), /需要在 RenderContext 中调用/);
+    assert.deepEqual(events, ['setup']);
+
+    assert.equal(runtime.render(useText, 'build', context()), '<span>build</span>');
+    assert.deepEqual(events, ['setup', 'build']);
   });
 });

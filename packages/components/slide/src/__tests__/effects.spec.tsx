@@ -1,6 +1,5 @@
 import { describe, expect, it } from '@blog/test-toolkit';
 import React, { type ReactNode } from 'react';
-import { renderToStaticMarkup } from 'react-dom/server';
 import {
   Player,
   Step,
@@ -17,7 +16,12 @@ import {
   Pulse,
 } from '../animation';
 import type { ActionConfig, AnimationState } from '../animation/types';
-import { collect, page } from './fixtures';
+import {
+  collect,
+  page,
+  renderContext,
+  renderPage,
+} from './fixtures';
 
 function action(effect: ReactNode): ActionConfig {
   const { html, config } = collect(page(
@@ -25,7 +29,7 @@ function action(effect: ReactNode): ActionConfig {
       <Step transition={{ delay: 20 }}>{effect}</Step>
     </Player>,
   ));
-  expect(html).eq(renderToStaticMarkup(page(null)));
+  expect(html).eq(renderPage(page(null), { ...renderContext(), isPreBuild: false }));
   return config.sections[0].steps[0].actions[0];
 }
 
