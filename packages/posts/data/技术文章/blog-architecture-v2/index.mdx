@@ -479,8 +479,7 @@ setScriptExports({ exportPdf });
 
 ## RSS 的简易接入
 
-SiteDiscovery 就更简单了，它从外层 Builder 注册，通过 Runner 接入生成期的`beforeBuild`，读取已经准备好的站点与页面数据，生成 RSS、sitemap 和`robots.txt`。
-它最省事的地方是直接使用生成器已经确定的文章标题和发布地址。下面以 RSS 为例。
+RSS 之类的接入就更简单了，它从外层 Builder 注册，通过 Runner 接入生成期的`beforeBuild`，读取已经准备好的站点与页面数据，生成 RSS、sitemap 和`robots.txt`。
 
 ```ts
 // 伪代码：省略外层注册和 XML 序列化细节
@@ -488,10 +487,12 @@ hooks.beforeBuild.tap('site-discovery', ({ site, pages }) => {
   const path = normalizeUrl(site.publicPath, 'rss.xml');
   const url = new URL(path, site.origin).href;
 
+  // 将 RSS 文件加入产出文件
   site.addAsset({
     path,
     content: Buffer.from(createRss(site, pages, url)),
   });
+  // 将 RSS 标签加入 HTML 头部引用
   site.addLink({
     rel: 'alternate',
     type: 'application/rss+xml',
