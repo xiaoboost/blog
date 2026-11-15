@@ -44,7 +44,7 @@
   <text x="92" y="335" class="body">afterRunner 中调用函数</text>
 
   <rect x="864" y="212" width="468" height="144" rx="14" fill="#ffffff" stroke="#afc3d8" stroke-width="2"/>
-  <text x="888" y="247" class="label">模块初始化，登记内部回调</text>
+  <text x="888" y="247" class="label">初始化模块，注册内部回调</text>
   <text x="888" y="291" class="body">导出的函数保留 VM 作用域</text>
   <text x="888" y="335" class="body">等待 hooks 就绪，执行生成器</text>
 
@@ -79,7 +79,7 @@
   <rect x="360" y="728" width="92" height="28" rx="7" fill="#eaf3ee"/>
   <text x="406" y="748" text-anchor="middle" class="tag">跨进程</text>
   <text x="92" y="790" class="body">Builder 服务</text>
-  <text x="92" y="818" class="detail">解析、命名、产物登记、文件监听</text>
+  <text x="92" y="818" class="detail">路径解析、产物命名与收集、文件监听</text>
 
   <rect x="864" y="632" width="468" height="204" rx="14" fill="#ffffff" stroke="#afc3d8" stroke-width="2"/>
   <text x="888" y="670" class="label">本轮重新建立的状态</text>
