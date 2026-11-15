@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1400" height="720" viewBox="0 0 1400 720" role="img" aria-labelledby="figureTitle figureDesc">
   <title id="figureTitle">生成器的四个阶段与共享上下文</title>
-  <desc id="figureDesc">生成器依次完成数据准备、预渲染、处理页面资源和正式渲染。数据准备阶段建立生成器上下文 BuildContext，其中包含站点 Site、页面集合 Page[]，以及资源命名和日志等公共操作。后续阶段使用同一份上下文，收集信息、登记资源并生成最终 HTML，最后汇总产物并交回宿主统一输出。</desc>
+  <desc id="figureDesc">生成器依次完成数据准备、预渲染、处理页面资源和正式渲染。数据准备阶段建立生成器上下文 BuildContext，其中包含站点 Site、页面集合 Page[]，以及资源命名和日志等公共操作。后续阶段使用同一份上下文，收集信息、准备文件和引用，再生成最终 HTML。最后汇总产物并交回宿主统一输出。</desc>
   <defs>
     <marker id="arrow" markerWidth="9" markerHeight="9" refX="8.6" refY="4.5" orient="auto" viewBox="0 0 10 9">
       <path d="M0 .5L9 4.5L0 8.5Z" fill="#426382"/>
@@ -39,7 +39,7 @@
   <text x="744" y="205" class="label">3　处理页面资源</text>
   <text x="744" y="240" class="phase-name">beforeBuild</text>
   <text x="744" y="279" class="detail">根据已有信息处理资源</text>
-  <text x="744" y="310" class="detail">登记文件、引用与配置</text>
+  <text x="744" y="310" class="detail">准备文件、引用与配置</text>
 
   <rect x="1056" y="166" width="296" height="174" rx="16" fill="#edf3f9" stroke="#c0d0de" stroke-width="2"/>
   <text x="1080" y="205" class="label">4　正式渲染</text>
@@ -63,10 +63,10 @@
 
   <path d="M460 502V586M940 502V586" class="context-link"/>
   <text x="254" y="535" class="label" text-anchor="middle">站点 Site</text>
-  <text x="254" y="571" class="detail" text-anchor="middle">全站数据与资源登记</text>
+  <text x="254" y="571" class="detail" text-anchor="middle">全站数据与资源</text>
 
   <text x="700" y="535" class="label" text-anchor="middle">页面集合 Page[]</text>
-  <text x="700" y="571" class="detail" text-anchor="middle">页面数据、资源登记与渲染入口</text>
+  <text x="700" y="571" class="detail" text-anchor="middle">页面数据、资源与渲染入口</text>
 
   <text x="1146" y="535" class="label" text-anchor="middle">公共操作</text>
   <text x="1146" y="571" class="detail" text-anchor="middle">资源命名 · 日志输出</text>

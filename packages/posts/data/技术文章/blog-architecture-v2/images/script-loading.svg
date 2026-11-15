@@ -25,7 +25,7 @@
   <rect x="1012" y="182" width="340" height="150" rx="16" fill="#edf3f9" stroke="#c0d0de" stroke-width="2"/><text x="1036" y="220" class="label" text-anchor="start">打开页面</text><text x="1036" y="258" class="body" text-anchor="start">加载播放器</text><text x="1036" y="289" class="body" text-anchor="start">准备页面与交互</text>
   <path d="M390 257H528" class="arrow"/>
   <path d="M872 257H1010" class="arrow"/>
-  <text x="460" y="240" class="note" text-anchor="middle">登记脚本</text>
+  <text x="460" y="240" class="note" text-anchor="middle">添加引用</text>
   <text x="940" y="240" class="note" text-anchor="middle">直接加载</text>
   <rect x="48" y="398" width="340" height="150" rx="16" fill="#fff7e9" stroke="#c0d0de" stroke-width="2"/><text x="72" y="436" class="label" text-anchor="start">PDF 导出脚本</text><text x="72" y="474" class="body" text-anchor="start">export-pdf.…js</text><text x="72" y="505" class="body" text-anchor="start">约 724 kB</text>
   <rect x="530" y="398" width="340" height="150" rx="16" fill="#fff7e9" stroke="#c0d0de" stroke-width="2"/><text x="554" y="436" class="label" text-anchor="start">页面配置记录地址</text><text x="554" y="474" class="body" text-anchor="start">lazyScripts[name]</text><text x="554" y="505" class="body" text-anchor="start">暂不生成加载标签</text>
