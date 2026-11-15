@@ -96,7 +96,7 @@ build.onLoad({ filter: /\.mdx?$/ }, async (args) => {
 
 改造后的整体结构如上图。和常规前端项目直接打包出浏览器代码不同，主构建先由打包器编译出一份“网站生成程序”，交给运行器在独立的上下文中执行并取出生成器函数，再由外层宿主调用这个函数生成页面。构建期和生成期两个阶段产出的静态资源在此汇总合并，最后导出完整的静态站点。
 
-为了组织这一整套流程，新架构在 API 层面参考了 [Webpack 的插件接口](https://webpack.js.org/api/plugins/)，引入`tapable`来管理生命周期。最外层的 [`Builder`](https://github.com/xiaoboost/blog/blob/2c07064c/packages/builder/core/src/builder/builder.ts) 并不直接参与处理具体文件，而是负责控制构建流程和协调插件调度。每个插件都实现统一的`apply(builder)`方法，在初始化时把回调挂载到对应的钩子上。
+为了组织这一整套流程，新架构在 API 层面参考了 [Webpack 的插件接口](https://webpack.js.org/api/plugins/)，引入`tapable`来管理生命周期。最外层的 [`Builder`](https://github.com/xiaoboost/blog/blob/db5d48930665f2bc3c8a3b66ddcf150f96e74476/packages/builder/core/src/builder/builder.ts) 并不直接参与处理具体文件，而是负责控制构建流程和协调插件调度。每个插件都实现统一的`apply(builder)`方法，在初始化时把回调挂载到对应的钩子上。
 构建的主干流程其实和上一版保持一致，这次改造改变的是插件的接入层次。插件不再直接塞进 esbuild 的配置数组，也不必再关心底层的打包与 VM 执行细节，而是通过上层封装的桥接机制，接入到语义更明确、也更贴合博客构建场景的生命周期中。无论是编译期的模块解析与转换、运行期的页面生成，还是最后的产物处理与输出，插件都只需在自己关心的阶段挂载回调即可。
 
 ## 统一解析、加载与转换管线
@@ -105,14 +105,14 @@ build.onLoad({ filter: /\.mdx?$/ }, async (args) => {
 
 ![图 2：esbuild 与插件管线](./images/bundler-pipeline.svg)
 
-路径解析由`bundler.hooks.resolve`钩子统一负责。每当遇到一次模块导入，排在前面的插件先判断是不是自己认识的特别路径格式，例如虚拟模块或需要隔离的外部依赖，如果是的那么这个插件就会拦截掉这个请求，由它自己处理。如果专用插件都没有接手，最后就交给挂载在末尾（`stage: 999`）的 [`Resolver`插件](https://github.com/xiaoboost/blog/blob/b11c1e62358c26011aaaa0921c3f9e1fad5584b2/packages/builder/core/src/plugins/resolver.ts)兜底，基于`enhanced-resolve`按当前构建的目标环境（Node 或浏览器）解析出真实文件路径。同时，这项解析能力也挂载为`builder.resolve()`供所有插件调用，专用插件在自定义规则下仍然需要查找磁盘文件时，直接调用统一接口即可，不必再各自引入查找工具。
+路径解析由`bundler.hooks.resolve`钩子统一负责。每当遇到一次模块导入，排在前面的插件先判断是不是自己认识的特别路径格式，例如虚拟模块或需要隔离的外部依赖，如果是的那么这个插件就会拦截掉这个请求，由它自己处理。如果专用插件都没有接手，最后就交给挂载在末尾的 `Resolver`插件兜底，基于`enhanced-resolve`按当前构建的目标环境（Node 或浏览器）解析出真实文件路径。同时，这项解析能力也挂载为`builder.resolve()`供所有插件调用，专用插件在自定义规则下仍然需要查找磁盘文件时，直接调用统一接口即可，不必再各自引入查找工具。
 模块加载与代码转换则通过桥接插件在`onLoad`回调内部拆出的 [`Load → Transform`管线](https://github.com/xiaoboost/blog/blob/b11c1e62358c26011aaaa0921c3f9e1fad5584b2/packages/builder/core/src/bundler/pipeline.ts)完成，用两步钩子实现类似 [Webpack Loader 链式流水线](https://webpack.js.org/concepts/loaders/)：
 
 - *加载阶段 load*：采用`AsyncSeriesBailHook`找到唯一负责读取初始内容的处理器。虚拟模块由对应插件返回初始文本；常规磁盘文件则读取源码，并在模块信息中记录真实的源文件路径`sourcePath`与初始格式。
 - *转换阶段 transform*：采用`AsyncSeriesWaterfallHook`让多个转换器依次接力形成流水线。前一步产出的代码、当前格式和 SourceMap 封装在统一的转换状态中传给下一步；任何插件都可以通过上下文中的方法新增依赖文件、更新格式定义或串联代码映射，这些变更都会在管线结束时汇总给 esbuild 与`Builder`。
 
 以“读取 MDX，再把它编译成 JSX”为例，对比引入 Transformer 管线前后的同一个`MdxLoader`，会更容易看出变化。下面的代码省略了路径解析、缓存和插件初始化，并把`@blog/parser`里的`transform`函数记作`compileMdx`。
-在加入 Transformer 调度之前，已经有了[`MdxLoader`](https://github.com/xiaoboost/blog/blob/a6c74e385fb906f2f98ba6bfa919994db2cce432/packages/builder/core/src/plugins/post-loader/mdx.ts)，当时读取文件和编译 MDX 都只能在同一个`load`回调里完成，最后一次性交出 JSX。
+在加入 Transformer 调度之前，已经有了`MdxLoader`，当时读取文件和编译 MDX 都只能在同一个`load`回调里完成，最后一次性交出 JSX。
 
 ```ts
 // 改造前：load 同时负责读取文件与编译 MDX
@@ -183,7 +183,7 @@ bundler.hooks.transform.tap(
 
 理顺了单次打包的插件管线后，还要处理不同资源的运行环境差异。生成页面的模板代码`.tsx`在 Node 中执行，交互脚本`.script.ts`要在浏览器里运行，而样式`.jss.ts`则是用 TypeScript 编写的样式声明，需要先在构建期执行才能提取出 CSS 文本和类名映射。上一版在遇到这些入口时，是在插件内部各自调用一次裸的`esbuild.build()`，再分别维护文件监听列表与产物哈希重命名。现在有了统一的`Builder`，这些分支构建便收敛成了由父构建派生的*子构建*，直接复用同一套插件装配、依赖登记和产物收集机制。
 
-当父构建在`transform`阶段遇到`.script.ts`或`.jss.ts`入口时，对应的加载器插件会按入口路径创建或从缓存中复用[子`Builder`实例](https://github.com/xiaoboost/blog/blob/b11c1e62/packages/builder/core/src/plugins/script-loader/builder/builder.ts#L10)，等待子构建执行完毕后再继续当前模块的转换。其中，样式子构建负责打包并运行样式代码，提取出 CSS 与供模板使用的类名；脚本子构建则按浏览器环境配置，顺着`.script.ts`的导入关系生成对应的 JS、CSS 等静态文件。子构建过程中收集到的监听文件会自动向上同步给父构建，开发模式下只有相关依赖发生变动，对应的子构建才会重新运行。
+当父构建在`transform`阶段遇到`.script.ts`或`.jss.ts`入口时，对应的加载器插件会按入口路径创建或从缓存中复用子`Builder`实例，等待子构建执行完毕后再继续当前模块的转换。其中，样式子构建负责打包并运行样式代码，提取出 CSS 与供模板使用的类名；脚本子构建则按浏览器环境配置，顺着`.script.ts`的导入关系生成对应的 JS、CSS 等静态文件。子构建过程中收集到的监听文件会自动向上同步给父构建，开发模式下只有相关依赖发生变动，对应的子构建才会重新运行。
 子构建完成后，会向父构建[回传两部分结果](https://github.com/xiaoboost/blog/blob/b11c1e62/packages/builder/core/src/plugins/script-loader/index.ts#L48)：一部分是生成的 CSS、JS、字体等静态文件，在`afterBundler`阶段统一交由父构建收集；另一部分则是供模板使用的类名或发布地址，通过把当前入口模块转换为导出数据的代码，直接交回给导入它的模板。
 
 以 404 页面组件为例，它的脚本入口、样式声明与页面模板是这样配合的：
@@ -228,7 +228,7 @@ export default [
 
 主构建完成代码打包后，产出的并不是直接交付给浏览器的网页，而是一份汇总了所有模板、组件和文章数据的“网站生成程序”。接下来就轮到 [`Runner`](https://github.com/xiaoboost/blog/blob/b11c1e62358c26011aaaa0921c3f9e1fad5584b2/packages/builder/core/src/runner/runner.ts) 在独立的 Node VM 上下文中执行这份程序，产出最终的静态页面。
 
-关于为什么要把外部依赖从这份生成程序里剥离出来，[上一版的「Monorepo 依赖隔离」](../blog-architecture/index.md#Monorepo%20依赖隔离)已经详细介绍过，这里只简单回顾一下，我们自己编写的模板、组件和文章由 esbuild 打包合并；而主构建引用的第三方依赖（如`react`、`katex`）则不打进产物，而是由[`LocalPackageRequirer`插件](https://github.com/xiaoboost/blog/blob/b11c1e62358c26011aaaa0921c3f9e1fad5584b2/packages/builder/core/src/plugins/local-package-requirer.ts)转换成以源文件所在路径创建的`createRequire(importer)`调用，直接交由 Node 原生的模块系统按子包各自的目录结构去加载。这样既省去了重复打包十几兆第三方库的开销，也保留了 Monorepo 中各子包独立的依赖解析位置。
+关于为什么要把外部依赖从这份生成程序里剥离出来，[上一版的「Monorepo 依赖隔离」](../blog-architecture/index.md#Monorepo%20依赖隔离)已经详细介绍过，这里只简单回顾一下，我们自己编写的模板、组件和文章由 esbuild 打包合并；而主构建引用的第三方依赖（如`react`、`katex`）则不打进产物，而是由`LocalPackageRequirer`插件转换成以源文件所在路径创建的`createRequire(importer)`调用，直接交由 Node 原生的模块系统按子包各自的目录结构去加载。这样既省去了重复打包十几兆第三方库的开销，也保留了 Monorepo 中各子包独立的依赖解析位置。
 正因为模块打包和外部依赖加载都已经提前解决，`Runner`自身可以保持得很薄，主要负责准备 VM 执行环境、向内注入宿主上下文，并在运行出错时结合 SourceMap 把报错堆栈还原回原始源码位置。而在新架构下，`Runner`真正需要理顺的是跨越沙箱边界的协作问题。当生成程序被放进独立的执行上下文后，外层宿主的插件怎样继续参与页面生成？在开发模式的多轮构建之间，哪些状态应该销毁重建，哪些状态又该保留复用？
 
 ![图 3：Runner 执行边界与共享上下文](./images/runner-context.svg)
@@ -238,7 +238,7 @@ export default [
 在具体执行时，`Runner`并不是跑完一段脚本就直接拿到 HTML，而是把过程拆成了先后两个动作。
 
 第一步发生在`runner.run()`阶段。`Runner`创建一个新的 Node VM 上下文，把宿主上下文注入进去，然后执行打包好的生成程序代码。这一步只做模块顶层的初始化：加载各个模板与组件模块、登记内部钩子回调，最后把入口文件默认导出的生成器函数保存到`runner.output`上。此时还没有开始生成任何页面。
-第二步发生在紧接着的`afterRunner`阶段。宿主侧的[`AssetExtractor`插件](https://github.com/xiaoboost/blog/blob/b11c1e62358c26011aaaa0921c3f9e1fad5584b2/packages/builder/core/src/plugins/asset-extractor.ts)通过`runner.getOutput()`取出刚才导出的生成器函数，把前序打包和子构建收集到的静态资源列表作为参数传进去并调用它，这才真正启动页面准备、React 渲染与衍生资源处理：
+第二步发生在紧接着的`afterRunner`阶段。宿主侧的`AssetExtractor`插件通过`runner.getOutput()`取出刚才导出的生成器函数，把前序打包和子构建收集到的静态资源列表作为参数传进去并调用它，这才真正启动页面准备、React 渲染与衍生资源处理：
 
 ```ts
 // 宿主插件 AssetExtractor：在 afterRunner 阶段取出生成器函数并传入已有的静态资源
@@ -254,12 +254,12 @@ builder.hooks.afterRunner.tapPromise('asset-extractor', async ({ runner }) => {
 
 ## 沙箱内部接入生命周期
 
-生成器内部同样基于`tapable`维护了一套面向页面生成过程的[生命周期钩子](https://github.com/xiaoboost/blog/blob/b11c1e62358c26011aaaa0921c3f9e1fad5584b2/packages/builder/types/src/hooks.ts#L195-L218)。需要接入这套生命周期的代码来自*沙箱内外*两个方向：
+生成器内部同样基于`tapable`维护了一套面向页面生成过程的生命周期钩子。需要接入这套生命周期的代码来自*沙箱内外*两个方向：
 
 - *沙箱内部*：被打包进生成程序的模板与 MDX 组件（如字体收集、OG 图生成、TypeScript 代码块类型安装），会在模块顶层调用`@blog/context/runtime`提供的`onInit`、`onBuild`等钩子来注册回调；
 - *沙箱外部*：运行在宿主侧的`Builder`插件（如生成`RSS`与生成离线缓存清单的`Precache`），则需要在不侵入业务模板代码的前提下，直接往这里面注册回调。
 
-为了把两边的回调汇合到同一套生命周期里，宿主插件会在`builder.hooks.runner`阶段调用`runner.registerHook()`先行登记回调；等`Runner`创建 VM 时，再通过[`initGlobalContext`](https://github.com/xiaoboost/blog/blob/2c07064c/packages/builder/context/src/context.ts)把收集到的回调数组注入到 VM 的全局对象上。
+为了把两边的回调汇合到同一套生命周期里，宿主插件会在`builder.hooks.runner`阶段调用`runner.registerHook()`先行登记回调；等`Runner`创建 VM 时，再通过`initGlobalContext`把收集到的回调数组注入到 VM 的全局对象上。
 当生成程序在 VM 中执行时，`onInit`用于进程内首次初始化，`onBuild`用于每轮构建。模块顶层完成登记后，运行时在下一个宏任务中执行本轮需要的初始化回调与宿主回调，将它们挂载到本轮的`hooks`实例上，最后解除`waitReady`锁。
 
 ```ts
@@ -292,17 +292,17 @@ const main: RunnerCb = async (assets) => {
 ## 通过上下文共享状态与宿主能力
 
 在开发模式下，每次修改源码或文章都会触发新一轮构建，`Runner`也会随之创建全新的 VM 上下文并重新执行生成程序。如果所有状态都跟着 VM 一起销毁重建，像图片裁剪、字体读取、TypeScript 语言服务这类耗时操作就会在每次热更新时重复执行；反过来，如果不加区分地把状态都留在外层，上一轮残留的页面对象或钩子回调又会污染新一轮构建。
-上一版其实已经做过[从外层向运行环境注入缓存对象](https://github.com/xiaoboost/blog/blob/02864a4b/packages/tools/builder/src/bundler/build.ts#L101-L109)的尝试，但那时是直接读写裸的全局变量，哪些数据该留、哪些该清并没有明确的边界。现在，`@blog/context`把共享状态与宿主能力统一组织成运行上下文：宿主在启动 VM 时通过`initGlobalContext`注入共享内存、构建器引用和钩子回调，生成程序则从`@blog/context/runtime`导入相应的访问接口。两边仍然处于同一个 Node 进程中，传递的是对象与函数引用。
+上一版其实已经做过从外层向运行环境注入缓存对象的尝试，但那时是直接读写裸的全局变量，哪些数据该留、哪些该清并没有明确的边界。现在，`@blog/context`把共享状态与宿主能力统一组织成运行上下文：宿主在启动 VM 时通过`initGlobalContext`注入共享内存、构建器引用和钩子回调，生成程序则从`@blog/context/runtime`导入相应的访问接口。两边仍然处于同一个 Node 进程中，传递的是对象与函数引用。
 
 从状态的归属上来看，我按生命周期把它们划成了三类：
 
 1. *随每轮 VM 重建的运行状态*：生成程序内的模块局部变量、本轮的运行时`hooks`实例，以及生成器创建的各个数据模型，每次都在新的 VM 上下文中从零创建。本轮的钩子表和页面集合也会随之重新建立。
-2. *跨轮次复用的进程内共享内存*：宿主侧在`@blog/context`中维护了一个常驻进程的`Memory` Map，每轮注入的都是同一个对象。沙箱内的代码通过[`getAccessor`](https://github.com/xiaoboost/blog/blob/b11c1e62358c26011aaaa0921c3f9e1fad5584b2/packages/builder/context/src/runtime/accessor.ts#L6-L32)或[`getReference`](https://github.com/xiaoboost/blog/blob/b11c1e62358c26011aaaa0921c3f9e1fad5584b2/packages/builder/context/src/runtime/accessor.ts#L50-L65)按命名键访问这块共享内存，用来复用 OG 分享图的裁剪结果、字体文件的内存 Buffer 等数据。
+2. *跨轮次复用的进程内共享内存*：宿主侧在`@blog/context`中维护了一个常驻进程的`Memory` Map，每轮注入的都是同一个对象。沙箱内的代码通过`getAccessor`或`getReference`按命名键访问这块共享内存，用来复用 OG 分享图的裁剪结果、字体文件的内存 Buffer 等数据。
 3. *跨进程持久化的落盘缓存*：对于需要跨构建进程复用的数据，则交由宿主提供的磁盘缓存接口管理，落盘到项目的缓存目录中，与进程内共享内存各司其职。
 
 除了保存数据，生成程序在运行期间也会需要宿主的构建服务。比如组件根据配置寻找字体文件，需要使用统一的路径解析规则；生成了一张分享图，又需要给它分配发布路径并登记为产物。这些能力也通过同一套上下文提供。
 
-`@blog/context/runtime`导出的[`Builder`对象](https://github.com/xiaoboost/blog/blob/b11c1e62358c26011aaaa0921c3f9e1fad5584b2/packages/builder/context/src/runtime/builder.ts#L6-L18)是从宿主构建器中挑选方法与配置后组成的包装对象，让模板和组件通过固定接口使用生成期需要的能力：
+`@blog/context/runtime`导出的`Builder`对象是从宿主构建器中挑选方法与配置后组成的包装对象，让模板和组件通过固定接口使用生成期需要的能力：
 
 - *解析文件路径*：当组件在渲染期需要根据配置查找磁盘上的字体或资源文件时，直接复用宿主统一的模块解析器；
 - *读写落盘缓存*：按组件名称申请独立的磁盘缓存空间，用于持久化跨进程的缓存数据；
@@ -363,13 +363,13 @@ import { FontBlock } from '@blog/mdx-font-block';
 
 ![图 6：FontBlock 的四个生成阶段](./images/font-subset-stages.svg)
 
-[`FontBlock`的构建逻辑](https://github.com/xiaoboost/blog/blob/2c07064c/packages/components/font-block/src/font.ts)通过`onBuildWithRender`为本轮建立收集状态，并注册资源处理回调。生成器在数据准备阶段等待这些初始化逻辑就绪，再创建`Page`等对象，准备执行文章中的组件。此时还没有构建这段文字需要的字体。
+[`FontBlock`的构建逻辑](https://github.com/xiaoboost/blog/blob/db5d48930665f2bc3c8a3b66ddcf150f96e74476/packages/components/font-block/src/font.ts)通过`onBuildWithRender`为本轮建立收集状态，并注册资源处理回调。生成器在数据准备阶段等待这些初始化逻辑就绪，再创建`Page`等对象，准备执行文章中的组件。此时还没有构建这段文字需要的字体。
 
 预渲染时，`FontBlock`从传入的组件`Props`里提取文字，解析字体文件的路径，再按当前页面和字体文件归组保存。同一页里使用同一份字体的多个`FontBlock`，文字也会汇入同一份记录。这一遍先把“哪一页需要哪份字体、哪些文字”收集起来，暂不生成字体文件。
 到了`beforeBuild`，组件的构建回调读取原始字体，把收集到的文字放进当前`Page`的字体集合，再调用`buildFonts()`生成 WOFF2 和 CSS，登记文件、样式引用与字体预加载。
 正式渲染时，同一个`FontBlock`组件再次执行，取回已经准备好的字体类名并应用到文字上；`Document`则从页面资源记录中输出 CSS 引用与字体预加载。前一遍负责收集需求，中间准备好资源，后一遍再输出带有完整字体样式的 HTML。
 
-后来加入的 [OG 分享图处理](https://github.com/xiaoboost/blog/blob/2c07064c/packages/templates/layout/src/components/document/og-image.ts)也沿用了这套机制。封面来源已经在页面配置中确定，因此可以直接在`beforeBuild`中裁剪、压缩原图，默认图登记到`Site`，文章专用图登记到对应`Page`，正式渲染时再把发布地址写入`og:image`。它不需要经过预渲染收集，也照样能使用统一的资源登记与输出流程。
+后来加入的 OG 分享图处理也沿用了这套机制。封面来源已经在页面配置中确定，因此可以直接在`beforeBuild`中裁剪、压缩原图，默认图登记到`Site`，文章专用图登记到对应`Page`，正式渲染时再把发布地址写入`og:image`。它不需要经过预渲染收集，也照样能使用统一的资源登记与输出流程。
 
 # 新架构解决问题了吗？
 
@@ -398,7 +398,7 @@ export function getPostAssetNames() {
 另一个原因，是我希望图片也能参与构建时的处理，比如压缩、转换格式，再根据处理后的内容加上 hash。这就不只是把原图复制到输出目录：构建器先要根据文章的位置找到源文件，处理后还可能改变扩展名和文件名，最后再按发布目录确定浏览器能访问的地址，HTML 里的引用也必须跟着更新。在当时的设计里，我选择先把图片改写为`import`，让它进入资源处理流程，再把最终地址交还给组件。
 不过，让图片参与构建，并不意味着一定要在编译 MDX 时就决定它的最终发布地址。页面生成同样发生在构建期，现在渲染组件已经知道当前文章在哪里、当前页面的路径是什么，也有了统一的资源登记接口。因此，图片的定位、命名和登记可以等到渲染时再完成，不必要求编译器提前为每张图片拼好一整套导入与导出代码。
 
-[当前的图片组件](https://github.com/xiaoboost/blog/blob/2c07064c/packages/templates/post/src/post/image/index.tsx)因此保留了 Markdown 传来的相对地址，在正式渲染时完成本地文件的定位与登记。核心逻辑可以简化成这样：
+[当前的图片组件](https://github.com/xiaoboost/blog/blob/db5d48930665f2bc3c8a3b66ddcf150f96e74476/packages/templates/post/src/post/image/index.tsx)因此保留了 Markdown 传来的相对地址，在正式渲染时完成本地文件的定位与登记。核心逻辑可以简化成这样：
 
 ```tsx
 // 伪代码：只展示普通文章中的本地图片
@@ -443,7 +443,7 @@ export const utils = defineUtils(playerAssets, {
 });
 ```
 
-播放器的资源列表参与普通页面引用，最终写入 HTML。导出脚本则只把地址登记到本页配置的`lazyScripts`中。[生成器将这些配置输出为独立的配置脚本](https://github.com/xiaoboost/blog/blob/2c07064c/packages/builder/generator/src/browser-config.ts)，随页面异步加载，把构建时确定的资源地址交给浏览器。导出功能本身仍然等到读者点击按钮时，才由播放器调用加载接口：
+播放器的资源列表参与普通页面引用，最终写入 HTML。导出脚本则只把地址登记到本页配置的`lazyScripts`中。生成器将这些配置输出为独立的配置脚本，随页面异步加载，把构建时确定的资源地址交给浏览器。导出功能本身仍然等到读者点击按钮时，才由播放器调用加载接口：
 
 ```ts
 // 浏览器端通过相同的 key 加载这个异步资源
@@ -451,7 +451,7 @@ const exporter = await loadResource('slide.export');
 await exporter.exportPdf(options);
 ```
 
-[`loadResource`](https://github.com/xiaoboost/blog/blob/2c07064c/packages/builder/context/src/web/load-resource.ts)先等待页面配置，找到名字对应的一组地址，加载其中的 CSS，再按顺序加载脚本。同一个 URL 的加载任务会复用，加载失败时也会清除对应记录，让下一次操作可以重试。
+[`loadResource`](https://github.com/xiaoboost/blog/blob/db5d48930665f2bc3c8a3b66ddcf150f96e74476/packages/builder/context/src/web/load-resource.ts)先等待页面配置，找到名字对应的一组地址，加载其中的 CSS，再按顺序加载脚本。同一个 URL 的加载任务会复用，加载失败时也会清除对应记录，让下一次操作可以重试。
 
 ![图 8：两份脚本与两种加载时机](./images/script-loading.svg)
 
@@ -464,7 +464,7 @@ await exporter.exportPdf(options);
 
 所以我选择了现在的折衷方案，脚本子构建继续输出 IIFE，保留现有的构建与热更新方式，只是把需要延迟加载的功能拆成独立入口，通过前面的页面配置和加载器连接起来。
 
-导出功能还需要把一个函数交回调用方，于是增加了一个很小的[脚本导出接口](https://github.com/xiaoboost/blog/blob/2c07064c/packages/builder/context/src/web/script-export.ts)，脚本在同步执行时，把导出值挂到`document.currentScript`对应的标签对象上；加载器在该标签的`load`事件中读取它。
+导出功能还需要把一个函数交回调用方，于是增加了一个很小的[脚本导出接口](https://github.com/xiaoboost/blog/blob/db5d48930665f2bc3c8a3b66ddcf150f96e74476/packages/builder/context/src/web/script-export.ts)，脚本在同步执行时，把导出值挂到`document.currentScript`对应的标签对象上；加载器在该标签的`load`事件中读取它。
 
 ```ts
 // 被异步加载的导出脚本
@@ -483,13 +483,13 @@ setScriptExports({ exportPdf });
 
 ## 观察整个构建过程
 
-以前要知道构建为什么慢，往往得在不同插件里分别埋计时。现在，插件都通过具名的生命周期钩子接入，[调试插件 Interceptor](https://github.com/xiaoboost/blog/blob/2c07064c/packages/builder/core/src/plugins/interceptor/index.ts) 就可以统一拦截 Builder 与 Bundler 的钩子注册，在回调外面补上计时，统计每个插件在哪个阶段调用了多少次、用了多久。
+以前要知道构建为什么慢，往往得在不同插件里分别埋计时。现在，插件都通过具名的生命周期钩子接入，调试插件 Interceptor 就可以统一拦截 Builder 与 Bundler 的钩子注册，在回调外面补上计时，统计每个插件在哪个阶段调用了多少次、用了多久。
 它还读取 Builder 提供的阶段计时，包括代码打包、页面生成、资源输出，以及生成器内部的准备、预渲染、资源处理和正式渲染。这些阶段计时由相应流程显式登记，钩子统计则由拦截器收集，两者放在一起才能看清“时间主要花在哪一步”和“这一步有哪些插件参与”。
 我还把这个功能接入了 Github PR 中，比如这个 [#207](https://github.com/xiaoboost/blog/pull/207)，在 PR 的回复中可以看到机器人发的构建性能报告，这就式这个调试插件产出的内容。我可以很方便的观察构建性能的劣化情况。
 
 ## RSS 的简易接入
 
-[SiteDiscovery](https://github.com/xiaoboost/blog/blob/2c07064c/packages/builder/core/src/plugins/site-discovery/index.ts) 就更简单了，它从外层 Builder 注册，通过 Runner 接入生成期的`beforeBuild`，读取已经准备好的站点与页面数据，生成 RSS、sitemap 和`robots.txt`。
+SiteDiscovery 就更简单了，它从外层 Builder 注册，通过 Runner 接入生成期的`beforeBuild`，读取已经准备好的站点与页面数据，生成 RSS、sitemap 和`robots.txt`。
 它最省事的地方就是不需要再扫描一次文章目录，也不必重新猜测页面最后的标题和地址。生成器已经有了这些信息，插件只要把它们转换成目标格式，再登记文件。外层的注册方式前面已经介绍过，这里只看进入生成期后的处理：
 
 ```ts
